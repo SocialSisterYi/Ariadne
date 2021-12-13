@@ -172,7 +172,7 @@
 
 <span class="nd">@dataclass</span><span class="p">(</span><span class="n">init</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">eq</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="nb">repr</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">BoxParameter</span><span class="p">(</span><span class="n">ParamPattern</span><span class="p">):</span>
-    <span class="s2">&quot;可以被指定传入消息的参数, 但只有一个.&quot;</span>
+    <span class="sd">&quot;&quot;&quot;可以被指定传入消息的参数, 但只有一个.&quot;&quot;&quot;</span>
 
 
 <span class="k">class</span> <span class="nc">Literature</span><span class="p">(</span><span class="n">BaseDispatcher</span><span class="p">):</span>
@@ -218,7 +218,7 @@
                 <span class="n">string_result</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;$</span><span class="si">{</span><span class="n">index</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
                 <span class="n">id_elem_map</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="o">=</span> <span class="n">elem</span>
 
-        <span class="k">return</span> <span class="p">(</span><span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">string_result</span><span class="p">),</span> <span class="n">id_elem_map</span><span class="p">)</span>
+        <span class="k">return</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">string_result</span><span class="p">),</span> <span class="n">id_elem_map</span>
 
     <span class="k">def</span> <span class="nf">gen_long_map</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">result</span> <span class="o">=</span> <span class="p">{}</span>
@@ -302,7 +302,7 @@
                 <span class="k">else</span><span class="p">:</span>
                     <span class="k">raise</span> <span class="n">ExecutionStop</span><span class="p">()</span>
 
-        <span class="k">return</span> <span class="p">(</span><span class="n">parsed_args</span><span class="p">,</span> <span class="n">variables</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">parsed_args</span><span class="p">,</span> <span class="n">variables</span>
 
     <span class="k">def</span> <span class="nf">prefix_match</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">target_chain</span><span class="p">:</span> <span class="n">MessageChain</span><span class="p">):</span>
         <span class="n">target_chain</span> <span class="o">=</span> <span class="n">target_chain</span><span class="o">.</span><span class="n">exclude</span><span class="p">(</span><span class="n">Source</span><span class="p">)</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">copy</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
@@ -518,7 +518,7 @@
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span><span class="nd">@dataclass</span><span class="p">(</span><span class="n">init</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">eq</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="nb">repr</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">BoxParameter</span><span class="p">(</span><span class="n">ParamPattern</span><span class="p">):</span>
-    <span class="s2">&quot;可以被指定传入消息的参数, 但只有一个.&quot;</span>
+    <span class="sd">&quot;&quot;&quot;可以被指定传入消息的参数, 但只有一个.&quot;&quot;&quot;</span>
 </pre></div>
 
         </details>
@@ -609,7 +609,7 @@
                 <span class="n">string_result</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;$</span><span class="si">{</span><span class="n">index</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
                 <span class="n">id_elem_map</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="o">=</span> <span class="n">elem</span>
 
-        <span class="k">return</span> <span class="p">(</span><span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">string_result</span><span class="p">),</span> <span class="n">id_elem_map</span><span class="p">)</span>
+        <span class="k">return</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">string_result</span><span class="p">),</span> <span class="n">id_elem_map</span>
 
     <span class="k">def</span> <span class="nf">gen_long_map</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">result</span> <span class="o">=</span> <span class="p">{}</span>
@@ -693,7 +693,7 @@
                 <span class="k">else</span><span class="p">:</span>
                     <span class="k">raise</span> <span class="n">ExecutionStop</span><span class="p">()</span>
 
-        <span class="k">return</span> <span class="p">(</span><span class="n">parsed_args</span><span class="p">,</span> <span class="n">variables</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">parsed_args</span><span class="p">,</span> <span class="n">variables</span>
 
     <span class="k">def</span> <span class="nf">prefix_match</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">target_chain</span><span class="p">:</span> <span class="n">MessageChain</span><span class="p">):</span>
         <span class="n">target_chain</span> <span class="o">=</span> <span class="n">target_chain</span><span class="o">.</span><span class="n">exclude</span><span class="p">(</span><span class="n">Source</span><span class="p">)</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">copy</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
@@ -830,7 +830,7 @@ Ariadne Migrated> 如果使用中发现任何属因移植过程发生的错误, 
                 <span class="n">string_result</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;$</span><span class="si">{</span><span class="n">index</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
                 <span class="n">id_elem_map</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="o">=</span> <span class="n">elem</span>
 
-        <span class="k">return</span> <span class="p">(</span><span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">string_result</span><span class="p">),</span> <span class="n">id_elem_map</span><span class="p">)</span>
+        <span class="k">return</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">string_result</span><span class="p">),</span> <span class="n">id_elem_map</span>
 </pre></div>
 
         </details>
@@ -994,7 +994,7 @@ Ariadne Migrated> 如果使用中发现任何属因移植过程发生的错误, 
                 <span class="k">else</span><span class="p">:</span>
                     <span class="k">raise</span> <span class="n">ExecutionStop</span><span class="p">()</span>
 
-        <span class="k">return</span> <span class="p">(</span><span class="n">parsed_args</span><span class="p">,</span> <span class="n">variables</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">parsed_args</span><span class="p">,</span> <span class="n">variables</span>
 </pre></div>
 
         </details>

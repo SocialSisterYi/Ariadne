@@ -479,7 +479,7 @@
 
 
 <span class="k">class</span> <span class="nc">Friend</span><span class="p">(</span><span class="n">AriadneBaseModel</span><span class="p">):</span>
-    <span class="s2">&quot;描述 Tencent QQ 中的好友.&quot;</span>
+    <span class="sd">&quot;&quot;&quot;描述 Tencent QQ 中的好友.&quot;&quot;&quot;</span>
 
     <span class="nb">id</span><span class="p">:</span> <span class="nb">int</span>
     <span class="n">nickname</span><span class="p">:</span> <span class="nb">str</span>
@@ -487,14 +487,15 @@
 
 
 <span class="k">class</span> <span class="nc">Stranger</span><span class="p">(</span><span class="n">AriadneBaseModel</span><span class="p">):</span>
-    <span class="s2">&quot;描述 Tencent QQ 中的陌生人.&quot;</span>
+    <span class="sd">&quot;&quot;&quot;描述 Tencent QQ 中的陌生人.&quot;&quot;&quot;</span>
+
     <span class="nb">id</span><span class="p">:</span> <span class="nb">int</span>
     <span class="n">nickname</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">remark</span><span class="p">:</span> <span class="nb">str</span>
 
 
 <span class="k">class</span> <span class="nc">MemberPerm</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
-    <span class="s2">&quot;描述群成员在群组中所具备的权限&quot;</span>
+    <span class="sd">&quot;&quot;&quot;描述群成员在群组中所具备的权限&quot;&quot;&quot;</span>
 
     <span class="n">Member</span> <span class="o">=</span> <span class="s2">&quot;MEMBER&quot;</span>  <span class="c1"># 普通成员</span>
     <span class="n">Administrator</span> <span class="o">=</span> <span class="s2">&quot;ADMINISTRATOR&quot;</span>  <span class="c1"># 管理员</span>
@@ -502,7 +503,7 @@
 
 
 <span class="k">class</span> <span class="nc">Group</span><span class="p">(</span><span class="n">AriadneBaseModel</span><span class="p">):</span>
-    <span class="s2">&quot;描述 Tencent QQ 中的群组.&quot;</span>
+    <span class="sd">&quot;&quot;&quot;描述 Tencent QQ 中的群组.&quot;&quot;&quot;</span>
 
     <span class="nb">id</span><span class="p">:</span> <span class="nb">int</span>
     <span class="n">name</span><span class="p">:</span> <span class="nb">str</span>
@@ -510,7 +511,7 @@
 
 
 <span class="k">class</span> <span class="nc">Member</span><span class="p">(</span><span class="n">AriadneBaseModel</span><span class="p">):</span>
-    <span class="s2">&quot;描述用户在群组中所具备的有关状态, 包括所在群组, 群中昵称, 所具备的权限, 唯一ID.&quot;</span>
+    <span class="sd">&quot;&quot;&quot;描述用户在群组中所具备的有关状态, 包括所在群组, 群中昵称, 所具备的权限, 唯一ID.&quot;&quot;&quot;</span>
 
     <span class="nb">id</span><span class="p">:</span> <span class="nb">int</span>
     <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="o">...</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;memberName&quot;</span><span class="p">)</span>
@@ -523,7 +524,7 @@
 
 
 <span class="k">class</span> <span class="nc">GroupConfig</span><span class="p">(</span><span class="n">AriadneBaseModel</span><span class="p">):</span>
-    <span class="s2">&quot;描述群组各项功能的设置.&quot;</span>
+    <span class="sd">&quot;&quot;&quot;描述群组各项功能的设置.&quot;&quot;&quot;</span>
 
     <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
     <span class="n">announcement</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
@@ -539,7 +540,7 @@
 
 
 <span class="k">class</span> <span class="nc">MemberInfo</span><span class="p">(</span><span class="n">AriadneBaseModel</span><span class="p">):</span>
-    <span class="s2">&quot;描述群组成员的可修改状态, 修改需要管理员/群主权限.&quot;</span>
+    <span class="sd">&quot;&quot;&quot;描述群组成员的可修改状态, 修改需要管理员/群主权限.&quot;&quot;&quot;</span>
 
     <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
     <span class="n">specialTitle</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
@@ -568,7 +569,7 @@
 
 
 <span class="k">class</span> <span class="nc">FileInfo</span><span class="p">(</span><span class="n">AriadneBaseModel</span><span class="p">):</span>
-    <span class="s2">&quot;群组文件详细信息&quot;</span>
+    <span class="sd">&quot;&quot;&quot;群组文件详细信息&quot;&quot;&quot;</span>
 
     <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
     <span class="n">path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
@@ -1382,7 +1383,7 @@ implement default like this::</p>
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">Friend</span><span class="p">(</span><span class="n">AriadneBaseModel</span><span class="p">):</span>
-    <span class="s2">&quot;描述 Tencent QQ 中的好友.&quot;</span>
+    <span class="sd">&quot;&quot;&quot;描述 Tencent QQ 中的好友.&quot;&quot;&quot;</span>
 
     <span class="nb">id</span><span class="p">:</span> <span class="nb">int</span>
     <span class="n">nickname</span><span class="p">:</span> <span class="nb">str</span>
@@ -1433,7 +1434,8 @@ implement default like this::</p>
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">Stranger</span><span class="p">(</span><span class="n">AriadneBaseModel</span><span class="p">):</span>
-    <span class="s2">&quot;描述 Tencent QQ 中的陌生人.&quot;</span>
+    <span class="sd">&quot;&quot;&quot;描述 Tencent QQ 中的陌生人.&quot;&quot;&quot;</span>
+
     <span class="nb">id</span><span class="p">:</span> <span class="nb">int</span>
     <span class="n">nickname</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">remark</span><span class="p">:</span> <span class="nb">str</span>
@@ -1483,7 +1485,7 @@ implement default like this::</p>
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">MemberPerm</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
-    <span class="s2">&quot;描述群成员在群组中所具备的权限&quot;</span>
+    <span class="sd">&quot;&quot;&quot;描述群成员在群组中所具备的权限&quot;&quot;&quot;</span>
 
     <span class="n">Member</span> <span class="o">=</span> <span class="s2">&quot;MEMBER&quot;</span>  <span class="c1"># 普通成员</span>
     <span class="n">Administrator</span> <span class="o">=</span> <span class="s2">&quot;ADMINISTRATOR&quot;</span>  <span class="c1"># 管理员</span>
@@ -1546,7 +1548,7 @@ implement default like this::</p>
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">Group</span><span class="p">(</span><span class="n">AriadneBaseModel</span><span class="p">):</span>
-    <span class="s2">&quot;描述 Tencent QQ 中的群组.&quot;</span>
+    <span class="sd">&quot;&quot;&quot;描述 Tencent QQ 中的群组.&quot;&quot;&quot;</span>
 
     <span class="nb">id</span><span class="p">:</span> <span class="nb">int</span>
     <span class="n">name</span><span class="p">:</span> <span class="nb">str</span>
@@ -1597,7 +1599,7 @@ implement default like this::</p>
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">Member</span><span class="p">(</span><span class="n">AriadneBaseModel</span><span class="p">):</span>
-    <span class="s2">&quot;描述用户在群组中所具备的有关状态, 包括所在群组, 群中昵称, 所具备的权限, 唯一ID.&quot;</span>
+    <span class="sd">&quot;&quot;&quot;描述用户在群组中所具备的有关状态, 包括所在群组, 群中昵称, 所具备的权限, 唯一ID.&quot;&quot;&quot;</span>
 
     <span class="nb">id</span><span class="p">:</span> <span class="nb">int</span>
     <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="o">...</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;memberName&quot;</span><span class="p">)</span>
@@ -1653,7 +1655,7 @@ implement default like this::</p>
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">GroupConfig</span><span class="p">(</span><span class="n">AriadneBaseModel</span><span class="p">):</span>
-    <span class="s2">&quot;描述群组各项功能的设置.&quot;</span>
+    <span class="sd">&quot;&quot;&quot;描述群组各项功能的设置.&quot;&quot;&quot;</span>
 
     <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
     <span class="n">announcement</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
@@ -1751,7 +1753,7 @@ implement default like this::</p>
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">MemberInfo</span><span class="p">(</span><span class="n">AriadneBaseModel</span><span class="p">):</span>
-    <span class="s2">&quot;描述群组成员的可修改状态, 修改需要管理员/群主权限.&quot;</span>
+    <span class="sd">&quot;&quot;&quot;描述群组成员的可修改状态, 修改需要管理员/群主权限.&quot;&quot;&quot;</span>
 
     <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
     <span class="n">specialTitle</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
@@ -1927,7 +1929,7 @@ implement default like this::</p>
                             <div id="DownloadInfo.Config.json_encoders" class="classattr">
                                             <div class="attr variable"><a class="headerlink" href="#DownloadInfo.Config.json_encoders">#&nbsp;&nbsp</a>
 
-        <span class="name">json_encoders</span><span class="default_value"> = {&lt;class &#39;datetime.datetime&#39;&gt;: &lt;function datetime_encoder at 0x7f8acedfe820&gt;}</span>
+        <span class="name">json_encoders</span><span class="default_value"> = {&lt;class &#39;datetime.datetime&#39;&gt;: &lt;function datetime_encoder at 0x7f49e01f5820&gt;}</span>
     </div>
 
     
@@ -1946,7 +1948,7 @@ implement default like this::</p>
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">FileInfo</span><span class="p">(</span><span class="n">AriadneBaseModel</span><span class="p">):</span>
-    <span class="s2">&quot;群组文件详细信息&quot;</span>
+    <span class="sd">&quot;&quot;&quot;群组文件详细信息&quot;&quot;&quot;</span>
 
     <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
     <span class="n">path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>

@@ -507,7 +507,8 @@
 
 
 <span class="k">class</span> <span class="nc">Source</span><span class="p">(</span><span class="n">Element</span><span class="p">):</span>
-    <span class="s2">&quot;表示消息在一个特定聊天区域内的唯一标识&quot;</span>
+    <span class="sd">&quot;&quot;&quot;表示消息在一个特定聊天区域内的唯一标识&quot;&quot;&quot;</span>
+
     <span class="nb">type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;Source&quot;</span>
     <span class="nb">id</span><span class="p">:</span> <span class="nb">int</span>
     <span class="n">time</span><span class="p">:</span> <span class="n">datetime</span>
@@ -537,7 +538,8 @@
 
 
 <span class="k">class</span> <span class="nc">Quote</span><span class="p">(</span><span class="n">Element</span><span class="p">):</span>
-    <span class="s2">&quot;表示消息中回复其他消息/用户的部分, 通常包含一个完整的消息链(`origin` 属性)&quot;</span>
+    <span class="sd">&quot;&quot;&quot;表示消息中回复其他消息/用户的部分, 通常包含一个完整的消息链(`origin` 属性)&quot;&quot;&quot;</span>
+
     <span class="nb">type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;Quote&quot;</span>
     <span class="nb">id</span><span class="p">:</span> <span class="nb">int</span>
     <span class="n">groupId</span><span class="p">:</span> <span class="nb">int</span>
@@ -598,7 +600,8 @@
 
 
 <span class="k">class</span> <span class="nc">AtAll</span><span class="p">(</span><span class="n">Element</span><span class="p">):</span>
-    <span class="s2">&quot;该消息元素用于群组中的管理员提醒群组中的所有成员&quot;</span>
+    <span class="sd">&quot;&quot;&quot;该消息元素用于群组中的管理员提醒群组中的所有成员&quot;&quot;&quot;</span>
+
     <span class="nb">type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;AtAll&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">_</span><span class="p">,</span> <span class="o">**</span><span class="n">__</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
@@ -618,7 +621,8 @@
 
 
 <span class="k">class</span> <span class="nc">Face</span><span class="p">(</span><span class="n">Element</span><span class="p">):</span>
-    <span class="s2">&quot;表示消息中所附带的表情, 这些表情大多都是聊天工具内置的.&quot;</span>
+    <span class="sd">&quot;&quot;&quot;表示消息中所附带的表情, 这些表情大多都是聊天工具内置的.&quot;&quot;&quot;</span>
+
     <span class="nb">type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;Face&quot;</span>
     <span class="n">faceId</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
@@ -638,7 +642,8 @@
 
 
 <span class="k">class</span> <span class="nc">Xml</span><span class="p">(</span><span class="n">Element</span><span class="p">):</span>
-    <span class="s2">&quot;表示消息中的 XML 消息元素&quot;</span>
+    <span class="sd">&quot;&quot;&quot;表示消息中的 XML 消息元素&quot;&quot;&quot;</span>
+
     <span class="nb">type</span> <span class="o">=</span> <span class="s2">&quot;Xml&quot;</span>
     <span class="n">xml</span><span class="p">:</span> <span class="nb">str</span>
 
@@ -647,7 +652,8 @@
 
 
 <span class="k">class</span> <span class="nc">Json</span><span class="p">(</span><span class="n">Element</span><span class="p">):</span>
-    <span class="s2">&quot;表示消息中的 JSON 消息元素&quot;</span>
+    <span class="sd">&quot;&quot;&quot;表示消息中的 JSON 消息元素&quot;&quot;&quot;</span>
+
     <span class="nb">type</span> <span class="o">=</span> <span class="s2">&quot;Json&quot;</span>
     <span class="n">Json</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="o">...</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;json&quot;</span><span class="p">)</span>
 
@@ -664,7 +670,8 @@
 
 
 <span class="k">class</span> <span class="nc">App</span><span class="p">(</span><span class="n">Element</span><span class="p">):</span>
-    <span class="s2">&quot;表示消息中自带的 App 消息元素&quot;</span>
+    <span class="sd">&quot;&quot;&quot;表示消息中自带的 App 消息元素&quot;&quot;&quot;</span>
+
     <span class="nb">type</span> <span class="o">=</span> <span class="s2">&quot;App&quot;</span>
     <span class="n">content</span><span class="p">:</span> <span class="nb">str</span>
 
@@ -673,7 +680,8 @@
 
 
 <span class="k">class</span> <span class="nc">PokeMethods</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
-    <span class="s2">&quot;戳一戳可用方法&quot;</span>
+    <span class="sd">&quot;&quot;&quot;戳一戳可用方法&quot;&quot;&quot;</span>
+
     <span class="n">ChuoYiChuo</span> <span class="o">=</span> <span class="s2">&quot;ChuoYiChuo&quot;</span>
     <span class="n">BiXin</span> <span class="o">=</span> <span class="s2">&quot;BiXin&quot;</span>
     <span class="n">DianZan</span> <span class="o">=</span> <span class="s2">&quot;DianZan&quot;</span>
@@ -693,7 +701,8 @@
 
 
 <span class="k">class</span> <span class="nc">Poke</span><span class="p">(</span><span class="n">Element</span><span class="p">):</span>
-    <span class="s2">&quot;表示消息中戳一戳消息元素&quot;</span>
+    <span class="sd">&quot;&quot;&quot;表示消息中戳一戳消息元素&quot;&quot;&quot;</span>
+
     <span class="nb">type</span> <span class="o">=</span> <span class="s2">&quot;Poke&quot;</span>
     <span class="n">name</span><span class="p">:</span> <span class="n">PokeMethods</span>
 
@@ -705,7 +714,8 @@
 
 
 <span class="k">class</span> <span class="nc">Dice</span><span class="p">(</span><span class="n">Element</span><span class="p">):</span>
-    <span class="s2">&quot;表示消息中骰子消息元素&quot;</span>
+    <span class="sd">&quot;&quot;&quot;表示消息中骰子消息元素&quot;&quot;&quot;</span>
+
     <span class="nb">type</span> <span class="o">=</span> <span class="s2">&quot;Dice&quot;</span>
     <span class="n">value</span><span class="p">:</span> <span class="nb">int</span>
 
@@ -717,7 +727,8 @@
 
 
 <span class="k">class</span> <span class="nc">MusicShare</span><span class="p">(</span><span class="n">Element</span><span class="p">):</span>
-    <span class="s2">&quot;表示消息中音乐分享消息元素&quot;</span>
+    <span class="sd">&quot;&quot;&quot;表示消息中音乐分享消息元素&quot;&quot;&quot;</span>
+
     <span class="nb">type</span> <span class="o">=</span> <span class="s2">&quot;MusicShare&quot;</span>
     <span class="n">kind</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
     <span class="n">title</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
@@ -732,7 +743,8 @@
 
 
 <span class="k">class</span> <span class="nc">ForwardNode</span><span class="p">(</span><span class="n">AriadneBaseModel</span><span class="p">):</span>
-    <span class="s2">&quot;表示合并转发中的一个节点&quot;</span>
+    <span class="sd">&quot;&quot;&quot;表示合并转发中的一个节点&quot;&quot;&quot;</span>
+
     <span class="n">senderId</span><span class="p">:</span> <span class="nb">int</span>
     <span class="n">time</span><span class="p">:</span> <span class="n">datetime</span>
     <span class="n">senderName</span><span class="p">:</span> <span class="nb">str</span>
@@ -799,7 +811,8 @@
 
 
 <span class="k">class</span> <span class="nc">File</span><span class="p">(</span><span class="n">Element</span><span class="p">):</span>
-    <span class="s2">&quot;指示一个文件信息元素&quot;</span>
+    <span class="sd">&quot;&quot;&quot;指示一个文件信息元素&quot;&quot;&quot;</span>
+
     <span class="nb">type</span> <span class="o">=</span> <span class="s2">&quot;File&quot;</span>
     <span class="nb">id</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">name</span><span class="p">:</span> <span class="nb">str</span>
@@ -813,7 +826,8 @@
 
 
 <span class="k">class</span> <span class="nc">MiraiCode</span><span class="p">(</span><span class="n">Element</span><span class="p">):</span>
-    <span class="s2">&quot;Mirai 码, 并不建议直接使用. Ariadne 也不会提供互转换接口.&quot;</span>
+    <span class="sd">&quot;&quot;&quot;Mirai 码, 并不建议直接使用. Ariadne 也不会提供互转换接口.&quot;&quot;&quot;</span>
+
     <span class="nb">type</span> <span class="o">=</span> <span class="s2">&quot;MiraiCode&quot;</span>
     <span class="n">code</span><span class="p">:</span> <span class="nb">str</span>
 
@@ -923,8 +937,10 @@
 
 
 <span class="k">class</span> <span class="nc">Image</span><span class="p">(</span><span class="n">MultimediaElement</span><span class="p">):</span>
-    <span class="s2">&quot;指示消息中的图片元素&quot;</span>
+    <span class="sd">&quot;&quot;&quot;指示消息中的图片元素&quot;&quot;&quot;</span>
+
     <span class="nb">type</span> <span class="o">=</span> <span class="s2">&quot;Image&quot;</span>
+    <span class="nb">id</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;imageId&quot;</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">toFlashImage</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;FlashImage&quot;</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">FlashImage</span><span class="o">.</span><span class="n">parse_obj</span><span class="p">({</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">dict</span><span class="p">(),</span> <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;FlashImage&quot;</span><span class="p">})</span>
@@ -938,7 +954,8 @@
 
 
 <span class="k">class</span> <span class="nc">FlashImage</span><span class="p">(</span><span class="n">Image</span><span class="p">):</span>
-    <span class="s2">&quot;指示消息中的闪照元素&quot;</span>
+    <span class="sd">&quot;&quot;&quot;指示消息中的闪照元素&quot;&quot;&quot;</span>
+
     <span class="nb">type</span> <span class="o">=</span> <span class="s2">&quot;FlashImage&quot;</span>
 
     <span class="k">def</span> <span class="nf">toImage</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;Image&quot;</span><span class="p">:</span>
@@ -953,7 +970,8 @@
 
 
 <span class="k">class</span> <span class="nc">Voice</span><span class="p">(</span><span class="n">MultimediaElement</span><span class="p">):</span>
-    <span class="s2">&quot;指示消息中的语音元素&quot;</span>
+    <span class="sd">&quot;&quot;&quot;指示消息中的语音元素&quot;&quot;&quot;</span>
+
     <span class="nb">type</span> <span class="o">=</span> <span class="s2">&quot;Voice&quot;</span>
     <span class="nb">id</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;voiceId&quot;</span><span class="p">)</span>
     <span class="n">length</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span>
@@ -1310,7 +1328,8 @@ type (str): 元素类型</p>
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">Source</span><span class="p">(</span><span class="n">Element</span><span class="p">):</span>
-    <span class="s2">&quot;表示消息在一个特定聊天区域内的唯一标识&quot;</span>
+    <span class="sd">&quot;&quot;&quot;表示消息在一个特定聊天区域内的唯一标识&quot;&quot;&quot;</span>
+
     <span class="nb">type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;Source&quot;</span>
     <span class="nb">id</span><span class="p">:</span> <span class="nb">int</span>
     <span class="n">time</span><span class="p">:</span> <span class="n">datetime</span>
@@ -1490,7 +1509,7 @@ type (str): 元素类型</p>
                             <div id="Source.Config.json_encoders" class="classattr">
                                             <div class="attr variable"><a class="headerlink" href="#Source.Config.json_encoders">#&nbsp;&nbsp</a>
 
-        <span class="name">json_encoders</span><span class="default_value"> = {&lt;class &#39;datetime.datetime&#39;&gt;: &lt;function datetime_encoder at 0x7f8acedfe820&gt;}</span>
+        <span class="name">json_encoders</span><span class="default_value"> = {&lt;class &#39;datetime.datetime&#39;&gt;: &lt;function datetime_encoder at 0x7f49e01f5820&gt;}</span>
     </div>
 
     
@@ -1509,7 +1528,8 @@ type (str): 元素类型</p>
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">Quote</span><span class="p">(</span><span class="n">Element</span><span class="p">):</span>
-    <span class="s2">&quot;表示消息中回复其他消息/用户的部分, 通常包含一个完整的消息链(`origin` 属性)&quot;</span>
+    <span class="sd">&quot;&quot;&quot;表示消息中回复其他消息/用户的部分, 通常包含一个完整的消息链(`origin` 属性)&quot;&quot;&quot;</span>
+
     <span class="nb">type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;Quote&quot;</span>
     <span class="nb">id</span><span class="p">:</span> <span class="nb">int</span>
     <span class="n">groupId</span><span class="p">:</span> <span class="nb">int</span>
@@ -1790,7 +1810,8 @@ type (str): 元素类型</p>
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">AtAll</span><span class="p">(</span><span class="n">Element</span><span class="p">):</span>
-    <span class="s2">&quot;该消息元素用于群组中的管理员提醒群组中的所有成员&quot;</span>
+    <span class="sd">&quot;&quot;&quot;该消息元素用于群组中的管理员提醒群组中的所有成员&quot;&quot;&quot;</span>
+
     <span class="nb">type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;AtAll&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">_</span><span class="p">,</span> <span class="o">**</span><span class="n">__</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
@@ -1929,7 +1950,8 @@ type (str): 元素类型</p>
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">Face</span><span class="p">(</span><span class="n">Element</span><span class="p">):</span>
-    <span class="s2">&quot;表示消息中所附带的表情, 这些表情大多都是聊天工具内置的.&quot;</span>
+    <span class="sd">&quot;&quot;&quot;表示消息中所附带的表情, 这些表情大多都是聊天工具内置的.&quot;&quot;&quot;</span>
+
     <span class="nb">type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;Face&quot;</span>
     <span class="n">faceId</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
@@ -2041,7 +2063,8 @@ type (str): 元素类型</p>
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">Xml</span><span class="p">(</span><span class="n">Element</span><span class="p">):</span>
-    <span class="s2">&quot;表示消息中的 XML 消息元素&quot;</span>
+    <span class="sd">&quot;&quot;&quot;表示消息中的 XML 消息元素&quot;&quot;&quot;</span>
+
     <span class="nb">type</span> <span class="o">=</span> <span class="s2">&quot;Xml&quot;</span>
     <span class="n">xml</span><span class="p">:</span> <span class="nb">str</span>
 
@@ -2117,7 +2140,8 @@ type (str): 元素类型</p>
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">Json</span><span class="p">(</span><span class="n">Element</span><span class="p">):</span>
-    <span class="s2">&quot;表示消息中的 JSON 消息元素&quot;</span>
+    <span class="sd">&quot;&quot;&quot;表示消息中的 JSON 消息元素&quot;&quot;&quot;</span>
+
     <span class="nb">type</span> <span class="o">=</span> <span class="s2">&quot;Json&quot;</span>
     <span class="n">Json</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="o">...</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;json&quot;</span><span class="p">)</span>
 
@@ -2244,7 +2268,8 @@ type (str): 元素类型</p>
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">App</span><span class="p">(</span><span class="n">Element</span><span class="p">):</span>
-    <span class="s2">&quot;表示消息中自带的 App 消息元素&quot;</span>
+    <span class="sd">&quot;&quot;&quot;表示消息中自带的 App 消息元素&quot;&quot;&quot;</span>
+
     <span class="nb">type</span> <span class="o">=</span> <span class="s2">&quot;App&quot;</span>
     <span class="n">content</span><span class="p">:</span> <span class="nb">str</span>
 
@@ -2320,7 +2345,8 @@ type (str): 元素类型</p>
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">PokeMethods</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
-    <span class="s2">&quot;戳一戳可用方法&quot;</span>
+    <span class="sd">&quot;&quot;&quot;戳一戳可用方法&quot;&quot;&quot;</span>
+
     <span class="n">ChuoYiChuo</span> <span class="o">=</span> <span class="s2">&quot;ChuoYiChuo&quot;</span>
     <span class="n">BiXin</span> <span class="o">=</span> <span class="s2">&quot;BiXin&quot;</span>
     <span class="n">DianZan</span> <span class="o">=</span> <span class="s2">&quot;DianZan&quot;</span>
@@ -2512,7 +2538,8 @@ type (str): 元素类型</p>
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">Poke</span><span class="p">(</span><span class="n">Element</span><span class="p">):</span>
-    <span class="s2">&quot;表示消息中戳一戳消息元素&quot;</span>
+    <span class="sd">&quot;&quot;&quot;表示消息中戳一戳消息元素&quot;&quot;&quot;</span>
+
     <span class="nb">type</span> <span class="o">=</span> <span class="s2">&quot;Poke&quot;</span>
     <span class="n">name</span><span class="p">:</span> <span class="n">PokeMethods</span>
 
@@ -2612,7 +2639,8 @@ type (str): 元素类型</p>
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">Dice</span><span class="p">(</span><span class="n">Element</span><span class="p">):</span>
-    <span class="s2">&quot;表示消息中骰子消息元素&quot;</span>
+    <span class="sd">&quot;&quot;&quot;表示消息中骰子消息元素&quot;&quot;&quot;</span>
+
     <span class="nb">type</span> <span class="o">=</span> <span class="s2">&quot;Dice&quot;</span>
     <span class="n">value</span><span class="p">:</span> <span class="nb">int</span>
 
@@ -2712,7 +2740,8 @@ type (str): 元素类型</p>
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">MusicShare</span><span class="p">(</span><span class="n">Element</span><span class="p">):</span>
-    <span class="s2">&quot;表示消息中音乐分享消息元素&quot;</span>
+    <span class="sd">&quot;&quot;&quot;表示消息中音乐分享消息元素&quot;&quot;&quot;</span>
+
     <span class="nb">type</span> <span class="o">=</span> <span class="s2">&quot;MusicShare&quot;</span>
     <span class="n">kind</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
     <span class="n">title</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
@@ -2794,7 +2823,8 @@ type (str): 元素类型</p>
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">ForwardNode</span><span class="p">(</span><span class="n">AriadneBaseModel</span><span class="p">):</span>
-    <span class="s2">&quot;表示合并转发中的一个节点&quot;</span>
+    <span class="sd">&quot;&quot;&quot;表示合并转发中的一个节点&quot;&quot;&quot;</span>
+
     <span class="n">senderId</span><span class="p">:</span> <span class="nb">int</span>
     <span class="n">time</span><span class="p">:</span> <span class="n">datetime</span>
     <span class="n">senderName</span><span class="p">:</span> <span class="nb">str</span>
@@ -2947,7 +2977,7 @@ type (str): 元素类型</p>
                             <div id="ForwardNode.Config.json_encoders" class="classattr">
                                             <div class="attr variable"><a class="headerlink" href="#ForwardNode.Config.json_encoders">#&nbsp;&nbsp</a>
 
-        <span class="name">json_encoders</span><span class="default_value"> = {&lt;class &#39;datetime.datetime&#39;&gt;: &lt;function datetime_encoder at 0x7f8acedfe820&gt;}</span>
+        <span class="name">json_encoders</span><span class="default_value"> = {&lt;class &#39;datetime.datetime&#39;&gt;: &lt;function datetime_encoder at 0x7f49e01f5820&gt;}</span>
     </div>
 
     
@@ -3113,7 +3143,8 @@ type (str): 元素类型</p>
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">File</span><span class="p">(</span><span class="n">Element</span><span class="p">):</span>
-    <span class="s2">&quot;指示一个文件信息元素&quot;</span>
+    <span class="sd">&quot;&quot;&quot;指示一个文件信息元素&quot;&quot;&quot;</span>
+
     <span class="nb">type</span> <span class="o">=</span> <span class="s2">&quot;File&quot;</span>
     <span class="nb">id</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">name</span><span class="p">:</span> <span class="nb">str</span>
@@ -3212,7 +3243,8 @@ type (str): 元素类型</p>
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">MiraiCode</span><span class="p">(</span><span class="n">Element</span><span class="p">):</span>
-    <span class="s2">&quot;Mirai 码, 并不建议直接使用. Ariadne 也不会提供互转换接口.&quot;</span>
+    <span class="sd">&quot;&quot;&quot;Mirai 码, 并不建议直接使用. Ariadne 也不会提供互转换接口.&quot;&quot;&quot;</span>
+
     <span class="nb">type</span> <span class="o">=</span> <span class="s2">&quot;MiraiCode&quot;</span>
     <span class="n">code</span><span class="p">:</span> <span class="nb">str</span>
 </pre></div>
@@ -3618,8 +3650,10 @@ type (str): 元素类型</p>
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">Image</span><span class="p">(</span><span class="n">MultimediaElement</span><span class="p">):</span>
-    <span class="s2">&quot;指示消息中的图片元素&quot;</span>
+    <span class="sd">&quot;&quot;&quot;指示消息中的图片元素&quot;&quot;&quot;</span>
+
     <span class="nb">type</span> <span class="o">=</span> <span class="s2">&quot;Image&quot;</span>
+    <span class="nb">id</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;imageId&quot;</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">toFlashImage</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;FlashImage&quot;</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">FlashImage</span><span class="o">.</span><span class="n">parse_obj</span><span class="p">({</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">dict</span><span class="p">(),</span> <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;FlashImage&quot;</span><span class="p">})</span>
@@ -3748,7 +3782,8 @@ type (str): 元素类型</p>
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">FlashImage</span><span class="p">(</span><span class="n">Image</span><span class="p">):</span>
-    <span class="s2">&quot;指示消息中的闪照元素&quot;</span>
+    <span class="sd">&quot;&quot;&quot;指示消息中的闪照元素&quot;&quot;&quot;</span>
+
     <span class="nb">type</span> <span class="o">=</span> <span class="s2">&quot;FlashImage&quot;</span>
 
     <span class="k">def</span> <span class="nf">toImage</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;Image&quot;</span><span class="p">:</span>
@@ -3883,7 +3918,8 @@ type (str): 元素类型</p>
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">Voice</span><span class="p">(</span><span class="n">MultimediaElement</span><span class="p">):</span>
-    <span class="s2">&quot;指示消息中的语音元素&quot;</span>
+    <span class="sd">&quot;&quot;&quot;指示消息中的语音元素&quot;&quot;&quot;</span>
+
     <span class="nb">type</span> <span class="o">=</span> <span class="s2">&quot;Voice&quot;</span>
     <span class="nb">id</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;voiceId&quot;</span><span class="p">)</span>
     <span class="n">length</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span>

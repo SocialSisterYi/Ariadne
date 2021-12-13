@@ -104,7 +104,6 @@
             <div class="codehilite"><pre><span></span><span class="sd">&quot;&quot;&quot;本模块提供并行执行器, 及方便函数 `io_bound`, `cpu_bound`.</span>
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="kn">import</span> <span class="nn">asyncio</span>
-<span class="kn">import</span> <span class="nn">atexit</span>
 <span class="kn">import</span> <span class="nn">functools</span>
 <span class="kn">import</span> <span class="nn">importlib</span>
 <span class="kn">import</span> <span class="nn">multiprocessing</span>
@@ -225,9 +224,6 @@
             <span class="n">args</span><span class="p">,</span>
             <span class="n">kwargs</span><span class="p">,</span>
         <span class="p">)</span>
-
-
-<span class="n">atexit</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">ParallelExecutor</span><span class="o">.</span><span class="n">shutdown</span><span class="p">)</span>
 
 
 <span class="k">def</span> <span class="nf">io_bound</span><span class="p">(</span><span class="n">func</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[</span><span class="n">P</span><span class="p">,</span> <span class="n">R</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">[</span><span class="n">P</span><span class="p">,</span> <span class="n">Awaitable</span><span class="p">[</span><span class="n">R</span><span class="p">]]:</span>

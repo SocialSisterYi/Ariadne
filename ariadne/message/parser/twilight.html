@@ -228,7 +228,8 @@
 
 
 <span class="k">class</span> <span class="nc">Match</span><span class="p">(</span><span class="n">abc</span><span class="o">.</span><span class="n">ABC</span><span class="p">,</span> <span class="n">Representation</span><span class="p">):</span>
-    <span class="s2">&quot;匹配器的抽象基类.&quot;</span>
+    <span class="sd">&quot;&quot;&quot;匹配器的抽象基类.&quot;&quot;&quot;</span>
+
     <span class="n">pattern</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">optional</span><span class="p">:</span> <span class="nb">bool</span>
     <span class="n">help</span><span class="p">:</span> <span class="nb">str</span>
@@ -257,7 +258,8 @@
 
 
 <span class="k">class</span> <span class="nc">RegexMatch</span><span class="p">(</span><span class="n">Match</span><span class="p">):</span>
-    <span class="s2">&quot;基础的正则表达式匹配.&quot;</span>
+    <span class="sd">&quot;&quot;&quot;基础的正则表达式匹配.&quot;&quot;&quot;</span>
+
     <span class="n">regex_match</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">re</span><span class="o">.</span><span class="n">Match</span><span class="p">]</span>
     <span class="n">preserve_space</span><span class="p">:</span> <span class="nb">bool</span>
 
@@ -285,7 +287,7 @@
 
 
 <span class="k">class</span> <span class="nc">WildcardMatch</span><span class="p">(</span><span class="n">RegexMatch</span><span class="p">):</span>
-    <span class="s2">&quot;泛匹配.&quot;</span>
+    <span class="sd">&quot;&quot;&quot;泛匹配.&quot;&quot;&quot;</span>
 
     <span class="n">preserve_space</span><span class="p">:</span> <span class="nb">bool</span>
 
@@ -306,7 +308,7 @@
 
 
 <span class="k">class</span> <span class="nc">FullMatch</span><span class="p">(</span><span class="n">RegexMatch</span><span class="p">):</span>
-    <span class="s2">&quot;全匹配.&quot;</span>
+    <span class="sd">&quot;&quot;&quot;全匹配.&quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
@@ -327,7 +329,7 @@
 
 
 <span class="k">class</span> <span class="nc">ElementMatch</span><span class="p">(</span><span class="n">RegexMatch</span><span class="p">):</span>
-    <span class="s2">&quot;元素类型匹配.&quot;</span>
+    <span class="sd">&quot;&quot;&quot;元素类型匹配.&quot;&quot;&quot;</span>
 
     <span class="n">pattern</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="s2">&quot;Element&quot;</span><span class="p">]</span>
     <span class="n">result</span><span class="p">:</span> <span class="s2">&quot;Element&quot;</span>
@@ -355,7 +357,7 @@
 
 
 <span class="k">class</span> <span class="nc">UnionMatch</span><span class="p">(</span><span class="n">RegexMatch</span><span class="p">):</span>
-    <span class="s2">&quot;多重匹配.&quot;</span>
+    <span class="sd">&quot;&quot;&quot;多重匹配.&quot;&quot;&quot;</span>
 
     <span class="n">pattern</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span>
 
@@ -731,7 +733,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">root</span><span class="o">=...</span><span class="p">,</span> <span class="n">match</span><span class="o">=...</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">map_params</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">bool</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
-        <span class="s2">&quot;Actual implementation of __init__&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Actual implementation of __init__&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="n">Sparkle</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">root</span> <span class="o">=</span> <span class="n">root</span>
         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="nb">type</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">issubclass</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="n">Sparkle</span><span class="p">):</span>
@@ -761,7 +763,7 @@
         <span class="n">chain</span><span class="p">:</span> <span class="n">MessageChain</span> <span class="o">=</span> <span class="n">interface</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">messageChain</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">local_storage</span><span class="p">[</span><span class="s2">&quot;result&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">generate</span><span class="p">(</span><span class="n">chain</span><span class="p">)</span>
-        <span class="k">except</span><span class="p">:</span>
+        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">ExecutionStop</span>
 
     <span class="k">async</span> <span class="k">def</span> <span class="nf">catch</span><span class="p">(</span>
@@ -792,7 +794,8 @@
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">Match</span><span class="p">(</span><span class="n">abc</span><span class="o">.</span><span class="n">ABC</span><span class="p">,</span> <span class="n">Representation</span><span class="p">):</span>
-    <span class="s2">&quot;匹配器的抽象基类.&quot;</span>
+    <span class="sd">&quot;&quot;&quot;匹配器的抽象基类.&quot;&quot;&quot;</span>
+
     <span class="n">pattern</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">optional</span><span class="p">:</span> <span class="nb">bool</span>
     <span class="n">help</span><span class="p">:</span> <span class="nb">str</span>
@@ -883,7 +886,8 @@
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">RegexMatch</span><span class="p">(</span><span class="n">Match</span><span class="p">):</span>
-    <span class="s2">&quot;基础的正则表达式匹配.&quot;</span>
+    <span class="sd">&quot;&quot;&quot;基础的正则表达式匹配.&quot;&quot;&quot;</span>
+
     <span class="n">regex_match</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">re</span><span class="o">.</span><span class="n">Match</span><span class="p">]</span>
     <span class="n">preserve_space</span><span class="p">:</span> <span class="nb">bool</span>
 
@@ -999,7 +1003,7 @@
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">WildcardMatch</span><span class="p">(</span><span class="n">RegexMatch</span><span class="p">):</span>
-    <span class="s2">&quot;泛匹配.&quot;</span>
+    <span class="sd">&quot;&quot;&quot;泛匹配.&quot;&quot;&quot;</span>
 
     <span class="n">preserve_space</span><span class="p">:</span> <span class="nb">bool</span>
 
@@ -1100,7 +1104,7 @@
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">FullMatch</span><span class="p">(</span><span class="n">RegexMatch</span><span class="p">):</span>
-    <span class="s2">&quot;全匹配.&quot;</span>
+    <span class="sd">&quot;&quot;&quot;全匹配.&quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
@@ -1203,7 +1207,7 @@
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">ElementMatch</span><span class="p">(</span><span class="n">RegexMatch</span><span class="p">):</span>
-    <span class="s2">&quot;元素类型匹配.&quot;</span>
+    <span class="sd">&quot;&quot;&quot;元素类型匹配.&quot;&quot;&quot;</span>
 
     <span class="n">pattern</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="s2">&quot;Element&quot;</span><span class="p">]</span>
     <span class="n">result</span><span class="p">:</span> <span class="s2">&quot;Element&quot;</span>
@@ -1323,7 +1327,7 @@
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">UnionMatch</span><span class="p">(</span><span class="n">RegexMatch</span><span class="p">):</span>
-    <span class="s2">&quot;多重匹配.&quot;</span>
+    <span class="sd">&quot;&quot;&quot;多重匹配.&quot;&quot;&quot;</span>
 
     <span class="n">pattern</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span>
 
@@ -2188,7 +2192,7 @@ of objects.</p>
 <span class="sd">        &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">root</span><span class="o">=...</span><span class="p">,</span> <span class="n">match</span><span class="o">=...</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">map_params</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">bool</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
-        <span class="s2">&quot;Actual implementation of __init__&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Actual implementation of __init__&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="n">Sparkle</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">root</span> <span class="o">=</span> <span class="n">root</span>
         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="nb">type</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">issubclass</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="n">Sparkle</span><span class="p">):</span>
@@ -2218,7 +2222,7 @@ of objects.</p>
         <span class="n">chain</span><span class="p">:</span> <span class="n">MessageChain</span> <span class="o">=</span> <span class="n">interface</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">messageChain</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">local_storage</span><span class="p">[</span><span class="s2">&quot;result&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">generate</span><span class="p">(</span><span class="n">chain</span><span class="p">)</span>
-        <span class="k">except</span><span class="p">:</span>
+        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">ExecutionStop</span>
 
     <span class="k">async</span> <span class="k">def</span> <span class="nf">catch</span><span class="p">(</span>
@@ -2255,7 +2259,7 @@ of objects.</p>
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">root</span><span class="o">=...</span><span class="p">,</span> <span class="n">match</span><span class="o">=...</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">map_params</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">bool</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
-        <span class="s2">&quot;Actual implementation of __init__&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Actual implementation of __init__&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="n">Sparkle</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">root</span> <span class="o">=</span> <span class="n">root</span>
         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="nb">type</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">issubclass</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="n">Sparkle</span><span class="p">):</span>
@@ -2322,7 +2326,7 @@ of objects.</p>
         <span class="n">chain</span><span class="p">:</span> <span class="n">MessageChain</span> <span class="o">=</span> <span class="n">interface</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">messageChain</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">local_storage</span><span class="p">[</span><span class="s2">&quot;result&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">generate</span><span class="p">(</span><span class="n">chain</span><span class="p">)</span>
-        <span class="k">except</span><span class="p">:</span>
+        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">ExecutionStop</span>
 </pre></div>
 
