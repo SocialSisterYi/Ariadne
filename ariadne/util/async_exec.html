@@ -109,16 +109,13 @@
 <span class="kn">import</span> <span class="nn">multiprocessing</span>
 <span class="kn">from</span> <span class="nn">asyncio.events</span> <span class="kn">import</span> <span class="n">AbstractEventLoop</span>
 <span class="kn">from</span> <span class="nn">concurrent.futures</span> <span class="kn">import</span> <span class="n">ProcessPoolExecutor</span><span class="p">,</span> <span class="n">ThreadPoolExecutor</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Awaitable</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">ClassVar</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">TypeVar</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Awaitable</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">ClassVar</span><span class="p">,</span> <span class="n">Dict</span>
 
-<span class="kn">from</span> <span class="nn">typing_extensions</span> <span class="kn">import</span> <span class="n">ParamSpec</span>
-
-<span class="n">P</span> <span class="o">=</span> <span class="n">ParamSpec</span><span class="p">(</span><span class="s2">&quot;P&quot;</span><span class="p">)</span>
-
-<span class="n">R</span> <span class="o">=</span> <span class="n">TypeVar</span><span class="p">(</span><span class="s2">&quot;R&quot;</span><span class="p">)</span>
+<span class="kn">from</span> <span class="nn">..typing</span> <span class="kn">import</span> <span class="n">P</span><span class="p">,</span> <span class="n">R</span>
 
 
-<span class="n">IS_MAIN_PROCESS</span> <span class="o">=</span> <span class="k">lambda</span><span class="p">:</span> <span class="n">multiprocessing</span><span class="o">.</span><span class="n">parent_process</span><span class="p">()</span> <span class="ow">is</span> <span class="kc">None</span>
+<span class="k">def</span> <span class="nf">IS_MAIN_PROCESS</span><span class="p">():</span>
+    <span class="k">return</span> <span class="n">multiprocessing</span><span class="o">.</span><span class="n">parent_process</span><span class="p">()</span> <span class="ow">is</span> <span class="kc">None</span>
 
 
 <span class="k">def</span> <span class="nf">_reg_sigint</span><span class="p">():</span>
@@ -277,7 +274,8 @@
 
                 <details>
             <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span><span class="n">IS_MAIN_PROCESS</span> <span class="o">=</span> <span class="k">lambda</span><span class="p">:</span> <span class="n">multiprocessing</span><span class="o">.</span><span class="n">parent_process</span><span class="p">()</span> <span class="ow">is</span> <span class="kc">None</span>
+            <div class="codehilite"><pre><span></span><span class="k">def</span> <span class="nf">IS_MAIN_PROCESS</span><span class="p">():</span>
+    <span class="k">return</span> <span class="n">multiprocessing</span><span class="o">.</span><span class="n">parent_process</span><span class="p">()</span> <span class="ow">is</span> <span class="kc">None</span>
 </pre></div>
 
         </details>

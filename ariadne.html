@@ -35,7 +35,6 @@
                             <li><a href="ariadne/app.html">ariadne.app</a></li>
                             <li><a href="ariadne/context.html">ariadne.context</a></li>
                             <li><a href="ariadne/dispatcher.html">ariadne.dispatcher</a></li>
-                            <li><a href="ariadne/entry.html">ariadne.entry</a></li>
                             <li><a href="ariadne/event.html">ariadne.event</a></li>
                             <li><a href="ariadne/exception.html">ariadne.exception</a></li>
                             <li><a href="ariadne/message.html">ariadne.message</a></li>
@@ -63,24 +62,23 @@ ariadne    </h1>
                 
                         <details>
             <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span><span class="kn">import</span> <span class="nn">graia.ariadne.event.lifecycle</span>
-<span class="kn">import</span> <span class="nn">graia.ariadne.event.message</span>
-<span class="kn">import</span> <span class="nn">graia.ariadne.event.mirai</span>
-<span class="kn">import</span> <span class="nn">graia.ariadne.event.network</span>
+            <div class="codehilite"><pre><span></span><span class="kn">import</span> <span class="nn">graia.ariadne.event.lifecycle</span>  <span class="c1"># noqa: F401</span>
+<span class="kn">import</span> <span class="nn">graia.ariadne.event.message</span>  <span class="c1"># noqa: F401</span>
+<span class="kn">import</span> <span class="nn">graia.ariadne.event.mirai</span>  <span class="c1"># noqa: F401</span>
+<span class="kn">import</span> <span class="nn">graia.ariadne.event.network</span>  <span class="c1"># noqa: F401</span>
 
 <span class="c1"># init event</span>
 
-<span class="n">ARIADNE_ASCII_LOGO</span> <span class="o">=</span> <span class="sa">r</span><span class="s2">&quot;&quot;&quot;</span>
-<span class="s2">                _           _            </span>
-<span class="s2">     /\        (_)         | |           </span>
-<span class="s2">    /  \   _ __ _  __ _  __| |_ __   ___ </span>
-<span class="s2">   / /\ \ | &#39;__| |/ _` |/ _` | &#39;_ \ / _ \</span>
-<span class="s2">  / ____ \| |  | | (_| | (_| | | | |  __/</span>
-<span class="s2"> /_/    \_\_|  |_|\__,_|\__,_|_| |_|\___|</span>
-<span class="s2">&quot;&quot;&quot;</span><span class="o">.</span><span class="n">lstrip</span><span class="p">(</span>
+<span class="n">ARIADNE_ASCII_LOGO</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="sa">r</span><span class="s2">&quot;                _           _             &quot;</span>
+    <span class="sa">r</span><span class="s2">&quot;     /\        (_)         | |            &quot;</span>
+    <span class="sa">r</span><span class="s2">&quot;    /  \   _ __ _  __ _  __| |_ __   ___  &quot;</span>
+    <span class="sa">r</span><span class="s2">&quot;   / /\ \ | &#39;__| |/ _` |/ _` | &#39;_ \ / _ \ &quot;</span>
+    <span class="sa">r</span><span class="s2">&quot;  / ____ \| |  | | (_| | (_| | | | |  __/ &quot;</span>
+    <span class="sa">r</span><span class="s2">&quot; /_/    \_\_|  |_|\__,_|\__,_|_| |_|\___| &quot;</span>
+<span class="p">)</span><span class="o">.</span><span class="n">lstrip</span><span class="p">(</span>
     <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span>
-<span class="p">)</span>
-<span class="c1"># remove first newline</span>
+<span class="p">)</span>  <span class="c1"># remove first newline</span>
 </pre></div>
 
         </details>

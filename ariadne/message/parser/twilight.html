@@ -186,7 +186,6 @@
 <span class="kn">from</span> <span class="nn">argparse</span> <span class="kn">import</span> <span class="n">Action</span>
 <span class="kn">from</span> <span class="nn">copy</span> <span class="kn">import</span> <span class="n">copy</span><span class="p">,</span> <span class="n">deepcopy</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="p">(</span>
-    <span class="n">TYPE_CHECKING</span><span class="p">,</span>
     <span class="n">Any</span><span class="p">,</span>
     <span class="n">Callable</span><span class="p">,</span>
     <span class="n">Dict</span><span class="p">,</span>
@@ -207,10 +206,6 @@
 <span class="kn">from</span> <span class="nn">graia.broadcast.exceptions</span> <span class="kn">import</span> <span class="n">ExecutionStop</span>
 <span class="kn">from</span> <span class="nn">graia.broadcast.interfaces.dispatcher</span> <span class="kn">import</span> <span class="n">DispatcherInterface</span>
 <span class="kn">from</span> <span class="nn">pydantic.utils</span> <span class="kn">import</span> <span class="n">Representation</span>
-
-<span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
-    <span class="kn">from</span> <span class="nn">..chain</span> <span class="kn">import</span> <span class="n">MessageChain</span>
-    <span class="kn">from</span> <span class="nn">..element</span> <span class="kn">import</span> <span class="n">Element</span>
 
 <span class="kn">from</span> <span class="nn">...event.message</span> <span class="kn">import</span> <span class="n">MessageEvent</span>
 <span class="kn">from</span> <span class="nn">..chain</span> <span class="kn">import</span> <span class="n">MessageChain</span>
@@ -304,7 +299,10 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">greed</span> <span class="o">=</span> <span class="n">greed</span>
 
     <span class="k">def</span> <span class="nf">gen_regex</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;(</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">pattern</span><span class="si">}{</span><span class="s1">&#39;?&#39;</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">greed</span> <span class="k">else</span> <span class="s1">&#39;&#39;</span><span class="si">}</span><span class="s2">)</span><span class="si">{</span><span class="s1">&#39;?&#39;</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">optional</span> <span class="k">else</span> <span class="s1">&#39;&#39;</span><span class="si">}{</span><span class="s1">&#39;( )?&#39;</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">preserve_space</span> <span class="k">else</span> <span class="s1">&#39;&#39;</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;(</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">pattern</span><span class="si">}{</span><span class="s1">&#39;?&#39;</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">greed</span> <span class="k">else</span> <span class="s1">&#39;&#39;</span><span class="si">}</span><span class="s2">)</span><span class="si">{</span><span class="s1">&#39;?&#39;</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">optional</span> <span class="k">else</span> <span class="s1">&#39;&#39;</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="s1">&#39;( )?&#39;</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">preserve_space</span> <span class="k">else</span> <span class="s1">&#39;&#39;</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="p">)</span>
 
 
 <span class="k">class</span> <span class="nc">FullMatch</span><span class="p">(</span><span class="n">RegexMatch</span><span class="p">):</span>
@@ -325,7 +323,10 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">preserve_space</span> <span class="o">=</span> <span class="n">preserve_space</span>
 
     <span class="k">def</span> <span class="nf">gen_regex</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;(</span><span class="si">{</span><span class="n">re</span><span class="o">.</span><span class="n">escape</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pattern</span><span class="p">)</span><span class="si">}</span><span class="s2">)</span><span class="si">{</span><span class="s1">&#39;?&#39;</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">optional</span> <span class="k">else</span> <span class="s1">&#39;&#39;</span><span class="si">}{</span><span class="s1">&#39;( )?&#39;</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">preserve_space</span> <span class="k">else</span> <span class="s1">&#39;&#39;</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;(</span><span class="si">{</span><span class="n">re</span><span class="o">.</span><span class="n">escape</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pattern</span><span class="p">)</span><span class="si">}</span><span class="s2">)</span><span class="si">{</span><span class="s1">&#39;?&#39;</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">optional</span> <span class="k">else</span> <span class="s1">&#39;&#39;</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="s1">&#39;( )?&#39;</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">preserve_space</span> <span class="k">else</span> <span class="s1">&#39;&#39;</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="p">)</span>
 
 
 <span class="k">class</span> <span class="nc">ElementMatch</span><span class="p">(</span><span class="n">RegexMatch</span><span class="p">):</span>
@@ -1027,7 +1028,10 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">greed</span> <span class="o">=</span> <span class="n">greed</span>
 
     <span class="k">def</span> <span class="nf">gen_regex</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;(</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">pattern</span><span class="si">}{</span><span class="s1">&#39;?&#39;</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">greed</span> <span class="k">else</span> <span class="s1">&#39;&#39;</span><span class="si">}</span><span class="s2">)</span><span class="si">{</span><span class="s1">&#39;?&#39;</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">optional</span> <span class="k">else</span> <span class="s1">&#39;&#39;</span><span class="si">}{</span><span class="s1">&#39;( )?&#39;</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">preserve_space</span> <span class="k">else</span> <span class="s1">&#39;&#39;</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;(</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">pattern</span><span class="si">}{</span><span class="s1">&#39;?&#39;</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">greed</span> <span class="k">else</span> <span class="s1">&#39;&#39;</span><span class="si">}</span><span class="s2">)</span><span class="si">{</span><span class="s1">&#39;?&#39;</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">optional</span> <span class="k">else</span> <span class="s1">&#39;&#39;</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="s1">&#39;( )?&#39;</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">preserve_space</span> <span class="k">else</span> <span class="s1">&#39;&#39;</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="p">)</span>
 </pre></div>
 
         </details>
@@ -1081,7 +1085,10 @@
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">gen_regex</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;(</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">pattern</span><span class="si">}{</span><span class="s1">&#39;?&#39;</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">greed</span> <span class="k">else</span> <span class="s1">&#39;&#39;</span><span class="si">}</span><span class="s2">)</span><span class="si">{</span><span class="s1">&#39;?&#39;</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">optional</span> <span class="k">else</span> <span class="s1">&#39;&#39;</span><span class="si">}{</span><span class="s1">&#39;( )?&#39;</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">preserve_space</span> <span class="k">else</span> <span class="s1">&#39;&#39;</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;(</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">pattern</span><span class="si">}{</span><span class="s1">&#39;?&#39;</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">greed</span> <span class="k">else</span> <span class="s1">&#39;&#39;</span><span class="si">}</span><span class="s2">)</span><span class="si">{</span><span class="s1">&#39;?&#39;</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">optional</span> <span class="k">else</span> <span class="s1">&#39;&#39;</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="s1">&#39;( )?&#39;</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">preserve_space</span> <span class="k">else</span> <span class="s1">&#39;&#39;</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="p">)</span>
 </pre></div>
 
         </details>
@@ -1128,7 +1135,10 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">preserve_space</span> <span class="o">=</span> <span class="n">preserve_space</span>
 
     <span class="k">def</span> <span class="nf">gen_regex</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;(</span><span class="si">{</span><span class="n">re</span><span class="o">.</span><span class="n">escape</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pattern</span><span class="p">)</span><span class="si">}</span><span class="s2">)</span><span class="si">{</span><span class="s1">&#39;?&#39;</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">optional</span> <span class="k">else</span> <span class="s1">&#39;&#39;</span><span class="si">}{</span><span class="s1">&#39;( )?&#39;</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">preserve_space</span> <span class="k">else</span> <span class="s1">&#39;&#39;</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;(</span><span class="si">{</span><span class="n">re</span><span class="o">.</span><span class="n">escape</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pattern</span><span class="p">)</span><span class="si">}</span><span class="s2">)</span><span class="si">{</span><span class="s1">&#39;?&#39;</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">optional</span> <span class="k">else</span> <span class="s1">&#39;&#39;</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="s1">&#39;( )?&#39;</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">preserve_space</span> <span class="k">else</span> <span class="s1">&#39;&#39;</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="p">)</span>
 </pre></div>
 
         </details>
@@ -1184,7 +1194,10 @@
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">gen_regex</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;(</span><span class="si">{</span><span class="n">re</span><span class="o">.</span><span class="n">escape</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pattern</span><span class="p">)</span><span class="si">}</span><span class="s2">)</span><span class="si">{</span><span class="s1">&#39;?&#39;</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">optional</span> <span class="k">else</span> <span class="s1">&#39;&#39;</span><span class="si">}{</span><span class="s1">&#39;( )?&#39;</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">preserve_space</span> <span class="k">else</span> <span class="s1">&#39;&#39;</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;(</span><span class="si">{</span><span class="n">re</span><span class="o">.</span><span class="n">escape</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pattern</span><span class="p">)</span><span class="si">}</span><span class="s2">)</span><span class="si">{</span><span class="s1">&#39;?&#39;</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">optional</span> <span class="k">else</span> <span class="s1">&#39;&#39;</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="s1">&#39;( )?&#39;</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">preserve_space</span> <span class="k">else</span> <span class="s1">&#39;&#39;</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="p">)</span>
 </pre></div>
 
         </details>

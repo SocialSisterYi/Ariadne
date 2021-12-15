@@ -200,21 +200,10 @@
 <span class="kn">import</span> <span class="nn">functools</span>
 <span class="kn">import</span> <span class="nn">json</span>
 <span class="kn">from</span> <span class="nn">asyncio.events</span> <span class="kn">import</span> <span class="n">AbstractEventLoop</span>
-<span class="kn">from</span> <span class="nn">asyncio.exceptions</span> <span class="kn">import</span> <span class="n">CancelledError</span>
 <span class="kn">from</span> <span class="nn">asyncio.locks</span> <span class="kn">import</span> <span class="n">Event</span>
 <span class="kn">from</span> <span class="nn">asyncio.queues</span> <span class="kn">import</span> <span class="n">Queue</span>
 <span class="kn">from</span> <span class="nn">asyncio.tasks</span> <span class="kn">import</span> <span class="n">Task</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="p">(</span>
-    <span class="n">TYPE_CHECKING</span><span class="p">,</span>
-    <span class="n">Any</span><span class="p">,</span>
-    <span class="n">AsyncGenerator</span><span class="p">,</span>
-    <span class="n">Awaitable</span><span class="p">,</span>
-    <span class="n">Callable</span><span class="p">,</span>
-    <span class="n">Dict</span><span class="p">,</span>
-    <span class="n">Optional</span><span class="p">,</span>
-    <span class="n">Set</span><span class="p">,</span>
-    <span class="n">Union</span><span class="p">,</span>
-<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Awaitable</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Set</span><span class="p">,</span> <span class="n">Union</span>
 
 <span class="kn">import</span> <span class="nn">aiohttp.web_exceptions</span>
 <span class="kn">from</span> <span class="nn">aiohttp</span> <span class="kn">import</span> <span class="n">ClientSession</span><span class="p">,</span> <span class="n">FormData</span>
@@ -266,7 +255,7 @@
             <span class="k">except</span> <span class="n">aiohttp</span><span class="o">.</span><span class="n">web_exceptions</span><span class="o">.</span><span class="n">HTTPNotFound</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="n">NotSupportedAction</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">network_action_callable</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">: this action not supported&quot;</span><span class="p">)</span>
             <span class="k">except</span> <span class="n">aiohttp</span><span class="o">.</span><span class="n">web_exceptions</span><span class="o">.</span><span class="n">HTTPInternalServerError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">broadcast</span><span class="o">.</span><span class="n">postEvent</span><span class="p">(</span><span class="n">RemoteException</span><span class="p">())</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">broadcast</span><span class="o">.</span><span class="n">postEvent</span><span class="p">(</span><span class="n">RemoteException</span><span class="p">(</span><span class="o">*</span><span class="n">e</span><span class="o">.</span><span class="n">args</span><span class="p">))</span>
                 <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;An exception has thrown by remote, please check the console!&quot;</span><span class="p">)</span>
                 <span class="k">raise</span>
             <span class="k">except</span> <span class="p">(</span>
@@ -276,7 +265,7 @@
             <span class="p">):</span>
 
                 <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>
-                    <span class="sa">f</span><span class="s2">&quot;It seems that we post in a wrong way &quot;</span>
+                    <span class="s2">&quot;It seems that we post in a wrong way &quot;</span>
                     <span class="sa">f</span><span class="s2">&quot;for the action &#39;</span><span class="si">{</span><span class="n">network_action_callable</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">&#39;, please open a issue.&quot;</span>
                 <span class="p">)</span>
                 <span class="k">raise</span>
@@ -738,7 +727,7 @@
             <span class="k">except</span> <span class="n">aiohttp</span><span class="o">.</span><span class="n">web_exceptions</span><span class="o">.</span><span class="n">HTTPNotFound</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="n">NotSupportedAction</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">network_action_callable</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">: this action not supported&quot;</span><span class="p">)</span>
             <span class="k">except</span> <span class="n">aiohttp</span><span class="o">.</span><span class="n">web_exceptions</span><span class="o">.</span><span class="n">HTTPInternalServerError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">broadcast</span><span class="o">.</span><span class="n">postEvent</span><span class="p">(</span><span class="n">RemoteException</span><span class="p">())</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">broadcast</span><span class="o">.</span><span class="n">postEvent</span><span class="p">(</span><span class="n">RemoteException</span><span class="p">(</span><span class="o">*</span><span class="n">e</span><span class="o">.</span><span class="n">args</span><span class="p">))</span>
                 <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;An exception has thrown by remote, please check the console!&quot;</span><span class="p">)</span>
                 <span class="k">raise</span>
             <span class="k">except</span> <span class="p">(</span>
@@ -748,7 +737,7 @@
             <span class="p">):</span>
 
                 <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>
-                    <span class="sa">f</span><span class="s2">&quot;It seems that we post in a wrong way &quot;</span>
+                    <span class="s2">&quot;It seems that we post in a wrong way &quot;</span>
                     <span class="sa">f</span><span class="s2">&quot;for the action &#39;</span><span class="si">{</span><span class="n">network_action_callable</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">&#39;, please open a issue.&quot;</span>
                 <span class="p">)</span>
                 <span class="k">raise</span>

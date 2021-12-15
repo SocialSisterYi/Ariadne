@@ -49,10 +49,8 @@
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span><span class="kn">from</span> <span class="nn">loguru</span> <span class="kn">import</span> <span class="n">logger</span>
 
-<span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;This module is deprecated and will be removed in 0.5.2!&quot;</span><span class="p">)</span>
-
-<span class="kn">from</span> <span class="nn">.literature</span> <span class="kn">import</span> <span class="n">BoxParameter</span><span class="p">,</span> <span class="n">ParamPattern</span><span class="p">,</span> <span class="n">SwitchParameter</span>
-<span class="kn">from</span> <span class="nn">.twilight</span> <span class="kn">import</span> <span class="p">(</span>
+<span class="kn">from</span> <span class="nn">.literature</span> <span class="kn">import</span> <span class="n">BoxParameter</span><span class="p">,</span> <span class="n">ParamPattern</span><span class="p">,</span> <span class="n">SwitchParameter</span>  <span class="c1"># noqa: F401</span>
+<span class="kn">from</span> <span class="nn">.twilight</span> <span class="kn">import</span> <span class="p">(</span>  <span class="c1"># noqa: F401</span>
     <span class="n">ArgumentMatch</span><span class="p">,</span>
     <span class="n">ElementMatch</span><span class="p">,</span>
     <span class="n">FullMatch</span><span class="p">,</span>
@@ -61,6 +59,8 @@
     <span class="n">UnionMatch</span><span class="p">,</span>
     <span class="n">WildcardMatch</span><span class="p">,</span>
 <span class="p">)</span>
+
+<span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;This module is deprecated and will be removed in 0.5.2!&quot;</span><span class="p">)</span>
 </pre></div>
 
         </details>
