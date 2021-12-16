@@ -55,6 +55,18 @@
 
             </li>
             <li>
+                    <a class="class" href="#ParamMatch">ParamMatch</a>
+                            <ul class="memberlist">
+                        <li>
+                                <a class="function" href="#ParamMatch.__init__">ParamMatch</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#ParamMatch.gen_regex">gen_regex</a>
+                        </li>
+                </ul>
+
+            </li>
+            <li>
                     <a class="class" href="#WildcardMatch">WildcardMatch</a>
                             <ul class="memberlist">
                         <li>
@@ -281,6 +293,27 @@
         <span class="p">)</span>
 
 
+<span class="k">class</span> <span class="nc">ParamMatch</span><span class="p">(</span><span class="n">RegexMatch</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;与WildcardMatch类似, 但需要至少一个字符. 且仅匹配用空格分开的一段. (也就是说用引号包起来的会寄掉)&quot;&quot;&quot;</span>
+
+    <span class="n">preserve_space</span><span class="p">:</span> <span class="nb">bool</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">optional</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">preserve_space</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="n">help</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+        <span class="n">alt_help</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="s2">&quot;^.+$&quot;</span><span class="p">,</span> <span class="n">optional</span><span class="o">=</span><span class="n">optional</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="n">help</span><span class="p">,</span> <span class="n">preserve_space</span><span class="o">=</span><span class="n">preserve_space</span><span class="p">,</span> <span class="n">alt_help</span><span class="o">=</span><span class="n">alt_help</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">gen_regex</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;(</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">pattern</span><span class="si">}</span><span class="s2">)</span><span class="si">{</span><span class="s1">&#39;?&#39;</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">optional</span> <span class="k">else</span> <span class="s1">&#39;&#39;</span><span class="si">}{</span><span class="s1">&#39;( )?&#39;</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">preserve_space</span> <span class="k">else</span> <span class="s1">&#39;&#39;</span><span class="si">}</span><span class="s2">&quot;</span>
+
+
 <span class="k">class</span> <span class="nc">WildcardMatch</span><span class="p">(</span><span class="n">RegexMatch</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;泛匹配.&quot;&quot;&quot;</span>
 
@@ -300,7 +333,7 @@
 
     <span class="k">def</span> <span class="nf">gen_regex</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="k">return</span> <span class="p">(</span>
-            <span class="sa">f</span><span class="s2">&quot;(</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">pattern</span><span class="si">}{</span><span class="s1">&#39;?&#39;</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">greed</span> <span class="k">else</span> <span class="s1">&#39;&#39;</span><span class="si">}</span><span class="s2">)</span><span class="si">{</span><span class="s1">&#39;?&#39;</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">optional</span> <span class="k">else</span> <span class="s1">&#39;&#39;</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;(</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">pattern</span><span class="si">}{</span><span class="s1">&#39;?&#39;</span> <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">greed</span> <span class="k">else</span> <span class="s1">&#39;&#39;</span><span class="si">}</span><span class="s2">)</span><span class="si">{</span><span class="s1">&#39;?&#39;</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">optional</span> <span class="k">else</span> <span class="s1">&#39;&#39;</span><span class="si">}</span><span class="s2">&quot;</span>
             <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="s1">&#39;( )?&#39;</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">preserve_space</span> <span class="k">else</span> <span class="s1">&#39;&#39;</span><span class="si">}</span><span class="s2">&quot;</span>
         <span class="p">)</span>
 
@@ -765,10 +798,8 @@
         <span class="k">return</span> <span class="n">sparkle</span>
 
     <span class="k">def</span> <span class="nf">beforeExecution</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">interface</span><span class="p">:</span> <span class="s2">&quot;DispatcherInterface[MessageEvent]&quot;</span><span class="p">):</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">interface</span><span class="o">.</span><span class="n">event</span><span class="p">,</span> <span class="n">MessageEvent</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="n">ExecutionStop</span>
         <span class="n">local_storage</span><span class="p">:</span> <span class="n">_TwilightLocalStorage</span> <span class="o">=</span> <span class="n">interface</span><span class="o">.</span><span class="n">execution_contexts</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">local_storage</span>
-        <span class="n">chain</span><span class="p">:</span> <span class="n">MessageChain</span> <span class="o">=</span> <span class="n">interface</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">messageChain</span>
+        <span class="n">chain</span><span class="p">:</span> <span class="n">MessageChain</span> <span class="o">=</span> <span class="n">interface</span><span class="o">.</span><span class="n">lookup_param</span><span class="p">(</span><span class="s2">&quot;message_chain&quot;</span><span class="p">,</span> <span class="n">MessageChain</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="p">[])</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">local_storage</span><span class="p">[</span><span class="s2">&quot;result&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">generate</span><span class="p">(</span><span class="n">chain</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
@@ -999,6 +1030,106 @@
                                 </dl>
                             </div>
                 </section>
+                <section id="ParamMatch">
+                                <div class="attr class">
+        <a class="headerlink" href="#ParamMatch">#&nbsp;&nbsp</a>
+
+        
+        <span class="def">class</span>
+        <span class="name">ParamMatch</span><wbr>(<span class="base"><a href="#RegexMatch">RegexMatch</a></span>):
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">ParamMatch</span><span class="p">(</span><span class="n">RegexMatch</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;与WildcardMatch类似, 但需要至少一个字符. 且仅匹配用空格分开的一段. (也就是说用引号包起来的会寄掉)&quot;&quot;&quot;</span>
+
+    <span class="n">preserve_space</span><span class="p">:</span> <span class="nb">bool</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">optional</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">preserve_space</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="n">help</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+        <span class="n">alt_help</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="s2">&quot;^.+$&quot;</span><span class="p">,</span> <span class="n">optional</span><span class="o">=</span><span class="n">optional</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="n">help</span><span class="p">,</span> <span class="n">preserve_space</span><span class="o">=</span><span class="n">preserve_space</span><span class="p">,</span> <span class="n">alt_help</span><span class="o">=</span><span class="n">alt_help</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">gen_regex</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;(</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">pattern</span><span class="si">}</span><span class="s2">)</span><span class="si">{</span><span class="s1">&#39;?&#39;</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">optional</span> <span class="k">else</span> <span class="s1">&#39;&#39;</span><span class="si">}{</span><span class="s1">&#39;( )?&#39;</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">preserve_space</span> <span class="k">else</span> <span class="s1">&#39;&#39;</span><span class="si">}</span><span class="s2">&quot;</span>
+</pre></div>
+
+        </details>
+
+            <div class="docstring"><p>与WildcardMatch类似, 但需要至少一个字符. 且仅匹配用空格分开的一段. (也就是说用引号包起来的会寄掉)</p>
+</div>
+
+
+                            <div id="ParamMatch.__init__" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#ParamMatch.__init__">#&nbsp;&nbsp</a>
+
+        
+            <span class="name">ParamMatch</span><span class="signature">(
+    *,
+    optional: bool = False,
+    preserve_space: bool = True,
+    help: str = &#39;&#39;,
+    alt_help: str = &#39;&#39;
+)</span>
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">optional</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">preserve_space</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="n">help</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+        <span class="n">alt_help</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="s2">&quot;^.+$&quot;</span><span class="p">,</span> <span class="n">optional</span><span class="o">=</span><span class="n">optional</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="n">help</span><span class="p">,</span> <span class="n">preserve_space</span><span class="o">=</span><span class="n">preserve_space</span><span class="p">,</span> <span class="n">alt_help</span><span class="o">=</span><span class="n">alt_help</span>
+        <span class="p">)</span>
+</pre></div>
+
+        </details>
+
+    
+
+                            </div>
+                            <div id="ParamMatch.gen_regex" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#ParamMatch.gen_regex">#&nbsp;&nbsp</a>
+
+        
+            <span class="def">def</span>
+            <span class="name">gen_regex</span><span class="signature">(self) -&gt; str</span>:
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">gen_regex</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;(</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">pattern</span><span class="si">}</span><span class="s2">)</span><span class="si">{</span><span class="s1">&#39;?&#39;</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">optional</span> <span class="k">else</span> <span class="s1">&#39;&#39;</span><span class="si">}{</span><span class="s1">&#39;( )?&#39;</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">preserve_space</span> <span class="k">else</span> <span class="s1">&#39;&#39;</span><span class="si">}</span><span class="s2">&quot;</span>
+</pre></div>
+
+        </details>
+
+    
+
+                            </div>
+                            <div class="inherited">
+                                <h5>Inherited Members</h5>
+                                <dl>
+                                    <div><dt><a href="#Match">Match</a></dt>
+                                <dd id="ParamMatch.get_help" class="function"><a href="#Match.get_help">get_help</a></dd>
+
+            </div>
+                                </dl>
+                            </div>
+                </section>
                 <section id="WildcardMatch">
                                 <div class="attr class">
         <a class="headerlink" href="#WildcardMatch">#&nbsp;&nbsp</a>
@@ -1029,7 +1160,7 @@
 
     <span class="k">def</span> <span class="nf">gen_regex</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="k">return</span> <span class="p">(</span>
-            <span class="sa">f</span><span class="s2">&quot;(</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">pattern</span><span class="si">}{</span><span class="s1">&#39;?&#39;</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">greed</span> <span class="k">else</span> <span class="s1">&#39;&#39;</span><span class="si">}</span><span class="s2">)</span><span class="si">{</span><span class="s1">&#39;?&#39;</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">optional</span> <span class="k">else</span> <span class="s1">&#39;&#39;</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;(</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">pattern</span><span class="si">}{</span><span class="s1">&#39;?&#39;</span> <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">greed</span> <span class="k">else</span> <span class="s1">&#39;&#39;</span><span class="si">}</span><span class="s2">)</span><span class="si">{</span><span class="s1">&#39;?&#39;</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">optional</span> <span class="k">else</span> <span class="s1">&#39;&#39;</span><span class="si">}</span><span class="s2">&quot;</span>
             <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="s1">&#39;( )?&#39;</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">preserve_space</span> <span class="k">else</span> <span class="s1">&#39;&#39;</span><span class="si">}</span><span class="s2">&quot;</span>
         <span class="p">)</span>
 </pre></div>
@@ -1086,7 +1217,7 @@
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">gen_regex</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="k">return</span> <span class="p">(</span>
-            <span class="sa">f</span><span class="s2">&quot;(</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">pattern</span><span class="si">}{</span><span class="s1">&#39;?&#39;</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">greed</span> <span class="k">else</span> <span class="s1">&#39;&#39;</span><span class="si">}</span><span class="s2">)</span><span class="si">{</span><span class="s1">&#39;?&#39;</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">optional</span> <span class="k">else</span> <span class="s1">&#39;&#39;</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;(</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">pattern</span><span class="si">}{</span><span class="s1">&#39;?&#39;</span> <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">greed</span> <span class="k">else</span> <span class="s1">&#39;&#39;</span><span class="si">}</span><span class="s2">)</span><span class="si">{</span><span class="s1">&#39;?&#39;</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">optional</span> <span class="k">else</span> <span class="s1">&#39;&#39;</span><span class="si">}</span><span class="s2">&quot;</span>
             <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="s1">&#39;( )?&#39;</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">preserve_space</span> <span class="k">else</span> <span class="s1">&#39;&#39;</span><span class="si">}</span><span class="s2">&quot;</span>
         <span class="p">)</span>
 </pre></div>
@@ -2258,10 +2389,8 @@ of objects.</p>
         <span class="k">return</span> <span class="n">sparkle</span>
 
     <span class="k">def</span> <span class="nf">beforeExecution</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">interface</span><span class="p">:</span> <span class="s2">&quot;DispatcherInterface[MessageEvent]&quot;</span><span class="p">):</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">interface</span><span class="o">.</span><span class="n">event</span><span class="p">,</span> <span class="n">MessageEvent</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="n">ExecutionStop</span>
         <span class="n">local_storage</span><span class="p">:</span> <span class="n">_TwilightLocalStorage</span> <span class="o">=</span> <span class="n">interface</span><span class="o">.</span><span class="n">execution_contexts</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">local_storage</span>
-        <span class="n">chain</span><span class="p">:</span> <span class="n">MessageChain</span> <span class="o">=</span> <span class="n">interface</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">messageChain</span>
+        <span class="n">chain</span><span class="p">:</span> <span class="n">MessageChain</span> <span class="o">=</span> <span class="n">interface</span><span class="o">.</span><span class="n">lookup_param</span><span class="p">(</span><span class="s2">&quot;message_chain&quot;</span><span class="p">,</span> <span class="n">MessageChain</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="p">[])</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">local_storage</span><span class="p">[</span><span class="s2">&quot;result&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">generate</span><span class="p">(</span><span class="n">chain</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
@@ -2362,10 +2491,8 @@ of objects.</p>
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">beforeExecution</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">interface</span><span class="p">:</span> <span class="s2">&quot;DispatcherInterface[MessageEvent]&quot;</span><span class="p">):</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">interface</span><span class="o">.</span><span class="n">event</span><span class="p">,</span> <span class="n">MessageEvent</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="n">ExecutionStop</span>
         <span class="n">local_storage</span><span class="p">:</span> <span class="n">_TwilightLocalStorage</span> <span class="o">=</span> <span class="n">interface</span><span class="o">.</span><span class="n">execution_contexts</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">local_storage</span>
-        <span class="n">chain</span><span class="p">:</span> <span class="n">MessageChain</span> <span class="o">=</span> <span class="n">interface</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">messageChain</span>
+        <span class="n">chain</span><span class="p">:</span> <span class="n">MessageChain</span> <span class="o">=</span> <span class="n">interface</span><span class="o">.</span><span class="n">lookup_param</span><span class="p">(</span><span class="s2">&quot;message_chain&quot;</span><span class="p">,</span> <span class="n">MessageChain</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="p">[])</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">local_storage</span><span class="p">[</span><span class="s2">&quot;result&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">generate</span><span class="p">(</span><span class="n">chain</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
