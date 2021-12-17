@@ -264,18 +264,7 @@
 <span class="kn">from</span> <span class="nn">asyncio.events</span> <span class="kn">import</span> <span class="n">AbstractEventLoop</span>
 <span class="kn">from</span> <span class="nn">asyncio.exceptions</span> <span class="kn">import</span> <span class="n">CancelledError</span>
 <span class="kn">from</span> <span class="nn">asyncio.tasks</span> <span class="kn">import</span> <span class="n">Task</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="p">(</span>
-    <span class="n">TYPE_CHECKING</span><span class="p">,</span>
-    <span class="n">Any</span><span class="p">,</span>
-    <span class="n">Dict</span><span class="p">,</span>
-    <span class="n">List</span><span class="p">,</span>
-    <span class="n">Literal</span><span class="p">,</span>
-    <span class="n">Optional</span><span class="p">,</span>
-    <span class="n">Tuple</span><span class="p">,</span>
-    <span class="n">Type</span><span class="p">,</span>
-    <span class="n">TypeVar</span><span class="p">,</span>
-    <span class="n">Union</span><span class="p">,</span>
-<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Literal</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Type</span><span class="p">,</span> <span class="n">Union</span>
 
 <span class="kn">from</span> <span class="nn">graia.broadcast</span> <span class="kn">import</span> <span class="n">Broadcast</span>
 <span class="kn">from</span> <span class="nn">loguru</span> <span class="kn">import</span> <span class="n">logger</span>
@@ -300,6 +289,7 @@
 
 <span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
     <span class="kn">from</span> <span class="nn">.message.element</span> <span class="kn">import</span> <span class="n">Image</span><span class="p">,</span> <span class="n">Voice</span>
+    <span class="kn">from</span> <span class="nn">.typing</span> <span class="kn">import</span> <span class="n">T</span>
 
 <span class="kn">from</span> <span class="nn">.message.chain</span> <span class="kn">import</span> <span class="n">MessageChain</span>
 <span class="kn">from</span> <span class="nn">.model</span> <span class="kn">import</span> <span class="p">(</span>
@@ -326,6 +316,7 @@
     <span class="n">broadcast</span><span class="p">:</span> <span class="n">Broadcast</span>
     <span class="n">adapter</span><span class="p">:</span> <span class="n">Adapter</span>
     <span class="n">mirai_session</span><span class="p">:</span> <span class="n">MiraiSession</span>
+    <span class="n">chat_log_cfg</span><span class="p">:</span> <span class="n">ChatLogConfig</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">session_key</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
@@ -376,15 +367,15 @@
                 <span class="p">},</span>
             <span class="p">)</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
-                <span class="s2">&quot;[BOT </span><span class="si">{bot_id}</span><span class="s2">] Friend(</span><span class="si">{friend_id}</span><span class="s2">) &lt;- </span><span class="si">{message}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format_map</span><span class="p">(</span>
+                <span class="s2">&quot;</span><span class="si">{bot_id}</span><span class="s2">: [Friend(</span><span class="si">{friend_id}</span><span class="s2">)] &lt;- </span><span class="si">{message}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format_map</span><span class="p">(</span>
                     <span class="p">{</span>
                         <span class="s2">&quot;bot_id&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">mirai_session</span><span class="o">.</span><span class="n">account</span><span class="p">,</span>
                         <span class="s2">&quot;friend_id&quot;</span><span class="p">:</span> <span class="n">target</span><span class="o">.</span><span class="n">id</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">Friend</span><span class="p">)</span> <span class="k">else</span> <span class="n">target</span><span class="p">,</span>
-                        <span class="s2">&quot;message&quot;</span><span class="p">:</span> <span class="n">new_msg</span><span class="o">.</span><span class="n">asDisplay</span><span class="p">(),</span>
+                        <span class="s2">&quot;message&quot;</span><span class="p">:</span> <span class="n">new_msg</span><span class="o">.</span><span class="n">asDisplay</span><span class="p">()</span><span class="o">.</span><span class="fm">__repr__</span><span class="p">(),</span>
                     <span class="p">}</span>
                 <span class="p">)</span>
             <span class="p">)</span>
-            <span class="k">return</span> <span class="n">BotMessage</span><span class="p">(</span><span class="n">messageId</span><span class="o">=</span><span class="n">result</span><span class="p">[</span><span class="s2">&quot;messageId&quot;</span><span class="p">])</span>
+            <span class="k">return</span> <span class="n">BotMessage</span><span class="p">(</span><span class="n">messageId</span><span class="o">=</span><span class="n">result</span><span class="p">[</span><span class="s2">&quot;messageId&quot;</span><span class="p">],</span> <span class="n">origin</span><span class="o">=</span><span class="n">message</span><span class="p">)</span>
 
     <span class="nd">@app_ctx_manager</span>
     <span class="k">async</span> <span class="k">def</span> <span class="nf">sendGroupMessage</span><span class="p">(</span>
@@ -418,15 +409,15 @@
                 <span class="p">},</span>
             <span class="p">)</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
-                <span class="s2">&quot;[BOT </span><span class="si">{bot_id}</span><span class="s2">] Group(</span><span class="si">{group_id}</span><span class="s2">) &lt;- </span><span class="si">{message}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format_map</span><span class="p">(</span>
+                <span class="s2">&quot;</span><span class="si">{bot_id}</span><span class="s2">: [Group(</span><span class="si">{group_id}</span><span class="s2">)] &lt;- </span><span class="si">{message}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format_map</span><span class="p">(</span>
                     <span class="p">{</span>
                         <span class="s2">&quot;bot_id&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">mirai_session</span><span class="o">.</span><span class="n">account</span><span class="p">,</span>
                         <span class="s2">&quot;group_id&quot;</span><span class="p">:</span> <span class="n">target</span><span class="o">.</span><span class="n">id</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">Group</span><span class="p">)</span> <span class="k">else</span> <span class="n">target</span><span class="p">,</span>
-                        <span class="s2">&quot;message&quot;</span><span class="p">:</span> <span class="n">new_msg</span><span class="o">.</span><span class="n">asDisplay</span><span class="p">(),</span>
+                        <span class="s2">&quot;message&quot;</span><span class="p">:</span> <span class="n">new_msg</span><span class="o">.</span><span class="n">asDisplay</span><span class="p">()</span><span class="o">.</span><span class="fm">__repr__</span><span class="p">(),</span>
                     <span class="p">}</span>
                 <span class="p">)</span>
             <span class="p">)</span>
-            <span class="k">return</span> <span class="n">BotMessage</span><span class="p">(</span><span class="n">messageId</span><span class="o">=</span><span class="n">result</span><span class="p">[</span><span class="s2">&quot;messageId&quot;</span><span class="p">])</span>
+            <span class="k">return</span> <span class="n">BotMessage</span><span class="p">(</span><span class="n">messageId</span><span class="o">=</span><span class="n">result</span><span class="p">[</span><span class="s2">&quot;messageId&quot;</span><span class="p">],</span> <span class="n">origin</span><span class="o">=</span><span class="n">message</span><span class="p">)</span>
 
     <span class="nd">@app_ctx_manager</span>
     <span class="k">async</span> <span class="k">def</span> <span class="nf">sendTempMessage</span><span class="p">(</span>
@@ -466,16 +457,16 @@
                 <span class="p">},</span>
             <span class="p">)</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
-                <span class="s2">&quot;[BOT </span><span class="si">{bot_id}</span><span class="s2">] Member(</span><span class="si">{member_id}</span><span class="s2">, in </span><span class="si">{group_id}</span><span class="s2">) &lt;- </span><span class="si">{message}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format_map</span><span class="p">(</span>
+                <span class="s2">&quot;</span><span class="si">{bot_id}</span><span class="s2">: [Member(</span><span class="si">{member_id}</span><span class="s2">) of Group(</span><span class="si">{group_id}</span><span class="s2">)] &lt;- </span><span class="si">{message}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format_map</span><span class="p">(</span>
                     <span class="p">{</span>
                         <span class="s2">&quot;bot_id&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">mirai_session</span><span class="o">.</span><span class="n">account</span><span class="p">,</span>
                         <span class="s2">&quot;member_id&quot;</span><span class="p">:</span> <span class="n">target</span><span class="o">.</span><span class="n">id</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">Member</span><span class="p">)</span> <span class="k">else</span> <span class="n">target</span><span class="p">,</span>
                         <span class="s2">&quot;group_id&quot;</span><span class="p">:</span> <span class="n">group</span><span class="o">.</span><span class="n">id</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">group</span><span class="p">,</span> <span class="n">Group</span><span class="p">)</span> <span class="k">else</span> <span class="n">group</span><span class="p">,</span>
-                        <span class="s2">&quot;message&quot;</span><span class="p">:</span> <span class="n">new_msg</span><span class="o">.</span><span class="n">asDisplay</span><span class="p">(),</span>
+                        <span class="s2">&quot;message&quot;</span><span class="p">:</span> <span class="n">new_msg</span><span class="o">.</span><span class="n">asDisplay</span><span class="p">()</span><span class="o">.</span><span class="fm">__repr__</span><span class="p">(),</span>
                     <span class="p">}</span>
                 <span class="p">)</span>
             <span class="p">)</span>
-            <span class="k">return</span> <span class="n">BotMessage</span><span class="p">(</span><span class="n">messageId</span><span class="o">=</span><span class="n">result</span><span class="p">[</span><span class="s2">&quot;messageId&quot;</span><span class="p">])</span>
+            <span class="k">return</span> <span class="n">BotMessage</span><span class="p">(</span><span class="n">messageId</span><span class="o">=</span><span class="n">result</span><span class="p">[</span><span class="s2">&quot;messageId&quot;</span><span class="p">],</span> <span class="n">origin</span><span class="o">=</span><span class="n">message</span><span class="p">)</span>
 
     <span class="nd">@app_ctx_manager</span>
     <span class="k">async</span> <span class="k">def</span> <span class="nf">sendMessage</span><span class="p">(</span>
@@ -1349,9 +1340,6 @@
         <span class="k">return</span> <span class="n">Voice</span><span class="o">.</span><span class="n">parse_obj</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
 
 
-<span class="n">T</span> <span class="o">=</span> <span class="n">TypeVar</span><span class="p">(</span><span class="s2">&quot;T&quot;</span><span class="p">)</span>
-
-
 <span class="k">class</span> <span class="nc">Ariadne</span><span class="p">(</span><span class="n">MessageMixin</span><span class="p">,</span> <span class="n">RelationshipMixin</span><span class="p">,</span> <span class="n">OperationMixin</span><span class="p">,</span> <span class="n">FileMixin</span><span class="p">,</span> <span class="n">MultimediaMixin</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    艾莉亚德妮 (Ariadne).</span>
@@ -1429,17 +1417,15 @@
             <span class="n">MiraiSession</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">mirai_session</span><span class="p">,</span>
         <span class="p">}</span>
 
-        <span class="n">chat_log_enabled</span> <span class="o">=</span> <span class="kc">True</span> <span class="k">if</span> <span class="n">chat_log_config</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">False</span> <span class="k">else</span> <span class="kc">False</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">chat_log_cfg</span><span class="p">:</span> <span class="n">ChatLogConfig</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="n">chat_log_config</span> <span class="k">if</span> <span class="n">chat_log_config</span> <span class="k">else</span> <span class="n">ChatLogConfig</span><span class="p">(</span><span class="n">enabled</span><span class="o">=</span><span class="n">chat_log_enabled</span><span class="p">)</span>
-        <span class="p">)</span>
+        <span class="n">chat_log_enabled</span> <span class="o">=</span> <span class="n">chat_log_config</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">chat_log_cfg</span><span class="p">:</span> <span class="n">ChatLogConfig</span> <span class="o">=</span> <span class="n">chat_log_config</span> <span class="ow">or</span> <span class="n">ChatLogConfig</span><span class="p">(</span><span class="n">enabled</span><span class="o">=</span><span class="n">chat_log_enabled</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">use_bypass_listener</span><span class="p">:</span>
             <span class="n">inject_bypass_listener</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">broadcast</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">use_loguru_traceback</span><span class="p">:</span>
             <span class="n">inject_loguru_traceback</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">loop</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">create</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="bp">cls</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="n">T</span><span class="p">],</span> <span class="n">reuse</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">T</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">create</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="bp">cls</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="s2">&quot;T&quot;</span><span class="p">],</span> <span class="n">reuse</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;T&quot;</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;利用 Ariadne 已有的信息协助创建实例.</span>
 
 <span class="sd">        Args:</span>
@@ -1449,7 +1435,7 @@
 <span class="sd">        Returns:</span>
 <span class="sd">            T: 创建的类.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">info</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="n">Type</span><span class="p">[</span><span class="n">T</span><span class="p">],</span> <span class="n">T</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">info</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="n">Type</span><span class="p">[</span><span class="s2">&quot;T&quot;</span><span class="p">],</span> <span class="s2">&quot;T&quot;</span><span class="p">]</span>
         <span class="k">if</span> <span class="bp">cls</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">info</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">info</span><span class="p">[</span><span class="bp">cls</span><span class="p">]</span>
         <span class="n">call_args</span><span class="p">:</span> <span class="nb">list</span> <span class="o">=</span> <span class="p">[]</span>
@@ -1468,7 +1454,7 @@
                         <span class="n">call_args</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">info</span><span class="p">[</span><span class="n">param</span><span class="o">.</span><span class="n">annotation</span><span class="p">])</span>
                     <span class="k">else</span><span class="p">:</span>
                         <span class="n">call_kwargs</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">info</span><span class="p">[</span><span class="n">param</span><span class="o">.</span><span class="n">annotation</span><span class="p">]</span>
-        <span class="n">obj</span><span class="p">:</span> <span class="n">T</span> <span class="o">=</span> <span class="bp">cls</span><span class="p">(</span><span class="o">*</span><span class="n">call_args</span><span class="p">,</span> <span class="o">**</span><span class="n">call_kwargs</span><span class="p">)</span>
+        <span class="n">obj</span><span class="p">:</span> <span class="s2">&quot;T&quot;</span> <span class="o">=</span> <span class="bp">cls</span><span class="p">(</span><span class="o">*</span><span class="n">call_args</span><span class="p">,</span> <span class="o">**</span><span class="n">call_kwargs</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">reuse</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">info</span><span class="p">[</span><span class="bp">cls</span><span class="p">]</span> <span class="o">=</span> <span class="n">obj</span>
         <span class="k">return</span> <span class="n">obj</span>
@@ -1565,8 +1551,10 @@
 
             <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Launching app...&quot;</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">broadcast</span><span class="o">.</span><span class="n">dispatcher_interface</span><span class="o">.</span><span class="n">inject_global_raw</span><span class="p">(</span><span class="n">ApplicationMiddlewareDispatcher</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span>
+
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">chat_log_cfg</span><span class="o">.</span><span class="n">enabled</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">chat_log_cfg</span><span class="o">.</span><span class="n">initialize</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
             <span class="bp">self</span><span class="o">.</span><span class="n">daemon_task</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">loop</span><span class="o">.</span><span class="n">create_task</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">daemon</span><span class="p">(),</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;ariadne_daemon&quot;</span><span class="p">)</span>
             <span class="k">await</span> <span class="n">await_predicate</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">adapter</span><span class="o">.</span><span class="n">session_activated</span><span class="p">,</span> <span class="mf">0.0001</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="n">AriadneStatus</span><span class="o">.</span><span class="n">RUNNING</span>
@@ -1646,6 +1634,7 @@
     <span class="n">broadcast</span><span class="p">:</span> <span class="n">Broadcast</span>
     <span class="n">adapter</span><span class="p">:</span> <span class="n">Adapter</span>
     <span class="n">mirai_session</span><span class="p">:</span> <span class="n">MiraiSession</span>
+    <span class="n">chat_log_cfg</span><span class="p">:</span> <span class="n">ChatLogConfig</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">session_key</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
@@ -1734,15 +1723,15 @@
                 <span class="p">},</span>
             <span class="p">)</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
-                <span class="s2">&quot;[BOT </span><span class="si">{bot_id}</span><span class="s2">] Friend(</span><span class="si">{friend_id}</span><span class="s2">) &lt;- </span><span class="si">{message}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format_map</span><span class="p">(</span>
+                <span class="s2">&quot;</span><span class="si">{bot_id}</span><span class="s2">: [Friend(</span><span class="si">{friend_id}</span><span class="s2">)] &lt;- </span><span class="si">{message}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format_map</span><span class="p">(</span>
                     <span class="p">{</span>
                         <span class="s2">&quot;bot_id&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">mirai_session</span><span class="o">.</span><span class="n">account</span><span class="p">,</span>
                         <span class="s2">&quot;friend_id&quot;</span><span class="p">:</span> <span class="n">target</span><span class="o">.</span><span class="n">id</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">Friend</span><span class="p">)</span> <span class="k">else</span> <span class="n">target</span><span class="p">,</span>
-                        <span class="s2">&quot;message&quot;</span><span class="p">:</span> <span class="n">new_msg</span><span class="o">.</span><span class="n">asDisplay</span><span class="p">(),</span>
+                        <span class="s2">&quot;message&quot;</span><span class="p">:</span> <span class="n">new_msg</span><span class="o">.</span><span class="n">asDisplay</span><span class="p">()</span><span class="o">.</span><span class="fm">__repr__</span><span class="p">(),</span>
                     <span class="p">}</span>
                 <span class="p">)</span>
             <span class="p">)</span>
-            <span class="k">return</span> <span class="n">BotMessage</span><span class="p">(</span><span class="n">messageId</span><span class="o">=</span><span class="n">result</span><span class="p">[</span><span class="s2">&quot;messageId&quot;</span><span class="p">])</span>
+            <span class="k">return</span> <span class="n">BotMessage</span><span class="p">(</span><span class="n">messageId</span><span class="o">=</span><span class="n">result</span><span class="p">[</span><span class="s2">&quot;messageId&quot;</span><span class="p">],</span> <span class="n">origin</span><span class="o">=</span><span class="n">message</span><span class="p">)</span>
 
     <span class="nd">@app_ctx_manager</span>
     <span class="k">async</span> <span class="k">def</span> <span class="nf">sendGroupMessage</span><span class="p">(</span>
@@ -1776,15 +1765,15 @@
                 <span class="p">},</span>
             <span class="p">)</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
-                <span class="s2">&quot;[BOT </span><span class="si">{bot_id}</span><span class="s2">] Group(</span><span class="si">{group_id}</span><span class="s2">) &lt;- </span><span class="si">{message}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format_map</span><span class="p">(</span>
+                <span class="s2">&quot;</span><span class="si">{bot_id}</span><span class="s2">: [Group(</span><span class="si">{group_id}</span><span class="s2">)] &lt;- </span><span class="si">{message}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format_map</span><span class="p">(</span>
                     <span class="p">{</span>
                         <span class="s2">&quot;bot_id&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">mirai_session</span><span class="o">.</span><span class="n">account</span><span class="p">,</span>
                         <span class="s2">&quot;group_id&quot;</span><span class="p">:</span> <span class="n">target</span><span class="o">.</span><span class="n">id</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">Group</span><span class="p">)</span> <span class="k">else</span> <span class="n">target</span><span class="p">,</span>
-                        <span class="s2">&quot;message&quot;</span><span class="p">:</span> <span class="n">new_msg</span><span class="o">.</span><span class="n">asDisplay</span><span class="p">(),</span>
+                        <span class="s2">&quot;message&quot;</span><span class="p">:</span> <span class="n">new_msg</span><span class="o">.</span><span class="n">asDisplay</span><span class="p">()</span><span class="o">.</span><span class="fm">__repr__</span><span class="p">(),</span>
                     <span class="p">}</span>
                 <span class="p">)</span>
             <span class="p">)</span>
-            <span class="k">return</span> <span class="n">BotMessage</span><span class="p">(</span><span class="n">messageId</span><span class="o">=</span><span class="n">result</span><span class="p">[</span><span class="s2">&quot;messageId&quot;</span><span class="p">])</span>
+            <span class="k">return</span> <span class="n">BotMessage</span><span class="p">(</span><span class="n">messageId</span><span class="o">=</span><span class="n">result</span><span class="p">[</span><span class="s2">&quot;messageId&quot;</span><span class="p">],</span> <span class="n">origin</span><span class="o">=</span><span class="n">message</span><span class="p">)</span>
 
     <span class="nd">@app_ctx_manager</span>
     <span class="k">async</span> <span class="k">def</span> <span class="nf">sendTempMessage</span><span class="p">(</span>
@@ -1824,16 +1813,16 @@
                 <span class="p">},</span>
             <span class="p">)</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
-                <span class="s2">&quot;[BOT </span><span class="si">{bot_id}</span><span class="s2">] Member(</span><span class="si">{member_id}</span><span class="s2">, in </span><span class="si">{group_id}</span><span class="s2">) &lt;- </span><span class="si">{message}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format_map</span><span class="p">(</span>
+                <span class="s2">&quot;</span><span class="si">{bot_id}</span><span class="s2">: [Member(</span><span class="si">{member_id}</span><span class="s2">) of Group(</span><span class="si">{group_id}</span><span class="s2">)] &lt;- </span><span class="si">{message}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format_map</span><span class="p">(</span>
                     <span class="p">{</span>
                         <span class="s2">&quot;bot_id&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">mirai_session</span><span class="o">.</span><span class="n">account</span><span class="p">,</span>
                         <span class="s2">&quot;member_id&quot;</span><span class="p">:</span> <span class="n">target</span><span class="o">.</span><span class="n">id</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">Member</span><span class="p">)</span> <span class="k">else</span> <span class="n">target</span><span class="p">,</span>
                         <span class="s2">&quot;group_id&quot;</span><span class="p">:</span> <span class="n">group</span><span class="o">.</span><span class="n">id</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">group</span><span class="p">,</span> <span class="n">Group</span><span class="p">)</span> <span class="k">else</span> <span class="n">group</span><span class="p">,</span>
-                        <span class="s2">&quot;message&quot;</span><span class="p">:</span> <span class="n">new_msg</span><span class="o">.</span><span class="n">asDisplay</span><span class="p">(),</span>
+                        <span class="s2">&quot;message&quot;</span><span class="p">:</span> <span class="n">new_msg</span><span class="o">.</span><span class="n">asDisplay</span><span class="p">()</span><span class="o">.</span><span class="fm">__repr__</span><span class="p">(),</span>
                     <span class="p">}</span>
                 <span class="p">)</span>
             <span class="p">)</span>
-            <span class="k">return</span> <span class="n">BotMessage</span><span class="p">(</span><span class="n">messageId</span><span class="o">=</span><span class="n">result</span><span class="p">[</span><span class="s2">&quot;messageId&quot;</span><span class="p">])</span>
+            <span class="k">return</span> <span class="n">BotMessage</span><span class="p">(</span><span class="n">messageId</span><span class="o">=</span><span class="n">result</span><span class="p">[</span><span class="s2">&quot;messageId&quot;</span><span class="p">],</span> <span class="n">origin</span><span class="o">=</span><span class="n">message</span><span class="p">)</span>
 
     <span class="nd">@app_ctx_manager</span>
     <span class="k">async</span> <span class="k">def</span> <span class="nf">sendMessage</span><span class="p">(</span>
@@ -2024,15 +2013,15 @@
                 <span class="p">},</span>
             <span class="p">)</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
-                <span class="s2">&quot;[BOT </span><span class="si">{bot_id}</span><span class="s2">] Friend(</span><span class="si">{friend_id}</span><span class="s2">) &lt;- </span><span class="si">{message}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format_map</span><span class="p">(</span>
+                <span class="s2">&quot;</span><span class="si">{bot_id}</span><span class="s2">: [Friend(</span><span class="si">{friend_id}</span><span class="s2">)] &lt;- </span><span class="si">{message}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format_map</span><span class="p">(</span>
                     <span class="p">{</span>
                         <span class="s2">&quot;bot_id&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">mirai_session</span><span class="o">.</span><span class="n">account</span><span class="p">,</span>
                         <span class="s2">&quot;friend_id&quot;</span><span class="p">:</span> <span class="n">target</span><span class="o">.</span><span class="n">id</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">Friend</span><span class="p">)</span> <span class="k">else</span> <span class="n">target</span><span class="p">,</span>
-                        <span class="s2">&quot;message&quot;</span><span class="p">:</span> <span class="n">new_msg</span><span class="o">.</span><span class="n">asDisplay</span><span class="p">(),</span>
+                        <span class="s2">&quot;message&quot;</span><span class="p">:</span> <span class="n">new_msg</span><span class="o">.</span><span class="n">asDisplay</span><span class="p">()</span><span class="o">.</span><span class="fm">__repr__</span><span class="p">(),</span>
                     <span class="p">}</span>
                 <span class="p">)</span>
             <span class="p">)</span>
-            <span class="k">return</span> <span class="n">BotMessage</span><span class="p">(</span><span class="n">messageId</span><span class="o">=</span><span class="n">result</span><span class="p">[</span><span class="s2">&quot;messageId&quot;</span><span class="p">])</span>
+            <span class="k">return</span> <span class="n">BotMessage</span><span class="p">(</span><span class="n">messageId</span><span class="o">=</span><span class="n">result</span><span class="p">[</span><span class="s2">&quot;messageId&quot;</span><span class="p">],</span> <span class="n">origin</span><span class="o">=</span><span class="n">message</span><span class="p">)</span>
 </pre></div>
 
         </details>
@@ -2105,15 +2094,15 @@
                 <span class="p">},</span>
             <span class="p">)</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
-                <span class="s2">&quot;[BOT </span><span class="si">{bot_id}</span><span class="s2">] Group(</span><span class="si">{group_id}</span><span class="s2">) &lt;- </span><span class="si">{message}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format_map</span><span class="p">(</span>
+                <span class="s2">&quot;</span><span class="si">{bot_id}</span><span class="s2">: [Group(</span><span class="si">{group_id}</span><span class="s2">)] &lt;- </span><span class="si">{message}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format_map</span><span class="p">(</span>
                     <span class="p">{</span>
                         <span class="s2">&quot;bot_id&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">mirai_session</span><span class="o">.</span><span class="n">account</span><span class="p">,</span>
                         <span class="s2">&quot;group_id&quot;</span><span class="p">:</span> <span class="n">target</span><span class="o">.</span><span class="n">id</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">Group</span><span class="p">)</span> <span class="k">else</span> <span class="n">target</span><span class="p">,</span>
-                        <span class="s2">&quot;message&quot;</span><span class="p">:</span> <span class="n">new_msg</span><span class="o">.</span><span class="n">asDisplay</span><span class="p">(),</span>
+                        <span class="s2">&quot;message&quot;</span><span class="p">:</span> <span class="n">new_msg</span><span class="o">.</span><span class="n">asDisplay</span><span class="p">()</span><span class="o">.</span><span class="fm">__repr__</span><span class="p">(),</span>
                     <span class="p">}</span>
                 <span class="p">)</span>
             <span class="p">)</span>
-            <span class="k">return</span> <span class="n">BotMessage</span><span class="p">(</span><span class="n">messageId</span><span class="o">=</span><span class="n">result</span><span class="p">[</span><span class="s2">&quot;messageId&quot;</span><span class="p">])</span>
+            <span class="k">return</span> <span class="n">BotMessage</span><span class="p">(</span><span class="n">messageId</span><span class="o">=</span><span class="n">result</span><span class="p">[</span><span class="s2">&quot;messageId&quot;</span><span class="p">],</span> <span class="n">origin</span><span class="o">=</span><span class="n">message</span><span class="p">)</span>
 </pre></div>
 
         </details>
@@ -2193,16 +2182,16 @@
                 <span class="p">},</span>
             <span class="p">)</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
-                <span class="s2">&quot;[BOT </span><span class="si">{bot_id}</span><span class="s2">] Member(</span><span class="si">{member_id}</span><span class="s2">, in </span><span class="si">{group_id}</span><span class="s2">) &lt;- </span><span class="si">{message}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format_map</span><span class="p">(</span>
+                <span class="s2">&quot;</span><span class="si">{bot_id}</span><span class="s2">: [Member(</span><span class="si">{member_id}</span><span class="s2">) of Group(</span><span class="si">{group_id}</span><span class="s2">)] &lt;- </span><span class="si">{message}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format_map</span><span class="p">(</span>
                     <span class="p">{</span>
                         <span class="s2">&quot;bot_id&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">mirai_session</span><span class="o">.</span><span class="n">account</span><span class="p">,</span>
                         <span class="s2">&quot;member_id&quot;</span><span class="p">:</span> <span class="n">target</span><span class="o">.</span><span class="n">id</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">Member</span><span class="p">)</span> <span class="k">else</span> <span class="n">target</span><span class="p">,</span>
                         <span class="s2">&quot;group_id&quot;</span><span class="p">:</span> <span class="n">group</span><span class="o">.</span><span class="n">id</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">group</span><span class="p">,</span> <span class="n">Group</span><span class="p">)</span> <span class="k">else</span> <span class="n">group</span><span class="p">,</span>
-                        <span class="s2">&quot;message&quot;</span><span class="p">:</span> <span class="n">new_msg</span><span class="o">.</span><span class="n">asDisplay</span><span class="p">(),</span>
+                        <span class="s2">&quot;message&quot;</span><span class="p">:</span> <span class="n">new_msg</span><span class="o">.</span><span class="n">asDisplay</span><span class="p">()</span><span class="o">.</span><span class="fm">__repr__</span><span class="p">(),</span>
                     <span class="p">}</span>
                 <span class="p">)</span>
             <span class="p">)</span>
-            <span class="k">return</span> <span class="n">BotMessage</span><span class="p">(</span><span class="n">messageId</span><span class="o">=</span><span class="n">result</span><span class="p">[</span><span class="s2">&quot;messageId&quot;</span><span class="p">])</span>
+            <span class="k">return</span> <span class="n">BotMessage</span><span class="p">(</span><span class="n">messageId</span><span class="o">=</span><span class="n">result</span><span class="p">[</span><span class="s2">&quot;messageId&quot;</span><span class="p">],</span> <span class="n">origin</span><span class="o">=</span><span class="n">message</span><span class="p">)</span>
 </pre></div>
 
         </details>
@@ -5265,17 +5254,15 @@
             <span class="n">MiraiSession</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">mirai_session</span><span class="p">,</span>
         <span class="p">}</span>
 
-        <span class="n">chat_log_enabled</span> <span class="o">=</span> <span class="kc">True</span> <span class="k">if</span> <span class="n">chat_log_config</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">False</span> <span class="k">else</span> <span class="kc">False</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">chat_log_cfg</span><span class="p">:</span> <span class="n">ChatLogConfig</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="n">chat_log_config</span> <span class="k">if</span> <span class="n">chat_log_config</span> <span class="k">else</span> <span class="n">ChatLogConfig</span><span class="p">(</span><span class="n">enabled</span><span class="o">=</span><span class="n">chat_log_enabled</span><span class="p">)</span>
-        <span class="p">)</span>
+        <span class="n">chat_log_enabled</span> <span class="o">=</span> <span class="n">chat_log_config</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">chat_log_cfg</span><span class="p">:</span> <span class="n">ChatLogConfig</span> <span class="o">=</span> <span class="n">chat_log_config</span> <span class="ow">or</span> <span class="n">ChatLogConfig</span><span class="p">(</span><span class="n">enabled</span><span class="o">=</span><span class="n">chat_log_enabled</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">use_bypass_listener</span><span class="p">:</span>
             <span class="n">inject_bypass_listener</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">broadcast</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">use_loguru_traceback</span><span class="p">:</span>
             <span class="n">inject_loguru_traceback</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">loop</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">create</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="bp">cls</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="n">T</span><span class="p">],</span> <span class="n">reuse</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">T</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">create</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="bp">cls</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="s2">&quot;T&quot;</span><span class="p">],</span> <span class="n">reuse</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;T&quot;</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;利用 Ariadne 已有的信息协助创建实例.</span>
 
 <span class="sd">        Args:</span>
@@ -5285,7 +5272,7 @@
 <span class="sd">        Returns:</span>
 <span class="sd">            T: 创建的类.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">info</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="n">Type</span><span class="p">[</span><span class="n">T</span><span class="p">],</span> <span class="n">T</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">info</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="n">Type</span><span class="p">[</span><span class="s2">&quot;T&quot;</span><span class="p">],</span> <span class="s2">&quot;T&quot;</span><span class="p">]</span>
         <span class="k">if</span> <span class="bp">cls</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">info</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">info</span><span class="p">[</span><span class="bp">cls</span><span class="p">]</span>
         <span class="n">call_args</span><span class="p">:</span> <span class="nb">list</span> <span class="o">=</span> <span class="p">[]</span>
@@ -5304,7 +5291,7 @@
                         <span class="n">call_args</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">info</span><span class="p">[</span><span class="n">param</span><span class="o">.</span><span class="n">annotation</span><span class="p">])</span>
                     <span class="k">else</span><span class="p">:</span>
                         <span class="n">call_kwargs</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">info</span><span class="p">[</span><span class="n">param</span><span class="o">.</span><span class="n">annotation</span><span class="p">]</span>
-        <span class="n">obj</span><span class="p">:</span> <span class="n">T</span> <span class="o">=</span> <span class="bp">cls</span><span class="p">(</span><span class="o">*</span><span class="n">call_args</span><span class="p">,</span> <span class="o">**</span><span class="n">call_kwargs</span><span class="p">)</span>
+        <span class="n">obj</span><span class="p">:</span> <span class="s2">&quot;T&quot;</span> <span class="o">=</span> <span class="bp">cls</span><span class="p">(</span><span class="o">*</span><span class="n">call_args</span><span class="p">,</span> <span class="o">**</span><span class="n">call_kwargs</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">reuse</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">info</span><span class="p">[</span><span class="bp">cls</span><span class="p">]</span> <span class="o">=</span> <span class="n">obj</span>
         <span class="k">return</span> <span class="n">obj</span>
@@ -5401,8 +5388,10 @@
 
             <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Launching app...&quot;</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">broadcast</span><span class="o">.</span><span class="n">dispatcher_interface</span><span class="o">.</span><span class="n">inject_global_raw</span><span class="p">(</span><span class="n">ApplicationMiddlewareDispatcher</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span>
+
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">chat_log_cfg</span><span class="o">.</span><span class="n">enabled</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">chat_log_cfg</span><span class="o">.</span><span class="n">initialize</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
             <span class="bp">self</span><span class="o">.</span><span class="n">daemon_task</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">loop</span><span class="o">.</span><span class="n">create_task</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">daemon</span><span class="p">(),</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;ariadne_daemon&quot;</span><span class="p">)</span>
             <span class="k">await</span> <span class="n">await_predicate</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">adapter</span><span class="o">.</span><span class="n">session_activated</span><span class="p">,</span> <span class="mf">0.0001</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="n">AriadneStatus</span><span class="o">.</span><span class="n">RUNNING</span>
@@ -5564,10 +5553,8 @@
             <span class="n">MiraiSession</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">mirai_session</span><span class="p">,</span>
         <span class="p">}</span>
 
-        <span class="n">chat_log_enabled</span> <span class="o">=</span> <span class="kc">True</span> <span class="k">if</span> <span class="n">chat_log_config</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">False</span> <span class="k">else</span> <span class="kc">False</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">chat_log_cfg</span><span class="p">:</span> <span class="n">ChatLogConfig</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="n">chat_log_config</span> <span class="k">if</span> <span class="n">chat_log_config</span> <span class="k">else</span> <span class="n">ChatLogConfig</span><span class="p">(</span><span class="n">enabled</span><span class="o">=</span><span class="n">chat_log_enabled</span><span class="p">)</span>
-        <span class="p">)</span>
+        <span class="n">chat_log_enabled</span> <span class="o">=</span> <span class="n">chat_log_config</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">chat_log_cfg</span><span class="p">:</span> <span class="n">ChatLogConfig</span> <span class="o">=</span> <span class="n">chat_log_config</span> <span class="ow">or</span> <span class="n">ChatLogConfig</span><span class="p">(</span><span class="n">enabled</span><span class="o">=</span><span class="n">chat_log_enabled</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">use_bypass_listener</span><span class="p">:</span>
             <span class="n">inject_bypass_listener</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">broadcast</span><span class="p">)</span>
@@ -5607,7 +5594,7 @@
 
                 <details>
             <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">create</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="bp">cls</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="n">T</span><span class="p">],</span> <span class="n">reuse</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">T</span><span class="p">:</span>
+            <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">create</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="bp">cls</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="s2">&quot;T&quot;</span><span class="p">],</span> <span class="n">reuse</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;T&quot;</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;利用 Ariadne 已有的信息协助创建实例.</span>
 
 <span class="sd">        Args:</span>
@@ -5617,7 +5604,7 @@
 <span class="sd">        Returns:</span>
 <span class="sd">            T: 创建的类.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">info</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="n">Type</span><span class="p">[</span><span class="n">T</span><span class="p">],</span> <span class="n">T</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">info</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="n">Type</span><span class="p">[</span><span class="s2">&quot;T&quot;</span><span class="p">],</span> <span class="s2">&quot;T&quot;</span><span class="p">]</span>
         <span class="k">if</span> <span class="bp">cls</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">info</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">info</span><span class="p">[</span><span class="bp">cls</span><span class="p">]</span>
         <span class="n">call_args</span><span class="p">:</span> <span class="nb">list</span> <span class="o">=</span> <span class="p">[]</span>
@@ -5636,7 +5623,7 @@
                         <span class="n">call_args</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">info</span><span class="p">[</span><span class="n">param</span><span class="o">.</span><span class="n">annotation</span><span class="p">])</span>
                     <span class="k">else</span><span class="p">:</span>
                         <span class="n">call_kwargs</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">info</span><span class="p">[</span><span class="n">param</span><span class="o">.</span><span class="n">annotation</span><span class="p">]</span>
-        <span class="n">obj</span><span class="p">:</span> <span class="n">T</span> <span class="o">=</span> <span class="bp">cls</span><span class="p">(</span><span class="o">*</span><span class="n">call_args</span><span class="p">,</span> <span class="o">**</span><span class="n">call_kwargs</span><span class="p">)</span>
+        <span class="n">obj</span><span class="p">:</span> <span class="s2">&quot;T&quot;</span> <span class="o">=</span> <span class="bp">cls</span><span class="p">(</span><span class="o">*</span><span class="n">call_args</span><span class="p">,</span> <span class="o">**</span><span class="n">call_kwargs</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">reuse</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">info</span><span class="p">[</span><span class="bp">cls</span><span class="p">]</span> <span class="o">=</span> <span class="n">obj</span>
         <span class="k">return</span> <span class="n">obj</span>
@@ -5780,8 +5767,10 @@
 
             <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Launching app...&quot;</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">broadcast</span><span class="o">.</span><span class="n">dispatcher_interface</span><span class="o">.</span><span class="n">inject_global_raw</span><span class="p">(</span><span class="n">ApplicationMiddlewareDispatcher</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span>
+
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">chat_log_cfg</span><span class="o">.</span><span class="n">enabled</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">chat_log_cfg</span><span class="o">.</span><span class="n">initialize</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
             <span class="bp">self</span><span class="o">.</span><span class="n">daemon_task</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">loop</span><span class="o">.</span><span class="n">create_task</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">daemon</span><span class="p">(),</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;ariadne_daemon&quot;</span><span class="p">)</span>
             <span class="k">await</span> <span class="n">await_predicate</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">adapter</span><span class="o">.</span><span class="n">session_activated</span><span class="p">,</span> <span class="mf">0.0001</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="n">AriadneStatus</span><span class="o">.</span><span class="n">RUNNING</span>
