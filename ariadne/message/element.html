@@ -467,7 +467,16 @@
         <span class="k">return</span> <span class="s2">&quot;&quot;</span>
 
     <span class="k">def</span> <span class="nf">asPersistentString</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;[mirai:</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="si">}</span><span class="s2">:</span><span class="si">{</span><span class="n">wrap_bracket</span><span class="p">(</span><span class="n">j_dump</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dict</span><span class="p">(</span><span class="n">exclude</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;type&#39;</span><span class="p">})))</span><span class="si">}</span><span class="s2">]&quot;</span>
+        <span class="n">data</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">wrap_bracket</span><span class="p">(</span>
+            <span class="n">j_dump</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">dict</span><span class="p">(</span>
+                    <span class="n">exclude</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;type&quot;</span><span class="p">},</span>
+                <span class="p">),</span>
+                <span class="n">indent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                <span class="n">separators</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;,&quot;</span><span class="p">,</span> <span class="s2">&quot;:&quot;</span><span class="p">),</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;[mirai:</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="si">}</span><span class="s2">:</span><span class="si">{</span><span class="n">data</span><span class="si">}</span><span class="s2">]&quot;</span>
 
     <span class="k">def</span> <span class="nf">prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -908,11 +917,19 @@
             <span class="k">return</span> <span class="n">data</span>
 
     <span class="k">def</span> <span class="nf">asPersistentString</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">binary</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="k">return</span> <span class="p">(</span>
-            <span class="sa">f</span><span class="s2">&quot;[mirai:</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="si">}</span><span class="s2">:</span><span class="si">{</span><span class="n">wrap_bracket</span><span class="p">(</span><span class="n">j_dump</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dict</span><span class="p">(</span><span class="n">exclude</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;type&#39;</span><span class="p">})))</span><span class="si">}</span><span class="s2">]&quot;</span>
-            <span class="k">if</span> <span class="n">binary</span>
-            <span class="k">else</span> <span class="sa">f</span><span class="s2">&quot;[mirai:</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="si">}</span><span class="s2">:</span><span class="si">{</span><span class="n">wrap_bracket</span><span class="p">(</span><span class="n">j_dump</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dict</span><span class="p">(</span><span class="n">exclude</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;type&#39;</span><span class="p">,</span> <span class="s1">&#39;base64&#39;</span><span class="p">})))</span><span class="si">}</span><span class="s2">]&quot;</span>
-        <span class="p">)</span>
+        <span class="k">if</span> <span class="n">binary</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">asPersistentString</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">data</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">wrap_bracket</span><span class="p">(</span>
+                <span class="n">j_dump</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">dict</span><span class="p">(</span>
+                        <span class="n">exclude</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;type&quot;</span><span class="p">,</span> <span class="s2">&quot;base64&quot;</span><span class="p">},</span>
+                    <span class="p">),</span>
+                    <span class="n">indent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                    <span class="n">separators</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;,&quot;</span><span class="p">,</span> <span class="s2">&quot;:&quot;</span><span class="p">),</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;[mirai:</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="si">}</span><span class="s2">:</span><span class="si">{</span><span class="n">data</span><span class="si">}</span><span class="s2">]&quot;</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">uuid</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -1056,7 +1073,16 @@
         <span class="k">return</span> <span class="s2">&quot;&quot;</span>
 
     <span class="k">def</span> <span class="nf">asPersistentString</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;[mirai:</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="si">}</span><span class="s2">:</span><span class="si">{</span><span class="n">wrap_bracket</span><span class="p">(</span><span class="n">j_dump</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dict</span><span class="p">(</span><span class="n">exclude</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;type&#39;</span><span class="p">})))</span><span class="si">}</span><span class="s2">]&quot;</span>
+        <span class="n">data</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">wrap_bracket</span><span class="p">(</span>
+            <span class="n">j_dump</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">dict</span><span class="p">(</span>
+                    <span class="n">exclude</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;type&quot;</span><span class="p">},</span>
+                <span class="p">),</span>
+                <span class="n">indent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                <span class="n">separators</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;,&quot;</span><span class="p">,</span> <span class="s2">&quot;:&quot;</span><span class="p">),</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;[mirai:</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="si">}</span><span class="s2">:</span><span class="si">{</span><span class="n">data</span><span class="si">}</span><span class="s2">]&quot;</span>
 
     <span class="k">def</span> <span class="nf">prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -1112,7 +1138,16 @@ type (str): 元素类型</p>
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">asPersistentString</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;[mirai:</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="si">}</span><span class="s2">:</span><span class="si">{</span><span class="n">wrap_bracket</span><span class="p">(</span><span class="n">j_dump</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dict</span><span class="p">(</span><span class="n">exclude</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;type&#39;</span><span class="p">})))</span><span class="si">}</span><span class="s2">]&quot;</span>
+        <span class="n">data</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">wrap_bracket</span><span class="p">(</span>
+            <span class="n">j_dump</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">dict</span><span class="p">(</span>
+                    <span class="n">exclude</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;type&quot;</span><span class="p">},</span>
+                <span class="p">),</span>
+                <span class="n">indent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                <span class="n">separators</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;,&quot;</span><span class="p">,</span> <span class="s2">&quot;:&quot;</span><span class="p">),</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;[mirai:</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="si">}</span><span class="s2">:</span><span class="si">{</span><span class="n">data</span><span class="si">}</span><span class="s2">]&quot;</span>
 </pre></div>
 
         </details>
@@ -1507,7 +1542,7 @@ type (str): 元素类型</p>
                             <div id="Source.Config.json_encoders" class="classattr">
                                             <div class="attr variable"><a class="headerlink" href="#Source.Config.json_encoders">#&nbsp;&nbsp</a>
 
-        <span class="name">json_encoders</span><span class="default_value"> = {&lt;class &#39;datetime.datetime&#39;&gt;: &lt;function datetime_encoder at 0x7f772ac20820&gt;}</span>
+        <span class="name">json_encoders</span><span class="default_value"> = {&lt;class &#39;datetime.datetime&#39;&gt;: &lt;function datetime_encoder at 0x7f268bc358b0&gt;}</span>
     </div>
 
     
@@ -2977,7 +3012,7 @@ type (str): 元素类型</p>
                             <div id="ForwardNode.Config.json_encoders" class="classattr">
                                             <div class="attr variable"><a class="headerlink" href="#ForwardNode.Config.json_encoders">#&nbsp;&nbsp</a>
 
-        <span class="name">json_encoders</span><span class="default_value"> = {&lt;class &#39;datetime.datetime&#39;&gt;: &lt;function datetime_encoder at 0x7f772ac20820&gt;}</span>
+        <span class="name">json_encoders</span><span class="default_value"> = {&lt;class &#39;datetime.datetime&#39;&gt;: &lt;function datetime_encoder at 0x7f268bc358b0&gt;}</span>
     </div>
 
     
@@ -3433,11 +3468,19 @@ type (str): 元素类型</p>
             <span class="k">return</span> <span class="n">data</span>
 
     <span class="k">def</span> <span class="nf">asPersistentString</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">binary</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="k">return</span> <span class="p">(</span>
-            <span class="sa">f</span><span class="s2">&quot;[mirai:</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="si">}</span><span class="s2">:</span><span class="si">{</span><span class="n">wrap_bracket</span><span class="p">(</span><span class="n">j_dump</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dict</span><span class="p">(</span><span class="n">exclude</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;type&#39;</span><span class="p">})))</span><span class="si">}</span><span class="s2">]&quot;</span>
-            <span class="k">if</span> <span class="n">binary</span>
-            <span class="k">else</span> <span class="sa">f</span><span class="s2">&quot;[mirai:</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="si">}</span><span class="s2">:</span><span class="si">{</span><span class="n">wrap_bracket</span><span class="p">(</span><span class="n">j_dump</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dict</span><span class="p">(</span><span class="n">exclude</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;type&#39;</span><span class="p">,</span> <span class="s1">&#39;base64&#39;</span><span class="p">})))</span><span class="si">}</span><span class="s2">]&quot;</span>
-        <span class="p">)</span>
+        <span class="k">if</span> <span class="n">binary</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">asPersistentString</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">data</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">wrap_bracket</span><span class="p">(</span>
+                <span class="n">j_dump</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">dict</span><span class="p">(</span>
+                        <span class="n">exclude</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;type&quot;</span><span class="p">,</span> <span class="s2">&quot;base64&quot;</span><span class="p">},</span>
+                    <span class="p">),</span>
+                    <span class="n">indent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                    <span class="n">separators</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;,&quot;</span><span class="p">,</span> <span class="s2">&quot;:&quot;</span><span class="p">),</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;[mirai:</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="si">}</span><span class="s2">:</span><span class="si">{</span><span class="n">data</span><span class="si">}</span><span class="s2">]&quot;</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">uuid</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -3587,11 +3630,19 @@ type (str): 元素类型</p>
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">asPersistentString</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">binary</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="k">return</span> <span class="p">(</span>
-            <span class="sa">f</span><span class="s2">&quot;[mirai:</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="si">}</span><span class="s2">:</span><span class="si">{</span><span class="n">wrap_bracket</span><span class="p">(</span><span class="n">j_dump</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dict</span><span class="p">(</span><span class="n">exclude</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;type&#39;</span><span class="p">})))</span><span class="si">}</span><span class="s2">]&quot;</span>
-            <span class="k">if</span> <span class="n">binary</span>
-            <span class="k">else</span> <span class="sa">f</span><span class="s2">&quot;[mirai:</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="si">}</span><span class="s2">:</span><span class="si">{</span><span class="n">wrap_bracket</span><span class="p">(</span><span class="n">j_dump</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dict</span><span class="p">(</span><span class="n">exclude</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;type&#39;</span><span class="p">,</span> <span class="s1">&#39;base64&#39;</span><span class="p">})))</span><span class="si">}</span><span class="s2">]&quot;</span>
-        <span class="p">)</span>
+        <span class="k">if</span> <span class="n">binary</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">asPersistentString</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">data</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">wrap_bracket</span><span class="p">(</span>
+                <span class="n">j_dump</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">dict</span><span class="p">(</span>
+                        <span class="n">exclude</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;type&quot;</span><span class="p">,</span> <span class="s2">&quot;base64&quot;</span><span class="p">},</span>
+                    <span class="p">),</span>
+                    <span class="n">indent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                    <span class="n">separators</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;,&quot;</span><span class="p">,</span> <span class="s2">&quot;:&quot;</span><span class="p">),</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;[mirai:</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="si">}</span><span class="s2">:</span><span class="si">{</span><span class="n">data</span><span class="si">}</span><span class="s2">]&quot;</span>
 </pre></div>
 
         </details>
