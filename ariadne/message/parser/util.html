@@ -40,6 +40,9 @@
                     <a class="function" href="#gen_flags_repr">gen_flags_repr</a>
             </li>
             <li>
+                    <a class="function" href="#transformed_regex">transformed_regex</a>
+            </li>
+            <li>
                     <a class="class" href="#MessageChainType">MessageChainType</a>
                             <ul class="memberlist">
                         <li>
@@ -127,20 +130,31 @@
 
 <span class="k">def</span> <span class="nf">gen_flags_repr</span><span class="p">(</span><span class="n">flags</span><span class="p">:</span> <span class="n">re</span><span class="o">.</span><span class="n">RegexFlag</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
     <span class="n">flags_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+
     <span class="k">if</span> <span class="n">re</span><span class="o">.</span><span class="n">ASCII</span> <span class="ow">in</span> <span class="n">flags</span><span class="p">:</span>
         <span class="n">flags_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;a&quot;</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">re</span><span class="o">.</span><span class="n">IGNORECASE</span> <span class="ow">in</span> <span class="n">flags_list</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">re</span><span class="o">.</span><span class="n">IGNORECASE</span> <span class="ow">in</span> <span class="n">flags</span><span class="p">:</span>
         <span class="n">flags_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;i&quot;</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">re</span><span class="o">.</span><span class="n">LOCALE</span> <span class="ow">in</span> <span class="n">flags_list</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">re</span><span class="o">.</span><span class="n">LOCALE</span> <span class="ow">in</span> <span class="n">flags</span><span class="p">:</span>
         <span class="n">flags_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;L&quot;</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">re</span><span class="o">.</span><span class="n">MULTILINE</span> <span class="ow">in</span> <span class="n">flags_list</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">re</span><span class="o">.</span><span class="n">MULTILINE</span> <span class="ow">in</span> <span class="n">flags</span><span class="p">:</span>
         <span class="n">flags_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;m&quot;</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">re</span><span class="o">.</span><span class="n">DOTALL</span> <span class="ow">in</span> <span class="n">flags_list</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">re</span><span class="o">.</span><span class="n">DOTALL</span> <span class="ow">in</span> <span class="n">flags</span><span class="p">:</span>
         <span class="n">flags_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;s&quot;</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">re</span><span class="o">.</span><span class="n">UNICODE</span> <span class="ow">in</span> <span class="n">flags_list</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">re</span><span class="o">.</span><span class="n">UNICODE</span> <span class="ow">in</span> <span class="n">flags</span><span class="p">:</span>
         <span class="n">flags_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;u&quot;</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">re</span><span class="o">.</span><span class="n">VERBOSE</span> <span class="ow">in</span> <span class="n">flags_list</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">re</span><span class="o">.</span><span class="n">VERBOSE</span> <span class="ow">in</span> <span class="n">flags</span><span class="p">:</span>
         <span class="n">flags_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;x&quot;</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">flags_list</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">transformed_regex</span><span class="p">(</span><span class="n">flag</span><span class="p">:</span> <span class="n">re</span><span class="o">.</span><span class="n">RegexFlag</span><span class="p">,</span> <span class="n">regex_pattern</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">flag</span><span class="p">:</span>
+        <span class="n">regex_pattern</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;(?</span><span class="si">{</span><span class="n">gen_flags_repr</span><span class="p">(</span><span class="n">flag</span><span class="p">)</span><span class="si">}</span><span class="s2">:(</span><span class="si">{</span><span class="n">regex_pattern</span><span class="si">}</span><span class="s2">))&quot;</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">regex_pattern</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;(</span><span class="si">{</span><span class="n">regex_pattern</span><span class="si">}</span><span class="s2">)&quot;</span>
+    <span class="k">return</span> <span class="n">regex_pattern</span>
 
 
 <span class="k">class</span> <span class="nc">MessageChainType</span><span class="p">:</span>
@@ -243,20 +257,46 @@
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span><span class="k">def</span> <span class="nf">gen_flags_repr</span><span class="p">(</span><span class="n">flags</span><span class="p">:</span> <span class="n">re</span><span class="o">.</span><span class="n">RegexFlag</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
     <span class="n">flags_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+
     <span class="k">if</span> <span class="n">re</span><span class="o">.</span><span class="n">ASCII</span> <span class="ow">in</span> <span class="n">flags</span><span class="p">:</span>
         <span class="n">flags_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;a&quot;</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">re</span><span class="o">.</span><span class="n">IGNORECASE</span> <span class="ow">in</span> <span class="n">flags_list</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">re</span><span class="o">.</span><span class="n">IGNORECASE</span> <span class="ow">in</span> <span class="n">flags</span><span class="p">:</span>
         <span class="n">flags_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;i&quot;</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">re</span><span class="o">.</span><span class="n">LOCALE</span> <span class="ow">in</span> <span class="n">flags_list</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">re</span><span class="o">.</span><span class="n">LOCALE</span> <span class="ow">in</span> <span class="n">flags</span><span class="p">:</span>
         <span class="n">flags_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;L&quot;</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">re</span><span class="o">.</span><span class="n">MULTILINE</span> <span class="ow">in</span> <span class="n">flags_list</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">re</span><span class="o">.</span><span class="n">MULTILINE</span> <span class="ow">in</span> <span class="n">flags</span><span class="p">:</span>
         <span class="n">flags_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;m&quot;</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">re</span><span class="o">.</span><span class="n">DOTALL</span> <span class="ow">in</span> <span class="n">flags_list</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">re</span><span class="o">.</span><span class="n">DOTALL</span> <span class="ow">in</span> <span class="n">flags</span><span class="p">:</span>
         <span class="n">flags_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;s&quot;</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">re</span><span class="o">.</span><span class="n">UNICODE</span> <span class="ow">in</span> <span class="n">flags_list</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">re</span><span class="o">.</span><span class="n">UNICODE</span> <span class="ow">in</span> <span class="n">flags</span><span class="p">:</span>
         <span class="n">flags_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;u&quot;</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">re</span><span class="o">.</span><span class="n">VERBOSE</span> <span class="ow">in</span> <span class="n">flags_list</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">re</span><span class="o">.</span><span class="n">VERBOSE</span> <span class="ow">in</span> <span class="n">flags</span><span class="p">:</span>
         <span class="n">flags_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;x&quot;</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">flags_list</span><span class="p">)</span>
+</pre></div>
+
+        </details>
+
+    
+
+                </section>
+                <section id="transformed_regex">
+                            <div class="attr function"><a class="headerlink" href="#transformed_regex">#&nbsp;&nbsp</a>
+
+        
+            <span class="def">def</span>
+            <span class="name">transformed_regex</span><span class="signature">(flag: re.RegexFlag, regex_pattern: str) -&gt; str</span>:
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span><span class="k">def</span> <span class="nf">transformed_regex</span><span class="p">(</span><span class="n">flag</span><span class="p">:</span> <span class="n">re</span><span class="o">.</span><span class="n">RegexFlag</span><span class="p">,</span> <span class="n">regex_pattern</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">flag</span><span class="p">:</span>
+        <span class="n">regex_pattern</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;(?</span><span class="si">{</span><span class="n">gen_flags_repr</span><span class="p">(</span><span class="n">flag</span><span class="p">)</span><span class="si">}</span><span class="s2">:(</span><span class="si">{</span><span class="n">regex_pattern</span><span class="si">}</span><span class="s2">))&quot;</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">regex_pattern</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;(</span><span class="si">{</span><span class="n">regex_pattern</span><span class="si">}</span><span class="s2">)&quot;</span>
+    <span class="k">return</span> <span class="n">regex_pattern</span>
 </pre></div>
 
         </details>
