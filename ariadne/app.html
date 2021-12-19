@@ -262,7 +262,6 @@
 <span class="kn">import</span> <span class="nn">importlib.metadata</span>
 <span class="kn">import</span> <span class="nn">time</span>
 <span class="kn">from</span> <span class="nn">asyncio.events</span> <span class="kn">import</span> <span class="n">AbstractEventLoop</span>
-<span class="kn">from</span> <span class="nn">asyncio.exceptions</span> <span class="kn">import</span> <span class="n">CancelledError</span>
 <span class="kn">from</span> <span class="nn">asyncio.tasks</span> <span class="kn">import</span> <span class="n">Task</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Literal</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Type</span><span class="p">,</span> <span class="n">Union</span>
 
@@ -1466,36 +1465,34 @@
 
         <span class="k">while</span> <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="ow">in</span> <span class="p">{</span><span class="n">AriadneStatus</span><span class="o">.</span><span class="n">RUNNING</span><span class="p">,</span> <span class="n">AriadneStatus</span><span class="o">.</span><span class="n">LAUNCH</span><span class="p">}:</span>
             <span class="k">try</span><span class="p">:</span>
+                <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">wait_for</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">adapter</span><span class="o">.</span><span class="n">start</span><span class="p">(),</span> <span class="n">timeout</span><span class="o">=</span><span class="n">retry_interval</span><span class="p">)</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;daemon: adapter started&quot;</span><span class="p">)</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">broadcast</span><span class="o">.</span><span class="n">postEvent</span><span class="p">(</span><span class="n">AdapterLaunched</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span>
-                <span class="k">try</span><span class="p">:</span>
-                    <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">adapter</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
-                    <span class="k">await</span> <span class="n">await_predicate</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">adapter</span><span class="o">.</span><span class="n">session_activated</span><span class="p">)</span>
-                    <span class="k">async</span> <span class="k">for</span> <span class="n">event</span> <span class="ow">in</span> <span class="n">yield_with_timeout</span><span class="p">(</span>
-                        <span class="bp">self</span><span class="o">.</span><span class="n">adapter</span><span class="o">.</span><span class="n">queue</span><span class="o">.</span><span class="n">get</span><span class="p">,</span>
-                        <span class="k">lambda</span><span class="p">:</span> <span class="p">(</span>
-                            <span class="bp">self</span><span class="o">.</span><span class="n">adapter</span><span class="o">.</span><span class="n">running</span>
-                            <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="ow">in</span> <span class="p">{</span><span class="n">AriadneStatus</span><span class="o">.</span><span class="n">RUNNING</span><span class="p">,</span> <span class="n">AriadneStatus</span><span class="o">.</span><span class="n">LAUNCH</span><span class="p">}</span>
-                        <span class="p">),</span>
-                    <span class="p">):</span>
-                        <span class="k">with</span> <span class="n">enter_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
-                            <span class="bp">self</span><span class="o">.</span><span class="n">broadcast</span><span class="o">.</span><span class="n">postEvent</span><span class="p">(</span><span class="n">event</span><span class="p">)</span>
-                <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-                    <span class="n">logger</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
-                    <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">adapter</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
-                <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">session_key</span><span class="p">:</span>
+                <span class="k">async</span> <span class="k">for</span> <span class="n">event</span> <span class="ow">in</span> <span class="n">yield_with_timeout</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">adapter</span><span class="o">.</span><span class="n">queue</span><span class="o">.</span><span class="n">get</span><span class="p">,</span>
+                    <span class="k">lambda</span><span class="p">:</span> <span class="p">(</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">adapter</span><span class="o">.</span><span class="n">running</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="ow">in</span> <span class="p">{</span><span class="n">AriadneStatus</span><span class="o">.</span><span class="n">RUNNING</span><span class="p">,</span> <span class="n">AriadneStatus</span><span class="o">.</span><span class="n">LAUNCH</span><span class="p">}</span>
+                    <span class="p">),</span>
+                <span class="p">):</span>
+                    <span class="k">with</span> <span class="n">enter_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">broadcast</span><span class="o">.</span><span class="n">postEvent</span><span class="p">(</span><span class="n">event</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">broadcast</span><span class="o">.</span><span class="n">postEvent</span><span class="p">(</span><span class="n">AdapterShutdowned</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span>
+            <span class="k">if</span> <span class="n">retry_cnt</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_retry</span><span class="p">:</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">critical</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Max retry exceeded: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">max_retry</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="k">break</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="ow">in</span> <span class="p">{</span><span class="n">AriadneStatus</span><span class="o">.</span><span class="n">RUNNING</span><span class="p">,</span> <span class="n">AriadneStatus</span><span class="o">.</span><span class="n">LAUNCH</span><span class="p">}:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">adapter</span><span class="o">.</span><span class="n">session_activated</span><span class="p">:</span>
                     <span class="n">retry_cnt</span> <span class="o">+=</span> <span class="mi">1</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="n">retry_cnt</span> <span class="o">=</span> <span class="mi">0</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">broadcast</span><span class="o">.</span><span class="n">postEvent</span><span class="p">(</span><span class="n">AdapterShutdowned</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span>
-                <span class="k">if</span> <span class="n">retry_cnt</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_retry</span><span class="p">:</span>
-                    <span class="n">logger</span><span class="o">.</span><span class="n">critical</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Max retry exceeded: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">max_retry</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-                    <span class="k">break</span>
-                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="ow">in</span> <span class="p">{</span><span class="n">AriadneStatus</span><span class="o">.</span><span class="n">RUNNING</span><span class="p">,</span> <span class="n">AriadneStatus</span><span class="o">.</span><span class="n">LAUNCH</span><span class="p">}:</span>
-                    <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;daemon: adapter down, restart in </span><span class="si">{</span><span class="n">retry_interval</span><span class="si">}</span><span class="s2">s&quot;</span><span class="p">)</span>
-                    <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="n">retry_interval</span><span class="p">)</span>
-                    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;daemon: restarting adapter&quot;</span><span class="p">)</span>
-            <span class="k">except</span> <span class="n">CancelledError</span><span class="p">:</span>
-                <span class="k">pass</span>
+                <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">adapter</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
+                <span class="nb">print</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">adapter</span><span class="o">.</span><span class="n">mirai_session</span><span class="p">)</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;daemon: adapter down, restart in </span><span class="si">{</span><span class="n">retry_interval</span><span class="si">}</span><span class="s2">s&quot;</span><span class="p">)</span>
+                <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="n">retry_interval</span><span class="p">)</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;daemon: restarting adapter&quot;</span><span class="p">)</span>
+
         <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Ariadne daemon stopped.&quot;</span><span class="p">)</span>
 
         <span class="n">exceptions</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="n">Type</span><span class="p">[</span><span class="ne">Exception</span><span class="p">],</span> <span class="nb">tuple</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[]</span>
@@ -1515,6 +1512,7 @@
                     <span class="k">await</span> <span class="n">t</span>
                 <span class="k">except</span> <span class="ne">BaseException</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
                     <span class="n">exceptions</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">e</span><span class="o">.</span><span class="vm">__class__</span><span class="p">,</span> <span class="n">e</span><span class="o">.</span><span class="n">args</span><span class="p">))</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Stopping adapter...&quot;</span><span class="p">)</span>
         <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">adapter</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="n">AriadneStatus</span><span class="o">.</span><span class="n">STOP</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Stopped Ariadne.&quot;</span><span class="p">)</span>
@@ -1575,7 +1573,7 @@
         <span class="sd">&quot;&quot;&quot;等待直到 Ariadne 真正停止.</span>
 <span class="sd">        不要在与 Broadcast 相关的任务中使用.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="ow">is</span> <span class="n">AriadneStatus</span><span class="o">.</span><span class="n">RUNNING</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="ow">in</span> <span class="p">{</span><span class="n">AriadneStatus</span><span class="o">.</span><span class="n">RUNNING</span><span class="p">,</span> <span class="n">AriadneStatus</span><span class="o">.</span><span class="n">LAUNCH</span><span class="p">}:</span>
             <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">request_stop</span><span class="p">()</span>
             <span class="k">await</span> <span class="n">await_predicate</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="ow">is</span> <span class="n">AriadneStatus</span><span class="o">.</span><span class="n">STOP</span><span class="p">)</span>
             <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">daemon_task</span>
@@ -1583,7 +1581,6 @@
     <span class="k">async</span> <span class="k">def</span> <span class="nf">lifecycle</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">launch</span><span class="p">()</span>
         <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">daemon_task</span>
-        <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">wait_for_stop</span><span class="p">()</span>
 
     <span class="k">def</span> <span class="nf">launch_blocking</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">try</span><span class="p">:</span>
@@ -5303,36 +5300,34 @@
 
         <span class="k">while</span> <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="ow">in</span> <span class="p">{</span><span class="n">AriadneStatus</span><span class="o">.</span><span class="n">RUNNING</span><span class="p">,</span> <span class="n">AriadneStatus</span><span class="o">.</span><span class="n">LAUNCH</span><span class="p">}:</span>
             <span class="k">try</span><span class="p">:</span>
+                <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">wait_for</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">adapter</span><span class="o">.</span><span class="n">start</span><span class="p">(),</span> <span class="n">timeout</span><span class="o">=</span><span class="n">retry_interval</span><span class="p">)</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;daemon: adapter started&quot;</span><span class="p">)</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">broadcast</span><span class="o">.</span><span class="n">postEvent</span><span class="p">(</span><span class="n">AdapterLaunched</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span>
-                <span class="k">try</span><span class="p">:</span>
-                    <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">adapter</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
-                    <span class="k">await</span> <span class="n">await_predicate</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">adapter</span><span class="o">.</span><span class="n">session_activated</span><span class="p">)</span>
-                    <span class="k">async</span> <span class="k">for</span> <span class="n">event</span> <span class="ow">in</span> <span class="n">yield_with_timeout</span><span class="p">(</span>
-                        <span class="bp">self</span><span class="o">.</span><span class="n">adapter</span><span class="o">.</span><span class="n">queue</span><span class="o">.</span><span class="n">get</span><span class="p">,</span>
-                        <span class="k">lambda</span><span class="p">:</span> <span class="p">(</span>
-                            <span class="bp">self</span><span class="o">.</span><span class="n">adapter</span><span class="o">.</span><span class="n">running</span>
-                            <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="ow">in</span> <span class="p">{</span><span class="n">AriadneStatus</span><span class="o">.</span><span class="n">RUNNING</span><span class="p">,</span> <span class="n">AriadneStatus</span><span class="o">.</span><span class="n">LAUNCH</span><span class="p">}</span>
-                        <span class="p">),</span>
-                    <span class="p">):</span>
-                        <span class="k">with</span> <span class="n">enter_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
-                            <span class="bp">self</span><span class="o">.</span><span class="n">broadcast</span><span class="o">.</span><span class="n">postEvent</span><span class="p">(</span><span class="n">event</span><span class="p">)</span>
-                <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-                    <span class="n">logger</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
-                    <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">adapter</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
-                <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">session_key</span><span class="p">:</span>
+                <span class="k">async</span> <span class="k">for</span> <span class="n">event</span> <span class="ow">in</span> <span class="n">yield_with_timeout</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">adapter</span><span class="o">.</span><span class="n">queue</span><span class="o">.</span><span class="n">get</span><span class="p">,</span>
+                    <span class="k">lambda</span><span class="p">:</span> <span class="p">(</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">adapter</span><span class="o">.</span><span class="n">running</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="ow">in</span> <span class="p">{</span><span class="n">AriadneStatus</span><span class="o">.</span><span class="n">RUNNING</span><span class="p">,</span> <span class="n">AriadneStatus</span><span class="o">.</span><span class="n">LAUNCH</span><span class="p">}</span>
+                    <span class="p">),</span>
+                <span class="p">):</span>
+                    <span class="k">with</span> <span class="n">enter_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">broadcast</span><span class="o">.</span><span class="n">postEvent</span><span class="p">(</span><span class="n">event</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">broadcast</span><span class="o">.</span><span class="n">postEvent</span><span class="p">(</span><span class="n">AdapterShutdowned</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span>
+            <span class="k">if</span> <span class="n">retry_cnt</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_retry</span><span class="p">:</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">critical</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Max retry exceeded: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">max_retry</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="k">break</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="ow">in</span> <span class="p">{</span><span class="n">AriadneStatus</span><span class="o">.</span><span class="n">RUNNING</span><span class="p">,</span> <span class="n">AriadneStatus</span><span class="o">.</span><span class="n">LAUNCH</span><span class="p">}:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">adapter</span><span class="o">.</span><span class="n">session_activated</span><span class="p">:</span>
                     <span class="n">retry_cnt</span> <span class="o">+=</span> <span class="mi">1</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="n">retry_cnt</span> <span class="o">=</span> <span class="mi">0</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">broadcast</span><span class="o">.</span><span class="n">postEvent</span><span class="p">(</span><span class="n">AdapterShutdowned</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span>
-                <span class="k">if</span> <span class="n">retry_cnt</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_retry</span><span class="p">:</span>
-                    <span class="n">logger</span><span class="o">.</span><span class="n">critical</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Max retry exceeded: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">max_retry</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-                    <span class="k">break</span>
-                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="ow">in</span> <span class="p">{</span><span class="n">AriadneStatus</span><span class="o">.</span><span class="n">RUNNING</span><span class="p">,</span> <span class="n">AriadneStatus</span><span class="o">.</span><span class="n">LAUNCH</span><span class="p">}:</span>
-                    <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;daemon: adapter down, restart in </span><span class="si">{</span><span class="n">retry_interval</span><span class="si">}</span><span class="s2">s&quot;</span><span class="p">)</span>
-                    <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="n">retry_interval</span><span class="p">)</span>
-                    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;daemon: restarting adapter&quot;</span><span class="p">)</span>
-            <span class="k">except</span> <span class="n">CancelledError</span><span class="p">:</span>
-                <span class="k">pass</span>
+                <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">adapter</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
+                <span class="nb">print</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">adapter</span><span class="o">.</span><span class="n">mirai_session</span><span class="p">)</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;daemon: adapter down, restart in </span><span class="si">{</span><span class="n">retry_interval</span><span class="si">}</span><span class="s2">s&quot;</span><span class="p">)</span>
+                <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="n">retry_interval</span><span class="p">)</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;daemon: restarting adapter&quot;</span><span class="p">)</span>
+
         <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Ariadne daemon stopped.&quot;</span><span class="p">)</span>
 
         <span class="n">exceptions</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="n">Type</span><span class="p">[</span><span class="ne">Exception</span><span class="p">],</span> <span class="nb">tuple</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[]</span>
@@ -5352,6 +5347,7 @@
                     <span class="k">await</span> <span class="n">t</span>
                 <span class="k">except</span> <span class="ne">BaseException</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
                     <span class="n">exceptions</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">e</span><span class="o">.</span><span class="vm">__class__</span><span class="p">,</span> <span class="n">e</span><span class="o">.</span><span class="n">args</span><span class="p">))</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Stopping adapter...&quot;</span><span class="p">)</span>
         <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">adapter</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="n">AriadneStatus</span><span class="o">.</span><span class="n">STOP</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Stopped Ariadne.&quot;</span><span class="p">)</span>
@@ -5412,7 +5408,7 @@
         <span class="sd">&quot;&quot;&quot;等待直到 Ariadne 真正停止.</span>
 <span class="sd">        不要在与 Broadcast 相关的任务中使用.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="ow">is</span> <span class="n">AriadneStatus</span><span class="o">.</span><span class="n">RUNNING</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="ow">in</span> <span class="p">{</span><span class="n">AriadneStatus</span><span class="o">.</span><span class="n">RUNNING</span><span class="p">,</span> <span class="n">AriadneStatus</span><span class="o">.</span><span class="n">LAUNCH</span><span class="p">}:</span>
             <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">request_stop</span><span class="p">()</span>
             <span class="k">await</span> <span class="n">await_predicate</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="ow">is</span> <span class="n">AriadneStatus</span><span class="o">.</span><span class="n">STOP</span><span class="p">)</span>
             <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">daemon_task</span>
@@ -5420,7 +5416,6 @@
     <span class="k">async</span> <span class="k">def</span> <span class="nf">lifecycle</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">launch</span><span class="p">()</span>
         <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">daemon_task</span>
-        <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">wait_for_stop</span><span class="p">()</span>
 
     <span class="k">def</span> <span class="nf">launch_blocking</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">try</span><span class="p">:</span>
@@ -5666,36 +5661,34 @@
 
         <span class="k">while</span> <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="ow">in</span> <span class="p">{</span><span class="n">AriadneStatus</span><span class="o">.</span><span class="n">RUNNING</span><span class="p">,</span> <span class="n">AriadneStatus</span><span class="o">.</span><span class="n">LAUNCH</span><span class="p">}:</span>
             <span class="k">try</span><span class="p">:</span>
+                <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">wait_for</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">adapter</span><span class="o">.</span><span class="n">start</span><span class="p">(),</span> <span class="n">timeout</span><span class="o">=</span><span class="n">retry_interval</span><span class="p">)</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;daemon: adapter started&quot;</span><span class="p">)</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">broadcast</span><span class="o">.</span><span class="n">postEvent</span><span class="p">(</span><span class="n">AdapterLaunched</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span>
-                <span class="k">try</span><span class="p">:</span>
-                    <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">adapter</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
-                    <span class="k">await</span> <span class="n">await_predicate</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">adapter</span><span class="o">.</span><span class="n">session_activated</span><span class="p">)</span>
-                    <span class="k">async</span> <span class="k">for</span> <span class="n">event</span> <span class="ow">in</span> <span class="n">yield_with_timeout</span><span class="p">(</span>
-                        <span class="bp">self</span><span class="o">.</span><span class="n">adapter</span><span class="o">.</span><span class="n">queue</span><span class="o">.</span><span class="n">get</span><span class="p">,</span>
-                        <span class="k">lambda</span><span class="p">:</span> <span class="p">(</span>
-                            <span class="bp">self</span><span class="o">.</span><span class="n">adapter</span><span class="o">.</span><span class="n">running</span>
-                            <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="ow">in</span> <span class="p">{</span><span class="n">AriadneStatus</span><span class="o">.</span><span class="n">RUNNING</span><span class="p">,</span> <span class="n">AriadneStatus</span><span class="o">.</span><span class="n">LAUNCH</span><span class="p">}</span>
-                        <span class="p">),</span>
-                    <span class="p">):</span>
-                        <span class="k">with</span> <span class="n">enter_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
-                            <span class="bp">self</span><span class="o">.</span><span class="n">broadcast</span><span class="o">.</span><span class="n">postEvent</span><span class="p">(</span><span class="n">event</span><span class="p">)</span>
-                <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-                    <span class="n">logger</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
-                    <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">adapter</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
-                <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">session_key</span><span class="p">:</span>
+                <span class="k">async</span> <span class="k">for</span> <span class="n">event</span> <span class="ow">in</span> <span class="n">yield_with_timeout</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">adapter</span><span class="o">.</span><span class="n">queue</span><span class="o">.</span><span class="n">get</span><span class="p">,</span>
+                    <span class="k">lambda</span><span class="p">:</span> <span class="p">(</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">adapter</span><span class="o">.</span><span class="n">running</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="ow">in</span> <span class="p">{</span><span class="n">AriadneStatus</span><span class="o">.</span><span class="n">RUNNING</span><span class="p">,</span> <span class="n">AriadneStatus</span><span class="o">.</span><span class="n">LAUNCH</span><span class="p">}</span>
+                    <span class="p">),</span>
+                <span class="p">):</span>
+                    <span class="k">with</span> <span class="n">enter_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">broadcast</span><span class="o">.</span><span class="n">postEvent</span><span class="p">(</span><span class="n">event</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">broadcast</span><span class="o">.</span><span class="n">postEvent</span><span class="p">(</span><span class="n">AdapterShutdowned</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span>
+            <span class="k">if</span> <span class="n">retry_cnt</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_retry</span><span class="p">:</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">critical</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Max retry exceeded: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">max_retry</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="k">break</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="ow">in</span> <span class="p">{</span><span class="n">AriadneStatus</span><span class="o">.</span><span class="n">RUNNING</span><span class="p">,</span> <span class="n">AriadneStatus</span><span class="o">.</span><span class="n">LAUNCH</span><span class="p">}:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">adapter</span><span class="o">.</span><span class="n">session_activated</span><span class="p">:</span>
                     <span class="n">retry_cnt</span> <span class="o">+=</span> <span class="mi">1</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="n">retry_cnt</span> <span class="o">=</span> <span class="mi">0</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">broadcast</span><span class="o">.</span><span class="n">postEvent</span><span class="p">(</span><span class="n">AdapterShutdowned</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span>
-                <span class="k">if</span> <span class="n">retry_cnt</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_retry</span><span class="p">:</span>
-                    <span class="n">logger</span><span class="o">.</span><span class="n">critical</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Max retry exceeded: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">max_retry</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-                    <span class="k">break</span>
-                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="ow">in</span> <span class="p">{</span><span class="n">AriadneStatus</span><span class="o">.</span><span class="n">RUNNING</span><span class="p">,</span> <span class="n">AriadneStatus</span><span class="o">.</span><span class="n">LAUNCH</span><span class="p">}:</span>
-                    <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;daemon: adapter down, restart in </span><span class="si">{</span><span class="n">retry_interval</span><span class="si">}</span><span class="s2">s&quot;</span><span class="p">)</span>
-                    <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="n">retry_interval</span><span class="p">)</span>
-                    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;daemon: restarting adapter&quot;</span><span class="p">)</span>
-            <span class="k">except</span> <span class="n">CancelledError</span><span class="p">:</span>
-                <span class="k">pass</span>
+                <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">adapter</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
+                <span class="nb">print</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">adapter</span><span class="o">.</span><span class="n">mirai_session</span><span class="p">)</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;daemon: adapter down, restart in </span><span class="si">{</span><span class="n">retry_interval</span><span class="si">}</span><span class="s2">s&quot;</span><span class="p">)</span>
+                <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="n">retry_interval</span><span class="p">)</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;daemon: restarting adapter&quot;</span><span class="p">)</span>
+
         <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Ariadne daemon stopped.&quot;</span><span class="p">)</span>
 
         <span class="n">exceptions</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="n">Type</span><span class="p">[</span><span class="ne">Exception</span><span class="p">],</span> <span class="nb">tuple</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[]</span>
@@ -5715,6 +5708,7 @@
                     <span class="k">await</span> <span class="n">t</span>
                 <span class="k">except</span> <span class="ne">BaseException</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
                     <span class="n">exceptions</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">e</span><span class="o">.</span><span class="vm">__class__</span><span class="p">,</span> <span class="n">e</span><span class="o">.</span><span class="n">args</span><span class="p">))</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Stopping adapter...&quot;</span><span class="p">)</span>
         <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">adapter</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="n">AriadneStatus</span><span class="o">.</span><span class="n">STOP</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Stopped Ariadne.&quot;</span><span class="p">)</span>
@@ -5827,7 +5821,7 @@
         <span class="sd">&quot;&quot;&quot;等待直到 Ariadne 真正停止.</span>
 <span class="sd">        不要在与 Broadcast 相关的任务中使用.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="ow">is</span> <span class="n">AriadneStatus</span><span class="o">.</span><span class="n">RUNNING</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="ow">in</span> <span class="p">{</span><span class="n">AriadneStatus</span><span class="o">.</span><span class="n">RUNNING</span><span class="p">,</span> <span class="n">AriadneStatus</span><span class="o">.</span><span class="n">LAUNCH</span><span class="p">}:</span>
             <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">request_stop</span><span class="p">()</span>
             <span class="k">await</span> <span class="n">await_predicate</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="ow">is</span> <span class="n">AriadneStatus</span><span class="o">.</span><span class="n">STOP</span><span class="p">)</span>
             <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">daemon_task</span>
@@ -5854,7 +5848,6 @@
             <div class="codehilite"><pre><span></span>    <span class="k">async</span> <span class="k">def</span> <span class="nf">lifecycle</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">launch</span><span class="p">()</span>
         <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">daemon_task</span>
-        <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">wait_for_stop</span><span class="p">()</span>
 </pre></div>
 
         </details>
