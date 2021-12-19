@@ -188,11 +188,11 @@
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span><span class="kn">import</span> <span class="nn">abc</span>
 <span class="kn">import</span> <span class="nn">asyncio</span>
-<span class="kn">from</span> <span class="nn">asyncio.exceptions</span> <span class="kn">import</span> <span class="n">CancelledError</span>
-<span class="kn">from</span> <span class="nn">asyncio.futures</span> <span class="kn">import</span> <span class="n">Future</span>
 <span class="kn">import</span> <span class="nn">functools</span>
 <span class="kn">import</span> <span class="nn">json</span>
 <span class="kn">from</span> <span class="nn">asyncio.events</span> <span class="kn">import</span> <span class="n">AbstractEventLoop</span>
+<span class="kn">from</span> <span class="nn">asyncio.exceptions</span> <span class="kn">import</span> <span class="n">CancelledError</span>
+<span class="kn">from</span> <span class="nn">asyncio.futures</span> <span class="kn">import</span> <span class="n">Future</span>
 <span class="kn">from</span> <span class="nn">asyncio.queues</span> <span class="kn">import</span> <span class="n">Queue</span>
 <span class="kn">from</span> <span class="nn">asyncio.tasks</span> <span class="kn">import</span> <span class="n">Task</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Awaitable</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Set</span><span class="p">,</span> <span class="n">Union</span>
@@ -200,7 +200,7 @@
 <span class="kn">import</span> <span class="nn">aiohttp.web_exceptions</span>
 <span class="kn">from</span> <span class="nn">aiohttp</span> <span class="kn">import</span> <span class="n">ClientSession</span><span class="p">,</span> <span class="n">FormData</span>
 <span class="kn">from</span> <span class="nn">aiohttp.client_ws</span> <span class="kn">import</span> <span class="n">ClientWebSocketResponse</span>
-<span class="kn">from</span> <span class="nn">aiohttp.http_websocket</span> <span class="kn">import</span> <span class="n">WSMsgType</span><span class="p">,</span> <span class="n">WebSocketError</span>
+<span class="kn">from</span> <span class="nn">aiohttp.http_websocket</span> <span class="kn">import</span> <span class="n">WebSocketError</span><span class="p">,</span> <span class="n">WSMsgType</span>
 <span class="kn">from</span> <span class="nn">graia.broadcast</span> <span class="kn">import</span> <span class="n">Broadcast</span>
 <span class="kn">from</span> <span class="nn">graia.broadcast.entities.event</span> <span class="kn">import</span> <span class="n">Dispatchable</span>
 <span class="kn">from</span> <span class="nn">loguru</span> <span class="kn">import</span> <span class="n">logger</span>
