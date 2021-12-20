@@ -31,15 +31,6 @@
                     <h2>API Documentation</h2>
                         <ul class="memberlist">
             <li>
-                    <a class="class" href="#Match">Match</a>
-                            <ul class="memberlist">
-                        <li>
-                                <a class="function" href="#Match.__init__">Match</a>
-                        </li>
-                </ul>
-
-            </li>
-            <li>
                     <a class="class" href="#SpacePolicy">SpacePolicy</a>
                             <ul class="memberlist">
                         <li>
@@ -62,6 +53,15 @@
             </li>
             <li>
                     <a class="variable" href="#FORCE">FORCE</a>
+            </li>
+            <li>
+                    <a class="class" href="#Match">Match</a>
+                            <ul class="memberlist">
+                        <li>
+                                <a class="function" href="#Match.__init__">Match</a>
+                        </li>
+                </ul>
+
             </li>
             <li>
                     <a class="class" href="#RegexMatch">RegexMatch</a>
@@ -166,6 +166,9 @@
                                 <a class="function" href="#Sparkle.get_match">get_match</a>
                         </li>
                         <li>
+                                <a class="function" href="#Sparkle.from_command">from_command</a>
+                        </li>
+                        <li>
                                 <a class="function" href="#Sparkle.populate_check_match">populate_check_match</a>
                         </li>
                         <li>
@@ -185,6 +188,9 @@
                             <ul class="memberlist">
                         <li>
                                 <a class="function" href="#Twilight.__init__">Twilight</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#Twilight.from_command">from_command</a>
                         </li>
                         <li>
                                 <a class="function" href="#Twilight.generate">generate</a>
@@ -261,7 +267,22 @@
     <span class="n">transformed_regex</span><span class="p">,</span>
 <span class="p">)</span>
 
-<span class="c1"># ------ Match ------</span>
+
+<span class="k">class</span> <span class="nc">SpacePolicy</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">enum</span><span class="o">.</span><span class="n">Enum</span><span class="p">):</span>
+    <span class="n">NOSPACE</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+    <span class="n">PRESERVE</span> <span class="o">=</span> <span class="s2">&quot;( )?&quot;</span>
+    <span class="n">FORCE</span> <span class="o">=</span> <span class="s2">&quot;( )&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">src</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">src</span> <span class="o">=</span> <span class="n">src</span>
+
+
+<span class="n">NOSPACE</span> <span class="o">=</span> <span class="n">SpacePolicy</span><span class="o">.</span><span class="n">NOSPACE</span>
+<span class="n">PRESERVE</span> <span class="o">=</span> <span class="n">SpacePolicy</span><span class="o">.</span><span class="n">PRESERVE</span>
+<span class="n">FORCE</span> <span class="o">=</span> <span class="n">SpacePolicy</span><span class="o">.</span><span class="n">FORCE</span>
+
+
+<span class="c1"># ANCHOR: Match</span>
 
 
 <span class="k">class</span> <span class="nc">Match</span><span class="p">(</span><span class="n">abc</span><span class="o">.</span><span class="n">ABC</span><span class="p">,</span> <span class="n">Representation</span><span class="p">):</span>
@@ -289,20 +310,6 @@
             <span class="p">(</span><span class="s2">&quot;result&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">result</span><span class="p">),</span>
             <span class="p">(</span><span class="s2">&quot;pattern&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">pattern</span><span class="p">),</span>
         <span class="p">]</span>
-
-
-<span class="k">class</span> <span class="nc">SpacePolicy</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">enum</span><span class="o">.</span><span class="n">Enum</span><span class="p">):</span>
-    <span class="n">NOSPACE</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
-    <span class="n">PRESERVE</span> <span class="o">=</span> <span class="s2">&quot;( )?&quot;</span>
-    <span class="n">FORCE</span> <span class="o">=</span> <span class="s2">&quot;( )&quot;</span>
-
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">src</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">src</span> <span class="o">=</span> <span class="n">src</span>
-
-
-<span class="n">NOSPACE</span> <span class="o">=</span> <span class="n">SpacePolicy</span><span class="o">.</span><span class="n">NOSPACE</span>
-<span class="n">PRESERVE</span> <span class="o">=</span> <span class="n">SpacePolicy</span><span class="o">.</span><span class="n">PRESERVE</span>
-<span class="n">FORCE</span> <span class="o">=</span> <span class="n">SpacePolicy</span><span class="o">.</span><span class="n">FORCE</span>
 
 
 <span class="k">class</span> <span class="nc">RegexMatch</span><span class="p">(</span><span class="n">Match</span><span class="p">):</span>
@@ -549,9 +556,9 @@
 <span class="n">T_Match</span> <span class="o">=</span> <span class="n">TypeVar</span><span class="p">(</span><span class="s2">&quot;T_Match&quot;</span><span class="p">,</span> <span class="n">bound</span><span class="o">=</span><span class="n">Match</span><span class="p">)</span>
 
 <span class="n">T_RMatch</span> <span class="o">=</span> <span class="n">TypeVar</span><span class="p">(</span><span class="s2">&quot;T_RMatch&quot;</span><span class="p">,</span> <span class="n">bound</span><span class="o">=</span><span class="n">RegexMatch</span><span class="p">)</span>
-<span class="c1"># -------------------</span>
 
 
+<span class="c1"># ANCHOR: Sparkle</span>
 <span class="k">class</span> <span class="nc">Sparkle</span><span class="p">(</span><span class="n">Representation</span><span class="p">):</span>
     <span class="vm">__dict__</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Match</span><span class="p">]</span>
 
@@ -575,7 +582,7 @@
         <span class="o">...</span>
 
     <span class="nd">@overload</span>
-    <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">T_RMatch</span><span class="p">,</span> <span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">T_RMatch</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Type</span><span class="p">[</span><span class="n">T_RMatch</span><span class="p">],</span> <span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">T_RMatch</span><span class="p">:</span>
         <span class="o">...</span>
 
     <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="n">Type</span><span class="p">[</span><span class="n">T_Match</span><span class="p">],</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Type</span><span class="p">[</span><span class="n">T_RMatch</span><span class="p">],</span> <span class="nb">int</span><span class="p">]]):</span>
@@ -736,9 +743,30 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_check_pattern</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">check_match</span><span class="o">.</span><span class="n">gen_regex</span><span class="p">()</span> <span class="k">for</span> <span class="n">check_match</span> <span class="ow">in</span> <span class="n">check</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_check_regex</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_check_pattern</span><span class="p">)</span>
 
-    <span class="c1"># ---</span>
-    <span class="c1"># Runtime populate</span>
-    <span class="c1"># ---</span>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">from_command</span><span class="p">(</span>
+        <span class="bp">cls</span><span class="p">,</span> <span class="n">command</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">extra_arg_mapping</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">ArgumentMatch</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;Sparkle&quot;</span><span class="p">:</span>
+        <span class="n">extra_arg_mapping</span> <span class="o">=</span> <span class="n">extra_arg_mapping</span> <span class="ow">or</span> <span class="p">{}</span>
+        <span class="n">match</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">FullMatch</span><span class="p">,</span> <span class="n">ParamMatch</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="kn">from</span> <span class="nn">string</span> <span class="kn">import</span> <span class="n">Formatter</span>
+
+        <span class="n">formatter</span> <span class="o">=</span> <span class="n">Formatter</span><span class="p">()</span>
+
+        <span class="k">def</span> <span class="nf">_get_value</span><span class="p">(</span><span class="o">*</span><span class="n">_</span><span class="p">,</span> <span class="o">**</span><span class="n">__</span><span class="p">):</span>
+            <span class="k">return</span> <span class="s2">&quot;</span><span class="se">\x01</span><span class="s2">&quot;</span>
+
+        <span class="n">formatter</span><span class="o">.</span><span class="n">get_value</span> <span class="o">=</span> <span class="n">_get_value</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">formatter</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">command</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\x01</span><span class="s2">&quot;</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">i</span><span class="p">:</span>
+                <span class="n">match</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">FullMatch</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">space</span><span class="o">=</span><span class="n">SpacePolicy</span><span class="o">.</span><span class="n">NOSPACE</span><span class="p">))</span>
+            <span class="n">match</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ParamMatch</span><span class="p">(</span><span class="n">space</span><span class="o">=</span><span class="n">SpacePolicy</span><span class="o">.</span><span class="n">NOSPACE</span><span class="p">))</span>
+        <span class="n">match</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span>
+
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">match</span><span class="p">,</span> <span class="n">extra_arg_mapping</span><span class="p">)</span>
+
+    <span class="c1"># ANCHOR: Sparkle runtime populate</span>
 
     <span class="k">def</span> <span class="nf">populate_check_match</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">string</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">elem_mapping</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Element</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_check_pattern</span><span class="p">:</span>
@@ -842,6 +870,7 @@
     <span class="n">result</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Sparkle</span><span class="p">]</span>
 
 
+<span class="c1"># ANCHOR: Twilight</span>
 <span class="k">class</span> <span class="nc">Twilight</span><span class="p">(</span><span class="n">BaseDispatcher</span><span class="p">,</span> <span class="n">Generic</span><span class="p">[</span><span class="n">T_Sparkle</span><span class="p">]):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    暮光.</span>
@@ -894,6 +923,16 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_map_params</span> <span class="o">=</span> <span class="n">map_params</span> <span class="ow">or</span> <span class="p">{}</span>
 
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">from_command</span><span class="p">(</span>
+        <span class="bp">cls</span><span class="p">,</span>
+        <span class="n">command</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">extra_arg_mapping</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">ArgumentMatch</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">map_params</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">bool</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;Twilight&quot;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">Sparkle</span><span class="o">.</span><span class="n">from_command</span><span class="p">(</span><span class="n">command</span><span class="p">,</span> <span class="n">extra_arg_mapping</span><span class="p">),</span> <span class="n">map_params</span><span class="o">=</span><span class="n">map_params</span><span class="p">)</span>
+
     <span class="k">def</span> <span class="nf">generate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">chain</span><span class="p">:</span> <span class="n">MessageChain</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">T_Sparkle</span><span class="p">:</span>
         <span class="n">sparkle</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">root</span><span class="p">)</span>
         <span class="n">mapping_str</span><span class="p">,</span> <span class="n">elem_mapping</span> <span class="o">=</span> <span class="n">chain</span><span class="o">.</span><span class="n">asMappingString</span><span class="p">(</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_map_params</span><span class="p">)</span>
@@ -929,76 +968,6 @@
         </details>
 
             </section>
-                <section id="Match">
-                                <div class="attr class">
-        <a class="headerlink" href="#Match">#&nbsp;&nbsp</a>
-
-        
-        <span class="def">class</span>
-        <span class="name">Match</span><wbr>(<span class="base">abc.ABC</span>, <span class="base">pydantic.utils.Representation</span>):
-    </div>
-
-                <details>
-            <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">Match</span><span class="p">(</span><span class="n">abc</span><span class="o">.</span><span class="n">ABC</span><span class="p">,</span> <span class="n">Representation</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;匹配器的抽象基类.&quot;&quot;&quot;</span>
-
-    <span class="n">pattern</span><span class="p">:</span> <span class="nb">str</span>
-    <span class="n">optional</span><span class="p">:</span> <span class="nb">bool</span>
-    <span class="n">help</span><span class="p">:</span> <span class="nb">str</span>
-    <span class="n">matched</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span>
-    <span class="n">result</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="s2">&quot;MessageChain&quot;</span><span class="p">]</span>
-
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pattern</span><span class="p">,</span> <span class="n">optional</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">help</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alt_help</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">pattern</span> <span class="o">=</span> <span class="n">pattern</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">optional</span> <span class="o">=</span> <span class="n">optional</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">help</span> <span class="o">=</span> <span class="n">help</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">result</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">matched</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">alt_help</span> <span class="o">=</span> <span class="n">alt_help</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span> <span class="o">==</span> <span class="n">Match</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;You can&#39;t instantiate Match class directly!&quot;</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">__repr_args__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="p">[</span>
-            <span class="p">(</span><span class="s2">&quot;matched&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">matched</span><span class="p">),</span>
-            <span class="p">(</span><span class="s2">&quot;result&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">result</span><span class="p">),</span>
-            <span class="p">(</span><span class="s2">&quot;pattern&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">pattern</span><span class="p">),</span>
-        <span class="p">]</span>
-</pre></div>
-
-        </details>
-
-            <div class="docstring"><p>匹配器的抽象基类.</p>
-</div>
-
-
-                            <div id="Match.__init__" class="classattr">
-                                        <div class="attr function"><a class="headerlink" href="#Match.__init__">#&nbsp;&nbsp</a>
-
-        
-            <span class="name">Match</span><span class="signature">(pattern, optional: bool = False, help: str = &#39;&#39;, alt_help: str = &#39;&#39;)</span>
-    </div>
-
-                <details>
-            <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pattern</span><span class="p">,</span> <span class="n">optional</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">help</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alt_help</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">pattern</span> <span class="o">=</span> <span class="n">pattern</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">optional</span> <span class="o">=</span> <span class="n">optional</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">help</span> <span class="o">=</span> <span class="n">help</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">result</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">matched</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">alt_help</span> <span class="o">=</span> <span class="n">alt_help</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span> <span class="o">==</span> <span class="n">Match</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;You can&#39;t instantiate Match class directly!&quot;</span><span class="p">)</span>
-</pre></div>
-
-        </details>
-
-    
-
-                            </div>
-                </section>
                 <section id="SpacePolicy">
                                 <div class="attr class">
         <a class="headerlink" href="#SpacePolicy">#&nbsp;&nbsp</a>
@@ -1139,6 +1108,76 @@
 
     
 
+                </section>
+                <section id="Match">
+                                <div class="attr class">
+        <a class="headerlink" href="#Match">#&nbsp;&nbsp</a>
+
+        
+        <span class="def">class</span>
+        <span class="name">Match</span><wbr>(<span class="base">abc.ABC</span>, <span class="base">pydantic.utils.Representation</span>):
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">Match</span><span class="p">(</span><span class="n">abc</span><span class="o">.</span><span class="n">ABC</span><span class="p">,</span> <span class="n">Representation</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;匹配器的抽象基类.&quot;&quot;&quot;</span>
+
+    <span class="n">pattern</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">optional</span><span class="p">:</span> <span class="nb">bool</span>
+    <span class="n">help</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">matched</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span>
+    <span class="n">result</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="s2">&quot;MessageChain&quot;</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pattern</span><span class="p">,</span> <span class="n">optional</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">help</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alt_help</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pattern</span> <span class="o">=</span> <span class="n">pattern</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">optional</span> <span class="o">=</span> <span class="n">optional</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">help</span> <span class="o">=</span> <span class="n">help</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">result</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">matched</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">alt_help</span> <span class="o">=</span> <span class="n">alt_help</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span> <span class="o">==</span> <span class="n">Match</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;You can&#39;t instantiate Match class directly!&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__repr_args__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">[</span>
+            <span class="p">(</span><span class="s2">&quot;matched&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">matched</span><span class="p">),</span>
+            <span class="p">(</span><span class="s2">&quot;result&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">result</span><span class="p">),</span>
+            <span class="p">(</span><span class="s2">&quot;pattern&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">pattern</span><span class="p">),</span>
+        <span class="p">]</span>
+</pre></div>
+
+        </details>
+
+            <div class="docstring"><p>匹配器的抽象基类.</p>
+</div>
+
+
+                            <div id="Match.__init__" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#Match.__init__">#&nbsp;&nbsp</a>
+
+        
+            <span class="name">Match</span><span class="signature">(pattern, optional: bool = False, help: str = &#39;&#39;, alt_help: str = &#39;&#39;)</span>
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pattern</span><span class="p">,</span> <span class="n">optional</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">help</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alt_help</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pattern</span> <span class="o">=</span> <span class="n">pattern</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">optional</span> <span class="o">=</span> <span class="n">optional</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">help</span> <span class="o">=</span> <span class="n">help</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">result</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">matched</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">alt_help</span> <span class="o">=</span> <span class="n">alt_help</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span> <span class="o">==</span> <span class="n">Match</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;You can&#39;t instantiate Match class directly!&quot;</span><span class="p">)</span>
+</pre></div>
+
+        </details>
+
+    
+
+                            </div>
                 </section>
                 <section id="RegexMatch">
                                 <div class="attr class">
@@ -2047,7 +2086,7 @@
         <span class="o">...</span>
 
     <span class="nd">@overload</span>
-    <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">T_RMatch</span><span class="p">,</span> <span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">T_RMatch</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Type</span><span class="p">[</span><span class="n">T_RMatch</span><span class="p">],</span> <span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">T_RMatch</span><span class="p">:</span>
         <span class="o">...</span>
 
     <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="n">Type</span><span class="p">[</span><span class="n">T_Match</span><span class="p">],</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Type</span><span class="p">[</span><span class="n">T_RMatch</span><span class="p">],</span> <span class="nb">int</span><span class="p">]]):</span>
@@ -2208,9 +2247,30 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_check_pattern</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">check_match</span><span class="o">.</span><span class="n">gen_regex</span><span class="p">()</span> <span class="k">for</span> <span class="n">check_match</span> <span class="ow">in</span> <span class="n">check</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_check_regex</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_check_pattern</span><span class="p">)</span>
 
-    <span class="c1"># ---</span>
-    <span class="c1"># Runtime populate</span>
-    <span class="c1"># ---</span>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">from_command</span><span class="p">(</span>
+        <span class="bp">cls</span><span class="p">,</span> <span class="n">command</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">extra_arg_mapping</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">ArgumentMatch</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;Sparkle&quot;</span><span class="p">:</span>
+        <span class="n">extra_arg_mapping</span> <span class="o">=</span> <span class="n">extra_arg_mapping</span> <span class="ow">or</span> <span class="p">{}</span>
+        <span class="n">match</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">FullMatch</span><span class="p">,</span> <span class="n">ParamMatch</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="kn">from</span> <span class="nn">string</span> <span class="kn">import</span> <span class="n">Formatter</span>
+
+        <span class="n">formatter</span> <span class="o">=</span> <span class="n">Formatter</span><span class="p">()</span>
+
+        <span class="k">def</span> <span class="nf">_get_value</span><span class="p">(</span><span class="o">*</span><span class="n">_</span><span class="p">,</span> <span class="o">**</span><span class="n">__</span><span class="p">):</span>
+            <span class="k">return</span> <span class="s2">&quot;</span><span class="se">\x01</span><span class="s2">&quot;</span>
+
+        <span class="n">formatter</span><span class="o">.</span><span class="n">get_value</span> <span class="o">=</span> <span class="n">_get_value</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">formatter</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">command</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\x01</span><span class="s2">&quot;</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">i</span><span class="p">:</span>
+                <span class="n">match</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">FullMatch</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">space</span><span class="o">=</span><span class="n">SpacePolicy</span><span class="o">.</span><span class="n">NOSPACE</span><span class="p">))</span>
+            <span class="n">match</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ParamMatch</span><span class="p">(</span><span class="n">space</span><span class="o">=</span><span class="n">SpacePolicy</span><span class="o">.</span><span class="n">NOSPACE</span><span class="p">))</span>
+        <span class="n">match</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span>
+
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">match</span><span class="p">,</span> <span class="n">extra_arg_mapping</span><span class="p">)</span>
+
+    <span class="c1"># ANCHOR: Sparkle runtime populate</span>
 
     <span class="k">def</span> <span class="nf">populate_check_match</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">string</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">elem_mapping</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Element</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_check_pattern</span><span class="p">:</span>
@@ -2463,6 +2523,50 @@ of objects.</p>
     
 
                             </div>
+                            <div id="Sparkle.from_command" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#Sparkle.from_command">#&nbsp;&nbsp</a>
+
+                <div class="decorator">@classmethod</div>
+
+            <span class="def">def</span>
+            <span class="name">from_command</span><span class="signature">(
+    cls,
+    command: str,
+    extra_arg_mapping: Optional[Dict[str, <a href="#ArgumentMatch">ariadne.message.parser.twilight.ArgumentMatch</a>]] = None
+) -&gt; <a href="#Sparkle">ariadne.message.parser.twilight.Sparkle</a></span>:
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">from_command</span><span class="p">(</span>
+        <span class="bp">cls</span><span class="p">,</span> <span class="n">command</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">extra_arg_mapping</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">ArgumentMatch</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;Sparkle&quot;</span><span class="p">:</span>
+        <span class="n">extra_arg_mapping</span> <span class="o">=</span> <span class="n">extra_arg_mapping</span> <span class="ow">or</span> <span class="p">{}</span>
+        <span class="n">match</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">FullMatch</span><span class="p">,</span> <span class="n">ParamMatch</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="kn">from</span> <span class="nn">string</span> <span class="kn">import</span> <span class="n">Formatter</span>
+
+        <span class="n">formatter</span> <span class="o">=</span> <span class="n">Formatter</span><span class="p">()</span>
+
+        <span class="k">def</span> <span class="nf">_get_value</span><span class="p">(</span><span class="o">*</span><span class="n">_</span><span class="p">,</span> <span class="o">**</span><span class="n">__</span><span class="p">):</span>
+            <span class="k">return</span> <span class="s2">&quot;</span><span class="se">\x01</span><span class="s2">&quot;</span>
+
+        <span class="n">formatter</span><span class="o">.</span><span class="n">get_value</span> <span class="o">=</span> <span class="n">_get_value</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">formatter</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">command</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\x01</span><span class="s2">&quot;</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">i</span><span class="p">:</span>
+                <span class="n">match</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">FullMatch</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">space</span><span class="o">=</span><span class="n">SpacePolicy</span><span class="o">.</span><span class="n">NOSPACE</span><span class="p">))</span>
+            <span class="n">match</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ParamMatch</span><span class="p">(</span><span class="n">space</span><span class="o">=</span><span class="n">SpacePolicy</span><span class="o">.</span><span class="n">NOSPACE</span><span class="p">))</span>
+        <span class="n">match</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span>
+
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">match</span><span class="p">,</span> <span class="n">extra_arg_mapping</span><span class="p">)</span>
+</pre></div>
+
+        </details>
+
+    
+
+                            </div>
                             <div id="Sparkle.populate_check_match" class="classattr">
                                         <div class="attr function"><a class="headerlink" href="#Sparkle.populate_check_match">#&nbsp;&nbsp</a>
 
@@ -2699,6 +2803,16 @@ of objects.</p>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_map_params</span> <span class="o">=</span> <span class="n">map_params</span> <span class="ow">or</span> <span class="p">{}</span>
 
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">from_command</span><span class="p">(</span>
+        <span class="bp">cls</span><span class="p">,</span>
+        <span class="n">command</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">extra_arg_mapping</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">ArgumentMatch</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">map_params</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">bool</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;Twilight&quot;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">Sparkle</span><span class="o">.</span><span class="n">from_command</span><span class="p">(</span><span class="n">command</span><span class="p">,</span> <span class="n">extra_arg_mapping</span><span class="p">),</span> <span class="n">map_params</span><span class="o">=</span><span class="n">map_params</span><span class="p">)</span>
+
     <span class="k">def</span> <span class="nf">generate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">chain</span><span class="p">:</span> <span class="n">MessageChain</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">T_Sparkle</span><span class="p">:</span>
         <span class="n">sparkle</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">root</span><span class="p">)</span>
         <span class="n">mapping_str</span><span class="p">,</span> <span class="n">elem_mapping</span> <span class="o">=</span> <span class="n">chain</span><span class="o">.</span><span class="n">asMappingString</span><span class="p">(</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_map_params</span><span class="p">)</span>
@@ -2768,6 +2882,39 @@ of objects.</p>
             <div class="docstring"><p>Actual implementation of __init__</p>
 </div>
 
+
+                            </div>
+                            <div id="Twilight.from_command" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#Twilight.from_command">#&nbsp;&nbsp</a>
+
+                <div class="decorator">@classmethod</div>
+
+            <span class="def">def</span>
+            <span class="name">from_command</span><span class="signature">(
+    cls,
+    command: str,
+    extra_arg_mapping: Optional[Dict[str, <a href="#ArgumentMatch">ariadne.message.parser.twilight.ArgumentMatch</a>]] = None,
+    *,
+    map_params: Optional[Dict[str, bool]] = None
+) -&gt; <a href="#Twilight">ariadne.message.parser.twilight.Twilight</a></span>:
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">from_command</span><span class="p">(</span>
+        <span class="bp">cls</span><span class="p">,</span>
+        <span class="n">command</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">extra_arg_mapping</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">ArgumentMatch</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">map_params</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">bool</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;Twilight&quot;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">Sparkle</span><span class="o">.</span><span class="n">from_command</span><span class="p">(</span><span class="n">command</span><span class="p">,</span> <span class="n">extra_arg_mapping</span><span class="p">),</span> <span class="n">map_params</span><span class="o">=</span><span class="n">map_params</span><span class="p">)</span>
+</pre></div>
+
+        </details>
+
+    
 
                             </div>
                             <div id="Twilight.generate" class="classattr">
