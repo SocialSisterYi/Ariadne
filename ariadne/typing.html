@@ -57,10 +57,13 @@
                     <h1 class="modulename">
 <a href="./../ariadne.html">ariadne</a><wbr>.typing    </h1>
 
-                
+                        <div class="docstring"><p>Ariadne 的类型标注</p>
+</div>
+
                         <details>
             <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="p">(</span>
+            <div class="codehilite"><pre><span></span><span class="sd">&quot;&quot;&quot;Ariadne 的类型标注&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">AbstractSet</span><span class="p">,</span>
     <span class="n">Any</span><span class="p">,</span>
     <span class="n">Dict</span><span class="p">,</span>
@@ -87,6 +90,8 @@
 
 
 <span class="k">class</span> <span class="nc">Slice</span><span class="p">(</span><span class="n">Generic</span><span class="p">[</span><span class="n">T_start</span><span class="p">,</span> <span class="n">T_stop</span><span class="p">,</span> <span class="n">T_step</span><span class="p">]):</span>
+    <span class="sd">&quot;&quot;&quot;对 slice 对象的泛型化包装, 但无法直接继承于 slice&quot;&quot;&quot;</span>
+
     <span class="n">start</span><span class="p">:</span> <span class="n">T_start</span>
     <span class="n">stop</span><span class="p">:</span> <span class="n">T_stop</span>
     <span class="n">step</span><span class="p">:</span> <span class="n">T_step</span>
@@ -117,6 +122,8 @@
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">Slice</span><span class="p">(</span><span class="n">Generic</span><span class="p">[</span><span class="n">T_start</span><span class="p">,</span> <span class="n">T_stop</span><span class="p">,</span> <span class="n">T_step</span><span class="p">]):</span>
+    <span class="sd">&quot;&quot;&quot;对 slice 对象的泛型化包装, 但无法直接继承于 slice&quot;&quot;&quot;</span>
+
     <span class="n">start</span><span class="p">:</span> <span class="n">T_start</span>
     <span class="n">stop</span><span class="p">:</span> <span class="n">T_stop</span>
     <span class="n">step</span><span class="p">:</span> <span class="n">T_step</span>
@@ -124,24 +131,7 @@
 
         </details>
 
-            <div class="docstring"><p>Abstract base class for generic types.</p>
-
-<p>A generic type is typically declared by inheriting from
-this class parameterized with one or more type variables.
-For example, a generic mapping type might be defined as::</p>
-
-<p>class Mapping(Generic[KT, VT]):
-      def __getitem__(self, key: KT) -> VT:
-          ...
-      # Etc.</p>
-
-<p>This class can then be used as follows::</p>
-
-<p>def lookup_name(mapping: Mapping[KT, VT], key: KT, default: VT) -> VT:
-      try:
-          return mapping[key]
-      except KeyError:
-          return default</p>
+            <div class="docstring"><p>对 slice 对象的泛型化包装, 但无法直接继承于 slice</p>
 </div>
 
 

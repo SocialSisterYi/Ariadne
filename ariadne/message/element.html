@@ -70,18 +70,6 @@
                     <a class="class" href="#Source">Source</a>
                             <ul class="memberlist">
                         <li>
-                                <a class="class" href="#Source.Config">Source.Config</a>
-                                        <ul class="memberlist">
-                                    <li>
-                                            <a class="function" href="#Source.Config.__init__">Config</a>
-                                    </li>
-                                    <li>
-                                            <a class="variable" href="#Source.Config.json_encoders">json_encoders</a>
-                                    </li>
-                            </ul>
-
-                        </li>
-                        <li>
                                 <a class="function" href="#Source.prepare">prepare</a>
                         </li>
                         <li>
@@ -273,18 +261,6 @@
                         <li>
                                 <a class="function" href="#ForwardNode.__init__">ForwardNode</a>
                         </li>
-                        <li>
-                                <a class="class" href="#ForwardNode.Config">ForwardNode.Config</a>
-                                        <ul class="memberlist">
-                                    <li>
-                                            <a class="function" href="#ForwardNode.Config.__init__">Config</a>
-                                    </li>
-                                    <li>
-                                            <a class="variable" href="#ForwardNode.Config.json_encoders">json_encoders</a>
-                                    </li>
-                            </ul>
-
-                        </li>
                 </ul>
 
             </li>
@@ -349,7 +325,7 @@
                                 <a class="function" href="#MultimediaElement.get_bytes">get_bytes</a>
                         </li>
                         <li>
-                                <a class="function" href="#MultimediaElement.asPersistentString">asPersistentString</a>
+                                <a class="function" href="#MultimediaElement.asNoBinaryPersistentString">asNoBinaryPersistentString</a>
                         </li>
                         <li>
                                 <a class="variable" href="#MultimediaElement.uuid">uuid</a>
@@ -414,10 +390,13 @@
                     <h1 class="modulename">
 <a href="./../../ariadne.html">ariadne</a><wbr>.<a href="./../message.html">message</a><wbr>.element    </h1>
 
-                
+                        <div class="docstring"><p>Ariadne 中的消息元素</p>
+</div>
+
                         <details>
             <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span><span class="kn">import</span> <span class="nn">abc</span>
+            <div class="codehilite"><pre><span></span><span class="sd">&quot;&quot;&quot;Ariadne 中的消息元素&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">abc</span>
 <span class="kn">from</span> <span class="nn">base64</span> <span class="kn">import</span> <span class="n">b64decode</span><span class="p">,</span> <span class="n">b64encode</span>
 <span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
 <span class="kn">from</span> <span class="nn">enum</span> <span class="kn">import</span> <span class="n">Enum</span>
@@ -427,18 +406,10 @@
 
 <span class="kn">from</span> <span class="nn">pydantic</span> <span class="kn">import</span> <span class="n">validator</span>
 <span class="kn">from</span> <span class="nn">pydantic.fields</span> <span class="kn">import</span> <span class="n">Field</span>
-<span class="kn">from</span> <span class="nn">typing_extensions</span> <span class="kn">import</span> <span class="n">ParamSpec</span>
 
 <span class="kn">from</span> <span class="nn">..context</span> <span class="kn">import</span> <span class="n">adapter_ctx</span><span class="p">,</span> <span class="n">upload_method_ctx</span>
 <span class="kn">from</span> <span class="nn">..exception</span> <span class="kn">import</span> <span class="n">InvalidArgument</span>
-<span class="kn">from</span> <span class="nn">..model</span> <span class="kn">import</span> <span class="p">(</span>
-    <span class="n">AriadneBaseModel</span><span class="p">,</span>
-    <span class="n">Friend</span><span class="p">,</span>
-    <span class="n">Member</span><span class="p">,</span>
-    <span class="n">Stranger</span><span class="p">,</span>
-    <span class="n">UploadMethod</span><span class="p">,</span>
-    <span class="n">datetime_encoder</span><span class="p">,</span>
-<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">..model</span> <span class="kn">import</span> <span class="n">AriadneBaseModel</span><span class="p">,</span> <span class="n">Friend</span><span class="p">,</span> <span class="n">Member</span><span class="p">,</span> <span class="n">Stranger</span><span class="p">,</span> <span class="n">UploadMethod</span>
 <span class="kn">from</span> <span class="nn">..util</span> <span class="kn">import</span> <span class="n">wrap_bracket</span>
 
 <span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
@@ -463,10 +434,21 @@
     <span class="k">def</span> <span class="fm">__hash__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="nb">hash</span><span class="p">((</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">),)</span> <span class="o">+</span> <span class="nb">tuple</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">values</span><span class="p">()))</span>
 
-    <span class="k">def</span> <span class="nf">asDisplay</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">asDisplay</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;返回该元素的 &quot;显示&quot; 形式字符串, 趋近于你见到的样子.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            str: &quot;显示&quot; 字符串.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="s2">&quot;&quot;</span>
 
     <span class="k">def</span> <span class="nf">asPersistentString</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;持久化字符串表示.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            str: 持久化字符串.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">data</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">wrap_bracket</span><span class="p">(</span>
             <span class="n">j_dump</span><span class="p">(</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">dict</span><span class="p">(</span>
@@ -489,13 +471,15 @@
 <span class="sd">        &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="nf">__repr_args__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;ReprArgs&quot;</span><span class="p">:</span>
-        <span class="k">return</span> <span class="p">[(</span><span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">dict</span><span class="p">(</span><span class="n">exclude</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;type&quot;</span><span class="p">})</span><span class="o">.</span><span class="n">items</span><span class="p">()]</span>
+        <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dict</span><span class="p">(</span><span class="n">exclude</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;type&quot;</span><span class="p">})</span><span class="o">.</span><span class="n">items</span><span class="p">())</span>
 
     <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">asDisplay</span><span class="p">()</span>
 
 
 <span class="k">class</span> <span class="nc">Plain</span><span class="p">(</span><span class="n">Element</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;代表消息中的文本元素&quot;&quot;&quot;</span>
+
     <span class="nb">type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;Plain&quot;</span>
     <span class="n">text</span><span class="p">:</span> <span class="nb">str</span>
 
@@ -520,11 +504,6 @@
     <span class="nb">type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;Source&quot;</span>
     <span class="nb">id</span><span class="p">:</span> <span class="nb">int</span>
     <span class="n">time</span><span class="p">:</span> <span class="n">datetime</span>
-
-    <span class="k">class</span> <span class="nc">Config</span><span class="p">:</span>
-        <span class="n">json_encoders</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="n">datetime</span><span class="p">:</span> <span class="n">datetime_encoder</span><span class="p">,</span>
-        <span class="p">}</span>
 
     <span class="k">def</span> <span class="nf">prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">NoReturn</span><span class="p">:</span>
         <span class="k">raise</span> <span class="n">NotSendableElement</span>
@@ -595,7 +574,7 @@
         <span class="k">try</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">upload_method_ctx</span><span class="o">.</span><span class="n">get</span><span class="p">()</span> <span class="o">!=</span> <span class="n">UploadMethod</span><span class="o">.</span><span class="n">Group</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="n">InvalidArgument</span><span class="p">(</span>
-                    <span class="s2">&quot;you cannot use this element in this method: </span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">upload_method_ctx</span><span class="o">.</span><span class="n">get</span><span class="p">()</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
+                    <span class="sa">f</span><span class="s2">&quot;you cannot use this element in this method: </span><span class="si">{</span><span class="n">upload_method_ctx</span><span class="o">.</span><span class="n">get</span><span class="p">()</span><span class="o">.</span><span class="n">value</span><span class="si">}</span><span class="s2">&quot;</span>
                 <span class="p">)</span>
         <span class="k">except</span> <span class="ne">LookupError</span><span class="p">:</span>
             <span class="k">pass</span>
@@ -619,7 +598,7 @@
         <span class="k">try</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">upload_method_ctx</span><span class="o">.</span><span class="n">get</span><span class="p">()</span> <span class="o">!=</span> <span class="n">UploadMethod</span><span class="o">.</span><span class="n">Group</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="n">InvalidArgument</span><span class="p">(</span>
-                    <span class="s2">&quot;you cannot use this element in this method: </span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">upload_method_ctx</span><span class="o">.</span><span class="n">get</span><span class="p">()</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
+                    <span class="sa">f</span><span class="s2">&quot;you cannot use this element in this method: </span><span class="si">{</span><span class="n">upload_method_ctx</span><span class="o">.</span><span class="n">get</span><span class="p">()</span><span class="o">.</span><span class="n">value</span><span class="si">}</span><span class="s2">&quot;</span>
                 <span class="p">)</span>
         <span class="k">except</span> <span class="ne">LookupError</span><span class="p">:</span>
             <span class="k">pass</span>
@@ -781,11 +760,6 @@
             <span class="n">data</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">messageChain</span><span class="o">=</span><span class="n">message</span><span class="p">)</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">data</span><span class="p">)</span>
 
-    <span class="k">class</span> <span class="nc">Config</span><span class="p">:</span>
-        <span class="n">json_encoders</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="n">datetime</span><span class="p">:</span> <span class="n">datetime_encoder</span><span class="p">,</span>
-        <span class="p">}</span>
-
 
 <span class="k">class</span> <span class="nc">Forward</span><span class="p">(</span><span class="n">Element</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
@@ -838,6 +812,8 @@
 
 
 <span class="k">class</span> <span class="nc">ImageType</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Image 类型的枚举.&quot;&quot;&quot;</span>
+
     <span class="n">Friend</span> <span class="o">=</span> <span class="s2">&quot;Friend&quot;</span>
     <span class="n">Group</span> <span class="o">=</span> <span class="s2">&quot;Group&quot;</span>
     <span class="n">Temp</span> <span class="o">=</span> <span class="s2">&quot;Temp&quot;</span>
@@ -849,8 +825,6 @@
     <span class="n">UploadMethod</span><span class="o">.</span><span class="n">Group</span><span class="p">:</span> <span class="n">ImageType</span><span class="o">.</span><span class="n">Group</span><span class="p">,</span>
     <span class="n">UploadMethod</span><span class="o">.</span><span class="n">Temp</span><span class="p">:</span> <span class="n">ImageType</span><span class="o">.</span><span class="n">Temp</span><span class="p">,</span>
 <span class="p">}</span>
-
-<span class="n">P</span> <span class="o">=</span> <span class="n">ParamSpec</span><span class="p">(</span><span class="s2">&quot;P&quot;</span><span class="p">)</span>
 
 
 <span class="k">class</span> <span class="nc">MultimediaElement</span><span class="p">(</span><span class="n">Element</span><span class="p">):</span>
@@ -916,23 +890,26 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">base64</span> <span class="o">=</span> <span class="n">b64encode</span><span class="p">(</span><span class="n">data</span><span class="p">)</span><span class="o">.</span><span class="n">decode</span><span class="p">()</span>
             <span class="k">return</span> <span class="n">data</span>
 
-    <span class="k">def</span> <span class="nf">asPersistentString</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">binary</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">binary</span><span class="p">:</span>
-            <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">asPersistentString</span><span class="p">()</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">data</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">wrap_bracket</span><span class="p">(</span>
-                <span class="n">j_dump</span><span class="p">(</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">dict</span><span class="p">(</span>
-                        <span class="n">exclude</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;type&quot;</span><span class="p">,</span> <span class="s2">&quot;base64&quot;</span><span class="p">},</span>
-                    <span class="p">),</span>
-                    <span class="n">indent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                    <span class="n">separators</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;,&quot;</span><span class="p">,</span> <span class="s2">&quot;:&quot;</span><span class="p">),</span>
-                <span class="p">)</span>
+    <span class="k">def</span> <span class="nf">asNoBinaryPersistentString</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;生成不附带二进制数据的持久化字符串</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            str: 持久化字符串</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">data</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">wrap_bracket</span><span class="p">(</span>
+            <span class="n">j_dump</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">dict</span><span class="p">(</span>
+                    <span class="n">exclude</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;type&quot;</span><span class="p">,</span> <span class="s2">&quot;base64&quot;</span><span class="p">},</span>
+                <span class="p">),</span>
+                <span class="n">indent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                <span class="n">separators</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;,&quot;</span><span class="p">,</span> <span class="s2">&quot;:&quot;</span><span class="p">),</span>
             <span class="p">)</span>
+        <span class="p">)</span>
         <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;[mirai:</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="si">}</span><span class="s2">:</span><span class="si">{</span><span class="n">data</span><span class="si">}</span><span class="s2">]&quot;</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">uuid</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;返回多媒体元素的 uuid, 即元素在 mirai 内部的标识&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s2">&quot;/</span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
         <span class="k">return</span> <span class="s2">&quot;&quot;</span>
@@ -956,10 +933,20 @@
     <span class="nb">id</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;imageId&quot;</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">toFlashImage</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;FlashImage&quot;</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;将 Image 转换为 FlashImage</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            FlashImage: 转换后的 FlashImage</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">FlashImage</span><span class="o">.</span><span class="n">parse_obj</span><span class="p">({</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">dict</span><span class="p">(),</span> <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;FlashImage&quot;</span><span class="p">})</span>
 
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">fromFlashImage</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">flash</span><span class="p">:</span> <span class="s2">&quot;FlashImage&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;Image&quot;</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;从 FlashImage 构造 Image</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Image: 构造出的 Image</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">parse_obj</span><span class="p">({</span><span class="o">**</span><span class="n">flash</span><span class="o">.</span><span class="n">dict</span><span class="p">(),</span> <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;Image&quot;</span><span class="p">})</span>
 
     <span class="k">def</span> <span class="nf">asDisplay</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
@@ -972,10 +959,20 @@
     <span class="nb">type</span> <span class="o">=</span> <span class="s2">&quot;FlashImage&quot;</span>
 
     <span class="k">def</span> <span class="nf">toImage</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;Image&quot;</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;将 FlashImage 转换为 Image</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Image: 转换后的 Image</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">Image</span><span class="o">.</span><span class="n">parse_obj</span><span class="p">({</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">dict</span><span class="p">(),</span> <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;Image&quot;</span><span class="p">})</span>
 
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">fromImage</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">image</span><span class="p">:</span> <span class="s2">&quot;Image&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;FlashImage&quot;</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;从 Image 构造 FlashImage</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            FlashImage: 构造出的 FlashImage</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">parse_obj</span><span class="p">({</span><span class="o">**</span><span class="n">image</span><span class="o">.</span><span class="n">dict</span><span class="p">(),</span> <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;FlashImage&quot;</span><span class="p">})</span>
 
     <span class="k">def</span> <span class="nf">asDisplay</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
@@ -1069,10 +1066,21 @@
     <span class="k">def</span> <span class="fm">__hash__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="nb">hash</span><span class="p">((</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">),)</span> <span class="o">+</span> <span class="nb">tuple</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">values</span><span class="p">()))</span>
 
-    <span class="k">def</span> <span class="nf">asDisplay</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">asDisplay</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;返回该元素的 &quot;显示&quot; 形式字符串, 趋近于你见到的样子.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            str: &quot;显示&quot; 字符串.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="s2">&quot;&quot;</span>
 
     <span class="k">def</span> <span class="nf">asPersistentString</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;持久化字符串表示.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            str: 持久化字符串.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">data</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">wrap_bracket</span><span class="p">(</span>
             <span class="n">j_dump</span><span class="p">(</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">dict</span><span class="p">(</span>
@@ -1095,7 +1103,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="nf">__repr_args__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;ReprArgs&quot;</span><span class="p">:</span>
-        <span class="k">return</span> <span class="p">[(</span><span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">dict</span><span class="p">(</span><span class="n">exclude</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;type&quot;</span><span class="p">})</span><span class="o">.</span><span class="n">items</span><span class="p">()]</span>
+        <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dict</span><span class="p">(</span><span class="n">exclude</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;type&quot;</span><span class="p">})</span><span class="o">.</span><span class="n">items</span><span class="p">())</span>
 
     <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">asDisplay</span><span class="p">()</span>
@@ -1111,20 +1119,35 @@ type (str): 元素类型</p>
                             <div id="Element.asDisplay" class="classattr">
                                         <div class="attr function"><a class="headerlink" href="#Element.asDisplay">#&nbsp;&nbsp</a>
 
-        
+                <div class="decorator">@staticmethod</div>
+
             <span class="def">def</span>
-            <span class="name">asDisplay</span><span class="signature">(self) -&gt; str</span>:
+            <span class="name">asDisplay</span><span class="signature">() -&gt; str</span>:
     </div>
 
                 <details>
             <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">asDisplay</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+            <div class="codehilite"><pre><span></span>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">asDisplay</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;返回该元素的 &quot;显示&quot; 形式字符串, 趋近于你见到的样子.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            str: &quot;显示&quot; 字符串.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="s2">&quot;&quot;</span>
 </pre></div>
 
         </details>
 
-    
+            <div class="docstring"><p>返回该元素的 "显示" 形式字符串, 趋近于你见到的样子.</p>
+
+<h6 id="returns">Returns</h6>
+
+<blockquote>
+  <p>str: "显示" 字符串.</p>
+</blockquote>
+</div>
+
 
                             </div>
                             <div id="Element.asPersistentString" class="classattr">
@@ -1138,6 +1161,11 @@ type (str): 元素类型</p>
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">asPersistentString</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;持久化字符串表示.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            str: 持久化字符串.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">data</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">wrap_bracket</span><span class="p">(</span>
             <span class="n">j_dump</span><span class="p">(</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">dict</span><span class="p">(</span>
@@ -1152,7 +1180,15 @@ type (str): 元素类型</p>
 
         </details>
 
-    
+            <div class="docstring"><p>持久化字符串表示.</p>
+
+<h6 id="returns">Returns</h6>
+
+<blockquote>
+  <p>str: 持久化字符串.</p>
+</blockquote>
+</div>
+
 
                             </div>
                             <div id="Element.prepare" class="classattr">
@@ -1226,6 +1262,8 @@ type (str): 元素类型</p>
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">Plain</span><span class="p">(</span><span class="n">Element</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;代表消息中的文本元素&quot;&quot;&quot;</span>
+
     <span class="nb">type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;Plain&quot;</span>
     <span class="n">text</span><span class="p">:</span> <span class="nb">str</span>
 
@@ -1246,8 +1284,7 @@ type (str): 元素类型</p>
 
         </details>
 
-            <div class="docstring"><p>指示一个消息中的元素.
-type (str): 元素类型</p>
+            <div class="docstring"><p>代表消息中的文本元素</p>
 </div>
 
 
@@ -1298,7 +1335,15 @@ type (str): 元素类型</p>
 
         </details>
 
-    
+            <div class="docstring"><p>返回该元素的 "显示" 形式字符串, 趋近于你见到的样子.</p>
+
+<h6 id="returns">Returns</h6>
+
+<blockquote>
+  <p>str: "显示" 字符串.</p>
+</blockquote>
+</div>
+
 
                             </div>
                             <div id="Plain.asPersistentString" class="classattr">
@@ -1317,7 +1362,15 @@ type (str): 元素类型</p>
 
         </details>
 
-    
+            <div class="docstring"><p>持久化字符串表示.</p>
+
+<h6 id="returns">Returns</h6>
+
+<blockquote>
+  <p>str: 持久化字符串.</p>
+</blockquote>
+</div>
+
 
                             </div>
                             <div class="inherited">
@@ -1366,11 +1419,6 @@ type (str): 元素类型</p>
     <span class="nb">type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;Source&quot;</span>
     <span class="nb">id</span><span class="p">:</span> <span class="nb">int</span>
     <span class="n">time</span><span class="p">:</span> <span class="n">datetime</span>
-
-    <span class="k">class</span> <span class="nc">Config</span><span class="p">:</span>
-        <span class="n">json_encoders</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="n">datetime</span><span class="p">:</span> <span class="n">datetime_encoder</span><span class="p">,</span>
-        <span class="p">}</span>
 
     <span class="k">def</span> <span class="nf">prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">NoReturn</span><span class="p">:</span>
         <span class="k">raise</span> <span class="n">NotSendableElement</span>
@@ -1439,7 +1487,15 @@ type (str): 元素类型</p>
 
         </details>
 
-    
+            <div class="docstring"><p>持久化字符串表示.</p>
+
+<h6 id="returns">Returns</h6>
+
+<blockquote>
+  <p>str: 持久化字符串.</p>
+</blockquote>
+</div>
+
 
                             </div>
                             <div id="Source.fetchOriginal" class="classattr">
@@ -1502,51 +1558,10 @@ type (str): 元素类型</p>
             </div>
             <div><dt><a href="../model.html#AriadneBaseModel">ariadne.model.AriadneBaseModel</a></dt>
                                 <dd id="Source.dict" class="function"><a href="../model.html#AriadneBaseModel.dict">dict</a></dd>
+                <dd id="Source.Config" class="class"><a href="../model.html#AriadneBaseModel.Config">Config</a></dd>
 
             </div>
                                 </dl>
-                            </div>
-                </section>
-                <section id="Source.Config">
-                                <div class="attr class">
-        <a class="headerlink" href="#Source.Config">#&nbsp;&nbsp</a>
-
-        
-        <span class="def">class</span>
-        <span class="name">Source.Config</span>:
-    </div>
-
-                <details>
-            <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span>    <span class="k">class</span> <span class="nc">Config</span><span class="p">:</span>
-        <span class="n">json_encoders</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="n">datetime</span><span class="p">:</span> <span class="n">datetime_encoder</span><span class="p">,</span>
-        <span class="p">}</span>
-</pre></div>
-
-        </details>
-
-    
-
-                            <div id="Source.Config.__init__" class="classattr">
-                                        <div class="attr function"><a class="headerlink" href="#Source.Config.__init__">#&nbsp;&nbsp</a>
-
-        
-            <span class="name">Source.Config</span><span class="signature">()</span>
-    </div>
-
-        
-    
-
-                            </div>
-                            <div id="Source.Config.json_encoders" class="classattr">
-                                            <div class="attr variable"><a class="headerlink" href="#Source.Config.json_encoders">#&nbsp;&nbsp</a>
-
-        <span class="name">json_encoders</span><span class="default_value"> = {&lt;class &#39;datetime.datetime&#39;&gt;: &lt;function datetime_encoder at 0x7fd77f5aaca0&gt;}</span>
-    </div>
-
-    
-
                             </div>
                 </section>
                 <section id="Quote">
@@ -1631,7 +1646,15 @@ type (str): 元素类型</p>
 
         </details>
 
-    
+            <div class="docstring"><p>持久化字符串表示.</p>
+
+<h6 id="returns">Returns</h6>
+
+<blockquote>
+  <p>str: 持久化字符串.</p>
+</blockquote>
+</div>
+
 
                             </div>
                             <div class="inherited">
@@ -1702,7 +1725,7 @@ type (str): 元素类型</p>
         <span class="k">try</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">upload_method_ctx</span><span class="o">.</span><span class="n">get</span><span class="p">()</span> <span class="o">!=</span> <span class="n">UploadMethod</span><span class="o">.</span><span class="n">Group</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="n">InvalidArgument</span><span class="p">(</span>
-                    <span class="s2">&quot;you cannot use this element in this method: </span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">upload_method_ctx</span><span class="o">.</span><span class="n">get</span><span class="p">()</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
+                    <span class="sa">f</span><span class="s2">&quot;you cannot use this element in this method: </span><span class="si">{</span><span class="n">upload_method_ctx</span><span class="o">.</span><span class="n">get</span><span class="p">()</span><span class="o">.</span><span class="n">value</span><span class="si">}</span><span class="s2">&quot;</span>
                 <span class="p">)</span>
         <span class="k">except</span> <span class="ne">LookupError</span><span class="p">:</span>
             <span class="k">pass</span>
@@ -1767,7 +1790,7 @@ type (str): 元素类型</p>
         <span class="k">try</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">upload_method_ctx</span><span class="o">.</span><span class="n">get</span><span class="p">()</span> <span class="o">!=</span> <span class="n">UploadMethod</span><span class="o">.</span><span class="n">Group</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="n">InvalidArgument</span><span class="p">(</span>
-                    <span class="s2">&quot;you cannot use this element in this method: </span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">upload_method_ctx</span><span class="o">.</span><span class="n">get</span><span class="p">()</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
+                    <span class="sa">f</span><span class="s2">&quot;you cannot use this element in this method: </span><span class="si">{</span><span class="n">upload_method_ctx</span><span class="o">.</span><span class="n">get</span><span class="p">()</span><span class="o">.</span><span class="n">value</span><span class="si">}</span><span class="s2">&quot;</span>
                 <span class="p">)</span>
         <span class="k">except</span> <span class="ne">LookupError</span><span class="p">:</span>
             <span class="k">pass</span>
@@ -1801,7 +1824,15 @@ type (str): 元素类型</p>
 
         </details>
 
-    
+            <div class="docstring"><p>返回该元素的 "显示" 形式字符串, 趋近于你见到的样子.</p>
+
+<h6 id="returns">Returns</h6>
+
+<blockquote>
+  <p>str: "显示" 字符串.</p>
+</blockquote>
+</div>
+
 
                             </div>
                             <div class="inherited">
@@ -1859,7 +1890,7 @@ type (str): 元素类型</p>
         <span class="k">try</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">upload_method_ctx</span><span class="o">.</span><span class="n">get</span><span class="p">()</span> <span class="o">!=</span> <span class="n">UploadMethod</span><span class="o">.</span><span class="n">Group</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="n">InvalidArgument</span><span class="p">(</span>
-                    <span class="s2">&quot;you cannot use this element in this method: </span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">upload_method_ctx</span><span class="o">.</span><span class="n">get</span><span class="p">()</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
+                    <span class="sa">f</span><span class="s2">&quot;you cannot use this element in this method: </span><span class="si">{</span><span class="n">upload_method_ctx</span><span class="o">.</span><span class="n">get</span><span class="p">()</span><span class="o">.</span><span class="n">value</span><span class="si">}</span><span class="s2">&quot;</span>
                 <span class="p">)</span>
         <span class="k">except</span> <span class="ne">LookupError</span><span class="p">:</span>
             <span class="k">pass</span>
@@ -1909,7 +1940,15 @@ type (str): 元素类型</p>
 
         </details>
 
-    
+            <div class="docstring"><p>返回该元素的 "显示" 形式字符串, 趋近于你见到的样子.</p>
+
+<h6 id="returns">Returns</h6>
+
+<blockquote>
+  <p>str: "显示" 字符串.</p>
+</blockquote>
+</div>
+
 
                             </div>
                             <div id="AtAll.prepare" class="classattr">
@@ -1926,7 +1965,7 @@ type (str): 元素类型</p>
         <span class="k">try</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">upload_method_ctx</span><span class="o">.</span><span class="n">get</span><span class="p">()</span> <span class="o">!=</span> <span class="n">UploadMethod</span><span class="o">.</span><span class="n">Group</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="n">InvalidArgument</span><span class="p">(</span>
-                    <span class="s2">&quot;you cannot use this element in this method: </span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">upload_method_ctx</span><span class="o">.</span><span class="n">get</span><span class="p">()</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
+                    <span class="sa">f</span><span class="s2">&quot;you cannot use this element in this method: </span><span class="si">{</span><span class="n">upload_method_ctx</span><span class="o">.</span><span class="n">get</span><span class="p">()</span><span class="o">.</span><span class="n">value</span><span class="si">}</span><span class="s2">&quot;</span>
                 <span class="p">)</span>
         <span class="k">except</span> <span class="ne">LookupError</span><span class="p">:</span>
             <span class="k">pass</span>
@@ -2053,7 +2092,15 @@ type (str): 元素类型</p>
 
         </details>
 
-    
+            <div class="docstring"><p>返回该元素的 "显示" 形式字符串, 趋近于你见到的样子.</p>
+
+<h6 id="returns">Returns</h6>
+
+<blockquote>
+  <p>str: "显示" 字符串.</p>
+</blockquote>
+</div>
+
 
                             </div>
                             <div class="inherited">
@@ -2129,7 +2176,15 @@ type (str): 元素类型</p>
 
         </details>
 
-    
+            <div class="docstring"><p>返回该元素的 "显示" 形式字符串, 趋近于你见到的样子.</p>
+
+<h6 id="returns">Returns</h6>
+
+<blockquote>
+  <p>str: "显示" 字符串.</p>
+</blockquote>
+</div>
+
 
                             </div>
                             <div class="inherited">
@@ -2259,7 +2314,15 @@ type (str): 元素类型</p>
 
         </details>
 
-    
+            <div class="docstring"><p>返回该元素的 "显示" 形式字符串, 趋近于你见到的样子.</p>
+
+<h6 id="returns">Returns</h6>
+
+<blockquote>
+  <p>str: "显示" 字符串.</p>
+</blockquote>
+</div>
+
 
                             </div>
                             <div class="inherited">
@@ -2334,7 +2397,15 @@ type (str): 元素类型</p>
 
         </details>
 
-    
+            <div class="docstring"><p>返回该元素的 "显示" 形式字符串, 趋近于你见到的样子.</p>
+
+<h6 id="returns">Returns</h6>
+
+<blockquote>
+  <p>str: "显示" 字符串.</p>
+</blockquote>
+</div>
+
 
                             </div>
                             <div class="inherited">
@@ -2629,7 +2700,15 @@ type (str): 元素类型</p>
 
         </details>
 
-    
+            <div class="docstring"><p>返回该元素的 "显示" 形式字符串, 趋近于你见到的样子.</p>
+
+<h6 id="returns">Returns</h6>
+
+<blockquote>
+  <p>str: "显示" 字符串.</p>
+</blockquote>
+</div>
+
 
                             </div>
                             <div class="inherited">
@@ -2730,7 +2809,15 @@ type (str): 元素类型</p>
 
         </details>
 
-    
+            <div class="docstring"><p>返回该元素的 "显示" 形式字符串, 趋近于你见到的样子.</p>
+
+<h6 id="returns">Returns</h6>
+
+<blockquote>
+  <p>str: "显示" 字符串.</p>
+</blockquote>
+</div>
+
 
                             </div>
                             <div class="inherited">
@@ -2812,7 +2899,15 @@ type (str): 元素类型</p>
 
         </details>
 
-    
+            <div class="docstring"><p>返回该元素的 "显示" 形式字符串, 趋近于你见到的样子.</p>
+
+<h6 id="returns">Returns</h6>
+
+<blockquote>
+  <p>str: "显示" 字符串.</p>
+</blockquote>
+</div>
+
 
                             </div>
                             <div class="inherited">
@@ -2890,11 +2985,6 @@ type (str): 元素类型</p>
         <span class="k">if</span> <span class="n">message</span> <span class="ow">is</span> <span class="ow">not</span> <span class="o">...</span><span class="p">:</span>
             <span class="n">data</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">messageChain</span><span class="o">=</span><span class="n">message</span><span class="p">)</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">data</span><span class="p">)</span>
-
-    <span class="k">class</span> <span class="nc">Config</span><span class="p">:</span>
-        <span class="n">json_encoders</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="n">datetime</span><span class="p">:</span> <span class="n">datetime_encoder</span><span class="p">,</span>
-        <span class="p">}</span>
 </pre></div>
 
         </details>
@@ -2958,6 +3048,7 @@ type (str): 元素类型</p>
                                 <dl>
                                     <div><dt><a href="../model.html#AriadneBaseModel">ariadne.model.AriadneBaseModel</a></dt>
                                 <dd id="ForwardNode.dict" class="function"><a href="../model.html#AriadneBaseModel.dict">dict</a></dd>
+                <dd id="ForwardNode.Config" class="class"><a href="../model.html#AriadneBaseModel.Config">Config</a></dd>
 
             </div>
             <div><dt>pydantic.main.BaseModel</dt>
@@ -2975,48 +3066,6 @@ type (str): 元素类型</p>
 
             </div>
                                 </dl>
-                            </div>
-                </section>
-                <section id="ForwardNode.Config">
-                                <div class="attr class">
-        <a class="headerlink" href="#ForwardNode.Config">#&nbsp;&nbsp</a>
-
-        
-        <span class="def">class</span>
-        <span class="name">ForwardNode.Config</span>:
-    </div>
-
-                <details>
-            <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span>    <span class="k">class</span> <span class="nc">Config</span><span class="p">:</span>
-        <span class="n">json_encoders</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="n">datetime</span><span class="p">:</span> <span class="n">datetime_encoder</span><span class="p">,</span>
-        <span class="p">}</span>
-</pre></div>
-
-        </details>
-
-    
-
-                            <div id="ForwardNode.Config.__init__" class="classattr">
-                                        <div class="attr function"><a class="headerlink" href="#ForwardNode.Config.__init__">#&nbsp;&nbsp</a>
-
-        
-            <span class="name">ForwardNode.Config</span><span class="signature">()</span>
-    </div>
-
-        
-    
-
-                            </div>
-                            <div id="ForwardNode.Config.json_encoders" class="classattr">
-                                            <div class="attr variable"><a class="headerlink" href="#ForwardNode.Config.json_encoders">#&nbsp;&nbsp</a>
-
-        <span class="name">json_encoders</span><span class="default_value"> = {&lt;class &#39;datetime.datetime&#39;&gt;: &lt;function datetime_encoder at 0x7fd77f5aaca0&gt;}</span>
-    </div>
-
-    
-
                             </div>
                 </section>
                 <section id="Forward">
@@ -3115,7 +3164,15 @@ type (str): 元素类型</p>
 
         </details>
 
-    
+            <div class="docstring"><p>返回该元素的 "显示" 形式字符串, 趋近于你见到的样子.</p>
+
+<h6 id="returns">Returns</h6>
+
+<blockquote>
+  <p>str: "显示" 字符串.</p>
+</blockquote>
+</div>
+
 
                             </div>
                             <div id="Forward.asPersistentString" class="classattr">
@@ -3134,7 +3191,15 @@ type (str): 元素类型</p>
 
         </details>
 
-    
+            <div class="docstring"><p>持久化字符串表示.</p>
+
+<h6 id="returns">Returns</h6>
+
+<blockquote>
+  <p>str: 持久化字符串.</p>
+</blockquote>
+</div>
+
 
                             </div>
                             <div class="inherited">
@@ -3214,7 +3279,15 @@ type (str): 元素类型</p>
 
         </details>
 
-    
+            <div class="docstring"><p>返回该元素的 "显示" 形式字符串, 趋近于你见到的样子.</p>
+
+<h6 id="returns">Returns</h6>
+
+<blockquote>
+  <p>str: "显示" 字符串.</p>
+</blockquote>
+</div>
+
 
                             </div>
                             <div id="File.asPersistentString" class="classattr">
@@ -3233,7 +3306,15 @@ type (str): 元素类型</p>
 
         </details>
 
-    
+            <div class="docstring"><p>持久化字符串表示.</p>
+
+<h6 id="returns">Returns</h6>
+
+<blockquote>
+  <p>str: 持久化字符串.</p>
+</blockquote>
+</div>
+
 
                             </div>
                             <div class="inherited">
@@ -3334,6 +3415,8 @@ type (str): 元素类型</p>
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">ImageType</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Image 类型的枚举.&quot;&quot;&quot;</span>
+
     <span class="n">Friend</span> <span class="o">=</span> <span class="s2">&quot;Friend&quot;</span>
     <span class="n">Group</span> <span class="o">=</span> <span class="s2">&quot;Group&quot;</span>
     <span class="n">Temp</span> <span class="o">=</span> <span class="s2">&quot;Temp&quot;</span>
@@ -3342,7 +3425,7 @@ type (str): 元素类型</p>
 
         </details>
 
-            <div class="docstring"><p>An enumeration.</p>
+            <div class="docstring"><p>Image 类型的枚举.</p>
 </div>
 
 
@@ -3467,23 +3550,26 @@ type (str): 元素类型</p>
             <span class="bp">self</span><span class="o">.</span><span class="n">base64</span> <span class="o">=</span> <span class="n">b64encode</span><span class="p">(</span><span class="n">data</span><span class="p">)</span><span class="o">.</span><span class="n">decode</span><span class="p">()</span>
             <span class="k">return</span> <span class="n">data</span>
 
-    <span class="k">def</span> <span class="nf">asPersistentString</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">binary</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">binary</span><span class="p">:</span>
-            <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">asPersistentString</span><span class="p">()</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">data</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">wrap_bracket</span><span class="p">(</span>
-                <span class="n">j_dump</span><span class="p">(</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">dict</span><span class="p">(</span>
-                        <span class="n">exclude</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;type&quot;</span><span class="p">,</span> <span class="s2">&quot;base64&quot;</span><span class="p">},</span>
-                    <span class="p">),</span>
-                    <span class="n">indent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                    <span class="n">separators</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;,&quot;</span><span class="p">,</span> <span class="s2">&quot;:&quot;</span><span class="p">),</span>
-                <span class="p">)</span>
+    <span class="k">def</span> <span class="nf">asNoBinaryPersistentString</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;生成不附带二进制数据的持久化字符串</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            str: 持久化字符串</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">data</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">wrap_bracket</span><span class="p">(</span>
+            <span class="n">j_dump</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">dict</span><span class="p">(</span>
+                    <span class="n">exclude</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;type&quot;</span><span class="p">,</span> <span class="s2">&quot;base64&quot;</span><span class="p">},</span>
+                <span class="p">),</span>
+                <span class="n">indent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                <span class="n">separators</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;,&quot;</span><span class="p">,</span> <span class="s2">&quot;:&quot;</span><span class="p">),</span>
             <span class="p">)</span>
+        <span class="p">)</span>
         <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;[mirai:</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="si">}</span><span class="s2">:</span><span class="si">{</span><span class="n">data</span><span class="si">}</span><span class="s2">]&quot;</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">uuid</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;返回多媒体元素的 uuid, 即元素在 mirai 内部的标识&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s2">&quot;/</span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
         <span class="k">return</span> <span class="s2">&quot;&quot;</span>
@@ -3619,35 +3705,45 @@ type (str): 元素类型</p>
 
 
                             </div>
-                            <div id="MultimediaElement.asPersistentString" class="classattr">
-                                        <div class="attr function"><a class="headerlink" href="#MultimediaElement.asPersistentString">#&nbsp;&nbsp</a>
+                            <div id="MultimediaElement.asNoBinaryPersistentString" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#MultimediaElement.asNoBinaryPersistentString">#&nbsp;&nbsp</a>
 
         
             <span class="def">def</span>
-            <span class="name">asPersistentString</span><span class="signature">(self, *, binary: bool = True) -&gt; str</span>:
+            <span class="name">asNoBinaryPersistentString</span><span class="signature">(self) -&gt; str</span>:
     </div>
 
                 <details>
             <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">asPersistentString</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">binary</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">binary</span><span class="p">:</span>
-            <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">asPersistentString</span><span class="p">()</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">data</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">wrap_bracket</span><span class="p">(</span>
-                <span class="n">j_dump</span><span class="p">(</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">dict</span><span class="p">(</span>
-                        <span class="n">exclude</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;type&quot;</span><span class="p">,</span> <span class="s2">&quot;base64&quot;</span><span class="p">},</span>
-                    <span class="p">),</span>
-                    <span class="n">indent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                    <span class="n">separators</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;,&quot;</span><span class="p">,</span> <span class="s2">&quot;:&quot;</span><span class="p">),</span>
-                <span class="p">)</span>
+            <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">asNoBinaryPersistentString</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;生成不附带二进制数据的持久化字符串</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            str: 持久化字符串</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">data</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">wrap_bracket</span><span class="p">(</span>
+            <span class="n">j_dump</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">dict</span><span class="p">(</span>
+                    <span class="n">exclude</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;type&quot;</span><span class="p">,</span> <span class="s2">&quot;base64&quot;</span><span class="p">},</span>
+                <span class="p">),</span>
+                <span class="n">indent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                <span class="n">separators</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;,&quot;</span><span class="p">,</span> <span class="s2">&quot;:&quot;</span><span class="p">),</span>
             <span class="p">)</span>
+        <span class="p">)</span>
         <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;[mirai:</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="si">}</span><span class="s2">:</span><span class="si">{</span><span class="n">data</span><span class="si">}</span><span class="s2">]&quot;</span>
 </pre></div>
 
         </details>
 
-    
+            <div class="docstring"><p>生成不附带二进制数据的持久化字符串</p>
+
+<h6 id="returns">Returns</h6>
+
+<blockquote>
+  <p>str: 持久化字符串</p>
+</blockquote>
+</div>
+
 
                             </div>
                             <div id="MultimediaElement.uuid" class="classattr">
@@ -3656,7 +3752,9 @@ type (str): 元素类型</p>
         <span class="name">uuid</span>
     </div>
 
-    
+            <div class="docstring"><p>返回多媒体元素的 uuid, 即元素在 mirai 内部的标识</p>
+</div>
+
 
                             </div>
                             <div class="inherited">
@@ -3664,6 +3762,7 @@ type (str): 元素类型</p>
                                 <dl>
                                     <div><dt><a href="#Element">Element</a></dt>
                                 <dd id="MultimediaElement.asDisplay" class="function"><a href="#Element.asDisplay">asDisplay</a></dd>
+                <dd id="MultimediaElement.asPersistentString" class="function"><a href="#Element.asPersistentString">asPersistentString</a></dd>
                 <dd id="MultimediaElement.prepare" class="function"><a href="#Element.prepare">prepare</a></dd>
 
             </div>
@@ -3707,10 +3806,20 @@ type (str): 元素类型</p>
     <span class="nb">id</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;imageId&quot;</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">toFlashImage</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;FlashImage&quot;</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;将 Image 转换为 FlashImage</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            FlashImage: 转换后的 FlashImage</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">FlashImage</span><span class="o">.</span><span class="n">parse_obj</span><span class="p">({</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">dict</span><span class="p">(),</span> <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;FlashImage&quot;</span><span class="p">})</span>
 
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">fromFlashImage</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">flash</span><span class="p">:</span> <span class="s2">&quot;FlashImage&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;Image&quot;</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;从 FlashImage 构造 Image</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Image: 构造出的 Image</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">parse_obj</span><span class="p">({</span><span class="o">**</span><span class="n">flash</span><span class="o">.</span><span class="n">dict</span><span class="p">(),</span> <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;Image&quot;</span><span class="p">})</span>
 
     <span class="k">def</span> <span class="nf">asDisplay</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
@@ -3734,12 +3843,25 @@ type (str): 元素类型</p>
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">toFlashImage</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;FlashImage&quot;</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;将 Image 转换为 FlashImage</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            FlashImage: 转换后的 FlashImage</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">FlashImage</span><span class="o">.</span><span class="n">parse_obj</span><span class="p">({</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">dict</span><span class="p">(),</span> <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;FlashImage&quot;</span><span class="p">})</span>
 </pre></div>
 
         </details>
 
-    
+            <div class="docstring"><p>将 Image 转换为 FlashImage</p>
+
+<h6 id="returns">Returns</h6>
+
+<blockquote>
+  <p>FlashImage: 转换后的 FlashImage</p>
+</blockquote>
+</div>
+
 
                             </div>
                             <div id="Image.fromFlashImage" class="classattr">
@@ -3758,12 +3880,25 @@ type (str): 元素类型</p>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">fromFlashImage</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">flash</span><span class="p">:</span> <span class="s2">&quot;FlashImage&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;Image&quot;</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;从 FlashImage 构造 Image</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Image: 构造出的 Image</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">parse_obj</span><span class="p">({</span><span class="o">**</span><span class="n">flash</span><span class="o">.</span><span class="n">dict</span><span class="p">(),</span> <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;Image&quot;</span><span class="p">})</span>
 </pre></div>
 
         </details>
 
-    
+            <div class="docstring"><p>从 FlashImage 构造 Image</p>
+
+<h6 id="returns">Returns</h6>
+
+<blockquote>
+  <p>Image: 构造出的 Image</p>
+</blockquote>
+</div>
+
 
                             </div>
                             <div id="Image.asDisplay" class="classattr">
@@ -3782,7 +3917,15 @@ type (str): 元素类型</p>
 
         </details>
 
-    
+            <div class="docstring"><p>返回该元素的 "显示" 形式字符串, 趋近于你见到的样子.</p>
+
+<h6 id="returns">Returns</h6>
+
+<blockquote>
+  <p>str: "显示" 字符串.</p>
+</blockquote>
+</div>
+
 
                             </div>
                             <div class="inherited">
@@ -3791,12 +3934,13 @@ type (str): 元素类型</p>
                                     <div><dt><a href="#MultimediaElement">MultimediaElement</a></dt>
                                 <dd id="Image.__init__" class="function"><a href="#MultimediaElement.__init__">MultimediaElement</a></dd>
                 <dd id="Image.get_bytes" class="function"><a href="#MultimediaElement.get_bytes">get_bytes</a></dd>
-                <dd id="Image.asPersistentString" class="function"><a href="#MultimediaElement.asPersistentString">asPersistentString</a></dd>
+                <dd id="Image.asNoBinaryPersistentString" class="function"><a href="#MultimediaElement.asNoBinaryPersistentString">asNoBinaryPersistentString</a></dd>
                 <dd id="Image.uuid" class="variable"><a href="#MultimediaElement.uuid">uuid</a></dd>
 
             </div>
             <div><dt><a href="#Element">Element</a></dt>
-                                <dd id="Image.prepare" class="function"><a href="#Element.prepare">prepare</a></dd>
+                                <dd id="Image.asPersistentString" class="function"><a href="#Element.asPersistentString">asPersistentString</a></dd>
+                <dd id="Image.prepare" class="function"><a href="#Element.prepare">prepare</a></dd>
 
             </div>
             <div><dt><a href="../model.html#AriadneBaseModel">ariadne.model.AriadneBaseModel</a></dt>
@@ -3838,10 +3982,20 @@ type (str): 元素类型</p>
     <span class="nb">type</span> <span class="o">=</span> <span class="s2">&quot;FlashImage&quot;</span>
 
     <span class="k">def</span> <span class="nf">toImage</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;Image&quot;</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;将 FlashImage 转换为 Image</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Image: 转换后的 Image</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">Image</span><span class="o">.</span><span class="n">parse_obj</span><span class="p">({</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">dict</span><span class="p">(),</span> <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;Image&quot;</span><span class="p">})</span>
 
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">fromImage</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">image</span><span class="p">:</span> <span class="s2">&quot;Image&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;FlashImage&quot;</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;从 Image 构造 FlashImage</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            FlashImage: 构造出的 FlashImage</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">parse_obj</span><span class="p">({</span><span class="o">**</span><span class="n">image</span><span class="o">.</span><span class="n">dict</span><span class="p">(),</span> <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;FlashImage&quot;</span><span class="p">})</span>
 
     <span class="k">def</span> <span class="nf">asDisplay</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
@@ -3865,12 +4019,25 @@ type (str): 元素类型</p>
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">toImage</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;Image&quot;</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;将 FlashImage 转换为 Image</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Image: 转换后的 Image</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">Image</span><span class="o">.</span><span class="n">parse_obj</span><span class="p">({</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">dict</span><span class="p">(),</span> <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;Image&quot;</span><span class="p">})</span>
 </pre></div>
 
         </details>
 
-    
+            <div class="docstring"><p>将 FlashImage 转换为 Image</p>
+
+<h6 id="returns">Returns</h6>
+
+<blockquote>
+  <p>Image: 转换后的 Image</p>
+</blockquote>
+</div>
+
 
                             </div>
                             <div id="FlashImage.fromImage" class="classattr">
@@ -3889,12 +4056,25 @@ type (str): 元素类型</p>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">fromImage</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">image</span><span class="p">:</span> <span class="s2">&quot;Image&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;FlashImage&quot;</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;从 Image 构造 FlashImage</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            FlashImage: 构造出的 FlashImage</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">parse_obj</span><span class="p">({</span><span class="o">**</span><span class="n">image</span><span class="o">.</span><span class="n">dict</span><span class="p">(),</span> <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;FlashImage&quot;</span><span class="p">})</span>
 </pre></div>
 
         </details>
 
-    
+            <div class="docstring"><p>从 Image 构造 FlashImage</p>
+
+<h6 id="returns">Returns</h6>
+
+<blockquote>
+  <p>FlashImage: 构造出的 FlashImage</p>
+</blockquote>
+</div>
+
 
                             </div>
                             <div id="FlashImage.asDisplay" class="classattr">
@@ -3913,7 +4093,15 @@ type (str): 元素类型</p>
 
         </details>
 
-    
+            <div class="docstring"><p>返回该元素的 "显示" 形式字符串, 趋近于你见到的样子.</p>
+
+<h6 id="returns">Returns</h6>
+
+<blockquote>
+  <p>str: "显示" 字符串.</p>
+</blockquote>
+</div>
+
 
                             </div>
                             <div class="inherited">
@@ -3922,7 +4110,7 @@ type (str): 元素类型</p>
                                     <div><dt><a href="#MultimediaElement">MultimediaElement</a></dt>
                                 <dd id="FlashImage.__init__" class="function"><a href="#MultimediaElement.__init__">MultimediaElement</a></dd>
                 <dd id="FlashImage.get_bytes" class="function"><a href="#MultimediaElement.get_bytes">get_bytes</a></dd>
-                <dd id="FlashImage.asPersistentString" class="function"><a href="#MultimediaElement.asPersistentString">asPersistentString</a></dd>
+                <dd id="FlashImage.asNoBinaryPersistentString" class="function"><a href="#MultimediaElement.asNoBinaryPersistentString">asNoBinaryPersistentString</a></dd>
                 <dd id="FlashImage.uuid" class="variable"><a href="#MultimediaElement.uuid">uuid</a></dd>
 
             </div>
@@ -3932,7 +4120,8 @@ type (str): 元素类型</p>
 
             </div>
             <div><dt><a href="#Element">Element</a></dt>
-                                <dd id="FlashImage.prepare" class="function"><a href="#Element.prepare">prepare</a></dd>
+                                <dd id="FlashImage.asPersistentString" class="function"><a href="#Element.asPersistentString">asPersistentString</a></dd>
+                <dd id="FlashImage.prepare" class="function"><a href="#Element.prepare">prepare</a></dd>
 
             </div>
             <div><dt><a href="../model.html#AriadneBaseModel">ariadne.model.AriadneBaseModel</a></dt>
@@ -4001,7 +4190,15 @@ type (str): 元素类型</p>
 
         </details>
 
-    
+            <div class="docstring"><p>返回该元素的 "显示" 形式字符串, 趋近于你见到的样子.</p>
+
+<h6 id="returns">Returns</h6>
+
+<blockquote>
+  <p>str: "显示" 字符串.</p>
+</blockquote>
+</div>
+
 
                             </div>
                             <div class="inherited">
@@ -4010,12 +4207,13 @@ type (str): 元素类型</p>
                                     <div><dt><a href="#MultimediaElement">MultimediaElement</a></dt>
                                 <dd id="Voice.__init__" class="function"><a href="#MultimediaElement.__init__">MultimediaElement</a></dd>
                 <dd id="Voice.get_bytes" class="function"><a href="#MultimediaElement.get_bytes">get_bytes</a></dd>
-                <dd id="Voice.asPersistentString" class="function"><a href="#MultimediaElement.asPersistentString">asPersistentString</a></dd>
+                <dd id="Voice.asNoBinaryPersistentString" class="function"><a href="#MultimediaElement.asNoBinaryPersistentString">asNoBinaryPersistentString</a></dd>
                 <dd id="Voice.uuid" class="variable"><a href="#MultimediaElement.uuid">uuid</a></dd>
 
             </div>
             <div><dt><a href="#Element">Element</a></dt>
-                                <dd id="Voice.prepare" class="function"><a href="#Element.prepare">prepare</a></dd>
+                                <dd id="Voice.asPersistentString" class="function"><a href="#Element.asPersistentString">asPersistentString</a></dd>
+                <dd id="Voice.prepare" class="function"><a href="#Element.prepare">prepare</a></dd>
 
             </div>
             <div><dt><a href="../model.html#AriadneBaseModel">ariadne.model.AriadneBaseModel</a></dt>

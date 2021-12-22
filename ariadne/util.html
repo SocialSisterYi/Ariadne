@@ -92,9 +92,6 @@
                     <a class="function" href="#deprecated">deprecated</a>
             </li>
             <li>
-                    <a class="function" href="#cast_to">cast_to</a>
-            </li>
-            <li>
                     <a class="class" href="#Dummy">Dummy</a>
                             <ul class="memberlist">
                         <li>
@@ -196,25 +193,43 @@
 
 
 <span class="k">def</span> <span class="nf">validate_response</span><span class="p">(</span><span class="n">code</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">dict</span><span class="p">,</span> <span class="nb">int</span><span class="p">]):</span>
+    <span class="sd">&quot;&quot;&quot;验证远程服务器的返回值</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        code (Union[dict, int]): 返回的对象</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        Exception: 请参照 code_exceptions_mapping</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">origin</span> <span class="o">=</span> <span class="n">code</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">code</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
         <span class="n">code</span> <span class="o">=</span> <span class="n">code</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;code&quot;</span><span class="p">)</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="n">code</span> <span class="o">=</span> <span class="n">code</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">code</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="ow">or</span> <span class="n">code</span> <span class="o">==</span> <span class="mi">200</span> <span class="ow">or</span> <span class="n">code</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
         <span class="k">return</span>
     <span class="n">exc_cls</span> <span class="o">=</span> <span class="n">code_exceptions_mapping</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">code</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">exc_cls</span><span class="p">:</span>
         <span class="k">raise</span> <span class="n">exc_cls</span><span class="p">(</span><span class="n">exc_cls</span><span class="o">.</span><span class="vm">__doc__</span><span class="p">)</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="n">UnknownError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">origin</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">raise</span> <span class="n">UnknownError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">origin</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
 
 <span class="k">def</span> <span class="nf">loguru_excepthook</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">val</span><span class="p">,</span> <span class="n">tb</span><span class="p">,</span> <span class="o">*</span><span class="n">_</span><span class="p">,</span> <span class="o">**</span><span class="n">__</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;loguru 异常回调</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        cls (Type[Exception]): 异常类</span>
+<span class="sd">        val (Exception): 异常的实际值</span>
+<span class="sd">        tb (TracebackType): 回溯消息</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">logger</span><span class="o">.</span><span class="n">opt</span><span class="p">(</span><span class="n">exception</span><span class="o">=</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">val</span><span class="p">,</span> <span class="n">tb</span><span class="p">))</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Exception:&quot;</span><span class="p">)</span>
 
 
-<span class="k">def</span> <span class="nf">loguru_async_handler</span><span class="p">(</span><span class="n">loop</span><span class="p">:</span> <span class="n">AbstractEventLoop</span><span class="p">,</span> <span class="n">ctx</span><span class="p">:</span> <span class="nb">dict</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">loguru_async_handler</span><span class="p">(</span><span class="n">_</span><span class="p">,</span> <span class="n">ctx</span><span class="p">:</span> <span class="nb">dict</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;loguru 异步异常回调</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        _ (AbstractEventLoop): 异常发生的事件循环</span>
+<span class="sd">        ctx (dict): 异常上下文</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="s2">&quot;exception&quot;</span> <span class="ow">in</span> <span class="n">ctx</span><span class="p">:</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">opt</span><span class="p">(</span><span class="n">exception</span><span class="o">=</span><span class="n">ctx</span><span class="p">[</span><span class="s2">&quot;exception&quot;</span><span class="p">])</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Exception:&quot;</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
@@ -237,6 +252,8 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">class</span> <span class="nc">BypassListener</span><span class="p">(</span><span class="n">Listener</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;透传监听器的实现&quot;&quot;&quot;</span>
+
         <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span>
             <span class="n">callable</span><span class="p">:</span> <span class="n">Callable</span><span class="p">,</span>
@@ -263,7 +280,7 @@
     <span class="k">async</span> <span class="k">def</span> <span class="nf">_</span><span class="p">(</span><span class="n">interface</span><span class="p">:</span> <span class="n">DispatcherInterface</span><span class="p">):</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">interface</span><span class="o">.</span><span class="n">event</span><span class="p">,</span> <span class="n">interface</span><span class="o">.</span><span class="n">annotation</span><span class="p">):</span>
             <span class="k">return</span> <span class="n">interface</span><span class="o">.</span><span class="n">event</span>
-        <span class="k">elif</span> <span class="p">(</span>
+        <span class="k">if</span> <span class="p">(</span>
             <span class="nb">hasattr</span><span class="p">(</span><span class="n">interface</span><span class="o">.</span><span class="n">annotation</span><span class="p">,</span> <span class="s2">&quot;__origin__&quot;</span><span class="p">)</span>
             <span class="ow">and</span> <span class="n">interface</span><span class="o">.</span><span class="n">annotation</span><span class="o">.</span><span class="n">__origin__</span> <span class="ow">is</span> <span class="n">DispatcherInterface</span>
         <span class="p">):</span>
@@ -271,6 +288,7 @@
 
     <span class="kn">import</span> <span class="nn">graia.broadcast.entities.listener</span>
 
+    <span class="c1"># pylint: disable=no-member</span>
     <span class="n">graia</span><span class="o">.</span><span class="n">broadcast</span><span class="o">.</span><span class="n">entities</span><span class="o">.</span><span class="n">listener</span><span class="o">.</span><span class="n">Listener</span> <span class="o">=</span> <span class="n">BypassListener</span>  <span class="c1"># type: ignore</span>
     <span class="n">graia</span><span class="o">.</span><span class="n">broadcast</span><span class="o">.</span><span class="n">Listener</span> <span class="o">=</span> <span class="n">BypassListener</span>  <span class="c1"># type: ignore</span>
     <span class="k">try</span><span class="p">:</span>  <span class="c1"># Override saya listener</span>
@@ -282,19 +300,24 @@
 
 
 <span class="k">class</span> <span class="nc">ApplicationMiddlewareDispatcher</span><span class="p">(</span><span class="n">BaseDispatcher</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Ariadne 的上下文 Dispatcher&quot;&quot;&quot;</span>
+
     <span class="n">always</span> <span class="o">=</span> <span class="kc">True</span>
+
     <span class="n">context</span><span class="p">:</span> <span class="n">ContextManager</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">app</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">app</span> <span class="o">=</span> <span class="n">app</span>
 
     <span class="k">def</span> <span class="nf">beforeExecution</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">interface</span><span class="p">:</span> <span class="s2">&quot;DispatcherInterface&quot;</span><span class="p">):</span>
-        <span class="kn">from</span> <span class="nn">..context</span> <span class="kn">import</span> <span class="n">enter_context</span>
+        <span class="sd">&quot;&quot;&quot;进入 Event Context&quot;&quot;&quot;</span>
+        <span class="kn">from</span> <span class="nn">..context</span> <span class="kn">import</span> <span class="n">EventContext</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">context</span> <span class="o">=</span> <span class="n">enter_context</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">app</span><span class="p">,</span> <span class="n">interface</span><span class="o">.</span><span class="n">event</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="p">:</span> <span class="n">ContextManager</span> <span class="o">=</span> <span class="n">EventContext</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">app</span><span class="p">,</span> <span class="n">interface</span><span class="o">.</span><span class="n">event</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="fm">__enter__</span><span class="p">()</span>
 
-    <span class="k">def</span> <span class="nf">afterExecution</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">interface</span><span class="p">:</span> <span class="s2">&quot;DispatcherInterface&quot;</span><span class="p">,</span> <span class="n">exception</span><span class="p">,</span> <span class="n">tb</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">afterExecution</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">exception</span><span class="p">,</span> <span class="n">tb</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;退出 Event Context&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="fm">__exit__</span><span class="p">(</span><span class="n">exception</span><span class="o">.</span><span class="vm">__class__</span> <span class="k">if</span> <span class="n">exception</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span> <span class="n">exception</span><span class="p">,</span> <span class="n">tb</span><span class="p">)</span>
 
     <span class="k">async</span> <span class="k">def</span> <span class="nf">catch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">interface</span><span class="p">:</span> <span class="s2">&quot;DispatcherInterface&quot;</span><span class="p">):</span>
@@ -305,23 +328,41 @@
 
 
 <span class="k">def</span> <span class="nf">app_ctx_manager</span><span class="p">(</span><span class="n">func</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[</span><span class="n">P</span><span class="p">,</span> <span class="n">R</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">[</span><span class="n">P</span><span class="p">,</span> <span class="n">R</span><span class="p">]:</span>
+    <span class="sd">&quot;&quot;&quot;包装声明需要在 Ariadne Context 中执行的函数</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        func (Callable[P, R]): 被包装的函数</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Callable[P, R]: 包装后的函数</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="nd">@functools</span><span class="o">.</span><span class="n">wraps</span><span class="p">(</span><span class="n">func</span><span class="p">)</span>
     <span class="k">async</span> <span class="k">def</span> <span class="nf">wrapper</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">P</span><span class="o">.</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">P</span><span class="o">.</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="kn">from</span> <span class="nn">..context</span> <span class="kn">import</span> <span class="n">enter_context</span>
+        <span class="kn">from</span> <span class="nn">..context</span> <span class="kn">import</span> <span class="n">EventContext</span>
 
-        <span class="k">with</span> <span class="n">enter_context</span><span class="p">(</span><span class="n">app</span><span class="o">=</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">with</span> <span class="n">EventContext</span><span class="p">(</span><span class="n">app</span><span class="o">=</span><span class="bp">self</span><span class="p">):</span>
             <span class="k">return</span> <span class="k">await</span> <span class="n">func</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">wrapper</span>
 
 
 <span class="k">def</span> <span class="nf">gen_subclass</span><span class="p">(</span><span class="bp">cls</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="n">T</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Generator</span><span class="p">[</span><span class="n">Type</span><span class="p">[</span><span class="n">T</span><span class="p">],</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
+    <span class="sd">&quot;&quot;&quot;生成某个类的所有子类 (包括其自身)</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        cls (Type[T]): 类</span>
+
+<span class="sd">    Yields:</span>
+<span class="sd">        Type[T]: 子类</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">yield</span> <span class="bp">cls</span>
     <span class="k">for</span> <span class="n">sub_cls</span> <span class="ow">in</span> <span class="bp">cls</span><span class="o">.</span><span class="n">__subclasses__</span><span class="p">():</span>
         <span class="k">yield from</span> <span class="n">gen_subclass</span><span class="p">(</span><span class="n">sub_cls</span><span class="p">)</span>
 
 
 <span class="k">def</span> <span class="nf">wrap_bracket</span><span class="p">(</span><span class="n">string</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;替换 &quot;[&quot; 与 &quot;]&quot; 为其 Unicode 形式用于 JSON 解析&quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">string</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;[&quot;</span><span class="p">,</span> <span class="s2">&quot;</span><span class="se">\\</span><span class="s2">u005b&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;]&quot;</span><span class="p">,</span> <span class="s2">&quot;</span><span class="se">\\</span><span class="s2">u005d&quot;</span><span class="p">)</span>
 
 
@@ -329,6 +370,12 @@
 
 
 <span class="k">async</span> <span class="k">def</span> <span class="nf">await_predicate</span><span class="p">(</span><span class="n">predicate</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[],</span> <span class="nb">bool</span><span class="p">],</span> <span class="n">interval</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.01</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;异步阻塞至满足 predicate 为 True</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        predicate (Callable[[], bool]): 回调函数</span>
+<span class="sd">        interval (float, optional): 每次等待时长 (s). Defaults to 0.01.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">while</span> <span class="ow">not</span> <span class="n">predicate</span><span class="p">():</span>
         <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="n">interval</span><span class="p">)</span>
 
@@ -338,6 +385,16 @@
     <span class="n">predicate</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[],</span> <span class="nb">bool</span><span class="p">],</span>
     <span class="n">await_length</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.2</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AsyncIterator</span><span class="p">[</span><span class="n">T</span><span class="p">]:</span>
+    <span class="sd">&quot;&quot;&quot;在满足 predicate 时返回 getter_coro() 的值</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        getter_coro (Callable[[], Coroutine[None, None, T]]): 要循环返回协程函数.</span>
+<span class="sd">        predicate (Callable[[], bool]): 条件回调函数.</span>
+<span class="sd">        await_length (float, optional): 等待目前协程的时长. Defaults to 0.2.</span>
+
+<span class="sd">    Yields:</span>
+<span class="sd">        T: getter_coro 的返回值</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">last_tsk</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="k">while</span> <span class="n">predicate</span><span class="p">():</span>
         <span class="n">last_tsk</span> <span class="o">=</span> <span class="n">last_tsk</span> <span class="ow">or</span> <span class="p">{</span><span class="n">asyncio</span><span class="o">.</span><span class="n">create_task</span><span class="p">(</span><span class="n">getter_coro</span><span class="p">())}</span>
@@ -353,6 +410,15 @@
 
 
 <span class="k">def</span> <span class="nf">deprecated</span><span class="p">(</span><span class="n">remove_ver</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">T_Callable</span><span class="p">],</span> <span class="n">T_Callable</span><span class="p">]:</span>
+    <span class="sd">&quot;&quot;&quot;标注一个方法 / 函数已被弃用</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        remove_ver (str): 将被移除的版本.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Callable[[T_Callable], T_Callable]: 包装器.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="k">def</span> <span class="nf">out_wrapper</span><span class="p">(</span><span class="n">func</span><span class="p">:</span> <span class="n">T_Callable</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">T_Callable</span><span class="p">:</span>
         <span class="nd">@functools</span><span class="o">.</span><span class="n">wraps</span><span class="p">(</span><span class="n">func</span><span class="p">)</span>
         <span class="k">def</span> <span class="nf">wrapper</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
@@ -366,12 +432,9 @@
     <span class="k">return</span> <span class="n">out_wrapper</span>
 
 
-<span class="k">def</span> <span class="nf">cast_to</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">typ</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="n">T</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">T</span><span class="p">:</span>
-    <span class="k">if</span> <span class="n">typ</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">obj</span>
-
-
 <span class="k">class</span> <span class="nc">Dummy</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Dummy 类, 对所有调用返回 None. (可以预设某些值)&quot;&quot;&quot;</span>
+
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwds</span><span class="p">):</span>
         <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">kwds</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span>
@@ -409,23 +472,42 @@
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span><span class="k">def</span> <span class="nf">validate_response</span><span class="p">(</span><span class="n">code</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">dict</span><span class="p">,</span> <span class="nb">int</span><span class="p">]):</span>
+    <span class="sd">&quot;&quot;&quot;验证远程服务器的返回值</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        code (Union[dict, int]): 返回的对象</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        Exception: 请参照 code_exceptions_mapping</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">origin</span> <span class="o">=</span> <span class="n">code</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">code</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
         <span class="n">code</span> <span class="o">=</span> <span class="n">code</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;code&quot;</span><span class="p">)</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="n">code</span> <span class="o">=</span> <span class="n">code</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">code</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="ow">or</span> <span class="n">code</span> <span class="o">==</span> <span class="mi">200</span> <span class="ow">or</span> <span class="n">code</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
         <span class="k">return</span>
     <span class="n">exc_cls</span> <span class="o">=</span> <span class="n">code_exceptions_mapping</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">code</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">exc_cls</span><span class="p">:</span>
         <span class="k">raise</span> <span class="n">exc_cls</span><span class="p">(</span><span class="n">exc_cls</span><span class="o">.</span><span class="vm">__doc__</span><span class="p">)</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="n">UnknownError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">origin</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">raise</span> <span class="n">UnknownError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">origin</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 </pre></div>
 
         </details>
 
-    
+            <div class="docstring"><p>验证远程服务器的返回值</p>
+
+<h6 id="args">Args</h6>
+
+<ul>
+<li><strong>code (Union[dict, int]):</strong>  返回的对象</li>
+</ul>
+
+<h6 id="raises">Raises</h6>
+
+<ul>
+<li><strong>Exception:</strong>  请参照 code_exceptions_mapping</li>
+</ul>
+</div>
+
 
                 </section>
                 <section id="loguru_excepthook">
@@ -439,12 +521,29 @@
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span><span class="k">def</span> <span class="nf">loguru_excepthook</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">val</span><span class="p">,</span> <span class="n">tb</span><span class="p">,</span> <span class="o">*</span><span class="n">_</span><span class="p">,</span> <span class="o">**</span><span class="n">__</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;loguru 异常回调</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        cls (Type[Exception]): 异常类</span>
+<span class="sd">        val (Exception): 异常的实际值</span>
+<span class="sd">        tb (TracebackType): 回溯消息</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">logger</span><span class="o">.</span><span class="n">opt</span><span class="p">(</span><span class="n">exception</span><span class="o">=</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">val</span><span class="p">,</span> <span class="n">tb</span><span class="p">))</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Exception:&quot;</span><span class="p">)</span>
 </pre></div>
 
         </details>
 
-    
+            <div class="docstring"><p>loguru 异常回调</p>
+
+<h6 id="args">Args</h6>
+
+<ul>
+<li><strong>cls (Type[Exception]):</strong>  异常类</li>
+<li><strong>val (Exception):</strong>  异常的实际值</li>
+<li><strong>tb (TracebackType):</strong>  回溯消息</li>
+</ul>
+</div>
+
 
                 </section>
                 <section id="loguru_async_handler">
@@ -452,12 +551,18 @@
 
         
             <span class="def">def</span>
-            <span class="name">loguru_async_handler</span><span class="signature">(loop: asyncio.events.AbstractEventLoop, ctx: dict)</span>:
+            <span class="name">loguru_async_handler</span><span class="signature">(_, ctx: dict)</span>:
     </div>
 
                 <details>
             <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span><span class="k">def</span> <span class="nf">loguru_async_handler</span><span class="p">(</span><span class="n">loop</span><span class="p">:</span> <span class="n">AbstractEventLoop</span><span class="p">,</span> <span class="n">ctx</span><span class="p">:</span> <span class="nb">dict</span><span class="p">):</span>
+            <div class="codehilite"><pre><span></span><span class="k">def</span> <span class="nf">loguru_async_handler</span><span class="p">(</span><span class="n">_</span><span class="p">,</span> <span class="n">ctx</span><span class="p">:</span> <span class="nb">dict</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;loguru 异步异常回调</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        _ (AbstractEventLoop): 异常发生的事件循环</span>
+<span class="sd">        ctx (dict): 异常上下文</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="s2">&quot;exception&quot;</span> <span class="ow">in</span> <span class="n">ctx</span><span class="p">:</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">opt</span><span class="p">(</span><span class="n">exception</span><span class="o">=</span><span class="n">ctx</span><span class="p">[</span><span class="s2">&quot;exception&quot;</span><span class="p">])</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Exception:&quot;</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
@@ -466,7 +571,16 @@
 
         </details>
 
-    
+            <div class="docstring"><p>loguru 异步异常回调</p>
+
+<h6 id="args">Args</h6>
+
+<ul>
+<li><strong>_ (AbstractEventLoop):</strong>  异常发生的事件循环</li>
+<li><strong>ctx (dict):</strong>  异常上下文</li>
+</ul>
+</div>
+
 
                 </section>
                 <section id="inject_loguru_traceback">
@@ -512,6 +626,8 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">class</span> <span class="nc">BypassListener</span><span class="p">(</span><span class="n">Listener</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;透传监听器的实现&quot;&quot;&quot;</span>
+
         <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span>
             <span class="n">callable</span><span class="p">:</span> <span class="n">Callable</span><span class="p">,</span>
@@ -538,7 +654,7 @@
     <span class="k">async</span> <span class="k">def</span> <span class="nf">_</span><span class="p">(</span><span class="n">interface</span><span class="p">:</span> <span class="n">DispatcherInterface</span><span class="p">):</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">interface</span><span class="o">.</span><span class="n">event</span><span class="p">,</span> <span class="n">interface</span><span class="o">.</span><span class="n">annotation</span><span class="p">):</span>
             <span class="k">return</span> <span class="n">interface</span><span class="o">.</span><span class="n">event</span>
-        <span class="k">elif</span> <span class="p">(</span>
+        <span class="k">if</span> <span class="p">(</span>
             <span class="nb">hasattr</span><span class="p">(</span><span class="n">interface</span><span class="o">.</span><span class="n">annotation</span><span class="p">,</span> <span class="s2">&quot;__origin__&quot;</span><span class="p">)</span>
             <span class="ow">and</span> <span class="n">interface</span><span class="o">.</span><span class="n">annotation</span><span class="o">.</span><span class="n">__origin__</span> <span class="ow">is</span> <span class="n">DispatcherInterface</span>
         <span class="p">):</span>
@@ -546,6 +662,7 @@
 
     <span class="kn">import</span> <span class="nn">graia.broadcast.entities.listener</span>
 
+    <span class="c1"># pylint: disable=no-member</span>
     <span class="n">graia</span><span class="o">.</span><span class="n">broadcast</span><span class="o">.</span><span class="n">entities</span><span class="o">.</span><span class="n">listener</span><span class="o">.</span><span class="n">Listener</span> <span class="o">=</span> <span class="n">BypassListener</span>  <span class="c1"># type: ignore</span>
     <span class="n">graia</span><span class="o">.</span><span class="n">broadcast</span><span class="o">.</span><span class="n">Listener</span> <span class="o">=</span> <span class="n">BypassListener</span>  <span class="c1"># type: ignore</span>
     <span class="k">try</span><span class="p">:</span>  <span class="c1"># Override saya listener</span>
@@ -581,19 +698,24 @@
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">ApplicationMiddlewareDispatcher</span><span class="p">(</span><span class="n">BaseDispatcher</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Ariadne 的上下文 Dispatcher&quot;&quot;&quot;</span>
+
     <span class="n">always</span> <span class="o">=</span> <span class="kc">True</span>
+
     <span class="n">context</span><span class="p">:</span> <span class="n">ContextManager</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">app</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">app</span> <span class="o">=</span> <span class="n">app</span>
 
     <span class="k">def</span> <span class="nf">beforeExecution</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">interface</span><span class="p">:</span> <span class="s2">&quot;DispatcherInterface&quot;</span><span class="p">):</span>
-        <span class="kn">from</span> <span class="nn">..context</span> <span class="kn">import</span> <span class="n">enter_context</span>
+        <span class="sd">&quot;&quot;&quot;进入 Event Context&quot;&quot;&quot;</span>
+        <span class="kn">from</span> <span class="nn">..context</span> <span class="kn">import</span> <span class="n">EventContext</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">context</span> <span class="o">=</span> <span class="n">enter_context</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">app</span><span class="p">,</span> <span class="n">interface</span><span class="o">.</span><span class="n">event</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="p">:</span> <span class="n">ContextManager</span> <span class="o">=</span> <span class="n">EventContext</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">app</span><span class="p">,</span> <span class="n">interface</span><span class="o">.</span><span class="n">event</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="fm">__enter__</span><span class="p">()</span>
 
-    <span class="k">def</span> <span class="nf">afterExecution</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">interface</span><span class="p">:</span> <span class="s2">&quot;DispatcherInterface&quot;</span><span class="p">,</span> <span class="n">exception</span><span class="p">,</span> <span class="n">tb</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">afterExecution</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">exception</span><span class="p">,</span> <span class="n">tb</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;退出 Event Context&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="fm">__exit__</span><span class="p">(</span><span class="n">exception</span><span class="o">.</span><span class="vm">__class__</span> <span class="k">if</span> <span class="n">exception</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span> <span class="n">exception</span><span class="p">,</span> <span class="n">tb</span><span class="p">)</span>
 
     <span class="k">async</span> <span class="k">def</span> <span class="nf">catch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">interface</span><span class="p">:</span> <span class="s2">&quot;DispatcherInterface&quot;</span><span class="p">):</span>
@@ -605,7 +727,7 @@
 
         </details>
 
-            <div class="docstring"><p>所有非单函数型 Dispatcher 的基类, 用于为参数解析提供可扩展的支持.</p>
+            <div class="docstring"><p>Ariadne 的上下文 Dispatcher</p>
 </div>
 
 
@@ -650,15 +772,18 @@
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">beforeExecution</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">interface</span><span class="p">:</span> <span class="s2">&quot;DispatcherInterface&quot;</span><span class="p">):</span>
-        <span class="kn">from</span> <span class="nn">..context</span> <span class="kn">import</span> <span class="n">enter_context</span>
+        <span class="sd">&quot;&quot;&quot;进入 Event Context&quot;&quot;&quot;</span>
+        <span class="kn">from</span> <span class="nn">..context</span> <span class="kn">import</span> <span class="n">EventContext</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">context</span> <span class="o">=</span> <span class="n">enter_context</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">app</span><span class="p">,</span> <span class="n">interface</span><span class="o">.</span><span class="n">event</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="p">:</span> <span class="n">ContextManager</span> <span class="o">=</span> <span class="n">EventContext</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">app</span><span class="p">,</span> <span class="n">interface</span><span class="o">.</span><span class="n">event</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="fm">__enter__</span><span class="p">()</span>
 </pre></div>
 
         </details>
 
-    
+            <div class="docstring"><p>进入 Event Context</p>
+</div>
+
 
                             </div>
                             <div id="ApplicationMiddlewareDispatcher.afterExecution" class="classattr">
@@ -666,23 +791,21 @@
 
         
             <span class="def">def</span>
-            <span class="name">afterExecution</span><span class="signature">(
-    self,
-    interface: graia.broadcast.interfaces.dispatcher.DispatcherInterface,
-    exception,
-    tb
-)</span>:
+            <span class="name">afterExecution</span><span class="signature">(self, _, exception, tb)</span>:
     </div>
 
                 <details>
             <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">afterExecution</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">interface</span><span class="p">:</span> <span class="s2">&quot;DispatcherInterface&quot;</span><span class="p">,</span> <span class="n">exception</span><span class="p">,</span> <span class="n">tb</span><span class="p">):</span>
+            <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">afterExecution</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">exception</span><span class="p">,</span> <span class="n">tb</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;退出 Event Context&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="fm">__exit__</span><span class="p">(</span><span class="n">exception</span><span class="o">.</span><span class="vm">__class__</span> <span class="k">if</span> <span class="n">exception</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span> <span class="n">exception</span><span class="p">,</span> <span class="n">tb</span><span class="p">)</span>
 </pre></div>
 
         </details>
 
-    
+            <div class="docstring"><p>退出 Event Context</p>
+</div>
+
 
                             </div>
                             <div id="ApplicationMiddlewareDispatcher.catch" class="classattr">
@@ -745,11 +868,20 @@
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span><span class="k">def</span> <span class="nf">app_ctx_manager</span><span class="p">(</span><span class="n">func</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[</span><span class="n">P</span><span class="p">,</span> <span class="n">R</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">[</span><span class="n">P</span><span class="p">,</span> <span class="n">R</span><span class="p">]:</span>
+    <span class="sd">&quot;&quot;&quot;包装声明需要在 Ariadne Context 中执行的函数</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        func (Callable[P, R]): 被包装的函数</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Callable[P, R]: 包装后的函数</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="nd">@functools</span><span class="o">.</span><span class="n">wraps</span><span class="p">(</span><span class="n">func</span><span class="p">)</span>
     <span class="k">async</span> <span class="k">def</span> <span class="nf">wrapper</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">P</span><span class="o">.</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">P</span><span class="o">.</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="kn">from</span> <span class="nn">..context</span> <span class="kn">import</span> <span class="n">enter_context</span>
+        <span class="kn">from</span> <span class="nn">..context</span> <span class="kn">import</span> <span class="n">EventContext</span>
 
-        <span class="k">with</span> <span class="n">enter_context</span><span class="p">(</span><span class="n">app</span><span class="o">=</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">with</span> <span class="n">EventContext</span><span class="p">(</span><span class="n">app</span><span class="o">=</span><span class="bp">self</span><span class="p">):</span>
             <span class="k">return</span> <span class="k">await</span> <span class="n">func</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">wrapper</span>
@@ -757,7 +889,21 @@
 
         </details>
 
-    
+            <div class="docstring"><p>包装声明需要在 Ariadne Context 中执行的函数</p>
+
+<h6 id="args">Args</h6>
+
+<ul>
+<li><strong>func (Callable[P, R]):</strong>  被包装的函数</li>
+</ul>
+
+<h6 id="returns">Returns</h6>
+
+<blockquote>
+  <p>Callable[P, R]: 包装后的函数</p>
+</blockquote>
+</div>
+
 
                 </section>
                 <section id="gen_subclass">
@@ -771,6 +917,14 @@
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span><span class="k">def</span> <span class="nf">gen_subclass</span><span class="p">(</span><span class="bp">cls</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="n">T</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Generator</span><span class="p">[</span><span class="n">Type</span><span class="p">[</span><span class="n">T</span><span class="p">],</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
+    <span class="sd">&quot;&quot;&quot;生成某个类的所有子类 (包括其自身)</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        cls (Type[T]): 类</span>
+
+<span class="sd">    Yields:</span>
+<span class="sd">        Type[T]: 子类</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">yield</span> <span class="bp">cls</span>
     <span class="k">for</span> <span class="n">sub_cls</span> <span class="ow">in</span> <span class="bp">cls</span><span class="o">.</span><span class="n">__subclasses__</span><span class="p">():</span>
         <span class="k">yield from</span> <span class="n">gen_subclass</span><span class="p">(</span><span class="n">sub_cls</span><span class="p">)</span>
@@ -778,7 +932,21 @@
 
         </details>
 
-    
+            <div class="docstring"><p>生成某个类的所有子类 (包括其自身)</p>
+
+<h6 id="args">Args</h6>
+
+<ul>
+<li><strong>cls (Type[T]):</strong>  类</li>
+</ul>
+
+<h6 id="yields">Yields</h6>
+
+<blockquote>
+  <p>Type[T]: 子类</p>
+</blockquote>
+</div>
+
 
                 </section>
                 <section id="wrap_bracket">
@@ -792,12 +960,15 @@
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span><span class="k">def</span> <span class="nf">wrap_bracket</span><span class="p">(</span><span class="n">string</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;替换 &quot;[&quot; 与 &quot;]&quot; 为其 Unicode 形式用于 JSON 解析&quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">string</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;[&quot;</span><span class="p">,</span> <span class="s2">&quot;</span><span class="se">\\</span><span class="s2">u005b&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;]&quot;</span><span class="p">,</span> <span class="s2">&quot;</span><span class="se">\\</span><span class="s2">u005d&quot;</span><span class="p">)</span>
 </pre></div>
 
         </details>
 
-    
+            <div class="docstring"><p>替换 "[" 与 "]" 为其 Unicode 形式用于 JSON 解析</p>
+</div>
+
 
                 </section>
                 <section id="await_predicate">
@@ -811,13 +982,28 @@
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span><span class="k">async</span> <span class="k">def</span> <span class="nf">await_predicate</span><span class="p">(</span><span class="n">predicate</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[],</span> <span class="nb">bool</span><span class="p">],</span> <span class="n">interval</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.01</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;异步阻塞至满足 predicate 为 True</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        predicate (Callable[[], bool]): 回调函数</span>
+<span class="sd">        interval (float, optional): 每次等待时长 (s). Defaults to 0.01.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">while</span> <span class="ow">not</span> <span class="n">predicate</span><span class="p">():</span>
         <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="n">interval</span><span class="p">)</span>
 </pre></div>
 
         </details>
 
-    
+            <div class="docstring"><p>异步阻塞至满足 predicate 为 True</p>
+
+<h6 id="args">Args</h6>
+
+<ul>
+<li><strong>predicate (Callable[[], bool]):</strong>  回调函数</li>
+<li><strong>interval (float, optional):</strong>  每次等待时长 (s). Defaults to 0.01.</li>
+</ul>
+</div>
+
 
                 </section>
                 <section id="yield_with_timeout">
@@ -839,6 +1025,16 @@
     <span class="n">predicate</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[],</span> <span class="nb">bool</span><span class="p">],</span>
     <span class="n">await_length</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.2</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AsyncIterator</span><span class="p">[</span><span class="n">T</span><span class="p">]:</span>
+    <span class="sd">&quot;&quot;&quot;在满足 predicate 时返回 getter_coro() 的值</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        getter_coro (Callable[[], Coroutine[None, None, T]]): 要循环返回协程函数.</span>
+<span class="sd">        predicate (Callable[[], bool]): 条件回调函数.</span>
+<span class="sd">        await_length (float, optional): 等待目前协程的时长. Defaults to 0.2.</span>
+
+<span class="sd">    Yields:</span>
+<span class="sd">        T: getter_coro 的返回值</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">last_tsk</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="k">while</span> <span class="n">predicate</span><span class="p">():</span>
         <span class="n">last_tsk</span> <span class="o">=</span> <span class="n">last_tsk</span> <span class="ow">or</span> <span class="p">{</span><span class="n">asyncio</span><span class="o">.</span><span class="n">create_task</span><span class="p">(</span><span class="n">getter_coro</span><span class="p">())}</span>
@@ -855,7 +1051,23 @@
 
         </details>
 
-    
+            <div class="docstring"><p>在满足 predicate 时返回 getter_coro() 的值</p>
+
+<h6 id="args">Args</h6>
+
+<ul>
+<li><strong>getter_coro (Callable[[], Coroutine[None, None, T]]):</strong>  要循环返回协程函数.</li>
+<li><strong>predicate (Callable[[], bool]):</strong>  条件回调函数.</li>
+<li><strong>await_length (float, optional):</strong>  等待目前协程的时长. Defaults to 0.2.</li>
+</ul>
+
+<h6 id="yields">Yields</h6>
+
+<blockquote>
+  <p>T: getter_coro 的返回值</p>
+</blockquote>
+</div>
+
 
                 </section>
                 <section id="deprecated">
@@ -869,6 +1081,15 @@
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span><span class="k">def</span> <span class="nf">deprecated</span><span class="p">(</span><span class="n">remove_ver</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">T_Callable</span><span class="p">],</span> <span class="n">T_Callable</span><span class="p">]:</span>
+    <span class="sd">&quot;&quot;&quot;标注一个方法 / 函数已被弃用</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        remove_ver (str): 将被移除的版本.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Callable[[T_Callable], T_Callable]: 包装器.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="k">def</span> <span class="nf">out_wrapper</span><span class="p">(</span><span class="n">func</span><span class="p">:</span> <span class="n">T_Callable</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">T_Callable</span><span class="p">:</span>
         <span class="nd">@functools</span><span class="o">.</span><span class="n">wraps</span><span class="p">(</span><span class="n">func</span><span class="p">)</span>
         <span class="k">def</span> <span class="nf">wrapper</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
@@ -884,27 +1105,21 @@
 
         </details>
 
-    
+            <div class="docstring"><p>标注一个方法 / 函数已被弃用</p>
 
-                </section>
-                <section id="cast_to">
-                            <div class="attr function"><a class="headerlink" href="#cast_to">#&nbsp;&nbsp</a>
+<h6 id="args">Args</h6>
 
-        
-            <span class="def">def</span>
-            <span class="name">cast_to</span><span class="signature">(obj, typ: Type[~T]) -&gt; ~T</span>:
-    </div>
+<ul>
+<li><strong>remove_ver (str):</strong>  将被移除的版本.</li>
+</ul>
 
-                <details>
-            <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span><span class="k">def</span> <span class="nf">cast_to</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">typ</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="n">T</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">T</span><span class="p">:</span>
-    <span class="k">if</span> <span class="n">typ</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">obj</span>
-</pre></div>
+<h6 id="returns">Returns</h6>
 
-        </details>
+<blockquote>
+  <p>Callable[[T_Callable], T_Callable]: 包装器.</p>
+</blockquote>
+</div>
 
-    
 
                 </section>
                 <section id="Dummy">
@@ -919,6 +1134,8 @@
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">Dummy</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Dummy 类, 对所有调用返回 None. (可以预设某些值)&quot;&quot;&quot;</span>
+
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwds</span><span class="p">):</span>
         <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">kwds</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span>
@@ -932,7 +1149,9 @@
 
         </details>
 
-    
+            <div class="docstring"><p>Dummy 类, 对所有调用返回 None. (可以预设某些值)</p>
+</div>
+
 
                             <div id="Dummy.__init__" class="classattr">
                                         <div class="attr function"><a class="headerlink" href="#Dummy.__init__">#&nbsp;&nbsp</a>

@@ -57,6 +57,9 @@
                                     <li>
                                             <a class="variable" href="#AriadneBaseModel.Config.extra">extra</a>
                                     </li>
+                                    <li>
+                                            <a class="variable" href="#AriadneBaseModel.Config.json_encoders">json_encoders</a>
+                                    </li>
                             </ul>
 
                         </li>
@@ -150,54 +153,18 @@
             <li>
                     <a class="class" href="#GroupConfig">GroupConfig</a>
                             <ul class="memberlist">
-                        <li>
-                                <a class="class" href="#GroupConfig.Config">GroupConfig.Config</a>
-                                        <ul class="memberlist">
-                                    <li>
-                                            <a class="function" href="#GroupConfig.Config.__init__">Config</a>
-                                    </li>
-                                    <li>
-                                            <a class="variable" href="#GroupConfig.Config.allow_mutation">allow_mutation</a>
-                                    </li>
-                            </ul>
-
-                        </li>
                 </ul>
 
             </li>
             <li>
                     <a class="class" href="#MemberInfo">MemberInfo</a>
                             <ul class="memberlist">
-                        <li>
-                                <a class="class" href="#MemberInfo.Config">MemberInfo.Config</a>
-                                        <ul class="memberlist">
-                                    <li>
-                                            <a class="function" href="#MemberInfo.Config.__init__">Config</a>
-                                    </li>
-                                    <li>
-                                            <a class="variable" href="#MemberInfo.Config.allow_mutation">allow_mutation</a>
-                                    </li>
-                            </ul>
-
-                        </li>
                 </ul>
 
             </li>
             <li>
                     <a class="class" href="#DownloadInfo">DownloadInfo</a>
                             <ul class="memberlist">
-                        <li>
-                                <a class="class" href="#DownloadInfo.Config">DownloadInfo.Config</a>
-                                        <ul class="memberlist">
-                                    <li>
-                                            <a class="function" href="#DownloadInfo.Config.__init__">Config</a>
-                                    </li>
-                                    <li>
-                                            <a class="variable" href="#DownloadInfo.Config.json_encoders">json_encoders</a>
-                                    </li>
-                            </ul>
-
-                        </li>
                 </ul>
 
             </li>
@@ -300,10 +267,13 @@
                     <h1 class="modulename">
 <a href="./../ariadne.html">ariadne</a><wbr>.model    </h1>
 
-                
+                        <div class="docstring"><p>Ariadne 各种 model 存放的位置</p>
+</div>
+
                         <details>
             <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span><span class="kn">import</span> <span class="nn">json</span>
+            <div class="codehilite"><pre><span></span><span class="sd">&quot;&quot;&quot;Ariadne 各种 model 存放的位置&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">json</span>
 <span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">dataclass</span>
 <span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
 <span class="kn">from</span> <span class="nn">enum</span> <span class="kn">import</span> <span class="n">Enum</span>
@@ -322,11 +292,21 @@
     <span class="kn">from</span> <span class="nn">.typing</span> <span class="kn">import</span> <span class="n">AbstractSetIntStr</span><span class="p">,</span> <span class="n">DictStrAny</span><span class="p">,</span> <span class="n">MappingIntStrAny</span>
 
 
-<span class="k">def</span> <span class="nf">datetime_encoder</span><span class="p">(</span><span class="n">v</span><span class="p">:</span> <span class="n">datetime</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">datetime_encoder</span><span class="p">(</span><span class="n">v</span><span class="p">:</span> <span class="n">datetime</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;编码 datetime 对象</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        v (datetime): datetime 对象</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        float: 编码后的 datetime (时间戳)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">v</span><span class="o">.</span><span class="n">timestamp</span><span class="p">()</span>
 
 
 <span class="k">class</span> <span class="nc">DatetimeEncoder</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">JSONEncoder</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;可以编码 datetime 的 JSONEncoder&quot;&quot;&quot;</span>
+
     <span class="k">def</span> <span class="nf">default</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">o</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">o</span><span class="p">,</span> <span class="n">datetime</span><span class="p">):</span>
             <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">o</span><span class="o">.</span><span class="n">timestamp</span><span class="p">())</span>
@@ -349,6 +329,7 @@
         <span class="n">exclude_defaults</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="n">exclude_none</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;DictStrAny&quot;</span><span class="p">:</span>
+        <span class="n">_</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">by_alias</span><span class="p">,</span> <span class="n">exclude_none</span>
         <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">dict</span><span class="p">(</span>
             <span class="n">include</span><span class="o">=</span><span class="n">include</span><span class="p">,</span>
             <span class="n">exclude</span><span class="o">=</span><span class="n">exclude</span><span class="p">,</span>
@@ -360,7 +341,12 @@
         <span class="p">)</span>
 
     <span class="k">class</span> <span class="nc">Config</span><span class="p">(</span><span class="n">BaseConfig</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Ariadne BaseModel 设置&quot;&quot;&quot;</span>
+
         <span class="n">extra</span> <span class="o">=</span> <span class="n">Extra</span><span class="o">.</span><span class="n">allow</span>
+        <span class="n">json_encoders</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="n">datetime</span><span class="p">:</span> <span class="n">datetime_encoder</span><span class="p">,</span>
+        <span class="p">}</span>
 
 
 <span class="nd">@dataclass</span>
@@ -380,6 +366,7 @@
     <span class="n">stranger_message_log_format</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{bot_id}</span><span class="s2">: [</span><span class="si">{stranger_name}</span><span class="s2">(</span><span class="si">{stranger_id}</span><span class="s2">)] -&gt; </span><span class="si">{message_string}</span><span class="s2">&quot;</span>
 
     <span class="k">def</span> <span class="nf">initialize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">app</span><span class="p">:</span> <span class="s2">&quot;Ariadne&quot;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;利用 Ariadne 对象注册事件日志处理器&quot;&quot;&quot;</span>
         <span class="kn">from</span> <span class="nn">.event.message</span> <span class="kn">import</span> <span class="p">(</span>
             <span class="n">FriendMessage</span><span class="p">,</span>
             <span class="n">GroupMessage</span><span class="p">,</span>
@@ -484,6 +471,14 @@
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">host</span><span class="o">=</span><span class="n">host</span><span class="p">,</span> <span class="n">account</span><span class="o">=</span><span class="n">account</span><span class="p">,</span> <span class="n">verify_key</span><span class="o">=</span><span class="n">verify_key</span><span class="p">,</span> <span class="n">single_mode</span><span class="o">=</span><span class="n">single_mode</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">url_gen</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">route</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;生成 route 对应的 API URI</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            route (str): route 地址</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            str: 对应的 API URI</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">URL</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">host</span><span class="p">)</span> <span class="o">/</span> <span class="n">route</span><span class="p">)</span>
 
 
@@ -542,22 +537,12 @@
     <span class="n">autoApprove</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
     <span class="n">anonymousChat</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
 
-    <span class="c1"># 调用 json 方法时记得加 exclude_none=True.</span>
-
-    <span class="k">class</span> <span class="nc">Config</span><span class="p">:</span>
-        <span class="n">allow_mutation</span> <span class="o">=</span> <span class="kc">True</span>
-
 
 <span class="k">class</span> <span class="nc">MemberInfo</span><span class="p">(</span><span class="n">AriadneBaseModel</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;描述群组成员的可修改状态, 修改需要管理员/群主权限.&quot;&quot;&quot;</span>
 
     <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
     <span class="n">specialTitle</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
-
-    <span class="c1"># 调用 json 方法时记得加 exclude_none=True.</span>
-
-    <span class="k">class</span> <span class="nc">Config</span><span class="p">:</span>
-        <span class="n">allow_mutation</span> <span class="o">=</span> <span class="kc">True</span>
 
 
 <span class="k">class</span> <span class="nc">DownloadInfo</span><span class="p">(</span><span class="n">AriadneBaseModel</span><span class="p">):</span>
@@ -570,11 +555,6 @@
     <span class="n">upload_time</span><span class="p">:</span> <span class="n">datetime</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="o">...</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;uploadTime&quot;</span><span class="p">)</span>
     <span class="n">last_modify_time</span><span class="p">:</span> <span class="n">datetime</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="o">...</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;lastModifyTime&quot;</span><span class="p">)</span>
     <span class="n">url</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
-
-    <span class="k">class</span> <span class="nc">Config</span><span class="p">:</span>
-        <span class="n">json_encoders</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="n">datetime</span><span class="p">:</span> <span class="n">datetime_encoder</span><span class="p">,</span>
-        <span class="p">}</span>
 
 
 <span class="k">class</span> <span class="nc">FileInfo</span><span class="p">(</span><span class="n">AriadneBaseModel</span><span class="p">):</span>
@@ -593,11 +573,9 @@
     <span class="k">def</span> <span class="nf">_</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">val</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">]):</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">val</span><span class="p">:</span>
             <span class="k">return</span> <span class="kc">None</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">if</span> <span class="s2">&quot;remark&quot;</span> <span class="ow">in</span> <span class="n">val</span><span class="p">:</span>  <span class="c1"># Friend</span>
-                <span class="k">return</span> <span class="n">Friend</span><span class="o">.</span><span class="n">parse_obj</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
-            <span class="k">else</span><span class="p">:</span>  <span class="c1"># Group</span>
-                <span class="k">return</span> <span class="n">Group</span><span class="o">.</span><span class="n">parse_obj</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
+        <span class="k">if</span> <span class="s2">&quot;remark&quot;</span> <span class="ow">in</span> <span class="n">val</span><span class="p">:</span>  <span class="c1"># Friend</span>
+            <span class="k">return</span> <span class="n">Friend</span><span class="o">.</span><span class="n">parse_obj</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">Group</span><span class="o">.</span><span class="n">parse_obj</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>  <span class="c1"># Group</span>
 
 
 <span class="n">FileInfo</span><span class="o">.</span><span class="n">update_forward_refs</span><span class="p">(</span><span class="n">FileInfo</span><span class="o">=</span><span class="n">FileInfo</span><span class="p">)</span>
@@ -656,6 +634,8 @@
 
 
 <span class="k">class</span> <span class="nc">AriadneStatus</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;指示 Ariadne 状态的枚举类&quot;&quot;&quot;</span>
+
     <span class="n">STOP</span> <span class="o">=</span> <span class="s2">&quot;stop&quot;</span>
     <span class="n">LAUNCH</span> <span class="o">=</span> <span class="s2">&quot;launch&quot;</span>
     <span class="n">RUNNING</span> <span class="o">=</span> <span class="s2">&quot;running&quot;</span>
@@ -671,18 +651,40 @@
 
         
             <span class="def">def</span>
-            <span class="name">datetime_encoder</span><span class="signature">(v: datetime.datetime)</span>:
+            <span class="name">datetime_encoder</span><span class="signature">(v: datetime.datetime) -&gt; float</span>:
     </div>
 
                 <details>
             <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span><span class="k">def</span> <span class="nf">datetime_encoder</span><span class="p">(</span><span class="n">v</span><span class="p">:</span> <span class="n">datetime</span><span class="p">):</span>
+            <div class="codehilite"><pre><span></span><span class="k">def</span> <span class="nf">datetime_encoder</span><span class="p">(</span><span class="n">v</span><span class="p">:</span> <span class="n">datetime</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;编码 datetime 对象</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        v (datetime): datetime 对象</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        float: 编码后的 datetime (时间戳)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">v</span><span class="o">.</span><span class="n">timestamp</span><span class="p">()</span>
 </pre></div>
 
         </details>
 
-    
+            <div class="docstring"><p>编码 datetime 对象</p>
+
+<h6 id="args">Args</h6>
+
+<ul>
+<li><strong>v (datetime):</strong>  datetime 对象</li>
+</ul>
+
+<h6 id="returns">Returns</h6>
+
+<blockquote>
+  <p>float: 编码后的 datetime (时间戳)</p>
+</blockquote>
+</div>
+
 
                 </section>
                 <section id="DatetimeEncoder">
@@ -697,6 +699,8 @@
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">DatetimeEncoder</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">JSONEncoder</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;可以编码 datetime 的 JSONEncoder&quot;&quot;&quot;</span>
+
     <span class="k">def</span> <span class="nf">default</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">o</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">o</span><span class="p">,</span> <span class="n">datetime</span><span class="p">):</span>
             <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">o</span><span class="o">.</span><span class="n">timestamp</span><span class="p">())</span>
@@ -705,32 +709,7 @@
 
         </details>
 
-            <div class="docstring"><p>Extensible JSON <a href="http://json.org">http://json.org</a> encoder for Python data structures.</p>
-
-<p>Supports the following objects and types by default:</p>
-
-<p>+-------------------+---------------+
-| Python            | JSON          |
-+===================+===============+
-| dict              | object        |
-+-------------------+---------------+
-| list, tuple       | array         |
-+-------------------+---------------+
-| str               | string        |
-+-------------------+---------------+
-| int, float        | number        |
-+-------------------+---------------+
-| True              | true          |
-+-------------------+---------------+
-| False             | false         |
-+-------------------+---------------+
-| None              | null          |
-+-------------------+---------------+</p>
-
-<p>To extend this to recognize other objects, subclass and implement a
-<code>.default()</code> method with another method that returns a serializable
-object for <code>o</code> if possible, otherwise it should call the superclass
-implementation (to raise <code>TypeError</code>).</p>
+            <div class="docstring"><p>可以编码 datetime 的 JSONEncoder</p>
 </div>
 
 
@@ -814,6 +793,7 @@ implement default like this::</p>
         <span class="n">exclude_defaults</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="n">exclude_none</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;DictStrAny&quot;</span><span class="p">:</span>
+        <span class="n">_</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">by_alias</span><span class="p">,</span> <span class="n">exclude_none</span>
         <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">dict</span><span class="p">(</span>
             <span class="n">include</span><span class="o">=</span><span class="n">include</span><span class="p">,</span>
             <span class="n">exclude</span><span class="o">=</span><span class="n">exclude</span><span class="p">,</span>
@@ -825,7 +805,12 @@ implement default like this::</p>
         <span class="p">)</span>
 
     <span class="k">class</span> <span class="nc">Config</span><span class="p">(</span><span class="n">BaseConfig</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Ariadne BaseModel 设置&quot;&quot;&quot;</span>
+
         <span class="n">extra</span> <span class="o">=</span> <span class="n">Extra</span><span class="o">.</span><span class="n">allow</span>
+        <span class="n">json_encoders</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="n">datetime</span><span class="p">:</span> <span class="n">datetime_encoder</span><span class="p">,</span>
+        <span class="p">}</span>
 </pre></div>
 
         </details>
@@ -865,6 +850,7 @@ implement default like this::</p>
         <span class="n">exclude_defaults</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="n">exclude_none</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;DictStrAny&quot;</span><span class="p">:</span>
+        <span class="n">_</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">by_alias</span><span class="p">,</span> <span class="n">exclude_none</span>
         <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">dict</span><span class="p">(</span>
             <span class="n">include</span><span class="o">=</span><span class="n">include</span><span class="p">,</span>
             <span class="n">exclude</span><span class="o">=</span><span class="n">exclude</span><span class="p">,</span>
@@ -916,12 +902,19 @@ implement default like this::</p>
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span>    <span class="k">class</span> <span class="nc">Config</span><span class="p">(</span><span class="n">BaseConfig</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Ariadne BaseModel 设置&quot;&quot;&quot;</span>
+
         <span class="n">extra</span> <span class="o">=</span> <span class="n">Extra</span><span class="o">.</span><span class="n">allow</span>
+        <span class="n">json_encoders</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="n">datetime</span><span class="p">:</span> <span class="n">datetime_encoder</span><span class="p">,</span>
+        <span class="p">}</span>
 </pre></div>
 
         </details>
 
-    
+            <div class="docstring"><p>Ariadne BaseModel 设置</p>
+</div>
+
 
                             <div id="AriadneBaseModel.Config.__init__" class="classattr">
                                         <div class="attr function"><a class="headerlink" href="#AriadneBaseModel.Config.__init__">#&nbsp;&nbsp</a>
@@ -938,6 +931,15 @@ implement default like this::</p>
                                             <div class="attr variable"><a class="headerlink" href="#AriadneBaseModel.Config.extra">#&nbsp;&nbsp</a>
 
         <span class="name">extra</span><span class="default_value"> = &lt;Extra.allow: &#39;allow&#39;&gt;</span>
+    </div>
+
+    
+
+                            </div>
+                            <div id="AriadneBaseModel.Config.json_encoders" class="classattr">
+                                            <div class="attr variable"><a class="headerlink" href="#AriadneBaseModel.Config.json_encoders">#&nbsp;&nbsp</a>
+
+        <span class="name">json_encoders</span><span class="default_value"> = {&lt;class &#39;datetime.datetime&#39;&gt;: &lt;function datetime_encoder at 0x7f940fdb7550&gt;}</span>
     </div>
 
     
@@ -968,7 +970,6 @@ implement default like this::</p>
                 <dd id="AriadneBaseModel.Config.schema_extra" class="variable">schema_extra</dd>
                 <dd id="AriadneBaseModel.Config.json_loads" class="function">json_loads</dd>
                 <dd id="AriadneBaseModel.Config.json_dumps" class="function">json_dumps</dd>
-                <dd id="AriadneBaseModel.Config.json_encoders" class="variable">json_encoders</dd>
                 <dd id="AriadneBaseModel.Config.underscore_attrs_are_private" class="variable">underscore_attrs_are_private</dd>
                 <dd id="AriadneBaseModel.Config.copy_on_model_validation" class="variable">copy_on_model_validation</dd>
                 <dd id="AriadneBaseModel.Config.get_field_info" class="function">get_field_info</dd>
@@ -1007,6 +1008,7 @@ implement default like this::</p>
     <span class="n">stranger_message_log_format</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{bot_id}</span><span class="s2">: [</span><span class="si">{stranger_name}</span><span class="s2">(</span><span class="si">{stranger_id}</span><span class="s2">)] -&gt; </span><span class="si">{message_string}</span><span class="s2">&quot;</span>
 
     <span class="k">def</span> <span class="nf">initialize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">app</span><span class="p">:</span> <span class="s2">&quot;Ariadne&quot;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;利用 Ariadne 对象注册事件日志处理器&quot;&quot;&quot;</span>
         <span class="kn">from</span> <span class="nn">.event.message</span> <span class="kn">import</span> <span class="p">(</span>
             <span class="n">FriendMessage</span><span class="p">,</span>
             <span class="n">GroupMessage</span><span class="p">,</span>
@@ -1181,6 +1183,7 @@ implement default like this::</p>
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">initialize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">app</span><span class="p">:</span> <span class="s2">&quot;Ariadne&quot;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;利用 Ariadne 对象注册事件日志处理器&quot;&quot;&quot;</span>
         <span class="kn">from</span> <span class="nn">.event.message</span> <span class="kn">import</span> <span class="p">(</span>
             <span class="n">FriendMessage</span><span class="p">,</span>
             <span class="n">GroupMessage</span><span class="p">,</span>
@@ -1258,7 +1261,9 @@ implement default like this::</p>
 
         </details>
 
-    
+            <div class="docstring"><p>利用 Ariadne 对象注册事件日志处理器</p>
+</div>
+
 
                             </div>
                 </section>
@@ -1302,6 +1307,14 @@ implement default like this::</p>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">host</span><span class="o">=</span><span class="n">host</span><span class="p">,</span> <span class="n">account</span><span class="o">=</span><span class="n">account</span><span class="p">,</span> <span class="n">verify_key</span><span class="o">=</span><span class="n">verify_key</span><span class="p">,</span> <span class="n">single_mode</span><span class="o">=</span><span class="n">single_mode</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">url_gen</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">route</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;生成 route 对应的 API URI</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            route (str): route 地址</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            str: 对应的 API URI</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">URL</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">host</span><span class="p">)</span> <span class="o">/</span> <span class="n">route</span><span class="p">)</span>
 </pre></div>
 
@@ -1366,12 +1379,34 @@ implement default like this::</p>
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">url_gen</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">route</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;生成 route 对应的 API URI</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            route (str): route 地址</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            str: 对应的 API URI</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">URL</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">host</span><span class="p">)</span> <span class="o">/</span> <span class="n">route</span><span class="p">)</span>
 </pre></div>
 
         </details>
 
-    
+            <div class="docstring"><p>生成 route 对应的 API URI</p>
+
+<h6 id="args">Args</h6>
+
+<ul>
+<li><strong>route (str):</strong>  route 地址</li>
+</ul>
+
+<h6 id="returns">Returns</h6>
+
+<blockquote>
+  <p>str: 对应的 API URI</p>
+</blockquote>
+</div>
+
 
                             </div>
                             <div class="inherited">
@@ -1691,11 +1726,6 @@ implement default like this::</p>
     <span class="n">allowMemberInvite</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
     <span class="n">autoApprove</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
     <span class="n">anonymousChat</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
-
-    <span class="c1"># 调用 json 方法时记得加 exclude_none=True.</span>
-
-    <span class="k">class</span> <span class="nc">Config</span><span class="p">:</span>
-        <span class="n">allow_mutation</span> <span class="o">=</span> <span class="kc">True</span>
 </pre></div>
 
         </details>
@@ -1724,49 +1754,10 @@ implement default like this::</p>
             </div>
             <div><dt><a href="#AriadneBaseModel">AriadneBaseModel</a></dt>
                                 <dd id="GroupConfig.dict" class="function"><a href="#AriadneBaseModel.dict">dict</a></dd>
+                <dd id="GroupConfig.Config" class="class"><a href="#AriadneBaseModel.Config">Config</a></dd>
 
             </div>
                                 </dl>
-                            </div>
-                </section>
-                <section id="GroupConfig.Config">
-                                <div class="attr class">
-        <a class="headerlink" href="#GroupConfig.Config">#&nbsp;&nbsp</a>
-
-        
-        <span class="def">class</span>
-        <span class="name">GroupConfig.Config</span>:
-    </div>
-
-                <details>
-            <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span>    <span class="k">class</span> <span class="nc">Config</span><span class="p">:</span>
-        <span class="n">allow_mutation</span> <span class="o">=</span> <span class="kc">True</span>
-</pre></div>
-
-        </details>
-
-    
-
-                            <div id="GroupConfig.Config.__init__" class="classattr">
-                                        <div class="attr function"><a class="headerlink" href="#GroupConfig.Config.__init__">#&nbsp;&nbsp</a>
-
-        
-            <span class="name">GroupConfig.Config</span><span class="signature">()</span>
-    </div>
-
-        
-    
-
-                            </div>
-                            <div id="GroupConfig.Config.allow_mutation" class="classattr">
-                                            <div class="attr variable"><a class="headerlink" href="#GroupConfig.Config.allow_mutation">#&nbsp;&nbsp</a>
-
-        <span class="name">allow_mutation</span><span class="default_value"> = True</span>
-    </div>
-
-    
-
                             </div>
                 </section>
                 <section id="MemberInfo">
@@ -1785,11 +1776,6 @@ implement default like this::</p>
 
     <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
     <span class="n">specialTitle</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
-
-    <span class="c1"># 调用 json 方法时记得加 exclude_none=True.</span>
-
-    <span class="k">class</span> <span class="nc">Config</span><span class="p">:</span>
-        <span class="n">allow_mutation</span> <span class="o">=</span> <span class="kc">True</span>
 </pre></div>
 
         </details>
@@ -1818,49 +1804,10 @@ implement default like this::</p>
             </div>
             <div><dt><a href="#AriadneBaseModel">AriadneBaseModel</a></dt>
                                 <dd id="MemberInfo.dict" class="function"><a href="#AriadneBaseModel.dict">dict</a></dd>
+                <dd id="MemberInfo.Config" class="class"><a href="#AriadneBaseModel.Config">Config</a></dd>
 
             </div>
                                 </dl>
-                            </div>
-                </section>
-                <section id="MemberInfo.Config">
-                                <div class="attr class">
-        <a class="headerlink" href="#MemberInfo.Config">#&nbsp;&nbsp</a>
-
-        
-        <span class="def">class</span>
-        <span class="name">MemberInfo.Config</span>:
-    </div>
-
-                <details>
-            <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span>    <span class="k">class</span> <span class="nc">Config</span><span class="p">:</span>
-        <span class="n">allow_mutation</span> <span class="o">=</span> <span class="kc">True</span>
-</pre></div>
-
-        </details>
-
-    
-
-                            <div id="MemberInfo.Config.__init__" class="classattr">
-                                        <div class="attr function"><a class="headerlink" href="#MemberInfo.Config.__init__">#&nbsp;&nbsp</a>
-
-        
-            <span class="name">MemberInfo.Config</span><span class="signature">()</span>
-    </div>
-
-        
-    
-
-                            </div>
-                            <div id="MemberInfo.Config.allow_mutation" class="classattr">
-                                            <div class="attr variable"><a class="headerlink" href="#MemberInfo.Config.allow_mutation">#&nbsp;&nbsp</a>
-
-        <span class="name">allow_mutation</span><span class="default_value"> = True</span>
-    </div>
-
-    
-
                             </div>
                 </section>
                 <section id="DownloadInfo">
@@ -1884,11 +1831,6 @@ implement default like this::</p>
     <span class="n">upload_time</span><span class="p">:</span> <span class="n">datetime</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="o">...</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;uploadTime&quot;</span><span class="p">)</span>
     <span class="n">last_modify_time</span><span class="p">:</span> <span class="n">datetime</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="o">...</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;lastModifyTime&quot;</span><span class="p">)</span>
     <span class="n">url</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
-
-    <span class="k">class</span> <span class="nc">Config</span><span class="p">:</span>
-        <span class="n">json_encoders</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="n">datetime</span><span class="p">:</span> <span class="n">datetime_encoder</span><span class="p">,</span>
-        <span class="p">}</span>
 </pre></div>
 
         </details>
@@ -1917,51 +1859,10 @@ implement default like this::</p>
             </div>
             <div><dt><a href="#AriadneBaseModel">AriadneBaseModel</a></dt>
                                 <dd id="DownloadInfo.dict" class="function"><a href="#AriadneBaseModel.dict">dict</a></dd>
+                <dd id="DownloadInfo.Config" class="class"><a href="#AriadneBaseModel.Config">Config</a></dd>
 
             </div>
                                 </dl>
-                            </div>
-                </section>
-                <section id="DownloadInfo.Config">
-                                <div class="attr class">
-        <a class="headerlink" href="#DownloadInfo.Config">#&nbsp;&nbsp</a>
-
-        
-        <span class="def">class</span>
-        <span class="name">DownloadInfo.Config</span>:
-    </div>
-
-                <details>
-            <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span>    <span class="k">class</span> <span class="nc">Config</span><span class="p">:</span>
-        <span class="n">json_encoders</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="n">datetime</span><span class="p">:</span> <span class="n">datetime_encoder</span><span class="p">,</span>
-        <span class="p">}</span>
-</pre></div>
-
-        </details>
-
-    
-
-                            <div id="DownloadInfo.Config.__init__" class="classattr">
-                                        <div class="attr function"><a class="headerlink" href="#DownloadInfo.Config.__init__">#&nbsp;&nbsp</a>
-
-        
-            <span class="name">DownloadInfo.Config</span><span class="signature">()</span>
-    </div>
-
-        
-    
-
-                            </div>
-                            <div id="DownloadInfo.Config.json_encoders" class="classattr">
-                                            <div class="attr variable"><a class="headerlink" href="#DownloadInfo.Config.json_encoders">#&nbsp;&nbsp</a>
-
-        <span class="name">json_encoders</span><span class="default_value"> = {&lt;class &#39;datetime.datetime&#39;&gt;: &lt;function datetime_encoder at 0x7fd77f5aaca0&gt;}</span>
-    </div>
-
-    
-
                             </div>
                 </section>
                 <section id="FileInfo">
@@ -1991,11 +1892,9 @@ implement default like this::</p>
     <span class="k">def</span> <span class="nf">_</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">val</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">]):</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">val</span><span class="p">:</span>
             <span class="k">return</span> <span class="kc">None</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">if</span> <span class="s2">&quot;remark&quot;</span> <span class="ow">in</span> <span class="n">val</span><span class="p">:</span>  <span class="c1"># Friend</span>
-                <span class="k">return</span> <span class="n">Friend</span><span class="o">.</span><span class="n">parse_obj</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
-            <span class="k">else</span><span class="p">:</span>  <span class="c1"># Group</span>
-                <span class="k">return</span> <span class="n">Group</span><span class="o">.</span><span class="n">parse_obj</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
+        <span class="k">if</span> <span class="s2">&quot;remark&quot;</span> <span class="ow">in</span> <span class="n">val</span><span class="p">:</span>  <span class="c1"># Friend</span>
+            <span class="k">return</span> <span class="n">Friend</span><span class="o">.</span><span class="n">parse_obj</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">Group</span><span class="o">.</span><span class="n">parse_obj</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>  <span class="c1"># Group</span>
 </pre></div>
 
         </details>
@@ -2351,6 +2250,8 @@ implement default like this::</p>
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">AriadneStatus</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;指示 Ariadne 状态的枚举类&quot;&quot;&quot;</span>
+
     <span class="n">STOP</span> <span class="o">=</span> <span class="s2">&quot;stop&quot;</span>
     <span class="n">LAUNCH</span> <span class="o">=</span> <span class="s2">&quot;launch&quot;</span>
     <span class="n">RUNNING</span> <span class="o">=</span> <span class="s2">&quot;running&quot;</span>
@@ -2360,7 +2261,7 @@ implement default like this::</p>
 
         </details>
 
-            <div class="docstring"><p>An enumeration.</p>
+            <div class="docstring"><p>指示 Ariadne 状态的枚举类</p>
 </div>
 
 

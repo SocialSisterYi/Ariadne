@@ -255,11 +255,16 @@
                     <h1 class="modulename">
 <a href="./../ariadne.html">ariadne</a><wbr>.app    </h1>
 
-                
+                        <div class="docstring"><p>Ariadne 实例</p>
+</div>
+
                         <details>
             <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span><span class="kn">import</span> <span class="nn">asyncio</span>
+            <div class="codehilite"><pre><span></span><span class="sd">&quot;&quot;&quot;Ariadne 实例</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">asyncio</span>
 <span class="kn">import</span> <span class="nn">importlib.metadata</span>
+<span class="kn">import</span> <span class="nn">inspect</span>
 <span class="kn">import</span> <span class="nn">time</span>
 <span class="kn">from</span> <span class="nn">asyncio.events</span> <span class="kn">import</span> <span class="n">AbstractEventLoop</span>
 <span class="kn">from</span> <span class="nn">asyncio.tasks</span> <span class="kn">import</span> <span class="n">Task</span>
@@ -270,7 +275,7 @@
 
 <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">ARIADNE_ASCII_LOGO</span>
 <span class="kn">from</span> <span class="nn">.adapter</span> <span class="kn">import</span> <span class="n">Adapter</span><span class="p">,</span> <span class="n">DefaultAdapter</span>
-<span class="kn">from</span> <span class="nn">.context</span> <span class="kn">import</span> <span class="n">enter_context</span><span class="p">,</span> <span class="n">enter_message_send_context</span>
+<span class="kn">from</span> <span class="nn">.context</span> <span class="kn">import</span> <span class="n">EventContext</span><span class="p">,</span> <span class="n">enter_message_send_context</span>
 <span class="kn">from</span> <span class="nn">.event.lifecycle</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">AdapterLaunched</span><span class="p">,</span>
     <span class="n">AdapterShutdowned</span><span class="p">,</span>
@@ -278,19 +283,8 @@
     <span class="n">ApplicationShutdowned</span><span class="p">,</span>
 <span class="p">)</span>
 <span class="kn">from</span> <span class="nn">.event.message</span> <span class="kn">import</span> <span class="n">FriendMessage</span><span class="p">,</span> <span class="n">GroupMessage</span><span class="p">,</span> <span class="n">MessageEvent</span><span class="p">,</span> <span class="n">TempMessage</span>
-<span class="kn">from</span> <span class="nn">.message.element</span> <span class="kn">import</span> <span class="n">Source</span>
-<span class="kn">from</span> <span class="nn">.util</span> <span class="kn">import</span> <span class="p">(</span>
-    <span class="n">await_predicate</span><span class="p">,</span>
-    <span class="n">inject_bypass_listener</span><span class="p">,</span>
-    <span class="n">inject_loguru_traceback</span><span class="p">,</span>
-    <span class="n">yield_with_timeout</span><span class="p">,</span>
-<span class="p">)</span>
-
-<span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
-    <span class="kn">from</span> <span class="nn">.message.element</span> <span class="kn">import</span> <span class="n">Image</span><span class="p">,</span> <span class="n">Voice</span>
-    <span class="kn">from</span> <span class="nn">.typing</span> <span class="kn">import</span> <span class="n">T</span>
-
 <span class="kn">from</span> <span class="nn">.message.chain</span> <span class="kn">import</span> <span class="n">MessageChain</span>
+<span class="kn">from</span> <span class="nn">.message.element</span> <span class="kn">import</span> <span class="n">Source</span>
 <span class="kn">from</span> <span class="nn">.model</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">AriadneStatus</span><span class="p">,</span>
     <span class="n">BotMessage</span><span class="p">,</span>
@@ -306,7 +300,18 @@
     <span class="n">Profile</span><span class="p">,</span>
     <span class="n">UploadMethod</span><span class="p">,</span>
 <span class="p">)</span>
-<span class="kn">from</span> <span class="nn">.util</span> <span class="kn">import</span> <span class="n">ApplicationMiddlewareDispatcher</span><span class="p">,</span> <span class="n">app_ctx_manager</span>
+<span class="kn">from</span> <span class="nn">.util</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">ApplicationMiddlewareDispatcher</span><span class="p">,</span>
+    <span class="n">app_ctx_manager</span><span class="p">,</span>
+    <span class="n">await_predicate</span><span class="p">,</span>
+    <span class="n">inject_bypass_listener</span><span class="p">,</span>
+    <span class="n">inject_loguru_traceback</span><span class="p">,</span>
+    <span class="n">yield_with_timeout</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">.message.element</span> <span class="kn">import</span> <span class="n">Image</span><span class="p">,</span> <span class="n">Voice</span>
+    <span class="kn">from</span> <span class="nn">.typing</span> <span class="kn">import</span> <span class="n">T</span>
 
 
 <span class="k">class</span> <span class="nc">AriadneMixin</span><span class="p">:</span>
@@ -319,6 +324,7 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">session_key</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;返回 Ariadne 的 Mirai session key.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">mirai_session</span><span class="o">.</span><span class="n">session_key</span>
 
 
@@ -327,6 +333,14 @@
 
     <span class="nd">@app_ctx_manager</span>
     <span class="k">async</span> <span class="k">def</span> <span class="nf">getMessageFromId</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">messageId</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">MessageEvent</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;从 消息 ID 提取 消息事件.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            messageId (int): 消息 ID.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            MessageEvent: 提取的事件.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">result</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">adapter</span><span class="o">.</span><span class="n">call_api</span><span class="p">(</span>
             <span class="s2">&quot;messageFromId&quot;</span><span class="p">,</span>
             <span class="n">CallMethod</span><span class="o">.</span><span class="n">GET</span><span class="p">,</span>
@@ -569,6 +583,11 @@
 
     <span class="nd">@app_ctx_manager</span>
     <span class="k">async</span> <span class="k">def</span> <span class="nf">getFriendList</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Friend</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;获取本实例账号添加的好友列表.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            List[Friend]: 添加的好友.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">result</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">adapter</span><span class="o">.</span><span class="n">call_api</span><span class="p">(</span>
             <span class="s2">&quot;friendList&quot;</span><span class="p">,</span>
             <span class="n">CallMethod</span><span class="o">.</span><span class="n">GET</span><span class="p">,</span>
@@ -594,6 +613,11 @@
 
     <span class="nd">@app_ctx_manager</span>
     <span class="k">async</span> <span class="k">def</span> <span class="nf">getGroupList</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Group</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;获取本实例账号加入的群组列表.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            List[Group]: 加入的群组.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">result</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">adapter</span><span class="o">.</span><span class="n">call_api</span><span class="p">(</span>
             <span class="s2">&quot;groupList&quot;</span><span class="p">,</span>
             <span class="n">CallMethod</span><span class="o">.</span><span class="n">GET</span><span class="p">,</span>
@@ -619,6 +643,14 @@
 
     <span class="nd">@app_ctx_manager</span>
     <span class="k">async</span> <span class="k">def</span> <span class="nf">getMemberList</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Group</span><span class="p">,</span> <span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Member</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;尝试从已知的群组获取对应成员的列表.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            group (Union[Group, int]): 已知的群组</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            List[Member]: 群内成员的 Member 对象.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">result</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">adapter</span><span class="o">.</span><span class="n">call_api</span><span class="p">(</span>
             <span class="s2">&quot;memberList&quot;</span><span class="p">,</span>
             <span class="n">CallMethod</span><span class="o">.</span><span class="n">GET</span><span class="p">,</span>
@@ -648,6 +680,11 @@
 
     <span class="nd">@app_ctx_manager</span>
     <span class="k">async</span> <span class="k">def</span> <span class="nf">getBotProfile</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Profile</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;获取本实例绑定账号的 Profile.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Profile: 找到的 Profile.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">result</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">adapter</span><span class="o">.</span><span class="n">call_api</span><span class="p">(</span>
             <span class="s2">&quot;botProfile&quot;</span><span class="p">,</span>
             <span class="n">CallMethod</span><span class="o">.</span><span class="n">GET</span><span class="p">,</span>
@@ -657,6 +694,14 @@
 
     <span class="nd">@app_ctx_manager</span>
     <span class="k">async</span> <span class="k">def</span> <span class="nf">getFriendProfile</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">friend</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Friend</span><span class="p">,</span> <span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Profile</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;获取好友的 Profile.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            friend (Union[Friend, int]): 查找的好友.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Profile: 找到的 Profile.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">result</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">adapter</span><span class="o">.</span><span class="n">call_api</span><span class="p">(</span>
             <span class="s2">&quot;friendProfile&quot;</span><span class="p">,</span>
             <span class="n">CallMethod</span><span class="o">.</span><span class="n">GET</span><span class="p">,</span>
@@ -671,6 +716,18 @@
     <span class="k">async</span> <span class="k">def</span> <span class="nf">getMemberProfile</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">member</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Member</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span> <span class="n">group</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">Group</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Profile</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;获取群员的 Profile.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            member (Union[Member, int]): 群员对象.</span>
+<span class="sd">            group (Optional[Union[Group, int]], optional): 检索的群. 提供 Member 形式的 member 参数后可以不提供.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            ValueError: 没有提供可检索的群 ID.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Profile: 找到的 Profile 对象.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">member_id</span> <span class="o">=</span> <span class="n">member</span><span class="o">.</span><span class="n">id</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">member</span><span class="p">,</span> <span class="n">Member</span><span class="p">)</span> <span class="k">else</span> <span class="n">member</span>
         <span class="n">group</span> <span class="o">=</span> <span class="n">group</span> <span class="ow">or</span> <span class="p">(</span><span class="n">member</span><span class="o">.</span><span class="n">group</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">member</span><span class="p">,</span> <span class="n">Member</span><span class="p">)</span> <span class="k">else</span> <span class="kc">None</span><span class="p">)</span>
         <span class="n">group_id</span> <span class="o">=</span> <span class="n">group</span><span class="o">.</span><span class="n">id</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">group</span><span class="p">,</span> <span class="n">Group</span><span class="p">)</span> <span class="k">else</span> <span class="n">group</span>
@@ -1439,7 +1496,6 @@
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">info</span><span class="p">[</span><span class="bp">cls</span><span class="p">]</span>
         <span class="n">call_args</span><span class="p">:</span> <span class="nb">list</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">call_kwargs</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="kn">import</span> <span class="nn">inspect</span>
 
         <span class="n">init_sig</span> <span class="o">=</span> <span class="n">inspect</span><span class="o">.</span><span class="n">signature</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span>
 
@@ -1459,6 +1515,11 @@
         <span class="k">return</span> <span class="n">obj</span>
 
     <span class="k">async</span> <span class="k">def</span> <span class="nf">daemon</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">retry_interval</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">5.0</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Ariadne 生命周期管理的具体方法.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            retry_interval (float, optional): Adapter 重连间隔 (s). 默认 5.0.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">retry_cnt</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>
 
         <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Ariadne daemon started.&quot;</span><span class="p">)</span>
@@ -1474,7 +1535,7 @@
                         <span class="bp">self</span><span class="o">.</span><span class="n">adapter</span><span class="o">.</span><span class="n">running</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="ow">in</span> <span class="p">{</span><span class="n">AriadneStatus</span><span class="o">.</span><span class="n">RUNNING</span><span class="p">,</span> <span class="n">AriadneStatus</span><span class="o">.</span><span class="n">LAUNCH</span><span class="p">}</span>
                     <span class="p">),</span>
                 <span class="p">):</span>
-                    <span class="k">with</span> <span class="n">enter_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+                    <span class="k">with</span> <span class="n">EventContext</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
                         <span class="bp">self</span><span class="o">.</span><span class="n">broadcast</span><span class="o">.</span><span class="n">postEvent</span><span class="p">(</span><span class="n">event</span><span class="p">)</span>
             <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
                 <span class="n">logger</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
@@ -1510,7 +1571,7 @@
                     <span class="n">t</span><span class="o">.</span><span class="n">cancel</span><span class="p">()</span>
                 <span class="k">try</span><span class="p">:</span>
                     <span class="k">await</span> <span class="n">t</span>
-                <span class="k">except</span> <span class="ne">BaseException</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
                     <span class="n">exceptions</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">e</span><span class="o">.</span><span class="vm">__class__</span><span class="p">,</span> <span class="n">e</span><span class="o">.</span><span class="n">args</span><span class="p">))</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Stopping adapter...&quot;</span><span class="p">)</span>
         <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">adapter</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
@@ -1579,17 +1640,27 @@
             <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">daemon_task</span>
 
     <span class="k">async</span> <span class="k">def</span> <span class="nf">lifecycle</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;以 async 阻塞方式启动 Ariadne 并等待其停止.&quot;&quot;&quot;</span>
         <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">launch</span><span class="p">()</span>
         <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">daemon_task</span>
 
     <span class="k">def</span> <span class="nf">launch_blocking</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;以阻塞方式启动 Ariadne 并等待其停止.&quot;&quot;&quot;</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">loop</span><span class="o">.</span><span class="n">run_until_complete</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">lifecycle</span><span class="p">())</span>
         <span class="k">except</span> <span class="ne">KeyboardInterrupt</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">loop</span><span class="o">.</span><span class="n">run_until_complete</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">wait_for_stop</span><span class="p">())</span>
 
     <span class="nd">@app_ctx_manager</span>
-    <span class="k">async</span> <span class="k">def</span> <span class="nf">getVersion</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">auto_set</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">getVersion</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">auto_set</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;获取后端 Mirai HTTP API 版本.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            auto_set (bool, optional): 自动设置到实例的 MiraiSession.version. 默认为 True.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            str: 版本信息.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">mirai_session</span><span class="o">.</span><span class="n">version</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">mirai_session</span><span class="o">.</span><span class="n">version</span>
         <span class="n">result</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">adapter</span><span class="o">.</span><span class="n">call_api</span><span class="o">.</span><span class="n">__wrapped__</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">adapter</span><span class="p">,</span> <span class="s2">&quot;about&quot;</span><span class="p">,</span> <span class="n">CallMethod</span><span class="o">.</span><span class="n">GET</span><span class="p">)</span>
@@ -1608,6 +1679,7 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">account</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;获取当前实例对应 MiraiSession 的账号.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">adapter</span><span class="o">.</span><span class="n">mirai_session</span><span class="o">.</span><span class="n">account</span>
 </pre></div>
 
@@ -1635,6 +1707,7 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">session_key</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;返回 Ariadne 的 Mirai session key.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">mirai_session</span><span class="o">.</span><span class="n">session_key</span>
 </pre></div>
 
@@ -1661,7 +1734,9 @@
         <span class="name">session_key</span><span class="annotation">: Optional[str]</span>
     </div>
 
-    
+            <div class="docstring"><p>返回 Ariadne 的 Mirai session key.</p>
+</div>
+
 
                             </div>
                 </section>
@@ -1681,6 +1756,14 @@
 
     <span class="nd">@app_ctx_manager</span>
     <span class="k">async</span> <span class="k">def</span> <span class="nf">getMessageFromId</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">messageId</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">MessageEvent</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;从 消息 ID 提取 消息事件.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            messageId (int): 消息 ID.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            MessageEvent: 提取的事件.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">result</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">adapter</span><span class="o">.</span><span class="n">call_api</span><span class="p">(</span>
             <span class="s2">&quot;messageFromId&quot;</span><span class="p">,</span>
             <span class="n">CallMethod</span><span class="o">.</span><span class="n">GET</span><span class="p">,</span>
@@ -1948,6 +2031,14 @@
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span>    <span class="nd">@app_ctx_manager</span>
     <span class="k">async</span> <span class="k">def</span> <span class="nf">getMessageFromId</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">messageId</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">MessageEvent</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;从 消息 ID 提取 消息事件.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            messageId (int): 消息 ID.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            MessageEvent: 提取的事件.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">result</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">adapter</span><span class="o">.</span><span class="n">call_api</span><span class="p">(</span>
             <span class="s2">&quot;messageFromId&quot;</span><span class="p">,</span>
             <span class="n">CallMethod</span><span class="o">.</span><span class="n">GET</span><span class="p">,</span>
@@ -1958,7 +2049,21 @@
 
         </details>
 
-    
+            <div class="docstring"><p>从 消息 ID 提取 消息事件.</p>
+
+<h6 id="args">Args</h6>
+
+<ul>
+<li><strong>messageId (int):</strong>  消息 ID.</li>
+</ul>
+
+<h6 id="returns">Returns</h6>
+
+<blockquote>
+  <p>MessageEvent: 提取的事件.</p>
+</blockquote>
+</div>
+
 
                             </div>
                             <div id="MessageMixin.sendFriendMessage" class="classattr">
@@ -2447,6 +2552,11 @@
 
     <span class="nd">@app_ctx_manager</span>
     <span class="k">async</span> <span class="k">def</span> <span class="nf">getFriendList</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Friend</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;获取本实例账号添加的好友列表.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            List[Friend]: 添加的好友.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">result</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">adapter</span><span class="o">.</span><span class="n">call_api</span><span class="p">(</span>
             <span class="s2">&quot;friendList&quot;</span><span class="p">,</span>
             <span class="n">CallMethod</span><span class="o">.</span><span class="n">GET</span><span class="p">,</span>
@@ -2472,6 +2582,11 @@
 
     <span class="nd">@app_ctx_manager</span>
     <span class="k">async</span> <span class="k">def</span> <span class="nf">getGroupList</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Group</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;获取本实例账号加入的群组列表.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            List[Group]: 加入的群组.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">result</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">adapter</span><span class="o">.</span><span class="n">call_api</span><span class="p">(</span>
             <span class="s2">&quot;groupList&quot;</span><span class="p">,</span>
             <span class="n">CallMethod</span><span class="o">.</span><span class="n">GET</span><span class="p">,</span>
@@ -2497,6 +2612,14 @@
 
     <span class="nd">@app_ctx_manager</span>
     <span class="k">async</span> <span class="k">def</span> <span class="nf">getMemberList</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Group</span><span class="p">,</span> <span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Member</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;尝试从已知的群组获取对应成员的列表.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            group (Union[Group, int]): 已知的群组</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            List[Member]: 群内成员的 Member 对象.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">result</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">adapter</span><span class="o">.</span><span class="n">call_api</span><span class="p">(</span>
             <span class="s2">&quot;memberList&quot;</span><span class="p">,</span>
             <span class="n">CallMethod</span><span class="o">.</span><span class="n">GET</span><span class="p">,</span>
@@ -2526,6 +2649,11 @@
 
     <span class="nd">@app_ctx_manager</span>
     <span class="k">async</span> <span class="k">def</span> <span class="nf">getBotProfile</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Profile</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;获取本实例绑定账号的 Profile.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Profile: 找到的 Profile.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">result</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">adapter</span><span class="o">.</span><span class="n">call_api</span><span class="p">(</span>
             <span class="s2">&quot;botProfile&quot;</span><span class="p">,</span>
             <span class="n">CallMethod</span><span class="o">.</span><span class="n">GET</span><span class="p">,</span>
@@ -2535,6 +2663,14 @@
 
     <span class="nd">@app_ctx_manager</span>
     <span class="k">async</span> <span class="k">def</span> <span class="nf">getFriendProfile</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">friend</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Friend</span><span class="p">,</span> <span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Profile</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;获取好友的 Profile.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            friend (Union[Friend, int]): 查找的好友.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Profile: 找到的 Profile.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">result</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">adapter</span><span class="o">.</span><span class="n">call_api</span><span class="p">(</span>
             <span class="s2">&quot;friendProfile&quot;</span><span class="p">,</span>
             <span class="n">CallMethod</span><span class="o">.</span><span class="n">GET</span><span class="p">,</span>
@@ -2549,6 +2685,18 @@
     <span class="k">async</span> <span class="k">def</span> <span class="nf">getMemberProfile</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">member</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Member</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span> <span class="n">group</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">Group</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Profile</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;获取群员的 Profile.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            member (Union[Member, int]): 群员对象.</span>
+<span class="sd">            group (Optional[Union[Group, int]], optional): 检索的群. 提供 Member 形式的 member 参数后可以不提供.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            ValueError: 没有提供可检索的群 ID.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Profile: 找到的 Profile 对象.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">member_id</span> <span class="o">=</span> <span class="n">member</span><span class="o">.</span><span class="n">id</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">member</span><span class="p">,</span> <span class="n">Member</span><span class="p">)</span> <span class="k">else</span> <span class="n">member</span>
         <span class="n">group</span> <span class="o">=</span> <span class="n">group</span> <span class="ow">or</span> <span class="p">(</span><span class="n">member</span><span class="o">.</span><span class="n">group</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">member</span><span class="p">,</span> <span class="n">Member</span><span class="p">)</span> <span class="k">else</span> <span class="kc">None</span><span class="p">)</span>
         <span class="n">group_id</span> <span class="o">=</span> <span class="n">group</span><span class="o">.</span><span class="n">id</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">group</span><span class="p">,</span> <span class="n">Group</span><span class="p">)</span> <span class="k">else</span> <span class="n">group</span>
@@ -2592,6 +2740,11 @@
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span>    <span class="nd">@app_ctx_manager</span>
     <span class="k">async</span> <span class="k">def</span> <span class="nf">getFriendList</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Friend</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;获取本实例账号添加的好友列表.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            List[Friend]: 添加的好友.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">result</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">adapter</span><span class="o">.</span><span class="n">call_api</span><span class="p">(</span>
             <span class="s2">&quot;friendList&quot;</span><span class="p">,</span>
             <span class="n">CallMethod</span><span class="o">.</span><span class="n">GET</span><span class="p">,</span>
@@ -2602,7 +2755,15 @@
 
         </details>
 
-    
+            <div class="docstring"><p>获取本实例账号添加的好友列表.</p>
+
+<h6 id="returns">Returns</h6>
+
+<blockquote>
+  <p>List[Friend]: 添加的好友.</p>
+</blockquote>
+</div>
+
 
                             </div>
                             <div id="RelationshipMixin.getFriend" class="classattr">
@@ -2666,6 +2827,11 @@
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span>    <span class="nd">@app_ctx_manager</span>
     <span class="k">async</span> <span class="k">def</span> <span class="nf">getGroupList</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Group</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;获取本实例账号加入的群组列表.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            List[Group]: 加入的群组.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">result</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">adapter</span><span class="o">.</span><span class="n">call_api</span><span class="p">(</span>
             <span class="s2">&quot;groupList&quot;</span><span class="p">,</span>
             <span class="n">CallMethod</span><span class="o">.</span><span class="n">GET</span><span class="p">,</span>
@@ -2676,7 +2842,15 @@
 
         </details>
 
-    
+            <div class="docstring"><p>获取本实例账号加入的群组列表.</p>
+
+<h6 id="returns">Returns</h6>
+
+<blockquote>
+  <p>List[Group]: 加入的群组.</p>
+</blockquote>
+</div>
+
 
                             </div>
                             <div id="RelationshipMixin.getGroup" class="classattr">
@@ -2743,6 +2917,14 @@
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span>    <span class="nd">@app_ctx_manager</span>
     <span class="k">async</span> <span class="k">def</span> <span class="nf">getMemberList</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Group</span><span class="p">,</span> <span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Member</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;尝试从已知的群组获取对应成员的列表.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            group (Union[Group, int]): 已知的群组</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            List[Member]: 群内成员的 Member 对象.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">result</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">adapter</span><span class="o">.</span><span class="n">call_api</span><span class="p">(</span>
             <span class="s2">&quot;memberList&quot;</span><span class="p">,</span>
             <span class="n">CallMethod</span><span class="o">.</span><span class="n">GET</span><span class="p">,</span>
@@ -2756,7 +2938,21 @@
 
         </details>
 
-    
+            <div class="docstring"><p>尝试从已知的群组获取对应成员的列表.</p>
+
+<h6 id="args">Args</h6>
+
+<ul>
+<li><strong>group (Union[Group, int]):</strong>  已知的群组</li>
+</ul>
+
+<h6 id="returns">Returns</h6>
+
+<blockquote>
+  <p>List[Member]: 群内成员的 Member 对象.</p>
+</blockquote>
+</div>
+
 
                             </div>
                             <div id="RelationshipMixin.getMember" class="classattr">
@@ -2826,6 +3022,11 @@
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span>    <span class="nd">@app_ctx_manager</span>
     <span class="k">async</span> <span class="k">def</span> <span class="nf">getBotProfile</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Profile</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;获取本实例绑定账号的 Profile.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Profile: 找到的 Profile.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">result</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">adapter</span><span class="o">.</span><span class="n">call_api</span><span class="p">(</span>
             <span class="s2">&quot;botProfile&quot;</span><span class="p">,</span>
             <span class="n">CallMethod</span><span class="o">.</span><span class="n">GET</span><span class="p">,</span>
@@ -2836,7 +3037,15 @@
 
         </details>
 
-    
+            <div class="docstring"><p>获取本实例绑定账号的 Profile.</p>
+
+<h6 id="returns">Returns</h6>
+
+<blockquote>
+  <p>Profile: 找到的 Profile.</p>
+</blockquote>
+</div>
+
 
                             </div>
                             <div id="RelationshipMixin.getFriendProfile" class="classattr">
@@ -2855,6 +3064,14 @@
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span>    <span class="nd">@app_ctx_manager</span>
     <span class="k">async</span> <span class="k">def</span> <span class="nf">getFriendProfile</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">friend</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Friend</span><span class="p">,</span> <span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Profile</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;获取好友的 Profile.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            friend (Union[Friend, int]): 查找的好友.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Profile: 找到的 Profile.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">result</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">adapter</span><span class="o">.</span><span class="n">call_api</span><span class="p">(</span>
             <span class="s2">&quot;friendProfile&quot;</span><span class="p">,</span>
             <span class="n">CallMethod</span><span class="o">.</span><span class="n">GET</span><span class="p">,</span>
@@ -2868,7 +3085,21 @@
 
         </details>
 
-    
+            <div class="docstring"><p>获取好友的 Profile.</p>
+
+<h6 id="args">Args</h6>
+
+<ul>
+<li><strong>friend (Union[Friend, int]):</strong>  查找的好友.</li>
+</ul>
+
+<h6 id="returns">Returns</h6>
+
+<blockquote>
+  <p>Profile: 找到的 Profile.</p>
+</blockquote>
+</div>
+
 
                             </div>
                             <div id="RelationshipMixin.getMemberProfile" class="classattr">
@@ -2890,6 +3121,18 @@
     <span class="k">async</span> <span class="k">def</span> <span class="nf">getMemberProfile</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">member</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Member</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span> <span class="n">group</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">Group</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Profile</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;获取群员的 Profile.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            member (Union[Member, int]): 群员对象.</span>
+<span class="sd">            group (Optional[Union[Group, int]], optional): 检索的群. 提供 Member 形式的 member 参数后可以不提供.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            ValueError: 没有提供可检索的群 ID.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Profile: 找到的 Profile 对象.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">member_id</span> <span class="o">=</span> <span class="n">member</span><span class="o">.</span><span class="n">id</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">member</span><span class="p">,</span> <span class="n">Member</span><span class="p">)</span> <span class="k">else</span> <span class="n">member</span>
         <span class="n">group</span> <span class="o">=</span> <span class="n">group</span> <span class="ow">or</span> <span class="p">(</span><span class="n">member</span><span class="o">.</span><span class="n">group</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">member</span><span class="p">,</span> <span class="n">Member</span><span class="p">)</span> <span class="k">else</span> <span class="kc">None</span><span class="p">)</span>
         <span class="n">group_id</span> <span class="o">=</span> <span class="n">group</span><span class="o">.</span><span class="n">id</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">group</span><span class="p">,</span> <span class="n">Group</span><span class="p">)</span> <span class="k">else</span> <span class="n">group</span>
@@ -2905,7 +3148,28 @@
 
         </details>
 
-    
+            <div class="docstring"><p>获取群员的 Profile.</p>
+
+<h6 id="args">Args</h6>
+
+<ul>
+<li><strong>member (Union[Member, int]):</strong>  群员对象.</li>
+<li><strong>group (Optional[Union[Group, int]], optional):</strong>  检索的群. 提供 Member 形式的 member 参数后可以不提供.</li>
+</ul>
+
+<h6 id="raises">Raises</h6>
+
+<ul>
+<li><strong>ValueError:</strong>  没有提供可检索的群 ID.</li>
+</ul>
+
+<h6 id="returns">Returns</h6>
+
+<blockquote>
+  <p>Profile: 找到的 Profile 对象.</p>
+</blockquote>
+</div>
+
 
                             </div>
                             <div class="inherited">
@@ -5274,7 +5538,6 @@
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">info</span><span class="p">[</span><span class="bp">cls</span><span class="p">]</span>
         <span class="n">call_args</span><span class="p">:</span> <span class="nb">list</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">call_kwargs</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="kn">import</span> <span class="nn">inspect</span>
 
         <span class="n">init_sig</span> <span class="o">=</span> <span class="n">inspect</span><span class="o">.</span><span class="n">signature</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span>
 
@@ -5294,6 +5557,11 @@
         <span class="k">return</span> <span class="n">obj</span>
 
     <span class="k">async</span> <span class="k">def</span> <span class="nf">daemon</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">retry_interval</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">5.0</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Ariadne 生命周期管理的具体方法.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            retry_interval (float, optional): Adapter 重连间隔 (s). 默认 5.0.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">retry_cnt</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>
 
         <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Ariadne daemon started.&quot;</span><span class="p">)</span>
@@ -5309,7 +5577,7 @@
                         <span class="bp">self</span><span class="o">.</span><span class="n">adapter</span><span class="o">.</span><span class="n">running</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="ow">in</span> <span class="p">{</span><span class="n">AriadneStatus</span><span class="o">.</span><span class="n">RUNNING</span><span class="p">,</span> <span class="n">AriadneStatus</span><span class="o">.</span><span class="n">LAUNCH</span><span class="p">}</span>
                     <span class="p">),</span>
                 <span class="p">):</span>
-                    <span class="k">with</span> <span class="n">enter_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+                    <span class="k">with</span> <span class="n">EventContext</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
                         <span class="bp">self</span><span class="o">.</span><span class="n">broadcast</span><span class="o">.</span><span class="n">postEvent</span><span class="p">(</span><span class="n">event</span><span class="p">)</span>
             <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
                 <span class="n">logger</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
@@ -5345,7 +5613,7 @@
                     <span class="n">t</span><span class="o">.</span><span class="n">cancel</span><span class="p">()</span>
                 <span class="k">try</span><span class="p">:</span>
                     <span class="k">await</span> <span class="n">t</span>
-                <span class="k">except</span> <span class="ne">BaseException</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
                     <span class="n">exceptions</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">e</span><span class="o">.</span><span class="vm">__class__</span><span class="p">,</span> <span class="n">e</span><span class="o">.</span><span class="n">args</span><span class="p">))</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Stopping adapter...&quot;</span><span class="p">)</span>
         <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">adapter</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
@@ -5414,17 +5682,27 @@
             <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">daemon_task</span>
 
     <span class="k">async</span> <span class="k">def</span> <span class="nf">lifecycle</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;以 async 阻塞方式启动 Ariadne 并等待其停止.&quot;&quot;&quot;</span>
         <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">launch</span><span class="p">()</span>
         <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">daemon_task</span>
 
     <span class="k">def</span> <span class="nf">launch_blocking</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;以阻塞方式启动 Ariadne 并等待其停止.&quot;&quot;&quot;</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">loop</span><span class="o">.</span><span class="n">run_until_complete</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">lifecycle</span><span class="p">())</span>
         <span class="k">except</span> <span class="ne">KeyboardInterrupt</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">loop</span><span class="o">.</span><span class="n">run_until_complete</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">wait_for_stop</span><span class="p">())</span>
 
     <span class="nd">@app_ctx_manager</span>
-    <span class="k">async</span> <span class="k">def</span> <span class="nf">getVersion</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">auto_set</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">getVersion</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">auto_set</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;获取后端 Mirai HTTP API 版本.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            auto_set (bool, optional): 自动设置到实例的 MiraiSession.version. 默认为 True.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            str: 版本信息.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">mirai_session</span><span class="o">.</span><span class="n">version</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">mirai_session</span><span class="o">.</span><span class="n">version</span>
         <span class="n">result</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">adapter</span><span class="o">.</span><span class="n">call_api</span><span class="o">.</span><span class="n">__wrapped__</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">adapter</span><span class="p">,</span> <span class="s2">&quot;about&quot;</span><span class="p">,</span> <span class="n">CallMethod</span><span class="o">.</span><span class="n">GET</span><span class="p">)</span>
@@ -5443,6 +5721,7 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">account</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;获取当前实例对应 MiraiSession 的账号.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">adapter</span><span class="o">.</span><span class="n">mirai_session</span><span class="o">.</span><span class="n">account</span>
 </pre></div>
 
@@ -5604,7 +5883,6 @@
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">info</span><span class="p">[</span><span class="bp">cls</span><span class="p">]</span>
         <span class="n">call_args</span><span class="p">:</span> <span class="nb">list</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">call_kwargs</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="kn">import</span> <span class="nn">inspect</span>
 
         <span class="n">init_sig</span> <span class="o">=</span> <span class="n">inspect</span><span class="o">.</span><span class="n">signature</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span>
 
@@ -5655,6 +5933,11 @@
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span>    <span class="k">async</span> <span class="k">def</span> <span class="nf">daemon</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">retry_interval</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">5.0</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Ariadne 生命周期管理的具体方法.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            retry_interval (float, optional): Adapter 重连间隔 (s). 默认 5.0.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">retry_cnt</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>
 
         <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Ariadne daemon started.&quot;</span><span class="p">)</span>
@@ -5670,7 +5953,7 @@
                         <span class="bp">self</span><span class="o">.</span><span class="n">adapter</span><span class="o">.</span><span class="n">running</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="ow">in</span> <span class="p">{</span><span class="n">AriadneStatus</span><span class="o">.</span><span class="n">RUNNING</span><span class="p">,</span> <span class="n">AriadneStatus</span><span class="o">.</span><span class="n">LAUNCH</span><span class="p">}</span>
                     <span class="p">),</span>
                 <span class="p">):</span>
-                    <span class="k">with</span> <span class="n">enter_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+                    <span class="k">with</span> <span class="n">EventContext</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
                         <span class="bp">self</span><span class="o">.</span><span class="n">broadcast</span><span class="o">.</span><span class="n">postEvent</span><span class="p">(</span><span class="n">event</span><span class="p">)</span>
             <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
                 <span class="n">logger</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
@@ -5706,7 +5989,7 @@
                     <span class="n">t</span><span class="o">.</span><span class="n">cancel</span><span class="p">()</span>
                 <span class="k">try</span><span class="p">:</span>
                     <span class="k">await</span> <span class="n">t</span>
-                <span class="k">except</span> <span class="ne">BaseException</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
                     <span class="n">exceptions</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">e</span><span class="o">.</span><span class="vm">__class__</span><span class="p">,</span> <span class="n">e</span><span class="o">.</span><span class="n">args</span><span class="p">))</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Stopping adapter...&quot;</span><span class="p">)</span>
         <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">adapter</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
@@ -5717,7 +6000,15 @@
 
         </details>
 
-    
+            <div class="docstring"><p>Ariadne 生命周期管理的具体方法.</p>
+
+<h6 id="args">Args</h6>
+
+<ul>
+<li><strong>retry_interval (float, optional):</strong>  Adapter 重连间隔 (s). 默认 5.0.</li>
+</ul>
+</div>
+
 
                             </div>
                             <div id="Ariadne.launch" class="classattr">
@@ -5846,13 +6137,16 @@
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span>    <span class="k">async</span> <span class="k">def</span> <span class="nf">lifecycle</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;以 async 阻塞方式启动 Ariadne 并等待其停止.&quot;&quot;&quot;</span>
         <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">launch</span><span class="p">()</span>
         <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">daemon_task</span>
 </pre></div>
 
         </details>
 
-    
+            <div class="docstring"><p>以 async 阻塞方式启动 Ariadne 并等待其停止.</p>
+</div>
+
 
                             </div>
                             <div id="Ariadne.launch_blocking" class="classattr">
@@ -5866,6 +6160,7 @@
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">launch_blocking</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;以阻塞方式启动 Ariadne 并等待其停止.&quot;&quot;&quot;</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">loop</span><span class="o">.</span><span class="n">run_until_complete</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">lifecycle</span><span class="p">())</span>
         <span class="k">except</span> <span class="ne">KeyboardInterrupt</span><span class="p">:</span>
@@ -5874,7 +6169,9 @@
 
         </details>
 
-    
+            <div class="docstring"><p>以阻塞方式启动 Ariadne 并等待其停止.</p>
+</div>
+
 
                             </div>
                             <div id="Ariadne.getVersion" class="classattr">
@@ -5883,13 +6180,21 @@
                 <div class="decorator">@app_ctx_manager</div>
 
             <span class="def">async def</span>
-            <span class="name">getVersion</span><span class="signature">(self, auto_set: bool = True)</span>:
+            <span class="name">getVersion</span><span class="signature">(self, auto_set: bool = True) -&gt; str</span>:
     </div>
 
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span>    <span class="nd">@app_ctx_manager</span>
-    <span class="k">async</span> <span class="k">def</span> <span class="nf">getVersion</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">auto_set</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">getVersion</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">auto_set</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;获取后端 Mirai HTTP API 版本.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            auto_set (bool, optional): 自动设置到实例的 MiraiSession.version. 默认为 True.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            str: 版本信息.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">mirai_session</span><span class="o">.</span><span class="n">version</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">mirai_session</span><span class="o">.</span><span class="n">version</span>
         <span class="n">result</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">adapter</span><span class="o">.</span><span class="n">call_api</span><span class="o">.</span><span class="n">__wrapped__</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">adapter</span><span class="p">,</span> <span class="s2">&quot;about&quot;</span><span class="p">,</span> <span class="n">CallMethod</span><span class="o">.</span><span class="n">GET</span><span class="p">)</span>
@@ -5901,7 +6206,21 @@
 
         </details>
 
-    
+            <div class="docstring"><p>获取后端 Mirai HTTP API 版本.</p>
+
+<h6 id="args">Args</h6>
+
+<ul>
+<li><strong>auto_set (bool, optional):</strong>  自动设置到实例的 MiraiSession.version. 默认为 True.</li>
+</ul>
+
+<h6 id="returns">Returns</h6>
+
+<blockquote>
+  <p>str: 版本信息.</p>
+</blockquote>
+</div>
+
 
                             </div>
                             <div id="Ariadne.account" class="classattr">
@@ -5910,7 +6229,9 @@
         <span class="name">account</span><span class="annotation">: Optional[int]</span>
     </div>
 
-    
+            <div class="docstring"><p>获取当前实例对应 MiraiSession 的账号.</p>
+</div>
+
 
                             </div>
                             <div class="inherited">

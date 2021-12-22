@@ -66,10 +66,13 @@
                     <h1 class="modulename">
 <a href="./../../ariadne.html">ariadne</a><wbr>.<a href="./../message.html">message</a><wbr>.component    </h1>
 
-                
+                        <div class="docstring"><p>简单的消息链元素选择器</p>
+</div>
+
                         <details>
             <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Type</span><span class="p">,</span> <span class="n">Union</span>
+            <div class="codehilite"><pre><span></span><span class="sd">&quot;&quot;&quot;简单的消息链元素选择器&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Type</span><span class="p">,</span> <span class="n">Union</span>
 
 <span class="kn">from</span> <span class="nn">graia.broadcast.entities.decorator</span> <span class="kn">import</span> <span class="n">Decorator</span>
 <span class="kn">from</span> <span class="nn">graia.broadcast.interfaces.decorator</span> <span class="kn">import</span> <span class="n">DecoratorInterface</span>
@@ -85,6 +88,8 @@
 
 
 <span class="k">class</span> <span class="nc">Component</span><span class="p">(</span><span class="n">Decorator</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;简单的消息链元素选择器, 允许使用 __class_getitem__ 实例化&quot;&quot;&quot;</span>
+
     <span class="nb">filter</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">Element</span><span class="p">],</span> <span class="nb">bool</span><span class="p">]</span>
     <span class="n">match_time</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
 
@@ -120,6 +125,14 @@
         <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">element_cls</span><span class="p">,</span> <span class="n">match_time</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">select</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">chain</span><span class="p">:</span> <span class="n">MessageChain</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">MessageChain</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;基于实例筛选元素</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            chain (MessageChain): 输入的消息链</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            MessageChain: 筛选后的消息链</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">result</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Element</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">matched</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="k">for</span> <span class="n">element</span> <span class="ow">in</span> <span class="n">chain</span><span class="o">.</span><span class="n">__root__</span><span class="p">:</span>
@@ -131,6 +144,7 @@
         <span class="k">return</span> <span class="n">MessageChain</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="n">inline</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">target</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">interface</span><span class="p">:</span> <span class="n">DecoratorInterface</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">MessageChain</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;用作 Decorator 时使用, 返回处理后的 MessageChain&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">interface</span><span class="o">.</span><span class="n">return_value</span><span class="p">,</span> <span class="n">MessageChain</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Can&#39;t cast Component on </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">interface</span><span class="o">.</span><span class="n">return_value</span><span class="p">)</span><span class="si">}</span><span class="s2">!&quot;</span><span class="p">)</span>
         <span class="n">chain</span><span class="p">:</span> <span class="n">MessageChain</span> <span class="o">=</span> <span class="n">interface</span><span class="o">.</span><span class="n">return_value</span>
@@ -152,6 +166,8 @@
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">Component</span><span class="p">(</span><span class="n">Decorator</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;简单的消息链元素选择器, 允许使用 __class_getitem__ 实例化&quot;&quot;&quot;</span>
+
     <span class="nb">filter</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">Element</span><span class="p">],</span> <span class="nb">bool</span><span class="p">]</span>
     <span class="n">match_time</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
 
@@ -187,6 +203,14 @@
         <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">element_cls</span><span class="p">,</span> <span class="n">match_time</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">select</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">chain</span><span class="p">:</span> <span class="n">MessageChain</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">MessageChain</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;基于实例筛选元素</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            chain (MessageChain): 输入的消息链</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            MessageChain: 筛选后的消息链</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">result</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Element</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">matched</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="k">for</span> <span class="n">element</span> <span class="ow">in</span> <span class="n">chain</span><span class="o">.</span><span class="n">__root__</span><span class="p">:</span>
@@ -198,6 +222,7 @@
         <span class="k">return</span> <span class="n">MessageChain</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="n">inline</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">target</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">interface</span><span class="p">:</span> <span class="n">DecoratorInterface</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">MessageChain</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;用作 Decorator 时使用, 返回处理后的 MessageChain&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">interface</span><span class="o">.</span><span class="n">return_value</span><span class="p">,</span> <span class="n">MessageChain</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Can&#39;t cast Component on </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">interface</span><span class="o">.</span><span class="n">return_value</span><span class="p">)</span><span class="si">}</span><span class="s2">!&quot;</span><span class="p">)</span>
         <span class="n">chain</span><span class="p">:</span> <span class="n">MessageChain</span> <span class="o">=</span> <span class="n">interface</span><span class="o">.</span><span class="n">return_value</span>
@@ -206,7 +231,9 @@
 
         </details>
 
-    
+            <div class="docstring"><p>简单的消息链元素选择器, 允许使用 __class_getitem__ 实例化</p>
+</div>
+
 
                             <div id="Component.__init__" class="classattr">
                                         <div class="attr function"><a class="headerlink" href="#Component.__init__">#&nbsp;&nbsp</a>
@@ -264,6 +291,14 @@
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">select</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">chain</span><span class="p">:</span> <span class="n">MessageChain</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">MessageChain</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;基于实例筛选元素</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            chain (MessageChain): 输入的消息链</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            MessageChain: 筛选后的消息链</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">result</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Element</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">matched</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="k">for</span> <span class="n">element</span> <span class="ow">in</span> <span class="n">chain</span><span class="o">.</span><span class="n">__root__</span><span class="p">:</span>
@@ -277,7 +312,21 @@
 
         </details>
 
-    
+            <div class="docstring"><p>基于实例筛选元素</p>
+
+<h6 id="args">Args</h6>
+
+<ul>
+<li><strong>chain (MessageChain):</strong>  输入的消息链</li>
+</ul>
+
+<h6 id="returns">Returns</h6>
+
+<blockquote>
+  <p>MessageChain: 筛选后的消息链</p>
+</blockquote>
+</div>
+
 
                             </div>
                             <div id="Component.target" class="classattr">
@@ -294,6 +343,7 @@
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">target</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">interface</span><span class="p">:</span> <span class="n">DecoratorInterface</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">MessageChain</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;用作 Decorator 时使用, 返回处理后的 MessageChain&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">interface</span><span class="o">.</span><span class="n">return_value</span><span class="p">,</span> <span class="n">MessageChain</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Can&#39;t cast Component on </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">interface</span><span class="o">.</span><span class="n">return_value</span><span class="p">)</span><span class="si">}</span><span class="s2">!&quot;</span><span class="p">)</span>
         <span class="n">chain</span><span class="p">:</span> <span class="n">MessageChain</span> <span class="o">=</span> <span class="n">interface</span><span class="o">.</span><span class="n">return_value</span>
@@ -302,7 +352,9 @@
 
         </details>
 
-    
+            <div class="docstring"><p>用作 Decorator 时使用, 返回处理后的 MessageChain</p>
+</div>
+
 
                             </div>
                             <div class="inherited">

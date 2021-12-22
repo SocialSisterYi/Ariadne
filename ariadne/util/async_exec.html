@@ -114,11 +114,17 @@
 <span class="kn">from</span> <span class="nn">..typing</span> <span class="kn">import</span> <span class="n">P</span><span class="p">,</span> <span class="n">R</span>
 
 
-<span class="k">def</span> <span class="nf">IS_MAIN_PROCESS</span><span class="p">():</span>
+<span class="k">def</span> <span class="nf">IS_MAIN_PROCESS</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;返回是否为主进程</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        bool: 是否为主进程</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">multiprocessing</span><span class="o">.</span><span class="n">parent_process</span><span class="p">()</span> <span class="ow">is</span> <span class="kc">None</span>
 
 
 <span class="k">def</span> <span class="nf">_reg_sigint</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;在子进程注册 SIGINT 处理函数以防止 Traceback 炸屏&quot;&quot;&quot;</span>
     <span class="kn">import</span> <span class="nn">signal</span>
     <span class="kn">import</span> <span class="nn">sys</span>
 
@@ -156,30 +162,66 @@
 
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">loop</span><span class="p">:</span> <span class="n">AbstractEventLoop</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;获取 ParallelExecutor 实例</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            loop (AbstractEventLoop, optional): 查找的事件循环. Defaults to None.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            ParallelExecutor: 找到的 / 新创建的 ParallelExecutor.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">loop</span> <span class="o">=</span> <span class="n">loop</span> <span class="ow">or</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">get_running_loop</span><span class="p">()</span>
         <span class="k">if</span> <span class="n">loop</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">cls</span><span class="o">.</span><span class="n">loop_ref_dict</span><span class="p">:</span>
             <span class="bp">cls</span><span class="o">.</span><span class="n">loop_ref_dict</span><span class="p">[</span><span class="n">loop</span><span class="p">]</span> <span class="o">=</span> <span class="n">ParallelExecutor</span><span class="p">()</span>
         <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">loop_ref_dict</span><span class="p">[</span><span class="n">loop</span><span class="p">]</span>
 
     <span class="k">def</span> <span class="nf">bind_loop</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">loop</span><span class="p">:</span> <span class="n">AbstractEventLoop</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;绑定本实例到 loop.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            loop (AbstractEventLoop): 要绑定到的事件循环.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">loop_ref_dict</span><span class="p">[</span><span class="n">loop</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span>
 
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">shutdown</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;关闭本类的所有底层 Executor.&quot;&quot;&quot;</span>
         <span class="k">for</span> <span class="n">exec</span> <span class="ow">in</span> <span class="bp">cls</span><span class="o">.</span><span class="n">loop_ref_dict</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
             <span class="n">exec</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
 
     <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;关闭实例的所有底层 Executor.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">thread_exec</span><span class="o">.</span><span class="n">shutdown</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">proc_exec</span><span class="o">.</span><span class="n">shutdown</span><span class="p">()</span>
 
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">run_func</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">module</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">args</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">R</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;运行函数的实现</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            name (str): 函数名 (__qualname__)</span>
+<span class="sd">            module (str): 函数所在模块名 (__module__)</span>
+<span class="sd">            args (tuple): 位置参数</span>
+<span class="sd">            kwargs (dict): 关键字参数</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            R: 底层函数的返回值</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">importlib</span><span class="o">.</span><span class="n">import_module</span><span class="p">(</span><span class="n">module</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">func_mapping</span><span class="p">[</span><span class="n">name</span><span class="p">](</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">run_func_static</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">func</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[</span><span class="n">P</span><span class="p">,</span> <span class="n">R</span><span class="p">],</span> <span class="n">args</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">R</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;调用一个静态函数 (会自动解包装已被 ParallelExecutor 包装过的函数)</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            func (Callable[P, R]): 要调用的函数</span>
+<span class="sd">            args (tuple): 位置参数</span>
+<span class="sd">            kwargs (dict): 关键字参数</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            R: 底层函数的返回值</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">func</span><span class="o">.</span><span class="vm">__qualname__</span> <span class="ow">in</span> <span class="bp">cls</span><span class="o">.</span><span class="n">func_mapping</span><span class="p">:</span>
             <span class="n">func</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">func_mapping</span><span class="p">[</span><span class="n">func</span><span class="o">.</span><span class="vm">__qualname__</span><span class="p">]</span>
         <span class="k">return</span> <span class="n">func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
@@ -224,6 +266,14 @@
 
 
 <span class="k">def</span> <span class="nf">io_bound</span><span class="p">(</span><span class="n">func</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[</span><span class="n">P</span><span class="p">,</span> <span class="n">R</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">[</span><span class="n">P</span><span class="p">,</span> <span class="n">Awaitable</span><span class="p">[</span><span class="n">R</span><span class="p">]]:</span>
+    <span class="sd">&quot;&quot;&quot;包装一个函数在线程中异步运行.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        func (Callable[P, R]): 要包装的函数</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Callable[P, Awaitable[R]]: 包装后的函数</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">ParallelExecutor</span><span class="o">.</span><span class="n">func_mapping</span><span class="p">[</span><span class="n">func</span><span class="o">.</span><span class="vm">__qualname__</span><span class="p">]</span> <span class="o">=</span> <span class="n">func</span>
 
     <span class="nd">@functools</span><span class="o">.</span><span class="n">wraps</span><span class="p">(</span><span class="n">func</span><span class="p">)</span>
@@ -243,6 +293,14 @@
 
 
 <span class="k">def</span> <span class="nf">cpu_bound</span><span class="p">(</span><span class="n">func</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[</span><span class="n">P</span><span class="p">,</span> <span class="n">R</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">[</span><span class="n">P</span><span class="p">,</span> <span class="n">Awaitable</span><span class="p">[</span><span class="n">R</span><span class="p">]]:</span>
+    <span class="sd">&quot;&quot;&quot;包装一个函数在进程中异步运行.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        func (Callable[P, R]): 要包装的函数</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Callable[P, Awaitable[R]]: 包装后的函数</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">ParallelExecutor</span><span class="o">.</span><span class="n">func_mapping</span><span class="p">[</span><span class="n">func</span><span class="o">.</span><span class="vm">__qualname__</span><span class="p">]</span> <span class="o">=</span> <span class="n">func</span>
 
     <span class="nd">@functools</span><span class="o">.</span><span class="n">wraps</span><span class="p">(</span><span class="n">func</span><span class="p">)</span>
@@ -269,18 +327,31 @@
 
         
             <span class="def">def</span>
-            <span class="name">IS_MAIN_PROCESS</span><span class="signature">()</span>:
+            <span class="name">IS_MAIN_PROCESS</span><span class="signature">() -&gt; bool</span>:
     </div>
 
                 <details>
             <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span><span class="k">def</span> <span class="nf">IS_MAIN_PROCESS</span><span class="p">():</span>
+            <div class="codehilite"><pre><span></span><span class="k">def</span> <span class="nf">IS_MAIN_PROCESS</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;返回是否为主进程</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        bool: 是否为主进程</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">multiprocessing</span><span class="o">.</span><span class="n">parent_process</span><span class="p">()</span> <span class="ow">is</span> <span class="kc">None</span>
 </pre></div>
 
         </details>
 
-    
+            <div class="docstring"><p>返回是否为主进程</p>
+
+<h6 id="returns">Returns</h6>
+
+<blockquote>
+  <p>bool: 是否为主进程</p>
+</blockquote>
+</div>
+
 
                 </section>
                 <section id="ParallelExecutor">
@@ -325,30 +396,66 @@
 
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">loop</span><span class="p">:</span> <span class="n">AbstractEventLoop</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;获取 ParallelExecutor 实例</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            loop (AbstractEventLoop, optional): 查找的事件循环. Defaults to None.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            ParallelExecutor: 找到的 / 新创建的 ParallelExecutor.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">loop</span> <span class="o">=</span> <span class="n">loop</span> <span class="ow">or</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">get_running_loop</span><span class="p">()</span>
         <span class="k">if</span> <span class="n">loop</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">cls</span><span class="o">.</span><span class="n">loop_ref_dict</span><span class="p">:</span>
             <span class="bp">cls</span><span class="o">.</span><span class="n">loop_ref_dict</span><span class="p">[</span><span class="n">loop</span><span class="p">]</span> <span class="o">=</span> <span class="n">ParallelExecutor</span><span class="p">()</span>
         <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">loop_ref_dict</span><span class="p">[</span><span class="n">loop</span><span class="p">]</span>
 
     <span class="k">def</span> <span class="nf">bind_loop</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">loop</span><span class="p">:</span> <span class="n">AbstractEventLoop</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;绑定本实例到 loop.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            loop (AbstractEventLoop): 要绑定到的事件循环.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">loop_ref_dict</span><span class="p">[</span><span class="n">loop</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span>
 
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">shutdown</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;关闭本类的所有底层 Executor.&quot;&quot;&quot;</span>
         <span class="k">for</span> <span class="n">exec</span> <span class="ow">in</span> <span class="bp">cls</span><span class="o">.</span><span class="n">loop_ref_dict</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
             <span class="n">exec</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
 
     <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;关闭实例的所有底层 Executor.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">thread_exec</span><span class="o">.</span><span class="n">shutdown</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">proc_exec</span><span class="o">.</span><span class="n">shutdown</span><span class="p">()</span>
 
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">run_func</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">module</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">args</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">R</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;运行函数的实现</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            name (str): 函数名 (__qualname__)</span>
+<span class="sd">            module (str): 函数所在模块名 (__module__)</span>
+<span class="sd">            args (tuple): 位置参数</span>
+<span class="sd">            kwargs (dict): 关键字参数</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            R: 底层函数的返回值</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">importlib</span><span class="o">.</span><span class="n">import_module</span><span class="p">(</span><span class="n">module</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">func_mapping</span><span class="p">[</span><span class="n">name</span><span class="p">](</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">run_func_static</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">func</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[</span><span class="n">P</span><span class="p">,</span> <span class="n">R</span><span class="p">],</span> <span class="n">args</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">R</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;调用一个静态函数 (会自动解包装已被 ParallelExecutor 包装过的函数)</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            func (Callable[P, R]): 要调用的函数</span>
+<span class="sd">            args (tuple): 位置参数</span>
+<span class="sd">            kwargs (dict): 关键字参数</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            R: 底层函数的返回值</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">func</span><span class="o">.</span><span class="vm">__qualname__</span> <span class="ow">in</span> <span class="bp">cls</span><span class="o">.</span><span class="n">func_mapping</span><span class="p">:</span>
             <span class="n">func</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">func_mapping</span><span class="p">[</span><span class="n">func</span><span class="o">.</span><span class="vm">__qualname__</span><span class="p">]</span>
         <span class="k">return</span> <span class="n">func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
@@ -481,6 +588,14 @@
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">loop</span><span class="p">:</span> <span class="n">AbstractEventLoop</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;获取 ParallelExecutor 实例</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            loop (AbstractEventLoop, optional): 查找的事件循环. Defaults to None.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            ParallelExecutor: 找到的 / 新创建的 ParallelExecutor.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">loop</span> <span class="o">=</span> <span class="n">loop</span> <span class="ow">or</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">get_running_loop</span><span class="p">()</span>
         <span class="k">if</span> <span class="n">loop</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">cls</span><span class="o">.</span><span class="n">loop_ref_dict</span><span class="p">:</span>
             <span class="bp">cls</span><span class="o">.</span><span class="n">loop_ref_dict</span><span class="p">[</span><span class="n">loop</span><span class="p">]</span> <span class="o">=</span> <span class="n">ParallelExecutor</span><span class="p">()</span>
@@ -489,7 +604,21 @@
 
         </details>
 
-    
+            <div class="docstring"><p>获取 ParallelExecutor 实例</p>
+
+<h6 id="args">Args</h6>
+
+<ul>
+<li><strong>loop (AbstractEventLoop, optional):</strong>  查找的事件循环. Defaults to None.</li>
+</ul>
+
+<h6 id="returns">Returns</h6>
+
+<blockquote>
+  <p>ParallelExecutor: 找到的 / 新创建的 ParallelExecutor.</p>
+</blockquote>
+</div>
+
 
                             </div>
                             <div id="ParallelExecutor.bind_loop" class="classattr">
@@ -503,12 +632,25 @@
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">bind_loop</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">loop</span><span class="p">:</span> <span class="n">AbstractEventLoop</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;绑定本实例到 loop.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            loop (AbstractEventLoop): 要绑定到的事件循环.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">loop_ref_dict</span><span class="p">[</span><span class="n">loop</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span>
 </pre></div>
 
         </details>
 
-    
+            <div class="docstring"><p>绑定本实例到 loop.</p>
+
+<h6 id="args">Args</h6>
+
+<ul>
+<li><strong>loop (AbstractEventLoop):</strong>  要绑定到的事件循环.</li>
+</ul>
+</div>
+
 
                             </div>
                             <div id="ParallelExecutor.shutdown" class="classattr">
@@ -524,13 +666,16 @@
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">shutdown</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;关闭本类的所有底层 Executor.&quot;&quot;&quot;</span>
         <span class="k">for</span> <span class="n">exec</span> <span class="ow">in</span> <span class="bp">cls</span><span class="o">.</span><span class="n">loop_ref_dict</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
             <span class="n">exec</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
 </pre></div>
 
         </details>
 
-    
+            <div class="docstring"><p>关闭本类的所有底层 Executor.</p>
+</div>
+
 
                             </div>
                             <div id="ParallelExecutor.close" class="classattr">
@@ -544,13 +689,16 @@
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;关闭实例的所有底层 Executor.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">thread_exec</span><span class="o">.</span><span class="n">shutdown</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">proc_exec</span><span class="o">.</span><span class="n">shutdown</span><span class="p">()</span>
 </pre></div>
 
         </details>
 
-    
+            <div class="docstring"><p>关闭实例的所有底层 Executor.</p>
+</div>
+
 
                             </div>
                             <div id="ParallelExecutor.run_func" class="classattr">
@@ -566,13 +714,41 @@
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">run_func</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">module</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">args</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">R</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;运行函数的实现</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            name (str): 函数名 (__qualname__)</span>
+<span class="sd">            module (str): 函数所在模块名 (__module__)</span>
+<span class="sd">            args (tuple): 位置参数</span>
+<span class="sd">            kwargs (dict): 关键字参数</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            R: 底层函数的返回值</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">importlib</span><span class="o">.</span><span class="n">import_module</span><span class="p">(</span><span class="n">module</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">func_mapping</span><span class="p">[</span><span class="n">name</span><span class="p">](</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 </pre></div>
 
         </details>
 
-    
+            <div class="docstring"><p>运行函数的实现</p>
+
+<h6 id="args">Args</h6>
+
+<ul>
+<li><strong>name (str):</strong>  函数名 (__qualname__)</li>
+<li><strong>module (str):</strong>  函数所在模块名 (__module__)</li>
+<li><strong>args (tuple):</strong>  位置参数</li>
+<li><strong>kwargs (dict):</strong>  关键字参数</li>
+</ul>
+
+<h6 id="returns">Returns</h6>
+
+<blockquote>
+  <p>R: 底层函数的返回值</p>
+</blockquote>
+</div>
+
 
                             </div>
                             <div id="ParallelExecutor.run_func_static" class="classattr">
@@ -588,6 +764,16 @@
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">run_func_static</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">func</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[</span><span class="n">P</span><span class="p">,</span> <span class="n">R</span><span class="p">],</span> <span class="n">args</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">R</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;调用一个静态函数 (会自动解包装已被 ParallelExecutor 包装过的函数)</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            func (Callable[P, R]): 要调用的函数</span>
+<span class="sd">            args (tuple): 位置参数</span>
+<span class="sd">            kwargs (dict): 关键字参数</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            R: 底层函数的返回值</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">func</span><span class="o">.</span><span class="vm">__qualname__</span> <span class="ow">in</span> <span class="bp">cls</span><span class="o">.</span><span class="n">func_mapping</span><span class="p">:</span>
             <span class="n">func</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">func_mapping</span><span class="p">[</span><span class="n">func</span><span class="o">.</span><span class="vm">__qualname__</span><span class="p">]</span>
         <span class="k">return</span> <span class="n">func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
@@ -595,7 +781,23 @@
 
         </details>
 
-    
+            <div class="docstring"><p>调用一个静态函数 (会自动解包装已被 ParallelExecutor 包装过的函数)</p>
+
+<h6 id="args">Args</h6>
+
+<ul>
+<li><strong>func (Callable[P, R]):</strong>  要调用的函数</li>
+<li><strong>args (tuple):</strong>  位置参数</li>
+<li><strong>kwargs (dict):</strong>  关键字参数</li>
+</ul>
+
+<h6 id="returns">Returns</h6>
+
+<blockquote>
+  <p>R: 底层函数的返回值</p>
+</blockquote>
+</div>
+
 
                             </div>
                             <div id="ParallelExecutor.to_thread" class="classattr">
@@ -722,6 +924,14 @@
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span><span class="k">def</span> <span class="nf">io_bound</span><span class="p">(</span><span class="n">func</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[</span><span class="n">P</span><span class="p">,</span> <span class="n">R</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">[</span><span class="n">P</span><span class="p">,</span> <span class="n">Awaitable</span><span class="p">[</span><span class="n">R</span><span class="p">]]:</span>
+    <span class="sd">&quot;&quot;&quot;包装一个函数在线程中异步运行.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        func (Callable[P, R]): 要包装的函数</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Callable[P, Awaitable[R]]: 包装后的函数</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">ParallelExecutor</span><span class="o">.</span><span class="n">func_mapping</span><span class="p">[</span><span class="n">func</span><span class="o">.</span><span class="vm">__qualname__</span><span class="p">]</span> <span class="o">=</span> <span class="n">func</span>
 
     <span class="nd">@functools</span><span class="o">.</span><span class="n">wraps</span><span class="p">(</span><span class="n">func</span><span class="p">)</span>
@@ -742,7 +952,21 @@
 
         </details>
 
-    
+            <div class="docstring"><p>包装一个函数在线程中异步运行.</p>
+
+<h6 id="args">Args</h6>
+
+<ul>
+<li><strong>func (Callable[P, R]):</strong>  要包装的函数</li>
+</ul>
+
+<h6 id="returns">Returns</h6>
+
+<blockquote>
+  <p>Callable[P, Awaitable[R]]: 包装后的函数</p>
+</blockquote>
+</div>
+
 
                 </section>
                 <section id="cpu_bound">
@@ -756,6 +980,14 @@
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span><span class="k">def</span> <span class="nf">cpu_bound</span><span class="p">(</span><span class="n">func</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[</span><span class="n">P</span><span class="p">,</span> <span class="n">R</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">[</span><span class="n">P</span><span class="p">,</span> <span class="n">Awaitable</span><span class="p">[</span><span class="n">R</span><span class="p">]]:</span>
+    <span class="sd">&quot;&quot;&quot;包装一个函数在进程中异步运行.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        func (Callable[P, R]): 要包装的函数</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Callable[P, Awaitable[R]]: 包装后的函数</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">ParallelExecutor</span><span class="o">.</span><span class="n">func_mapping</span><span class="p">[</span><span class="n">func</span><span class="o">.</span><span class="vm">__qualname__</span><span class="p">]</span> <span class="o">=</span> <span class="n">func</span>
 
     <span class="nd">@functools</span><span class="o">.</span><span class="n">wraps</span><span class="p">(</span><span class="n">func</span><span class="p">)</span>
@@ -776,7 +1008,21 @@
 
         </details>
 
-    
+            <div class="docstring"><p>包装一个函数在进程中异步运行.</p>
+
+<h6 id="args">Args</h6>
+
+<ul>
+<li><strong>func (Callable[P, R]):</strong>  要包装的函数</li>
+</ul>
+
+<h6 id="returns">Returns</h6>
+
+<blockquote>
+  <p>Callable[P, Awaitable[R]]: 包装后的函数</p>
+</blockquote>
+</div>
+
 
                 </section>
     </main>
