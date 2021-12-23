@@ -44,6 +44,9 @@
                                 <a class="function" href="#Console.data_getter">data_getter</a>
                         </li>
                         <li>
+                                <a class="function" href="#Console.prompt">prompt</a>
+                        </li>
+                        <li>
                                 <a class="function" href="#Console.loop">loop</a>
                         </li>
                         <li>
@@ -79,11 +82,15 @@
                     <h1 class="modulename">
 <a href="./../ariadne.html">ariadne</a><wbr>.console    </h1>
 
-                
+                        <div class="docstring"><p>Ariadne 控制台</p>
+</div>
+
                         <details>
             <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span><span class="kn">import</span> <span class="nn">importlib.metadata</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span>
+            <div class="codehilite"><pre><span></span><span class="sd">&quot;&quot;&quot;Ariadne 控制台&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">importlib.metadata</span>
+<span class="kn">from</span> <span class="nn">asyncio.tasks</span> <span class="kn">import</span> <span class="n">Task</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Union</span>
 
 <span class="kn">from</span> <span class="nn">graia.broadcast</span> <span class="kn">import</span> <span class="n">Broadcast</span>
 <span class="kn">from</span> <span class="nn">graia.broadcast.entities.decorator</span> <span class="kn">import</span> <span class="n">Decorator</span>
@@ -92,35 +99,57 @@
 <span class="kn">from</span> <span class="nn">graia.broadcast.exceptions</span> <span class="kn">import</span> <span class="n">DisabledNamespace</span><span class="p">,</span> <span class="n">PropagationCancelled</span>
 <span class="kn">from</span> <span class="nn">graia.broadcast.interfaces.dispatcher</span> <span class="kn">import</span> <span class="n">DispatcherInterface</span>
 <span class="kn">from</span> <span class="nn">loguru</span> <span class="kn">import</span> <span class="n">logger</span>
-<span class="kn">from</span> <span class="nn">prompt_toolkit</span> <span class="kn">import</span> <span class="n">HTML</span><span class="p">,</span> <span class="n">PromptSession</span>
+<span class="kn">from</span> <span class="nn">prompt_toolkit.formatted_text</span> <span class="kn">import</span> <span class="n">AnyFormattedText</span>
+<span class="kn">from</span> <span class="nn">prompt_toolkit.shortcuts.prompt</span> <span class="kn">import</span> <span class="n">PromptSession</span>
+<span class="kn">from</span> <span class="nn">prompt_toolkit.styles</span> <span class="kn">import</span> <span class="n">Style</span>
 
-<span class="kn">from</span> <span class="nn">graia.ariadne.util</span> <span class="kn">import</span> <span class="n">yield_with_timeout</span>
+<span class="kn">from</span> <span class="nn">..util</span> <span class="kn">import</span> <span class="n">yield_with_timeout</span>
 
 
 <span class="k">class</span> <span class="nc">Console</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Ariadne 的控制台, 可以脱离 Ariadne 实例运行&quot;&quot;&quot;</span>
+
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">broadcast</span><span class="p">:</span> <span class="n">Broadcast</span><span class="p">,</span>
         <span class="o">*</span><span class="p">,</span>
-        <span class="n">bg</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">fg</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;blue&quot;</span><span class="p">,</span>
-        <span class="n">prompt</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{library_name}</span><span class="s2"> </span><span class="si">{graia_ariadne_version}</span><span class="s2">&gt;&quot;</span><span class="p">,</span>
+        <span class="n">prompt</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Callable</span><span class="p">[[],</span> <span class="nb">str</span><span class="p">],</span> <span class="n">AnyFormattedText</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{library_name}</span><span class="s2"> </span><span class="si">{graia_ariadne_version}</span><span class="s2">&gt;&quot;</span><span class="p">,</span>
+        <span class="n">r_prompt</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Callable</span><span class="p">[[],</span> <span class="nb">str</span><span class="p">],</span> <span class="n">AnyFormattedText</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+        <span class="n">style</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">extra_data_getter</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Callable</span><span class="p">[[],</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]]</span> <span class="o">=</span> <span class="p">(),</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;初始化控制台.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            broadcast (Broadcast): 事件系统.</span>
+<span class="sd">            bg (Optional[str], optional): 背景色.</span>
+<span class="sd">            fg (Optional[str], optional): 前景色.</span>
+<span class="sd">            prompt (AnyFormattedText): 输入提示, 可使用 f-string 形式的格式化字符串.</span>
+<span class="sd">            默认为 &quot;{library_name} {graia_ariadne_version}&gt;&quot;.</span>
+<span class="sd">            r_prompt (AnyFormattedText): 右侧提示, 可使用 f-string 形式的格式化字符串. 默认为空.</span>
+<span class="sd">            extra_data_getter (Iterable[() -&gt; Dict[str, Any], optional): 额外的 Callable, 用于生成 prompt 的格式化数据.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">broadcast</span> <span class="o">=</span> <span class="n">broadcast</span>
 
-        <span class="n">style</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s1">&#39;bg=&quot;</span><span class="si">{</span><span class="n">bg</span><span class="si">}</span><span class="s1">&quot;&#39;</span> <span class="k">if</span> <span class="n">bg</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;fg=&quot;</span><span class="si">{</span><span class="n">fg</span><span class="si">}</span><span class="s1">&quot;&#39;</span> <span class="k">if</span> <span class="n">fg</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="p">:</span> <span class="n">PromptSession</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">PromptSession</span><span class="p">()</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">style</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;&lt;style </span><span class="si">{</span><span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">style</span><span class="p">)</span><span class="si">}</span><span class="s1">&gt;</span><span class="si">{</span><span class="n">prompt</span><span class="si">}</span><span class="s1">&lt;/style&gt;&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">style</span> <span class="o">=</span> <span class="n">Style</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">style</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">l_prompt</span><span class="p">:</span> <span class="n">AnyFormattedText</span> <span class="o">=</span> <span class="n">prompt</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">r_prompt</span><span class="p">:</span> <span class="n">AnyFormattedText</span> <span class="o">=</span> <span class="n">r_prompt</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">registry</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="n">Callable</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">BaseDispatcher</span><span class="p">],</span> <span class="n">List</span><span class="p">[</span><span class="n">Decorator</span><span class="p">]]]</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">extra_data_getter</span> <span class="o">=</span> <span class="n">extra_data_getter</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">running</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">task</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Task</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
 
     <span class="k">def</span> <span class="nf">data_getter</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;返回用于 prompt 的数据</span>
 
+<span class="sd">        Returns:</span>
+<span class="sd">            Dict[str, Any]: 可用于 format_map 的数据字典</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">data</span> <span class="o">=</span> <span class="p">{</span>
             <span class="s2">&quot;library_name&quot;</span><span class="p">:</span> <span class="s2">&quot;Ariadne&quot;</span><span class="p">,</span>
         <span class="p">}</span>
@@ -138,22 +167,39 @@
 
         <span class="k">return</span> <span class="n">data</span>
 
-    <span class="k">async</span> <span class="k">def</span> <span class="nf">loop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">prompt</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;向控制台发送一个输入请求, 异步</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            str: 输入结果</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">l_prompt</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="n">l_prompt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">l_prompt</span><span class="o">.</span><span class="n">format_map</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data_getter</span><span class="p">())</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">l_prompt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">l_prompt</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">r_prompt</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="n">r_prompt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">r_prompt</span><span class="o">.</span><span class="n">format_map</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data_getter</span><span class="p">())</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">l_prompt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">l_prompt</span>
+        <span class="k">return</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">prompt_async</span><span class="p">(</span><span class="n">message</span><span class="o">=</span><span class="n">l_prompt</span><span class="p">,</span> <span class="n">rprompt</span><span class="o">=</span><span class="n">r_prompt</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">style</span><span class="p">)</span>
+
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">loop</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Console 的输入循环&quot;&quot;&quot;</span>
         <span class="kn">from</span> <span class="nn">graia.ariadne.message.chain</span> <span class="kn">import</span> <span class="n">MessageChain</span>
         <span class="kn">from</span> <span class="nn">graia.ariadne.message.element</span> <span class="kn">import</span> <span class="n">Plain</span>
 
-        <span class="k">class</span> <span class="nc">_Dispatcher</span><span class="p">(</span><span class="n">BaseDispatcher</span><span class="p">):</span>
+        <span class="k">class</span> <span class="nc">_Dispatcher</span><span class="p">(</span><span class="n">BaseDispatcher</span><span class="p">):</span>  <span class="c1"># pylint: disable=missing-class-docstring</span>
             <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">command</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">command</span> <span class="o">=</span> <span class="n">command</span>
 
             <span class="k">async</span> <span class="k">def</span> <span class="nf">catch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">interface</span><span class="p">:</span> <span class="n">DispatcherInterface</span><span class="p">):</span>
                 <span class="k">if</span> <span class="n">interface</span><span class="o">.</span><span class="n">annotation</span> <span class="ow">is</span> <span class="nb">str</span> <span class="ow">and</span> <span class="n">interface</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;command&quot;</span><span class="p">:</span>
                     <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">command</span>
-                <span class="k">elif</span> <span class="n">interface</span><span class="o">.</span><span class="n">annotation</span> <span class="ow">is</span> <span class="n">MessageChain</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">interface</span><span class="o">.</span><span class="n">annotation</span> <span class="ow">is</span> <span class="n">MessageChain</span><span class="p">:</span>
                     <span class="k">return</span> <span class="n">MessageChain</span><span class="p">([</span><span class="n">Plain</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">command</span><span class="p">)],</span> <span class="n">inline</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
         <span class="k">async</span> <span class="k">for</span> <span class="n">command</span> <span class="ow">in</span> <span class="n">yield_with_timeout</span><span class="p">(</span>
-            <span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">prompt_async</span><span class="p">(</span><span class="n">message</span><span class="o">=</span><span class="n">HTML</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">style</span><span class="o">.</span><span class="n">format_map</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data_getter</span><span class="p">()))),</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">prompt</span><span class="p">,</span>
             <span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">running</span><span class="p">,</span>
         <span class="p">):</span>
 
@@ -175,17 +221,27 @@
                         <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">asDisplay</span><span class="p">())</span>
 
     <span class="k">def</span> <span class="nf">start</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;启动 Console&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">running</span> <span class="o">=</span> <span class="kc">True</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">task</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">broadcast</span><span class="o">.</span><span class="n">loop</span><span class="o">.</span><span class="n">create_task</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">loop</span><span class="p">())</span>
 
     <span class="k">def</span> <span class="nf">stop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;提示 Console 停止, 非异步&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">running</span> <span class="o">=</span> <span class="kc">False</span>
 
     <span class="k">async</span> <span class="k">def</span> <span class="nf">join</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;等待 Console 结束, 异步&quot;&quot;&quot;</span>
         <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">task</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">task</span> <span class="o">=</span> <span class="kc">None</span>
 
     <span class="k">def</span> <span class="nf">register</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dispatchers</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">BaseDispatcher</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">decorators</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Decorator</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;注册命令处理函数</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            dispatchers (List[BaseDispatcher], optional): 使用的 Dispatcher 列表.</span>
+<span class="sd">            decorators (List[Decorator], optional): 使用的 Decorator 列表.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
         <span class="k">def</span> <span class="nf">wrapper</span><span class="p">(</span><span class="n">func</span><span class="p">:</span> <span class="n">Callable</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">registry</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">func</span><span class="p">,</span> <span class="n">dispatchers</span> <span class="ow">or</span> <span class="p">[],</span> <span class="n">decorators</span> <span class="ow">or</span> <span class="p">[]))</span>
             <span class="k">return</span> <span class="n">func</span>
@@ -208,29 +264,49 @@
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">Console</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Ariadne 的控制台, 可以脱离 Ariadne 实例运行&quot;&quot;&quot;</span>
+
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">broadcast</span><span class="p">:</span> <span class="n">Broadcast</span><span class="p">,</span>
         <span class="o">*</span><span class="p">,</span>
-        <span class="n">bg</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">fg</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;blue&quot;</span><span class="p">,</span>
-        <span class="n">prompt</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{library_name}</span><span class="s2"> </span><span class="si">{graia_ariadne_version}</span><span class="s2">&gt;&quot;</span><span class="p">,</span>
+        <span class="n">prompt</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Callable</span><span class="p">[[],</span> <span class="nb">str</span><span class="p">],</span> <span class="n">AnyFormattedText</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{library_name}</span><span class="s2"> </span><span class="si">{graia_ariadne_version}</span><span class="s2">&gt;&quot;</span><span class="p">,</span>
+        <span class="n">r_prompt</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Callable</span><span class="p">[[],</span> <span class="nb">str</span><span class="p">],</span> <span class="n">AnyFormattedText</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+        <span class="n">style</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">extra_data_getter</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Callable</span><span class="p">[[],</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]]</span> <span class="o">=</span> <span class="p">(),</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;初始化控制台.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            broadcast (Broadcast): 事件系统.</span>
+<span class="sd">            bg (Optional[str], optional): 背景色.</span>
+<span class="sd">            fg (Optional[str], optional): 前景色.</span>
+<span class="sd">            prompt (AnyFormattedText): 输入提示, 可使用 f-string 形式的格式化字符串.</span>
+<span class="sd">            默认为 &quot;{library_name} {graia_ariadne_version}&gt;&quot;.</span>
+<span class="sd">            r_prompt (AnyFormattedText): 右侧提示, 可使用 f-string 形式的格式化字符串. 默认为空.</span>
+<span class="sd">            extra_data_getter (Iterable[() -&gt; Dict[str, Any], optional): 额外的 Callable, 用于生成 prompt 的格式化数据.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">broadcast</span> <span class="o">=</span> <span class="n">broadcast</span>
 
-        <span class="n">style</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s1">&#39;bg=&quot;</span><span class="si">{</span><span class="n">bg</span><span class="si">}</span><span class="s1">&quot;&#39;</span> <span class="k">if</span> <span class="n">bg</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;fg=&quot;</span><span class="si">{</span><span class="n">fg</span><span class="si">}</span><span class="s1">&quot;&#39;</span> <span class="k">if</span> <span class="n">fg</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="p">:</span> <span class="n">PromptSession</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">PromptSession</span><span class="p">()</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">style</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;&lt;style </span><span class="si">{</span><span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">style</span><span class="p">)</span><span class="si">}</span><span class="s1">&gt;</span><span class="si">{</span><span class="n">prompt</span><span class="si">}</span><span class="s1">&lt;/style&gt;&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">style</span> <span class="o">=</span> <span class="n">Style</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">style</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">l_prompt</span><span class="p">:</span> <span class="n">AnyFormattedText</span> <span class="o">=</span> <span class="n">prompt</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">r_prompt</span><span class="p">:</span> <span class="n">AnyFormattedText</span> <span class="o">=</span> <span class="n">r_prompt</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">registry</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="n">Callable</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">BaseDispatcher</span><span class="p">],</span> <span class="n">List</span><span class="p">[</span><span class="n">Decorator</span><span class="p">]]]</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">extra_data_getter</span> <span class="o">=</span> <span class="n">extra_data_getter</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">running</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">task</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Task</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
 
     <span class="k">def</span> <span class="nf">data_getter</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;返回用于 prompt 的数据</span>
 
+<span class="sd">        Returns:</span>
+<span class="sd">            Dict[str, Any]: 可用于 format_map 的数据字典</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">data</span> <span class="o">=</span> <span class="p">{</span>
             <span class="s2">&quot;library_name&quot;</span><span class="p">:</span> <span class="s2">&quot;Ariadne&quot;</span><span class="p">,</span>
         <span class="p">}</span>
@@ -248,22 +324,39 @@
 
         <span class="k">return</span> <span class="n">data</span>
 
-    <span class="k">async</span> <span class="k">def</span> <span class="nf">loop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">prompt</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;向控制台发送一个输入请求, 异步</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            str: 输入结果</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">l_prompt</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="n">l_prompt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">l_prompt</span><span class="o">.</span><span class="n">format_map</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data_getter</span><span class="p">())</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">l_prompt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">l_prompt</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">r_prompt</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="n">r_prompt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">r_prompt</span><span class="o">.</span><span class="n">format_map</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data_getter</span><span class="p">())</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">l_prompt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">l_prompt</span>
+        <span class="k">return</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">prompt_async</span><span class="p">(</span><span class="n">message</span><span class="o">=</span><span class="n">l_prompt</span><span class="p">,</span> <span class="n">rprompt</span><span class="o">=</span><span class="n">r_prompt</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">style</span><span class="p">)</span>
+
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">loop</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Console 的输入循环&quot;&quot;&quot;</span>
         <span class="kn">from</span> <span class="nn">graia.ariadne.message.chain</span> <span class="kn">import</span> <span class="n">MessageChain</span>
         <span class="kn">from</span> <span class="nn">graia.ariadne.message.element</span> <span class="kn">import</span> <span class="n">Plain</span>
 
-        <span class="k">class</span> <span class="nc">_Dispatcher</span><span class="p">(</span><span class="n">BaseDispatcher</span><span class="p">):</span>
+        <span class="k">class</span> <span class="nc">_Dispatcher</span><span class="p">(</span><span class="n">BaseDispatcher</span><span class="p">):</span>  <span class="c1"># pylint: disable=missing-class-docstring</span>
             <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">command</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">command</span> <span class="o">=</span> <span class="n">command</span>
 
             <span class="k">async</span> <span class="k">def</span> <span class="nf">catch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">interface</span><span class="p">:</span> <span class="n">DispatcherInterface</span><span class="p">):</span>
                 <span class="k">if</span> <span class="n">interface</span><span class="o">.</span><span class="n">annotation</span> <span class="ow">is</span> <span class="nb">str</span> <span class="ow">and</span> <span class="n">interface</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;command&quot;</span><span class="p">:</span>
                     <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">command</span>
-                <span class="k">elif</span> <span class="n">interface</span><span class="o">.</span><span class="n">annotation</span> <span class="ow">is</span> <span class="n">MessageChain</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">interface</span><span class="o">.</span><span class="n">annotation</span> <span class="ow">is</span> <span class="n">MessageChain</span><span class="p">:</span>
                     <span class="k">return</span> <span class="n">MessageChain</span><span class="p">([</span><span class="n">Plain</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">command</span><span class="p">)],</span> <span class="n">inline</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
         <span class="k">async</span> <span class="k">for</span> <span class="n">command</span> <span class="ow">in</span> <span class="n">yield_with_timeout</span><span class="p">(</span>
-            <span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">prompt_async</span><span class="p">(</span><span class="n">message</span><span class="o">=</span><span class="n">HTML</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">style</span><span class="o">.</span><span class="n">format_map</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data_getter</span><span class="p">()))),</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">prompt</span><span class="p">,</span>
             <span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">running</span><span class="p">,</span>
         <span class="p">):</span>
 
@@ -285,17 +378,27 @@
                         <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">asDisplay</span><span class="p">())</span>
 
     <span class="k">def</span> <span class="nf">start</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;启动 Console&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">running</span> <span class="o">=</span> <span class="kc">True</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">task</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">broadcast</span><span class="o">.</span><span class="n">loop</span><span class="o">.</span><span class="n">create_task</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">loop</span><span class="p">())</span>
 
     <span class="k">def</span> <span class="nf">stop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;提示 Console 停止, 非异步&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">running</span> <span class="o">=</span> <span class="kc">False</span>
 
     <span class="k">async</span> <span class="k">def</span> <span class="nf">join</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;等待 Console 结束, 异步&quot;&quot;&quot;</span>
         <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">task</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">task</span> <span class="o">=</span> <span class="kc">None</span>
 
     <span class="k">def</span> <span class="nf">register</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dispatchers</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">BaseDispatcher</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">decorators</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Decorator</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;注册命令处理函数</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            dispatchers (List[BaseDispatcher], optional): 使用的 Dispatcher 列表.</span>
+<span class="sd">            decorators (List[Decorator], optional): 使用的 Decorator 列表.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
         <span class="k">def</span> <span class="nf">wrapper</span><span class="p">(</span><span class="n">func</span><span class="p">:</span> <span class="n">Callable</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">registry</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">func</span><span class="p">,</span> <span class="n">dispatchers</span> <span class="ow">or</span> <span class="p">[],</span> <span class="n">decorators</span> <span class="ow">or</span> <span class="p">[]))</span>
             <span class="k">return</span> <span class="n">func</span>
@@ -305,7 +408,9 @@
 
         </details>
 
-    
+            <div class="docstring"><p>Ariadne 的控制台, 可以脱离 Ariadne 实例运行</p>
+</div>
+
 
                             <div id="Console.__init__" class="classattr">
                                         <div class="attr function"><a class="headerlink" href="#Console.__init__">#&nbsp;&nbsp</a>
@@ -314,9 +419,9 @@
             <span class="name">Console</span><span class="signature">(
     broadcast: graia.broadcast.Broadcast,
     *,
-    bg: Optional[str] = None,
-    fg: str = &#39;blue&#39;,
-    prompt: str = &#39;{library_name} {graia_ariadne_version}&gt;&#39;,
+    prompt: Union[Callable[[], str], str, ForwardRef(&#39;MagicFormattedText&#39;), List[Union[Tuple[str, str], Tuple[str, str, Callable[[prompt_toolkit.mouse_events.MouseEvent], NoneType]]]], Callable[[], Any], NoneType] = &#39;{library_name} {graia_ariadne_version}&gt;&#39;,
+    r_prompt: Union[Callable[[], str], str, ForwardRef(&#39;MagicFormattedText&#39;), List[Union[Tuple[str, str], Tuple[str, str, Callable[[prompt_toolkit.mouse_events.MouseEvent], NoneType]]]], Callable[[], Any], NoneType] = &#39;&#39;,
+    style: Dict[str, Any] = None,
     extra_data_getter: Iterable[Callable[[], Dict[str, Any]]] = ()
 )</span>
     </div>
@@ -327,27 +432,55 @@
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">broadcast</span><span class="p">:</span> <span class="n">Broadcast</span><span class="p">,</span>
         <span class="o">*</span><span class="p">,</span>
-        <span class="n">bg</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">fg</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;blue&quot;</span><span class="p">,</span>
-        <span class="n">prompt</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{library_name}</span><span class="s2"> </span><span class="si">{graia_ariadne_version}</span><span class="s2">&gt;&quot;</span><span class="p">,</span>
+        <span class="n">prompt</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Callable</span><span class="p">[[],</span> <span class="nb">str</span><span class="p">],</span> <span class="n">AnyFormattedText</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{library_name}</span><span class="s2"> </span><span class="si">{graia_ariadne_version}</span><span class="s2">&gt;&quot;</span><span class="p">,</span>
+        <span class="n">r_prompt</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Callable</span><span class="p">[[],</span> <span class="nb">str</span><span class="p">],</span> <span class="n">AnyFormattedText</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+        <span class="n">style</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">extra_data_getter</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Callable</span><span class="p">[[],</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]]</span> <span class="o">=</span> <span class="p">(),</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;初始化控制台.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            broadcast (Broadcast): 事件系统.</span>
+<span class="sd">            bg (Optional[str], optional): 背景色.</span>
+<span class="sd">            fg (Optional[str], optional): 前景色.</span>
+<span class="sd">            prompt (AnyFormattedText): 输入提示, 可使用 f-string 形式的格式化字符串.</span>
+<span class="sd">            默认为 &quot;{library_name} {graia_ariadne_version}&gt;&quot;.</span>
+<span class="sd">            r_prompt (AnyFormattedText): 右侧提示, 可使用 f-string 形式的格式化字符串. 默认为空.</span>
+<span class="sd">            extra_data_getter (Iterable[() -&gt; Dict[str, Any], optional): 额外的 Callable, 用于生成 prompt 的格式化数据.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">broadcast</span> <span class="o">=</span> <span class="n">broadcast</span>
 
-        <span class="n">style</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s1">&#39;bg=&quot;</span><span class="si">{</span><span class="n">bg</span><span class="si">}</span><span class="s1">&quot;&#39;</span> <span class="k">if</span> <span class="n">bg</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;fg=&quot;</span><span class="si">{</span><span class="n">fg</span><span class="si">}</span><span class="s1">&quot;&#39;</span> <span class="k">if</span> <span class="n">fg</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="p">:</span> <span class="n">PromptSession</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">PromptSession</span><span class="p">()</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">style</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;&lt;style </span><span class="si">{</span><span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">style</span><span class="p">)</span><span class="si">}</span><span class="s1">&gt;</span><span class="si">{</span><span class="n">prompt</span><span class="si">}</span><span class="s1">&lt;/style&gt;&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">style</span> <span class="o">=</span> <span class="n">Style</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">style</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">l_prompt</span><span class="p">:</span> <span class="n">AnyFormattedText</span> <span class="o">=</span> <span class="n">prompt</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">r_prompt</span><span class="p">:</span> <span class="n">AnyFormattedText</span> <span class="o">=</span> <span class="n">r_prompt</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">registry</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="n">Callable</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">BaseDispatcher</span><span class="p">],</span> <span class="n">List</span><span class="p">[</span><span class="n">Decorator</span><span class="p">]]]</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">extra_data_getter</span> <span class="o">=</span> <span class="n">extra_data_getter</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">running</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">task</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Task</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
 </pre></div>
 
         </details>
 
-    
+            <div class="docstring"><p>初始化控制台.</p>
+
+<h6 id="args">Args</h6>
+
+<ul>
+<li><strong>broadcast (Broadcast):</strong>  事件系统.</li>
+<li><strong>bg (Optional[str], optional):</strong>  背景色.</li>
+<li><strong>fg (Optional[str], optional):</strong>  前景色.</li>
+<li><strong>prompt (AnyFormattedText):</strong>  输入提示, 可使用 f-string 形式的格式化字符串.</li>
+<li>默认为 "{library_name} {graia_ariadne_version}&gt;".</li>
+<li><strong>r_prompt (AnyFormattedText):</strong>  右侧提示, 可使用 f-string 形式的格式化字符串. 默认为空.</li>
+<li><strong>extra_data_getter (Iterable[() -> Dict[str, Any], optional):</strong>  额外的 Callable, 用于生成 prompt 的格式化数据.</li>
+</ul>
+</div>
+
 
                             </div>
                             <div id="Console.data_getter" class="classattr">
@@ -361,7 +494,11 @@
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">data_getter</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;返回用于 prompt 的数据</span>
 
+<span class="sd">        Returns:</span>
+<span class="sd">            Dict[str, Any]: 可用于 format_map 的数据字典</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">data</span> <span class="o">=</span> <span class="p">{</span>
             <span class="s2">&quot;library_name&quot;</span><span class="p">:</span> <span class="s2">&quot;Ariadne&quot;</span><span class="p">,</span>
         <span class="p">}</span>
@@ -382,7 +519,55 @@
 
         </details>
 
-    
+            <div class="docstring"><p>返回用于 prompt 的数据</p>
+
+<h6 id="returns">Returns</h6>
+
+<blockquote>
+  <p>Dict[str, Any]: 可用于 format_map 的数据字典</p>
+</blockquote>
+</div>
+
+
+                            </div>
+                            <div id="Console.prompt" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#Console.prompt">#&nbsp;&nbsp</a>
+
+        
+            <span class="def">async def</span>
+            <span class="name">prompt</span><span class="signature">(self) -&gt; str</span>:
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span>    <span class="k">async</span> <span class="k">def</span> <span class="nf">prompt</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;向控制台发送一个输入请求, 异步</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            str: 输入结果</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">l_prompt</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="n">l_prompt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">l_prompt</span><span class="o">.</span><span class="n">format_map</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data_getter</span><span class="p">())</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">l_prompt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">l_prompt</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">r_prompt</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="n">r_prompt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">r_prompt</span><span class="o">.</span><span class="n">format_map</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data_getter</span><span class="p">())</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">l_prompt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">l_prompt</span>
+        <span class="k">return</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">prompt_async</span><span class="p">(</span><span class="n">message</span><span class="o">=</span><span class="n">l_prompt</span><span class="p">,</span> <span class="n">rprompt</span><span class="o">=</span><span class="n">r_prompt</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">style</span><span class="p">)</span>
+</pre></div>
+
+        </details>
+
+            <div class="docstring"><p>向控制台发送一个输入请求, 异步</p>
+
+<h6 id="returns">Returns</h6>
+
+<blockquote>
+  <p>str: 输入结果</p>
+</blockquote>
+</div>
+
 
                             </div>
                             <div id="Console.loop" class="classattr">
@@ -390,27 +575,28 @@
 
         
             <span class="def">async def</span>
-            <span class="name">loop</span><span class="signature">(self)</span>:
+            <span class="name">loop</span><span class="signature">(self) -&gt; None</span>:
     </div>
 
                 <details>
             <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span>    <span class="k">async</span> <span class="k">def</span> <span class="nf">loop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <div class="codehilite"><pre><span></span>    <span class="k">async</span> <span class="k">def</span> <span class="nf">loop</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Console 的输入循环&quot;&quot;&quot;</span>
         <span class="kn">from</span> <span class="nn">graia.ariadne.message.chain</span> <span class="kn">import</span> <span class="n">MessageChain</span>
         <span class="kn">from</span> <span class="nn">graia.ariadne.message.element</span> <span class="kn">import</span> <span class="n">Plain</span>
 
-        <span class="k">class</span> <span class="nc">_Dispatcher</span><span class="p">(</span><span class="n">BaseDispatcher</span><span class="p">):</span>
+        <span class="k">class</span> <span class="nc">_Dispatcher</span><span class="p">(</span><span class="n">BaseDispatcher</span><span class="p">):</span>  <span class="c1"># pylint: disable=missing-class-docstring</span>
             <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">command</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">command</span> <span class="o">=</span> <span class="n">command</span>
 
             <span class="k">async</span> <span class="k">def</span> <span class="nf">catch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">interface</span><span class="p">:</span> <span class="n">DispatcherInterface</span><span class="p">):</span>
                 <span class="k">if</span> <span class="n">interface</span><span class="o">.</span><span class="n">annotation</span> <span class="ow">is</span> <span class="nb">str</span> <span class="ow">and</span> <span class="n">interface</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;command&quot;</span><span class="p">:</span>
                     <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">command</span>
-                <span class="k">elif</span> <span class="n">interface</span><span class="o">.</span><span class="n">annotation</span> <span class="ow">is</span> <span class="n">MessageChain</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">interface</span><span class="o">.</span><span class="n">annotation</span> <span class="ow">is</span> <span class="n">MessageChain</span><span class="p">:</span>
                     <span class="k">return</span> <span class="n">MessageChain</span><span class="p">([</span><span class="n">Plain</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">command</span><span class="p">)],</span> <span class="n">inline</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
         <span class="k">async</span> <span class="k">for</span> <span class="n">command</span> <span class="ow">in</span> <span class="n">yield_with_timeout</span><span class="p">(</span>
-            <span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">prompt_async</span><span class="p">(</span><span class="n">message</span><span class="o">=</span><span class="n">HTML</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">style</span><span class="o">.</span><span class="n">format_map</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data_getter</span><span class="p">()))),</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">prompt</span><span class="p">,</span>
             <span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">running</span><span class="p">,</span>
         <span class="p">):</span>
 
@@ -434,7 +620,9 @@
 
         </details>
 
-    
+            <div class="docstring"><p>Console 的输入循环</p>
+</div>
+
 
                             </div>
                             <div id="Console.start" class="classattr">
@@ -448,13 +636,16 @@
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">start</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;启动 Console&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">running</span> <span class="o">=</span> <span class="kc">True</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">task</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">broadcast</span><span class="o">.</span><span class="n">loop</span><span class="o">.</span><span class="n">create_task</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">loop</span><span class="p">())</span>
 </pre></div>
 
         </details>
 
-    
+            <div class="docstring"><p>启动 Console</p>
+</div>
+
 
                             </div>
                             <div id="Console.stop" class="classattr">
@@ -468,12 +659,15 @@
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">stop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;提示 Console 停止, 非异步&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">running</span> <span class="o">=</span> <span class="kc">False</span>
 </pre></div>
 
         </details>
 
-    
+            <div class="docstring"><p>提示 Console 停止, 非异步</p>
+</div>
+
 
                             </div>
                             <div id="Console.join" class="classattr">
@@ -487,13 +681,16 @@
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span>    <span class="k">async</span> <span class="k">def</span> <span class="nf">join</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;等待 Console 结束, 异步&quot;&quot;&quot;</span>
         <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">task</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">task</span> <span class="o">=</span> <span class="kc">None</span>
 </pre></div>
 
         </details>
 
-    
+            <div class="docstring"><p>等待 Console 结束, 异步</p>
+</div>
+
 
                             </div>
                             <div id="Console.register" class="classattr">
@@ -511,6 +708,13 @@
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">register</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dispatchers</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">BaseDispatcher</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">decorators</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Decorator</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;注册命令处理函数</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            dispatchers (List[BaseDispatcher], optional): 使用的 Dispatcher 列表.</span>
+<span class="sd">            decorators (List[Decorator], optional): 使用的 Decorator 列表.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
         <span class="k">def</span> <span class="nf">wrapper</span><span class="p">(</span><span class="n">func</span><span class="p">:</span> <span class="n">Callable</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">registry</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">func</span><span class="p">,</span> <span class="n">dispatchers</span> <span class="ow">or</span> <span class="p">[],</span> <span class="n">decorators</span> <span class="ow">or</span> <span class="p">[]))</span>
             <span class="k">return</span> <span class="n">func</span>
@@ -520,7 +724,16 @@
 
         </details>
 
-    
+            <div class="docstring"><p>注册命令处理函数</p>
+
+<h6 id="args">Args</h6>
+
+<ul>
+<li><strong>dispatchers (List[BaseDispatcher], optional):</strong>  使用的 Dispatcher 列表.</li>
+<li><strong>decorators (List[Decorator], optional):</strong>  使用的 Decorator 列表.</li>
+</ul>
+</div>
+
 
                             </div>
                 </section>

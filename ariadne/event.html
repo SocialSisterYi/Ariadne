@@ -76,7 +76,7 @@
 <span class="kn">from</span> <span class="nn">graia.broadcast</span> <span class="kn">import</span> <span class="n">Dispatchable</span>
 <span class="kn">from</span> <span class="nn">pydantic</span> <span class="kn">import</span> <span class="n">validator</span>
 
-<span class="kn">from</span> <span class="nn">..dispatcher</span> <span class="kn">import</span> <span class="n">ApplicationDispatcher</span>
+<span class="kn">from</span> <span class="nn">..dispatcher</span> <span class="kn">import</span> <span class="n">ContextDispatcher</span>
 <span class="kn">from</span> <span class="nn">..exception</span> <span class="kn">import</span> <span class="n">InvalidEventTypeDefinition</span>
 <span class="kn">from</span> <span class="nn">..model</span> <span class="kn">import</span> <span class="n">AriadneBaseModel</span>
 
@@ -95,7 +95,7 @@
             <span class="k">raise</span> <span class="n">InvalidEventTypeDefinition</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">cls</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">&#39;s type must be &#39;</span><span class="si">{</span><span class="bp">cls</span><span class="o">.</span><span class="n">type</span><span class="si">}</span><span class="s2">&#39;, not &#39;</span><span class="si">{</span><span class="n">v</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">v</span>
 
-    <span class="n">Dispatcher</span> <span class="o">=</span> <span class="n">ApplicationDispatcher</span>
+    <span class="n">Dispatcher</span> <span class="o">=</span> <span class="n">ContextDispatcher</span>
 </pre></div>
 
         </details>
@@ -126,7 +126,7 @@
             <span class="k">raise</span> <span class="n">InvalidEventTypeDefinition</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">cls</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">&#39;s type must be &#39;</span><span class="si">{</span><span class="bp">cls</span><span class="o">.</span><span class="n">type</span><span class="si">}</span><span class="s2">&#39;, not &#39;</span><span class="si">{</span><span class="n">v</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">v</span>
 
-    <span class="n">Dispatcher</span> <span class="o">=</span> <span class="n">ApplicationDispatcher</span>
+    <span class="n">Dispatcher</span> <span class="o">=</span> <span class="n">ContextDispatcher</span>
 </pre></div>
 
         </details>
@@ -200,27 +200,44 @@
 
                 <details>
             <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">ApplicationDispatcher</span><span class="p">(</span><span class="n">BaseDispatcher</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;提取 Ariadne 实例的 Dispatcher&quot;&quot;&quot;</span>
+            <div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">ContextDispatcher</span><span class="p">(</span><span class="n">BaseDispatcher</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;提取上下文的 Dispatcher&quot;&quot;&quot;</span>
 
     <span class="nd">@staticmethod</span>
     <span class="k">async</span> <span class="k">def</span> <span class="nf">catch</span><span class="p">(</span><span class="n">interface</span><span class="p">:</span> <span class="n">DispatcherInterface</span><span class="p">):</span>
-        <span class="k">if</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">interface</span><span class="o">.</span><span class="n">annotation</span><span class="p">,</span> <span class="s2">&quot;__name__&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="o">==</span> <span class="s2">&quot;Ariadne&quot;</span><span class="p">:</span>
+        <span class="kn">from</span> <span class="nn">asyncio</span> <span class="kn">import</span> <span class="n">AbstractEventLoop</span>
+
+        <span class="kn">from</span> <span class="nn">graia.broadcast</span> <span class="kn">import</span> <span class="n">Broadcast</span>
+
+        <span class="kn">from</span> <span class="nn">.adapter</span> <span class="kn">import</span> <span class="n">Adapter</span>
+        <span class="kn">from</span> <span class="nn">.app</span> <span class="kn">import</span> <span class="n">Ariadne</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">interface</span><span class="o">.</span><span class="n">annotation</span><span class="p">,</span> <span class="nb">type</span><span class="p">):</span>
+            <span class="k">return</span>
+        <span class="k">if</span> <span class="nb">issubclass</span><span class="p">(</span><span class="n">interface</span><span class="o">.</span><span class="n">annotation</span><span class="p">,</span> <span class="n">Ariadne</span><span class="p">):</span>
             <span class="k">return</span> <span class="n">ariadne_ctx</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+        <span class="k">if</span> <span class="nb">issubclass</span><span class="p">(</span><span class="n">interface</span><span class="o">.</span><span class="n">annotation</span><span class="p">,</span> <span class="n">Broadcast</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">broadcast_ctx</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+        <span class="k">if</span> <span class="nb">issubclass</span><span class="p">(</span><span class="n">interface</span><span class="o">.</span><span class="n">annotation</span><span class="p">,</span> <span class="n">AbstractEventLoop</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">event_loop_ctx</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+        <span class="k">if</span> <span class="nb">issubclass</span><span class="p">(</span><span class="n">interface</span><span class="o">.</span><span class="n">annotation</span><span class="p">,</span> <span class="n">Adapter</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">adapter_ctx</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+        <span class="k">if</span> <span class="nb">issubclass</span><span class="p">(</span><span class="n">interface</span><span class="o">.</span><span class="n">annotation</span><span class="p">,</span> <span class="n">Dispatchable</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">interface</span><span class="o">.</span><span class="n">event</span>
 </pre></div>
 
         </details>
 
-            <div class="docstring"><p>提取 Ariadne 实例的 Dispatcher</p>
+            <div class="docstring"><p>提取上下文的 Dispatcher</p>
 </div>
 
 
                             <div class="inherited">
                                 <h5>Inherited Members</h5>
                                 <dl>
-                                    <div><dt><a href="dispatcher.html#ApplicationDispatcher">ariadne.dispatcher.ApplicationDispatcher</a></dt>
-                                <dd id="MiraiEvent.Dispatcher.__init__" class="function"><a href="dispatcher.html#ApplicationDispatcher.__init__">ApplicationDispatcher</a></dd>
-                <dd id="MiraiEvent.Dispatcher.catch" class="function"><a href="dispatcher.html#ApplicationDispatcher.catch">catch</a></dd>
+                                    <div><dt><a href="dispatcher.html#ContextDispatcher">ariadne.dispatcher.ContextDispatcher</a></dt>
+                                <dd id="MiraiEvent.Dispatcher.__init__" class="function"><a href="dispatcher.html#ContextDispatcher.__init__">ContextDispatcher</a></dd>
+                <dd id="MiraiEvent.Dispatcher.catch" class="function"><a href="dispatcher.html#ContextDispatcher.catch">catch</a></dd>
 
             </div>
             <div><dt>graia.broadcast.entities.dispatcher.BaseDispatcher</dt>

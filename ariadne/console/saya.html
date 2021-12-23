@@ -75,10 +75,13 @@
                     <h1 class="modulename">
 <a href="./../../ariadne.html">ariadne</a><wbr>.<a href="./../console.html">console</a><wbr>.saya    </h1>
 
-                
+                        <div class="docstring"><p>Ariadne 控制台对 Saya 封装的 Behaviour 与 Schema</p>
+</div>
+
                         <details>
             <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span><span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">dataclass</span><span class="p">,</span> <span class="n">field</span>
+            <div class="codehilite"><pre><span></span><span class="sd">&quot;&quot;&quot;Ariadne 控制台对 Saya 封装的 Behaviour 与 Schema&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">dataclass</span><span class="p">,</span> <span class="n">field</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">List</span>
 
 <span class="kn">from</span> <span class="nn">graia.broadcast.entities.decorator</span> <span class="kn">import</span> <span class="n">Decorator</span>
@@ -92,14 +95,24 @@
 
 <span class="nd">@dataclass</span>
 <span class="k">class</span> <span class="nc">ConsoleSchema</span><span class="p">(</span><span class="n">BaseSchema</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;控制台监听 Schema, 相当于 console.register&quot;&quot;&quot;</span>
+
     <span class="n">dispatchers</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">BaseDispatcher</span><span class="p">]</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">list</span><span class="p">)</span>
     <span class="n">decorators</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Decorator</span><span class="p">]</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">list</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">register</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">func</span><span class="p">:</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">console</span><span class="p">:</span> <span class="n">Console</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;注册 func 至 console</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            func (Callable): 监听函数</span>
+<span class="sd">            console (Console): 注册到的 console</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">console</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dispatchers</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">decorators</span><span class="p">)(</span><span class="n">func</span><span class="p">)</span>
 
 
 <span class="k">class</span> <span class="nc">ConsoleBehaviour</span><span class="p">(</span><span class="n">Behaviour</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;控制台的 Saya Behaviour 实现, 传入 Console 对象&quot;&quot;&quot;</span>
+
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">console</span><span class="p">:</span> <span class="n">Console</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">console</span> <span class="o">=</span> <span class="n">console</span>
 
@@ -135,16 +148,24 @@
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span><span class="nd">@dataclass</span>
 <span class="k">class</span> <span class="nc">ConsoleSchema</span><span class="p">(</span><span class="n">BaseSchema</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;控制台监听 Schema, 相当于 console.register&quot;&quot;&quot;</span>
+
     <span class="n">dispatchers</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">BaseDispatcher</span><span class="p">]</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">list</span><span class="p">)</span>
     <span class="n">decorators</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Decorator</span><span class="p">]</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">list</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">register</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">func</span><span class="p">:</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">console</span><span class="p">:</span> <span class="n">Console</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;注册 func 至 console</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            func (Callable): 监听函数</span>
+<span class="sd">            console (Console): 注册到的 console</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">console</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dispatchers</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">decorators</span><span class="p">)(</span><span class="n">func</span><span class="p">)</span>
 </pre></div>
 
         </details>
 
-            <div class="docstring"><p>ConsoleSchema(dispatchers: List[graia.broadcast.entities.dispatcher.BaseDispatcher] = <factory>, decorators: List[graia.broadcast.entities.decorator.Decorator] = <factory>)</p>
+            <div class="docstring"><p>控制台监听 Schema, 相当于 console.register</p>
 </div>
 
 
@@ -173,12 +194,27 @@
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">register</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">func</span><span class="p">:</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">console</span><span class="p">:</span> <span class="n">Console</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;注册 func 至 console</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            func (Callable): 监听函数</span>
+<span class="sd">            console (Console): 注册到的 console</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">console</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dispatchers</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">decorators</span><span class="p">)(</span><span class="n">func</span><span class="p">)</span>
 </pre></div>
 
         </details>
 
-    
+            <div class="docstring"><p>注册 func 至 console</p>
+
+<h6 id="args">Args</h6>
+
+<ul>
+<li><strong>func (Callable):</strong>  监听函数</li>
+<li><strong>console (Console):</strong>  注册到的 console</li>
+</ul>
+</div>
+
 
                             </div>
                             <div class="inherited">
@@ -204,6 +240,8 @@
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">ConsoleBehaviour</span><span class="p">(</span><span class="n">Behaviour</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;控制台的 Saya Behaviour 实现, 传入 Console 对象&quot;&quot;&quot;</span>
+
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">console</span><span class="p">:</span> <span class="n">Console</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">console</span> <span class="o">=</span> <span class="n">console</span>
 
@@ -224,7 +262,9 @@
 
         </details>
 
-    
+            <div class="docstring"><p>控制台的 Saya Behaviour 实现, 传入 Console 对象</p>
+</div>
+
 
                             <div id="ConsoleBehaviour.__init__" class="classattr">
                                         <div class="attr function"><a class="headerlink" href="#ConsoleBehaviour.__init__">#&nbsp;&nbsp</a>

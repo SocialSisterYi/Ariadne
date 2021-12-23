@@ -53,27 +53,6 @@
                     <a class="function" href="#inject_bypass_listener">inject_bypass_listener</a>
             </li>
             <li>
-                    <a class="class" href="#ApplicationMiddlewareDispatcher">ApplicationMiddlewareDispatcher</a>
-                            <ul class="memberlist">
-                        <li>
-                                <a class="function" href="#ApplicationMiddlewareDispatcher.__init__">ApplicationMiddlewareDispatcher</a>
-                        </li>
-                        <li>
-                                <a class="variable" href="#ApplicationMiddlewareDispatcher.always">always</a>
-                        </li>
-                        <li>
-                                <a class="function" href="#ApplicationMiddlewareDispatcher.beforeExecution">beforeExecution</a>
-                        </li>
-                        <li>
-                                <a class="function" href="#ApplicationMiddlewareDispatcher.afterExecution">afterExecution</a>
-                        </li>
-                        <li>
-                                <a class="function" href="#ApplicationMiddlewareDispatcher.catch">catch</a>
-                        </li>
-                </ul>
-
-            </li>
-            <li>
                     <a class="function" href="#app_ctx_manager">app_ctx_manager</a>
             </li>
             <li>
@@ -136,7 +115,6 @@
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">AsyncIterator</span><span class="p">,</span>
     <span class="n">Callable</span><span class="p">,</span>
-    <span class="n">ContextManager</span><span class="p">,</span>
     <span class="n">Coroutine</span><span class="p">,</span>
     <span class="n">Dict</span><span class="p">,</span>
     <span class="n">Generator</span><span class="p">,</span>
@@ -148,13 +126,13 @@
 
 <span class="kn">from</span> <span class="nn">graia.broadcast</span> <span class="kn">import</span> <span class="n">Broadcast</span>
 <span class="kn">from</span> <span class="nn">graia.broadcast.entities.decorator</span> <span class="kn">import</span> <span class="n">Decorator</span>
-<span class="kn">from</span> <span class="nn">graia.broadcast.entities.dispatcher</span> <span class="kn">import</span> <span class="n">BaseDispatcher</span>
 <span class="kn">from</span> <span class="nn">graia.broadcast.entities.event</span> <span class="kn">import</span> <span class="n">Dispatchable</span>
 <span class="kn">from</span> <span class="nn">graia.broadcast.entities.listener</span> <span class="kn">import</span> <span class="n">Listener</span>
 <span class="kn">from</span> <span class="nn">graia.broadcast.entities.namespace</span> <span class="kn">import</span> <span class="n">Namespace</span>
 <span class="kn">from</span> <span class="nn">graia.broadcast.interfaces.dispatcher</span> <span class="kn">import</span> <span class="n">DispatcherInterface</span>
 <span class="kn">from</span> <span class="nn">graia.broadcast.typing</span> <span class="kn">import</span> <span class="n">T_Dispatcher</span>
 <span class="kn">from</span> <span class="nn">loguru</span> <span class="kn">import</span> <span class="n">logger</span>
+<span class="kn">from</span> <span class="nn">prompt_toolkit.patch_stdout</span> <span class="kn">import</span> <span class="n">StdoutProxy</span>
 
 <span class="kn">from</span> <span class="nn">..exception</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">AccountMuted</span><span class="p">,</span>
@@ -238,6 +216,8 @@
 
 <span class="k">def</span> <span class="nf">inject_loguru_traceback</span><span class="p">(</span><span class="n">loop</span><span class="p">:</span> <span class="n">AbstractEventLoop</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;使用 loguru 模块替换默认的 traceback.print_exception 与 sys.excepthook&quot;&quot;&quot;</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">StdoutProxy</span><span class="p">(</span><span class="n">raw</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
     <span class="n">traceback</span><span class="o">.</span><span class="n">print_exception</span> <span class="o">=</span> <span class="n">loguru_excepthook</span>
     <span class="n">sys</span><span class="o">.</span><span class="n">excepthook</span> <span class="o">=</span> <span class="n">loguru_excepthook</span>
     <span class="k">if</span> <span class="n">loop</span><span class="p">:</span>
@@ -299,34 +279,6 @@
         <span class="k">pass</span>
 
 
-<span class="k">class</span> <span class="nc">ApplicationMiddlewareDispatcher</span><span class="p">(</span><span class="n">BaseDispatcher</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Ariadne 的上下文 Dispatcher&quot;&quot;&quot;</span>
-
-    <span class="n">always</span> <span class="o">=</span> <span class="kc">True</span>
-
-    <span class="n">context</span><span class="p">:</span> <span class="n">ContextManager</span>
-
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">app</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">app</span> <span class="o">=</span> <span class="n">app</span>
-
-    <span class="k">def</span> <span class="nf">beforeExecution</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">interface</span><span class="p">:</span> <span class="s2">&quot;DispatcherInterface&quot;</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;进入 Event Context&quot;&quot;&quot;</span>
-        <span class="kn">from</span> <span class="nn">..context</span> <span class="kn">import</span> <span class="n">EventContext</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="p">:</span> <span class="n">ContextManager</span> <span class="o">=</span> <span class="n">EventContext</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">app</span><span class="p">,</span> <span class="n">interface</span><span class="o">.</span><span class="n">event</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="fm">__enter__</span><span class="p">()</span>
-
-    <span class="k">def</span> <span class="nf">afterExecution</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">exception</span><span class="p">,</span> <span class="n">tb</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;退出 Event Context&quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="fm">__exit__</span><span class="p">(</span><span class="n">exception</span><span class="o">.</span><span class="vm">__class__</span> <span class="k">if</span> <span class="n">exception</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span> <span class="n">exception</span><span class="p">,</span> <span class="n">tb</span><span class="p">)</span>
-
-    <span class="k">async</span> <span class="k">def</span> <span class="nf">catch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">interface</span><span class="p">:</span> <span class="s2">&quot;DispatcherInterface&quot;</span><span class="p">):</span>
-        <span class="kn">from</span> <span class="nn">..app</span> <span class="kn">import</span> <span class="n">Ariadne</span>
-
-        <span class="k">if</span> <span class="n">interface</span><span class="o">.</span><span class="n">annotation</span> <span class="ow">is</span> <span class="n">Ariadne</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">app</span>
-
-
 <span class="k">def</span> <span class="nf">app_ctx_manager</span><span class="p">(</span><span class="n">func</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[</span><span class="n">P</span><span class="p">,</span> <span class="n">R</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">[</span><span class="n">P</span><span class="p">,</span> <span class="n">R</span><span class="p">]:</span>
     <span class="sd">&quot;&quot;&quot;包装声明需要在 Ariadne Context 中执行的函数</span>
 
@@ -339,9 +291,9 @@
 
     <span class="nd">@functools</span><span class="o">.</span><span class="n">wraps</span><span class="p">(</span><span class="n">func</span><span class="p">)</span>
     <span class="k">async</span> <span class="k">def</span> <span class="nf">wrapper</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">P</span><span class="o">.</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">P</span><span class="o">.</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="kn">from</span> <span class="nn">..context</span> <span class="kn">import</span> <span class="n">EventContext</span>
+        <span class="kn">from</span> <span class="nn">..context</span> <span class="kn">import</span> <span class="n">enter_context</span>
 
-        <span class="k">with</span> <span class="n">EventContext</span><span class="p">(</span><span class="n">app</span><span class="o">=</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">with</span> <span class="n">enter_context</span><span class="p">(</span><span class="n">app</span><span class="o">=</span><span class="bp">self</span><span class="p">):</span>
             <span class="k">return</span> <span class="k">await</span> <span class="n">func</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">wrapper</span>
@@ -444,9 +396,6 @@
 
     <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">_</span><span class="p">,</span> <span class="o">**</span><span class="n">__</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span>
-
-
-<span class="n">inject_loguru_traceback</span><span class="p">()</span>
 </pre></div>
 
         </details>
@@ -595,6 +544,8 @@
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span><span class="k">def</span> <span class="nf">inject_loguru_traceback</span><span class="p">(</span><span class="n">loop</span><span class="p">:</span> <span class="n">AbstractEventLoop</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;使用 loguru 模块替换默认的 traceback.print_exception 与 sys.excepthook&quot;&quot;&quot;</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">StdoutProxy</span><span class="p">(</span><span class="n">raw</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
     <span class="n">traceback</span><span class="o">.</span><span class="n">print_exception</span> <span class="o">=</span> <span class="n">loguru_excepthook</span>
     <span class="n">sys</span><span class="o">.</span><span class="n">excepthook</span> <span class="o">=</span> <span class="n">loguru_excepthook</span>
     <span class="k">if</span> <span class="n">loop</span><span class="p">:</span>
@@ -686,177 +637,6 @@
 
 
                 </section>
-                <section id="ApplicationMiddlewareDispatcher">
-                                <div class="attr class">
-        <a class="headerlink" href="#ApplicationMiddlewareDispatcher">#&nbsp;&nbsp</a>
-
-        
-        <span class="def">class</span>
-        <span class="name">ApplicationMiddlewareDispatcher</span><wbr>(<span class="base">graia.broadcast.entities.dispatcher.BaseDispatcher</span>):
-    </div>
-
-                <details>
-            <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">ApplicationMiddlewareDispatcher</span><span class="p">(</span><span class="n">BaseDispatcher</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Ariadne 的上下文 Dispatcher&quot;&quot;&quot;</span>
-
-    <span class="n">always</span> <span class="o">=</span> <span class="kc">True</span>
-
-    <span class="n">context</span><span class="p">:</span> <span class="n">ContextManager</span>
-
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">app</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">app</span> <span class="o">=</span> <span class="n">app</span>
-
-    <span class="k">def</span> <span class="nf">beforeExecution</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">interface</span><span class="p">:</span> <span class="s2">&quot;DispatcherInterface&quot;</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;进入 Event Context&quot;&quot;&quot;</span>
-        <span class="kn">from</span> <span class="nn">..context</span> <span class="kn">import</span> <span class="n">EventContext</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="p">:</span> <span class="n">ContextManager</span> <span class="o">=</span> <span class="n">EventContext</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">app</span><span class="p">,</span> <span class="n">interface</span><span class="o">.</span><span class="n">event</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="fm">__enter__</span><span class="p">()</span>
-
-    <span class="k">def</span> <span class="nf">afterExecution</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">exception</span><span class="p">,</span> <span class="n">tb</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;退出 Event Context&quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="fm">__exit__</span><span class="p">(</span><span class="n">exception</span><span class="o">.</span><span class="vm">__class__</span> <span class="k">if</span> <span class="n">exception</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span> <span class="n">exception</span><span class="p">,</span> <span class="n">tb</span><span class="p">)</span>
-
-    <span class="k">async</span> <span class="k">def</span> <span class="nf">catch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">interface</span><span class="p">:</span> <span class="s2">&quot;DispatcherInterface&quot;</span><span class="p">):</span>
-        <span class="kn">from</span> <span class="nn">..app</span> <span class="kn">import</span> <span class="n">Ariadne</span>
-
-        <span class="k">if</span> <span class="n">interface</span><span class="o">.</span><span class="n">annotation</span> <span class="ow">is</span> <span class="n">Ariadne</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">app</span>
-</pre></div>
-
-        </details>
-
-            <div class="docstring"><p>Ariadne 的上下文 Dispatcher</p>
-</div>
-
-
-                            <div id="ApplicationMiddlewareDispatcher.__init__" class="classattr">
-                                        <div class="attr function"><a class="headerlink" href="#ApplicationMiddlewareDispatcher.__init__">#&nbsp;&nbsp</a>
-
-        
-            <span class="name">ApplicationMiddlewareDispatcher</span><span class="signature">(app)</span>
-    </div>
-
-                <details>
-            <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">app</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">app</span> <span class="o">=</span> <span class="n">app</span>
-</pre></div>
-
-        </details>
-
-    
-
-                            </div>
-                            <div id="ApplicationMiddlewareDispatcher.always" class="classattr">
-                                            <div class="attr variable"><a class="headerlink" href="#ApplicationMiddlewareDispatcher.always">#&nbsp;&nbsp</a>
-
-        <span class="name">always</span><span class="default_value"> = True</span>
-    </div>
-
-    
-
-                            </div>
-                            <div id="ApplicationMiddlewareDispatcher.beforeExecution" class="classattr">
-                                        <div class="attr function"><a class="headerlink" href="#ApplicationMiddlewareDispatcher.beforeExecution">#&nbsp;&nbsp</a>
-
-        
-            <span class="def">def</span>
-            <span class="name">beforeExecution</span><span class="signature">(
-    self,
-    interface: graia.broadcast.interfaces.dispatcher.DispatcherInterface
-)</span>:
-    </div>
-
-                <details>
-            <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">beforeExecution</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">interface</span><span class="p">:</span> <span class="s2">&quot;DispatcherInterface&quot;</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;进入 Event Context&quot;&quot;&quot;</span>
-        <span class="kn">from</span> <span class="nn">..context</span> <span class="kn">import</span> <span class="n">EventContext</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="p">:</span> <span class="n">ContextManager</span> <span class="o">=</span> <span class="n">EventContext</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">app</span><span class="p">,</span> <span class="n">interface</span><span class="o">.</span><span class="n">event</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="fm">__enter__</span><span class="p">()</span>
-</pre></div>
-
-        </details>
-
-            <div class="docstring"><p>进入 Event Context</p>
-</div>
-
-
-                            </div>
-                            <div id="ApplicationMiddlewareDispatcher.afterExecution" class="classattr">
-                                        <div class="attr function"><a class="headerlink" href="#ApplicationMiddlewareDispatcher.afterExecution">#&nbsp;&nbsp</a>
-
-        
-            <span class="def">def</span>
-            <span class="name">afterExecution</span><span class="signature">(self, _, exception, tb)</span>:
-    </div>
-
-                <details>
-            <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">afterExecution</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">exception</span><span class="p">,</span> <span class="n">tb</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;退出 Event Context&quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="fm">__exit__</span><span class="p">(</span><span class="n">exception</span><span class="o">.</span><span class="vm">__class__</span> <span class="k">if</span> <span class="n">exception</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span> <span class="n">exception</span><span class="p">,</span> <span class="n">tb</span><span class="p">)</span>
-</pre></div>
-
-        </details>
-
-            <div class="docstring"><p>退出 Event Context</p>
-</div>
-
-
-                            </div>
-                            <div id="ApplicationMiddlewareDispatcher.catch" class="classattr">
-                                        <div class="attr function"><a class="headerlink" href="#ApplicationMiddlewareDispatcher.catch">#&nbsp;&nbsp</a>
-
-        
-            <span class="def">async def</span>
-            <span class="name">catch</span><span class="signature">(
-    self,
-    interface: graia.broadcast.interfaces.dispatcher.DispatcherInterface
-)</span>:
-    </div>
-
-                <details>
-            <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span>    <span class="k">async</span> <span class="k">def</span> <span class="nf">catch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">interface</span><span class="p">:</span> <span class="s2">&quot;DispatcherInterface&quot;</span><span class="p">):</span>
-        <span class="kn">from</span> <span class="nn">..app</span> <span class="kn">import</span> <span class="n">Ariadne</span>
-
-        <span class="k">if</span> <span class="n">interface</span><span class="o">.</span><span class="n">annotation</span> <span class="ow">is</span> <span class="n">Ariadne</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">app</span>
-</pre></div>
-
-        </details>
-
-            <div class="docstring"><p>该方法可以是 <code>staticmethod</code>, <code>classmethod</code> 亦或是普通的方法/函数.
-唯一的要求是 <code>Dispatcher.catch</code> 获取到的必须为一可调用异步 Callable.</p>
-
-<h6 id="args">Args</h6>
-
-<ul>
-<li><strong>interface (DispatcherInterface):</strong>  <code>Dispatcher</code> 服务的主要对象, 可以从其中获取以下信息:
-<ul>
-<li>当前解析中的参数的信息;</li>
-<li>当前执行的信息, 比如正在处理的事件, <code>Listener</code>/<code>ExecTarget</code> etc.;</li>
-</ul></li>
-</ul>
-</div>
-
-
-                            </div>
-                            <div class="inherited">
-                                <h5>Inherited Members</h5>
-                                <dl>
-                                    <div><dt>graia.broadcast.entities.dispatcher.BaseDispatcher</dt>
-                                <dd id="ApplicationMiddlewareDispatcher.mixin" class="variable">mixin</dd>
-                <dd id="ApplicationMiddlewareDispatcher.afterDispatch" class="variable">afterDispatch</dd>
-
-            </div>
-                                </dl>
-                            </div>
-                </section>
                 <section id="app_ctx_manager">
                             <div class="attr function"><a class="headerlink" href="#app_ctx_manager">#&nbsp;&nbsp</a>
 
@@ -879,9 +659,9 @@
 
     <span class="nd">@functools</span><span class="o">.</span><span class="n">wraps</span><span class="p">(</span><span class="n">func</span><span class="p">)</span>
     <span class="k">async</span> <span class="k">def</span> <span class="nf">wrapper</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">P</span><span class="o">.</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">P</span><span class="o">.</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="kn">from</span> <span class="nn">..context</span> <span class="kn">import</span> <span class="n">EventContext</span>
+        <span class="kn">from</span> <span class="nn">..context</span> <span class="kn">import</span> <span class="n">enter_context</span>
 
-        <span class="k">with</span> <span class="n">EventContext</span><span class="p">(</span><span class="n">app</span><span class="o">=</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">with</span> <span class="n">enter_context</span><span class="p">(</span><span class="n">app</span><span class="o">=</span><span class="bp">self</span><span class="p">):</span>
             <span class="k">return</span> <span class="k">await</span> <span class="n">func</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">wrapper</span>

@@ -97,9 +97,6 @@
                     <a class="class" href="#TempMessage">TempMessage</a>
                             <ul class="memberlist">
                         <li>
-                                <a class="function" href="#TempMessage.parse_obj">parse_obj</a>
-                        </li>
-                        <li>
                                 <a class="class" href="#TempMessage.Dispatcher">TempMessage.Dispatcher</a>
                                         <ul class="memberlist">
                                     <li>
@@ -177,27 +174,32 @@
                     <h1 class="modulename">
 <a href="./../../ariadne.html">ariadne</a><wbr>.<a href="./../event.html">event</a><wbr>.message    </h1>
 
-                
+                        <div class="docstring"><p>Ariadne 消息事件</p>
+</div>
+
                         <details>
             <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Union</span>
+            <div class="codehilite"><pre><span></span><span class="sd">&quot;&quot;&quot;Ariadne 消息事件&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Union</span>
 
 <span class="kn">from</span> <span class="nn">graia.broadcast.entities.dispatcher</span> <span class="kn">import</span> <span class="n">BaseDispatcher</span>
 <span class="kn">from</span> <span class="nn">graia.broadcast.interfaces.dispatcher</span> <span class="kn">import</span> <span class="n">DispatcherInterface</span>
 
-<span class="kn">from</span> <span class="nn">..dispatcher</span> <span class="kn">import</span> <span class="n">ApplicationDispatcher</span><span class="p">,</span> <span class="n">MessageChainDispatcher</span><span class="p">,</span> <span class="n">SourceDispatcher</span>
+<span class="kn">from</span> <span class="nn">..dispatcher</span> <span class="kn">import</span> <span class="n">ContextDispatcher</span><span class="p">,</span> <span class="n">MessageChainDispatcher</span><span class="p">,</span> <span class="n">SourceDispatcher</span>
 <span class="kn">from</span> <span class="nn">..message.chain</span> <span class="kn">import</span> <span class="n">MessageChain</span>
 <span class="kn">from</span> <span class="nn">..model</span> <span class="kn">import</span> <span class="n">Client</span><span class="p">,</span> <span class="n">Friend</span><span class="p">,</span> <span class="n">Group</span><span class="p">,</span> <span class="n">Member</span><span class="p">,</span> <span class="n">Stranger</span>
 <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">MiraiEvent</span>
 
 
 <span class="k">class</span> <span class="nc">MessageEvent</span><span class="p">(</span><span class="n">MiraiEvent</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Ariadne 消息事件基类&quot;&quot;&quot;</span>
+
     <span class="nb">type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;MessageEvent&quot;</span>
     <span class="n">messageChain</span><span class="p">:</span> <span class="n">MessageChain</span>
     <span class="n">sender</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Friend</span><span class="p">,</span> <span class="n">Member</span><span class="p">,</span> <span class="n">Client</span><span class="p">,</span> <span class="n">Stranger</span><span class="p">]</span>
 
-    <span class="k">class</span> <span class="nc">Dispatcher</span><span class="p">(</span><span class="n">BaseDispatcher</span><span class="p">):</span>
-        <span class="n">mixin</span> <span class="o">=</span> <span class="p">[</span><span class="n">MessageChainDispatcher</span><span class="p">,</span> <span class="n">ApplicationDispatcher</span><span class="p">,</span> <span class="n">SourceDispatcher</span><span class="p">]</span>
+    <span class="k">class</span> <span class="nc">Dispatcher</span><span class="p">(</span><span class="n">BaseDispatcher</span><span class="p">):</span>  <span class="c1"># pylint: disable=missing-class-docstring</span>
+        <span class="n">mixin</span> <span class="o">=</span> <span class="p">[</span><span class="n">MessageChainDispatcher</span><span class="p">,</span> <span class="n">ContextDispatcher</span><span class="p">,</span> <span class="n">SourceDispatcher</span><span class="p">]</span>
 
         <span class="nd">@staticmethod</span>
         <span class="k">async</span> <span class="k">def</span> <span class="nf">catch</span><span class="p">(</span><span class="n">interface</span><span class="p">:</span> <span class="n">DispatcherInterface</span><span class="p">):</span>
@@ -205,12 +207,14 @@
 
 
 <span class="k">class</span> <span class="nc">FriendMessage</span><span class="p">(</span><span class="n">MessageEvent</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;好友消息&quot;&quot;&quot;</span>
+
     <span class="nb">type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;FriendMessage&quot;</span>
     <span class="n">messageChain</span><span class="p">:</span> <span class="n">MessageChain</span>
     <span class="n">sender</span><span class="p">:</span> <span class="n">Friend</span>
 
-    <span class="k">class</span> <span class="nc">Dispatcher</span><span class="p">(</span><span class="n">BaseDispatcher</span><span class="p">):</span>
-        <span class="n">mixin</span> <span class="o">=</span> <span class="p">[</span><span class="n">MessageChainDispatcher</span><span class="p">,</span> <span class="n">ApplicationDispatcher</span><span class="p">,</span> <span class="n">SourceDispatcher</span><span class="p">]</span>
+    <span class="k">class</span> <span class="nc">Dispatcher</span><span class="p">(</span><span class="n">BaseDispatcher</span><span class="p">):</span>  <span class="c1"># pylint: disable=missing-class-docstring</span>
+        <span class="n">mixin</span> <span class="o">=</span> <span class="p">[</span><span class="n">MessageChainDispatcher</span><span class="p">,</span> <span class="n">ContextDispatcher</span><span class="p">,</span> <span class="n">SourceDispatcher</span><span class="p">]</span>
 
         <span class="nd">@staticmethod</span>
         <span class="k">async</span> <span class="k">def</span> <span class="nf">catch</span><span class="p">(</span><span class="n">interface</span><span class="p">:</span> <span class="n">DispatcherInterface</span><span class="p">[</span><span class="s2">&quot;FriendMessage&quot;</span><span class="p">]):</span>
@@ -219,48 +223,52 @@
 
 
 <span class="k">class</span> <span class="nc">GroupMessage</span><span class="p">(</span><span class="n">MessageEvent</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;群组消息&quot;&quot;&quot;</span>
+
     <span class="nb">type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;GroupMessage&quot;</span>
     <span class="n">messageChain</span><span class="p">:</span> <span class="n">MessageChain</span>
     <span class="n">sender</span><span class="p">:</span> <span class="n">Member</span>
 
-    <span class="k">class</span> <span class="nc">Dispatcher</span><span class="p">(</span><span class="n">BaseDispatcher</span><span class="p">):</span>
-        <span class="n">mixin</span> <span class="o">=</span> <span class="p">[</span><span class="n">MessageChainDispatcher</span><span class="p">,</span> <span class="n">ApplicationDispatcher</span><span class="p">,</span> <span class="n">SourceDispatcher</span><span class="p">]</span>
+    <span class="k">class</span> <span class="nc">Dispatcher</span><span class="p">(</span><span class="n">BaseDispatcher</span><span class="p">):</span>  <span class="c1"># pylint: disable=missing-class-docstring</span>
+        <span class="n">mixin</span> <span class="o">=</span> <span class="p">[</span><span class="n">MessageChainDispatcher</span><span class="p">,</span> <span class="n">ContextDispatcher</span><span class="p">,</span> <span class="n">SourceDispatcher</span><span class="p">]</span>
 
         <span class="nd">@staticmethod</span>
         <span class="k">async</span> <span class="k">def</span> <span class="nf">catch</span><span class="p">(</span><span class="n">interface</span><span class="p">:</span> <span class="n">DispatcherInterface</span><span class="p">[</span><span class="s2">&quot;GroupMessage&quot;</span><span class="p">]):</span>
             <span class="k">if</span> <span class="n">interface</span><span class="o">.</span><span class="n">annotation</span> <span class="ow">is</span> <span class="n">Group</span><span class="p">:</span>
                 <span class="k">return</span> <span class="n">interface</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">sender</span><span class="o">.</span><span class="n">group</span>
-            <span class="k">elif</span> <span class="n">interface</span><span class="o">.</span><span class="n">annotation</span> <span class="ow">is</span> <span class="n">Member</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">interface</span><span class="o">.</span><span class="n">annotation</span> <span class="ow">is</span> <span class="n">Member</span><span class="p">:</span>
                 <span class="k">return</span> <span class="n">interface</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">sender</span>
 
 
 <span class="k">class</span> <span class="nc">TempMessage</span><span class="p">(</span><span class="n">MessageEvent</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;临时消息&quot;&quot;&quot;</span>
+
     <span class="nb">type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;TempMessage&quot;</span>
     <span class="n">messageChain</span><span class="p">:</span> <span class="n">MessageChain</span>
     <span class="n">sender</span><span class="p">:</span> <span class="n">Member</span>
 
-    <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">parse_obj</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span>
-        <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">parse_obj</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
+    <span class="k">class</span> <span class="nc">Dispatcher</span><span class="p">(</span><span class="n">BaseDispatcher</span><span class="p">):</span>  <span class="c1"># pylint: disable-next=missing-class-docstring</span>
 
-    <span class="k">class</span> <span class="nc">Dispatcher</span><span class="p">(</span><span class="n">BaseDispatcher</span><span class="p">):</span>
-        <span class="n">mixin</span> <span class="o">=</span> <span class="p">[</span><span class="n">MessageChainDispatcher</span><span class="p">,</span> <span class="n">ApplicationDispatcher</span><span class="p">,</span> <span class="n">SourceDispatcher</span><span class="p">]</span>
+        <span class="n">mixin</span> <span class="o">=</span> <span class="p">[</span><span class="n">MessageChainDispatcher</span><span class="p">,</span> <span class="n">ContextDispatcher</span><span class="p">,</span> <span class="n">SourceDispatcher</span><span class="p">]</span>
 
         <span class="nd">@staticmethod</span>
         <span class="k">async</span> <span class="k">def</span> <span class="nf">catch</span><span class="p">(</span><span class="n">interface</span><span class="p">:</span> <span class="n">DispatcherInterface</span><span class="p">[</span><span class="s2">&quot;TempMessage&quot;</span><span class="p">]):</span>
             <span class="k">if</span> <span class="n">interface</span><span class="o">.</span><span class="n">annotation</span> <span class="ow">is</span> <span class="n">Group</span><span class="p">:</span>
                 <span class="k">return</span> <span class="n">interface</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">sender</span><span class="o">.</span><span class="n">group</span>
-            <span class="k">elif</span> <span class="n">interface</span><span class="o">.</span><span class="n">annotation</span> <span class="ow">is</span> <span class="n">Member</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">interface</span><span class="o">.</span><span class="n">annotation</span> <span class="ow">is</span> <span class="n">Member</span><span class="p">:</span>
                 <span class="k">return</span> <span class="n">interface</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">sender</span>
 
 
 <span class="k">class</span> <span class="nc">OtherClientMessage</span><span class="p">(</span><span class="n">MessageEvent</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;其他客户端消息&quot;&quot;&quot;</span>
+
     <span class="nb">type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;OtherClientMessage&quot;</span>
     <span class="n">messageChain</span><span class="p">:</span> <span class="n">MessageChain</span>
     <span class="n">sender</span><span class="p">:</span> <span class="n">Client</span>
 
-    <span class="k">class</span> <span class="nc">Dispatcher</span><span class="p">(</span><span class="n">BaseDispatcher</span><span class="p">):</span>
-        <span class="n">mixin</span> <span class="o">=</span> <span class="p">[</span><span class="n">MessageChainDispatcher</span><span class="p">,</span> <span class="n">ApplicationDispatcher</span><span class="p">,</span> <span class="n">SourceDispatcher</span><span class="p">]</span>
+    <span class="k">class</span> <span class="nc">Dispatcher</span><span class="p">(</span><span class="n">BaseDispatcher</span><span class="p">):</span>  <span class="c1"># pylint: disable-next=missing-class-docstring</span>
+
+        <span class="n">mixin</span> <span class="o">=</span> <span class="p">[</span><span class="n">MessageChainDispatcher</span><span class="p">,</span> <span class="n">ContextDispatcher</span><span class="p">,</span> <span class="n">SourceDispatcher</span><span class="p">]</span>
 
         <span class="nd">@staticmethod</span>
         <span class="k">async</span> <span class="k">def</span> <span class="nf">catch</span><span class="p">(</span><span class="n">interface</span><span class="p">:</span> <span class="n">DispatcherInterface</span><span class="p">[</span><span class="s2">&quot;OtherClientMessage&quot;</span><span class="p">]):</span>
@@ -269,12 +277,15 @@
 
 
 <span class="k">class</span> <span class="nc">StrangerMessage</span><span class="p">(</span><span class="n">MessageEvent</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;陌生人消息&quot;&quot;&quot;</span>
+
     <span class="nb">type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;StrangerMessage&quot;</span>
     <span class="n">messageChain</span><span class="p">:</span> <span class="n">MessageChain</span>
     <span class="n">sender</span><span class="p">:</span> <span class="n">Stranger</span>
 
-    <span class="k">class</span> <span class="nc">Dispatcher</span><span class="p">(</span><span class="n">BaseDispatcher</span><span class="p">):</span>
-        <span class="n">mixin</span> <span class="o">=</span> <span class="p">[</span><span class="n">MessageChainDispatcher</span><span class="p">,</span> <span class="n">ApplicationDispatcher</span><span class="p">,</span> <span class="n">SourceDispatcher</span><span class="p">]</span>
+    <span class="k">class</span> <span class="nc">Dispatcher</span><span class="p">(</span><span class="n">BaseDispatcher</span><span class="p">):</span>  <span class="c1"># pylint: disable-next=missing-class-docstring</span>
+
+        <span class="n">mixin</span> <span class="o">=</span> <span class="p">[</span><span class="n">MessageChainDispatcher</span><span class="p">,</span> <span class="n">ContextDispatcher</span><span class="p">,</span> <span class="n">SourceDispatcher</span><span class="p">]</span>
 
         <span class="nd">@staticmethod</span>
         <span class="k">async</span> <span class="k">def</span> <span class="nf">catch</span><span class="p">(</span><span class="n">interface</span><span class="p">:</span> <span class="n">DispatcherInterface</span><span class="p">[</span><span class="s2">&quot;StrangerMessage&quot;</span><span class="p">]):</span>
@@ -297,12 +308,14 @@
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">MessageEvent</span><span class="p">(</span><span class="n">MiraiEvent</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Ariadne 消息事件基类&quot;&quot;&quot;</span>
+
     <span class="nb">type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;MessageEvent&quot;</span>
     <span class="n">messageChain</span><span class="p">:</span> <span class="n">MessageChain</span>
     <span class="n">sender</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Friend</span><span class="p">,</span> <span class="n">Member</span><span class="p">,</span> <span class="n">Client</span><span class="p">,</span> <span class="n">Stranger</span><span class="p">]</span>
 
-    <span class="k">class</span> <span class="nc">Dispatcher</span><span class="p">(</span><span class="n">BaseDispatcher</span><span class="p">):</span>
-        <span class="n">mixin</span> <span class="o">=</span> <span class="p">[</span><span class="n">MessageChainDispatcher</span><span class="p">,</span> <span class="n">ApplicationDispatcher</span><span class="p">,</span> <span class="n">SourceDispatcher</span><span class="p">]</span>
+    <span class="k">class</span> <span class="nc">Dispatcher</span><span class="p">(</span><span class="n">BaseDispatcher</span><span class="p">):</span>  <span class="c1"># pylint: disable=missing-class-docstring</span>
+        <span class="n">mixin</span> <span class="o">=</span> <span class="p">[</span><span class="n">MessageChainDispatcher</span><span class="p">,</span> <span class="n">ContextDispatcher</span><span class="p">,</span> <span class="n">SourceDispatcher</span><span class="p">]</span>
 
         <span class="nd">@staticmethod</span>
         <span class="k">async</span> <span class="k">def</span> <span class="nf">catch</span><span class="p">(</span><span class="n">interface</span><span class="p">:</span> <span class="n">DispatcherInterface</span><span class="p">):</span>
@@ -311,7 +324,7 @@
 
         </details>
 
-            <div class="docstring"><p>Ariadne 的事件基类</p>
+            <div class="docstring"><p>Ariadne 消息事件基类</p>
 </div>
 
 
@@ -356,8 +369,8 @@
 
                 <details>
             <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span>    <span class="k">class</span> <span class="nc">Dispatcher</span><span class="p">(</span><span class="n">BaseDispatcher</span><span class="p">):</span>
-        <span class="n">mixin</span> <span class="o">=</span> <span class="p">[</span><span class="n">MessageChainDispatcher</span><span class="p">,</span> <span class="n">ApplicationDispatcher</span><span class="p">,</span> <span class="n">SourceDispatcher</span><span class="p">]</span>
+            <div class="codehilite"><pre><span></span>    <span class="k">class</span> <span class="nc">Dispatcher</span><span class="p">(</span><span class="n">BaseDispatcher</span><span class="p">):</span>  <span class="c1"># pylint: disable=missing-class-docstring</span>
+        <span class="n">mixin</span> <span class="o">=</span> <span class="p">[</span><span class="n">MessageChainDispatcher</span><span class="p">,</span> <span class="n">ContextDispatcher</span><span class="p">,</span> <span class="n">SourceDispatcher</span><span class="p">]</span>
 
         <span class="nd">@staticmethod</span>
         <span class="k">async</span> <span class="k">def</span> <span class="nf">catch</span><span class="p">(</span><span class="n">interface</span><span class="p">:</span> <span class="n">DispatcherInterface</span><span class="p">):</span>
@@ -384,7 +397,7 @@
                             <div id="MessageEvent.Dispatcher.mixin" class="classattr">
                                             <div class="attr variable"><a class="headerlink" href="#MessageEvent.Dispatcher.mixin">#&nbsp;&nbsp</a>
 
-        <span class="name">mixin</span><span class="annotation">: List[Union[graia.broadcast.entities.dispatcher.BaseDispatcher, Type[graia.broadcast.entities.dispatcher.BaseDispatcher]]]</span><span class="default_value"> = [&lt;class &#39;<a href="../dispatcher.html#MessageChainDispatcher">ariadne.dispatcher.MessageChainDispatcher</a>&#39;&gt;, &lt;class &#39;<a href="../dispatcher.html#ApplicationDispatcher">ariadne.dispatcher.ApplicationDispatcher</a>&#39;&gt;, &lt;class &#39;<a href="../dispatcher.html#SourceDispatcher">ariadne.dispatcher.SourceDispatcher</a>&#39;&gt;]</span>
+        <span class="name">mixin</span><span class="annotation">: List[Union[graia.broadcast.entities.dispatcher.BaseDispatcher, Type[graia.broadcast.entities.dispatcher.BaseDispatcher]]]</span><span class="default_value"> = [&lt;class &#39;<a href="../dispatcher.html#MessageChainDispatcher">ariadne.dispatcher.MessageChainDispatcher</a>&#39;&gt;, &lt;class &#39;<a href="../dispatcher.html#ContextDispatcher">ariadne.dispatcher.ContextDispatcher</a>&#39;&gt;, &lt;class &#39;<a href="../dispatcher.html#SourceDispatcher">ariadne.dispatcher.SourceDispatcher</a>&#39;&gt;]</span>
     </div>
 
             <div class="docstring"><p>声明该 Dispatcher 所包含的来自其他 Dispatcher 提供的参数解析支持,
@@ -452,12 +465,14 @@
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">FriendMessage</span><span class="p">(</span><span class="n">MessageEvent</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;好友消息&quot;&quot;&quot;</span>
+
     <span class="nb">type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;FriendMessage&quot;</span>
     <span class="n">messageChain</span><span class="p">:</span> <span class="n">MessageChain</span>
     <span class="n">sender</span><span class="p">:</span> <span class="n">Friend</span>
 
-    <span class="k">class</span> <span class="nc">Dispatcher</span><span class="p">(</span><span class="n">BaseDispatcher</span><span class="p">):</span>
-        <span class="n">mixin</span> <span class="o">=</span> <span class="p">[</span><span class="n">MessageChainDispatcher</span><span class="p">,</span> <span class="n">ApplicationDispatcher</span><span class="p">,</span> <span class="n">SourceDispatcher</span><span class="p">]</span>
+    <span class="k">class</span> <span class="nc">Dispatcher</span><span class="p">(</span><span class="n">BaseDispatcher</span><span class="p">):</span>  <span class="c1"># pylint: disable=missing-class-docstring</span>
+        <span class="n">mixin</span> <span class="o">=</span> <span class="p">[</span><span class="n">MessageChainDispatcher</span><span class="p">,</span> <span class="n">ContextDispatcher</span><span class="p">,</span> <span class="n">SourceDispatcher</span><span class="p">]</span>
 
         <span class="nd">@staticmethod</span>
         <span class="k">async</span> <span class="k">def</span> <span class="nf">catch</span><span class="p">(</span><span class="n">interface</span><span class="p">:</span> <span class="n">DispatcherInterface</span><span class="p">[</span><span class="s2">&quot;FriendMessage&quot;</span><span class="p">]):</span>
@@ -467,7 +482,7 @@
 
         </details>
 
-            <div class="docstring"><p>Ariadne 的事件基类</p>
+            <div class="docstring"><p>好友消息</p>
 </div>
 
 
@@ -512,8 +527,8 @@
 
                 <details>
             <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span>    <span class="k">class</span> <span class="nc">Dispatcher</span><span class="p">(</span><span class="n">BaseDispatcher</span><span class="p">):</span>
-        <span class="n">mixin</span> <span class="o">=</span> <span class="p">[</span><span class="n">MessageChainDispatcher</span><span class="p">,</span> <span class="n">ApplicationDispatcher</span><span class="p">,</span> <span class="n">SourceDispatcher</span><span class="p">]</span>
+            <div class="codehilite"><pre><span></span>    <span class="k">class</span> <span class="nc">Dispatcher</span><span class="p">(</span><span class="n">BaseDispatcher</span><span class="p">):</span>  <span class="c1"># pylint: disable=missing-class-docstring</span>
+        <span class="n">mixin</span> <span class="o">=</span> <span class="p">[</span><span class="n">MessageChainDispatcher</span><span class="p">,</span> <span class="n">ContextDispatcher</span><span class="p">,</span> <span class="n">SourceDispatcher</span><span class="p">]</span>
 
         <span class="nd">@staticmethod</span>
         <span class="k">async</span> <span class="k">def</span> <span class="nf">catch</span><span class="p">(</span><span class="n">interface</span><span class="p">:</span> <span class="n">DispatcherInterface</span><span class="p">[</span><span class="s2">&quot;FriendMessage&quot;</span><span class="p">]):</span>
@@ -541,7 +556,7 @@
                             <div id="FriendMessage.Dispatcher.mixin" class="classattr">
                                             <div class="attr variable"><a class="headerlink" href="#FriendMessage.Dispatcher.mixin">#&nbsp;&nbsp</a>
 
-        <span class="name">mixin</span><span class="annotation">: List[Union[graia.broadcast.entities.dispatcher.BaseDispatcher, Type[graia.broadcast.entities.dispatcher.BaseDispatcher]]]</span><span class="default_value"> = [&lt;class &#39;<a href="../dispatcher.html#MessageChainDispatcher">ariadne.dispatcher.MessageChainDispatcher</a>&#39;&gt;, &lt;class &#39;<a href="../dispatcher.html#ApplicationDispatcher">ariadne.dispatcher.ApplicationDispatcher</a>&#39;&gt;, &lt;class &#39;<a href="../dispatcher.html#SourceDispatcher">ariadne.dispatcher.SourceDispatcher</a>&#39;&gt;]</span>
+        <span class="name">mixin</span><span class="annotation">: List[Union[graia.broadcast.entities.dispatcher.BaseDispatcher, Type[graia.broadcast.entities.dispatcher.BaseDispatcher]]]</span><span class="default_value"> = [&lt;class &#39;<a href="../dispatcher.html#MessageChainDispatcher">ariadne.dispatcher.MessageChainDispatcher</a>&#39;&gt;, &lt;class &#39;<a href="../dispatcher.html#ContextDispatcher">ariadne.dispatcher.ContextDispatcher</a>&#39;&gt;, &lt;class &#39;<a href="../dispatcher.html#SourceDispatcher">ariadne.dispatcher.SourceDispatcher</a>&#39;&gt;]</span>
     </div>
 
             <div class="docstring"><p>声明该 Dispatcher 所包含的来自其他 Dispatcher 提供的参数解析支持,
@@ -612,24 +627,26 @@
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">GroupMessage</span><span class="p">(</span><span class="n">MessageEvent</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;群组消息&quot;&quot;&quot;</span>
+
     <span class="nb">type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;GroupMessage&quot;</span>
     <span class="n">messageChain</span><span class="p">:</span> <span class="n">MessageChain</span>
     <span class="n">sender</span><span class="p">:</span> <span class="n">Member</span>
 
-    <span class="k">class</span> <span class="nc">Dispatcher</span><span class="p">(</span><span class="n">BaseDispatcher</span><span class="p">):</span>
-        <span class="n">mixin</span> <span class="o">=</span> <span class="p">[</span><span class="n">MessageChainDispatcher</span><span class="p">,</span> <span class="n">ApplicationDispatcher</span><span class="p">,</span> <span class="n">SourceDispatcher</span><span class="p">]</span>
+    <span class="k">class</span> <span class="nc">Dispatcher</span><span class="p">(</span><span class="n">BaseDispatcher</span><span class="p">):</span>  <span class="c1"># pylint: disable=missing-class-docstring</span>
+        <span class="n">mixin</span> <span class="o">=</span> <span class="p">[</span><span class="n">MessageChainDispatcher</span><span class="p">,</span> <span class="n">ContextDispatcher</span><span class="p">,</span> <span class="n">SourceDispatcher</span><span class="p">]</span>
 
         <span class="nd">@staticmethod</span>
         <span class="k">async</span> <span class="k">def</span> <span class="nf">catch</span><span class="p">(</span><span class="n">interface</span><span class="p">:</span> <span class="n">DispatcherInterface</span><span class="p">[</span><span class="s2">&quot;GroupMessage&quot;</span><span class="p">]):</span>
             <span class="k">if</span> <span class="n">interface</span><span class="o">.</span><span class="n">annotation</span> <span class="ow">is</span> <span class="n">Group</span><span class="p">:</span>
                 <span class="k">return</span> <span class="n">interface</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">sender</span><span class="o">.</span><span class="n">group</span>
-            <span class="k">elif</span> <span class="n">interface</span><span class="o">.</span><span class="n">annotation</span> <span class="ow">is</span> <span class="n">Member</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">interface</span><span class="o">.</span><span class="n">annotation</span> <span class="ow">is</span> <span class="n">Member</span><span class="p">:</span>
                 <span class="k">return</span> <span class="n">interface</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">sender</span>
 </pre></div>
 
         </details>
 
-            <div class="docstring"><p>Ariadne 的事件基类</p>
+            <div class="docstring"><p>群组消息</p>
 </div>
 
 
@@ -674,14 +691,14 @@
 
                 <details>
             <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span>    <span class="k">class</span> <span class="nc">Dispatcher</span><span class="p">(</span><span class="n">BaseDispatcher</span><span class="p">):</span>
-        <span class="n">mixin</span> <span class="o">=</span> <span class="p">[</span><span class="n">MessageChainDispatcher</span><span class="p">,</span> <span class="n">ApplicationDispatcher</span><span class="p">,</span> <span class="n">SourceDispatcher</span><span class="p">]</span>
+            <div class="codehilite"><pre><span></span>    <span class="k">class</span> <span class="nc">Dispatcher</span><span class="p">(</span><span class="n">BaseDispatcher</span><span class="p">):</span>  <span class="c1"># pylint: disable=missing-class-docstring</span>
+        <span class="n">mixin</span> <span class="o">=</span> <span class="p">[</span><span class="n">MessageChainDispatcher</span><span class="p">,</span> <span class="n">ContextDispatcher</span><span class="p">,</span> <span class="n">SourceDispatcher</span><span class="p">]</span>
 
         <span class="nd">@staticmethod</span>
         <span class="k">async</span> <span class="k">def</span> <span class="nf">catch</span><span class="p">(</span><span class="n">interface</span><span class="p">:</span> <span class="n">DispatcherInterface</span><span class="p">[</span><span class="s2">&quot;GroupMessage&quot;</span><span class="p">]):</span>
             <span class="k">if</span> <span class="n">interface</span><span class="o">.</span><span class="n">annotation</span> <span class="ow">is</span> <span class="n">Group</span><span class="p">:</span>
                 <span class="k">return</span> <span class="n">interface</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">sender</span><span class="o">.</span><span class="n">group</span>
-            <span class="k">elif</span> <span class="n">interface</span><span class="o">.</span><span class="n">annotation</span> <span class="ow">is</span> <span class="n">Member</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">interface</span><span class="o">.</span><span class="n">annotation</span> <span class="ow">is</span> <span class="n">Member</span><span class="p">:</span>
                 <span class="k">return</span> <span class="n">interface</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">sender</span>
 </pre></div>
 
@@ -705,7 +722,7 @@
                             <div id="GroupMessage.Dispatcher.mixin" class="classattr">
                                             <div class="attr variable"><a class="headerlink" href="#GroupMessage.Dispatcher.mixin">#&nbsp;&nbsp</a>
 
-        <span class="name">mixin</span><span class="annotation">: List[Union[graia.broadcast.entities.dispatcher.BaseDispatcher, Type[graia.broadcast.entities.dispatcher.BaseDispatcher]]]</span><span class="default_value"> = [&lt;class &#39;<a href="../dispatcher.html#MessageChainDispatcher">ariadne.dispatcher.MessageChainDispatcher</a>&#39;&gt;, &lt;class &#39;<a href="../dispatcher.html#ApplicationDispatcher">ariadne.dispatcher.ApplicationDispatcher</a>&#39;&gt;, &lt;class &#39;<a href="../dispatcher.html#SourceDispatcher">ariadne.dispatcher.SourceDispatcher</a>&#39;&gt;]</span>
+        <span class="name">mixin</span><span class="annotation">: List[Union[graia.broadcast.entities.dispatcher.BaseDispatcher, Type[graia.broadcast.entities.dispatcher.BaseDispatcher]]]</span><span class="default_value"> = [&lt;class &#39;<a href="../dispatcher.html#MessageChainDispatcher">ariadne.dispatcher.MessageChainDispatcher</a>&#39;&gt;, &lt;class &#39;<a href="../dispatcher.html#ContextDispatcher">ariadne.dispatcher.ContextDispatcher</a>&#39;&gt;, &lt;class &#39;<a href="../dispatcher.html#SourceDispatcher">ariadne.dispatcher.SourceDispatcher</a>&#39;&gt;]</span>
     </div>
 
             <div class="docstring"><p>声明该 Dispatcher 所包含的来自其他 Dispatcher 提供的参数解析支持,
@@ -732,7 +749,7 @@
         <span class="k">async</span> <span class="k">def</span> <span class="nf">catch</span><span class="p">(</span><span class="n">interface</span><span class="p">:</span> <span class="n">DispatcherInterface</span><span class="p">[</span><span class="s2">&quot;GroupMessage&quot;</span><span class="p">]):</span>
             <span class="k">if</span> <span class="n">interface</span><span class="o">.</span><span class="n">annotation</span> <span class="ow">is</span> <span class="n">Group</span><span class="p">:</span>
                 <span class="k">return</span> <span class="n">interface</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">sender</span><span class="o">.</span><span class="n">group</span>
-            <span class="k">elif</span> <span class="n">interface</span><span class="o">.</span><span class="n">annotation</span> <span class="ow">is</span> <span class="n">Member</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">interface</span><span class="o">.</span><span class="n">annotation</span> <span class="ow">is</span> <span class="n">Member</span><span class="p">:</span>
                 <span class="k">return</span> <span class="n">interface</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">sender</span>
 </pre></div>
 
@@ -778,58 +795,37 @@
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">TempMessage</span><span class="p">(</span><span class="n">MessageEvent</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;临时消息&quot;&quot;&quot;</span>
+
     <span class="nb">type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;TempMessage&quot;</span>
     <span class="n">messageChain</span><span class="p">:</span> <span class="n">MessageChain</span>
     <span class="n">sender</span><span class="p">:</span> <span class="n">Member</span>
 
-    <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">parse_obj</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span>
-        <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">parse_obj</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
+    <span class="k">class</span> <span class="nc">Dispatcher</span><span class="p">(</span><span class="n">BaseDispatcher</span><span class="p">):</span>  <span class="c1"># pylint: disable-next=missing-class-docstring</span>
 
-    <span class="k">class</span> <span class="nc">Dispatcher</span><span class="p">(</span><span class="n">BaseDispatcher</span><span class="p">):</span>
-        <span class="n">mixin</span> <span class="o">=</span> <span class="p">[</span><span class="n">MessageChainDispatcher</span><span class="p">,</span> <span class="n">ApplicationDispatcher</span><span class="p">,</span> <span class="n">SourceDispatcher</span><span class="p">]</span>
+        <span class="n">mixin</span> <span class="o">=</span> <span class="p">[</span><span class="n">MessageChainDispatcher</span><span class="p">,</span> <span class="n">ContextDispatcher</span><span class="p">,</span> <span class="n">SourceDispatcher</span><span class="p">]</span>
 
         <span class="nd">@staticmethod</span>
         <span class="k">async</span> <span class="k">def</span> <span class="nf">catch</span><span class="p">(</span><span class="n">interface</span><span class="p">:</span> <span class="n">DispatcherInterface</span><span class="p">[</span><span class="s2">&quot;TempMessage&quot;</span><span class="p">]):</span>
             <span class="k">if</span> <span class="n">interface</span><span class="o">.</span><span class="n">annotation</span> <span class="ow">is</span> <span class="n">Group</span><span class="p">:</span>
                 <span class="k">return</span> <span class="n">interface</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">sender</span><span class="o">.</span><span class="n">group</span>
-            <span class="k">elif</span> <span class="n">interface</span><span class="o">.</span><span class="n">annotation</span> <span class="ow">is</span> <span class="n">Member</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">interface</span><span class="o">.</span><span class="n">annotation</span> <span class="ow">is</span> <span class="n">Member</span><span class="p">:</span>
                 <span class="k">return</span> <span class="n">interface</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">sender</span>
 </pre></div>
 
         </details>
 
-            <div class="docstring"><p>Ariadne 的事件基类</p>
+            <div class="docstring"><p>临时消息</p>
 </div>
 
 
-                            <div id="TempMessage.parse_obj" class="classattr">
-                                        <div class="attr function"><a class="headerlink" href="#TempMessage.parse_obj">#&nbsp;&nbsp</a>
-
-                <div class="decorator">@classmethod</div>
-
-            <span class="def">def</span>
-            <span class="name">parse_obj</span><span class="signature">(cls, obj)</span>:
-    </div>
-
-                <details>
-            <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span>    <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">parse_obj</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span>
-        <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">parse_obj</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
-</pre></div>
-
-        </details>
-
-    
-
-                            </div>
                             <div class="inherited">
                                 <h5>Inherited Members</h5>
                                 <dl>
                                     <div><dt>pydantic.main.BaseModel</dt>
                                 <dd id="TempMessage.__init__" class="function">BaseModel</dd>
                 <dd id="TempMessage.json" class="function">json</dd>
+                <dd id="TempMessage.parse_obj" class="function">parse_obj</dd>
                 <dd id="TempMessage.parse_raw" class="function">parse_raw</dd>
                 <dd id="TempMessage.parse_file" class="function">parse_file</dd>
                 <dd id="TempMessage.from_orm" class="function">from_orm</dd>
@@ -864,14 +860,15 @@
 
                 <details>
             <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span>    <span class="k">class</span> <span class="nc">Dispatcher</span><span class="p">(</span><span class="n">BaseDispatcher</span><span class="p">):</span>
-        <span class="n">mixin</span> <span class="o">=</span> <span class="p">[</span><span class="n">MessageChainDispatcher</span><span class="p">,</span> <span class="n">ApplicationDispatcher</span><span class="p">,</span> <span class="n">SourceDispatcher</span><span class="p">]</span>
+            <div class="codehilite"><pre><span></span>    <span class="k">class</span> <span class="nc">Dispatcher</span><span class="p">(</span><span class="n">BaseDispatcher</span><span class="p">):</span>  <span class="c1"># pylint: disable-next=missing-class-docstring</span>
+
+        <span class="n">mixin</span> <span class="o">=</span> <span class="p">[</span><span class="n">MessageChainDispatcher</span><span class="p">,</span> <span class="n">ContextDispatcher</span><span class="p">,</span> <span class="n">SourceDispatcher</span><span class="p">]</span>
 
         <span class="nd">@staticmethod</span>
         <span class="k">async</span> <span class="k">def</span> <span class="nf">catch</span><span class="p">(</span><span class="n">interface</span><span class="p">:</span> <span class="n">DispatcherInterface</span><span class="p">[</span><span class="s2">&quot;TempMessage&quot;</span><span class="p">]):</span>
             <span class="k">if</span> <span class="n">interface</span><span class="o">.</span><span class="n">annotation</span> <span class="ow">is</span> <span class="n">Group</span><span class="p">:</span>
                 <span class="k">return</span> <span class="n">interface</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">sender</span><span class="o">.</span><span class="n">group</span>
-            <span class="k">elif</span> <span class="n">interface</span><span class="o">.</span><span class="n">annotation</span> <span class="ow">is</span> <span class="n">Member</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">interface</span><span class="o">.</span><span class="n">annotation</span> <span class="ow">is</span> <span class="n">Member</span><span class="p">:</span>
                 <span class="k">return</span> <span class="n">interface</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">sender</span>
 </pre></div>
 
@@ -895,7 +892,7 @@
                             <div id="TempMessage.Dispatcher.mixin" class="classattr">
                                             <div class="attr variable"><a class="headerlink" href="#TempMessage.Dispatcher.mixin">#&nbsp;&nbsp</a>
 
-        <span class="name">mixin</span><span class="annotation">: List[Union[graia.broadcast.entities.dispatcher.BaseDispatcher, Type[graia.broadcast.entities.dispatcher.BaseDispatcher]]]</span><span class="default_value"> = [&lt;class &#39;<a href="../dispatcher.html#MessageChainDispatcher">ariadne.dispatcher.MessageChainDispatcher</a>&#39;&gt;, &lt;class &#39;<a href="../dispatcher.html#ApplicationDispatcher">ariadne.dispatcher.ApplicationDispatcher</a>&#39;&gt;, &lt;class &#39;<a href="../dispatcher.html#SourceDispatcher">ariadne.dispatcher.SourceDispatcher</a>&#39;&gt;]</span>
+        <span class="name">mixin</span><span class="annotation">: List[Union[graia.broadcast.entities.dispatcher.BaseDispatcher, Type[graia.broadcast.entities.dispatcher.BaseDispatcher]]]</span><span class="default_value"> = [&lt;class &#39;<a href="../dispatcher.html#MessageChainDispatcher">ariadne.dispatcher.MessageChainDispatcher</a>&#39;&gt;, &lt;class &#39;<a href="../dispatcher.html#ContextDispatcher">ariadne.dispatcher.ContextDispatcher</a>&#39;&gt;, &lt;class &#39;<a href="../dispatcher.html#SourceDispatcher">ariadne.dispatcher.SourceDispatcher</a>&#39;&gt;]</span>
     </div>
 
             <div class="docstring"><p>声明该 Dispatcher 所包含的来自其他 Dispatcher 提供的参数解析支持,
@@ -922,7 +919,7 @@
         <span class="k">async</span> <span class="k">def</span> <span class="nf">catch</span><span class="p">(</span><span class="n">interface</span><span class="p">:</span> <span class="n">DispatcherInterface</span><span class="p">[</span><span class="s2">&quot;TempMessage&quot;</span><span class="p">]):</span>
             <span class="k">if</span> <span class="n">interface</span><span class="o">.</span><span class="n">annotation</span> <span class="ow">is</span> <span class="n">Group</span><span class="p">:</span>
                 <span class="k">return</span> <span class="n">interface</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">sender</span><span class="o">.</span><span class="n">group</span>
-            <span class="k">elif</span> <span class="n">interface</span><span class="o">.</span><span class="n">annotation</span> <span class="ow">is</span> <span class="n">Member</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">interface</span><span class="o">.</span><span class="n">annotation</span> <span class="ow">is</span> <span class="n">Member</span><span class="p">:</span>
                 <span class="k">return</span> <span class="n">interface</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">sender</span>
 </pre></div>
 
@@ -968,12 +965,15 @@
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">OtherClientMessage</span><span class="p">(</span><span class="n">MessageEvent</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;其他客户端消息&quot;&quot;&quot;</span>
+
     <span class="nb">type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;OtherClientMessage&quot;</span>
     <span class="n">messageChain</span><span class="p">:</span> <span class="n">MessageChain</span>
     <span class="n">sender</span><span class="p">:</span> <span class="n">Client</span>
 
-    <span class="k">class</span> <span class="nc">Dispatcher</span><span class="p">(</span><span class="n">BaseDispatcher</span><span class="p">):</span>
-        <span class="n">mixin</span> <span class="o">=</span> <span class="p">[</span><span class="n">MessageChainDispatcher</span><span class="p">,</span> <span class="n">ApplicationDispatcher</span><span class="p">,</span> <span class="n">SourceDispatcher</span><span class="p">]</span>
+    <span class="k">class</span> <span class="nc">Dispatcher</span><span class="p">(</span><span class="n">BaseDispatcher</span><span class="p">):</span>  <span class="c1"># pylint: disable-next=missing-class-docstring</span>
+
+        <span class="n">mixin</span> <span class="o">=</span> <span class="p">[</span><span class="n">MessageChainDispatcher</span><span class="p">,</span> <span class="n">ContextDispatcher</span><span class="p">,</span> <span class="n">SourceDispatcher</span><span class="p">]</span>
 
         <span class="nd">@staticmethod</span>
         <span class="k">async</span> <span class="k">def</span> <span class="nf">catch</span><span class="p">(</span><span class="n">interface</span><span class="p">:</span> <span class="n">DispatcherInterface</span><span class="p">[</span><span class="s2">&quot;OtherClientMessage&quot;</span><span class="p">]):</span>
@@ -983,7 +983,7 @@
 
         </details>
 
-            <div class="docstring"><p>Ariadne 的事件基类</p>
+            <div class="docstring"><p>其他客户端消息</p>
 </div>
 
 
@@ -1028,8 +1028,9 @@
 
                 <details>
             <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span>    <span class="k">class</span> <span class="nc">Dispatcher</span><span class="p">(</span><span class="n">BaseDispatcher</span><span class="p">):</span>
-        <span class="n">mixin</span> <span class="o">=</span> <span class="p">[</span><span class="n">MessageChainDispatcher</span><span class="p">,</span> <span class="n">ApplicationDispatcher</span><span class="p">,</span> <span class="n">SourceDispatcher</span><span class="p">]</span>
+            <div class="codehilite"><pre><span></span>    <span class="k">class</span> <span class="nc">Dispatcher</span><span class="p">(</span><span class="n">BaseDispatcher</span><span class="p">):</span>  <span class="c1"># pylint: disable-next=missing-class-docstring</span>
+
+        <span class="n">mixin</span> <span class="o">=</span> <span class="p">[</span><span class="n">MessageChainDispatcher</span><span class="p">,</span> <span class="n">ContextDispatcher</span><span class="p">,</span> <span class="n">SourceDispatcher</span><span class="p">]</span>
 
         <span class="nd">@staticmethod</span>
         <span class="k">async</span> <span class="k">def</span> <span class="nf">catch</span><span class="p">(</span><span class="n">interface</span><span class="p">:</span> <span class="n">DispatcherInterface</span><span class="p">[</span><span class="s2">&quot;OtherClientMessage&quot;</span><span class="p">]):</span>
@@ -1057,7 +1058,7 @@
                             <div id="OtherClientMessage.Dispatcher.mixin" class="classattr">
                                             <div class="attr variable"><a class="headerlink" href="#OtherClientMessage.Dispatcher.mixin">#&nbsp;&nbsp</a>
 
-        <span class="name">mixin</span><span class="annotation">: List[Union[graia.broadcast.entities.dispatcher.BaseDispatcher, Type[graia.broadcast.entities.dispatcher.BaseDispatcher]]]</span><span class="default_value"> = [&lt;class &#39;<a href="../dispatcher.html#MessageChainDispatcher">ariadne.dispatcher.MessageChainDispatcher</a>&#39;&gt;, &lt;class &#39;<a href="../dispatcher.html#ApplicationDispatcher">ariadne.dispatcher.ApplicationDispatcher</a>&#39;&gt;, &lt;class &#39;<a href="../dispatcher.html#SourceDispatcher">ariadne.dispatcher.SourceDispatcher</a>&#39;&gt;]</span>
+        <span class="name">mixin</span><span class="annotation">: List[Union[graia.broadcast.entities.dispatcher.BaseDispatcher, Type[graia.broadcast.entities.dispatcher.BaseDispatcher]]]</span><span class="default_value"> = [&lt;class &#39;<a href="../dispatcher.html#MessageChainDispatcher">ariadne.dispatcher.MessageChainDispatcher</a>&#39;&gt;, &lt;class &#39;<a href="../dispatcher.html#ContextDispatcher">ariadne.dispatcher.ContextDispatcher</a>&#39;&gt;, &lt;class &#39;<a href="../dispatcher.html#SourceDispatcher">ariadne.dispatcher.SourceDispatcher</a>&#39;&gt;]</span>
     </div>
 
             <div class="docstring"><p>声明该 Dispatcher 所包含的来自其他 Dispatcher 提供的参数解析支持,
@@ -1128,12 +1129,15 @@
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">StrangerMessage</span><span class="p">(</span><span class="n">MessageEvent</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;陌生人消息&quot;&quot;&quot;</span>
+
     <span class="nb">type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;StrangerMessage&quot;</span>
     <span class="n">messageChain</span><span class="p">:</span> <span class="n">MessageChain</span>
     <span class="n">sender</span><span class="p">:</span> <span class="n">Stranger</span>
 
-    <span class="k">class</span> <span class="nc">Dispatcher</span><span class="p">(</span><span class="n">BaseDispatcher</span><span class="p">):</span>
-        <span class="n">mixin</span> <span class="o">=</span> <span class="p">[</span><span class="n">MessageChainDispatcher</span><span class="p">,</span> <span class="n">ApplicationDispatcher</span><span class="p">,</span> <span class="n">SourceDispatcher</span><span class="p">]</span>
+    <span class="k">class</span> <span class="nc">Dispatcher</span><span class="p">(</span><span class="n">BaseDispatcher</span><span class="p">):</span>  <span class="c1"># pylint: disable-next=missing-class-docstring</span>
+
+        <span class="n">mixin</span> <span class="o">=</span> <span class="p">[</span><span class="n">MessageChainDispatcher</span><span class="p">,</span> <span class="n">ContextDispatcher</span><span class="p">,</span> <span class="n">SourceDispatcher</span><span class="p">]</span>
 
         <span class="nd">@staticmethod</span>
         <span class="k">async</span> <span class="k">def</span> <span class="nf">catch</span><span class="p">(</span><span class="n">interface</span><span class="p">:</span> <span class="n">DispatcherInterface</span><span class="p">[</span><span class="s2">&quot;StrangerMessage&quot;</span><span class="p">]):</span>
@@ -1143,7 +1147,7 @@
 
         </details>
 
-            <div class="docstring"><p>Ariadne 的事件基类</p>
+            <div class="docstring"><p>陌生人消息</p>
 </div>
 
 
@@ -1188,8 +1192,9 @@
 
                 <details>
             <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span>    <span class="k">class</span> <span class="nc">Dispatcher</span><span class="p">(</span><span class="n">BaseDispatcher</span><span class="p">):</span>
-        <span class="n">mixin</span> <span class="o">=</span> <span class="p">[</span><span class="n">MessageChainDispatcher</span><span class="p">,</span> <span class="n">ApplicationDispatcher</span><span class="p">,</span> <span class="n">SourceDispatcher</span><span class="p">]</span>
+            <div class="codehilite"><pre><span></span>    <span class="k">class</span> <span class="nc">Dispatcher</span><span class="p">(</span><span class="n">BaseDispatcher</span><span class="p">):</span>  <span class="c1"># pylint: disable-next=missing-class-docstring</span>
+
+        <span class="n">mixin</span> <span class="o">=</span> <span class="p">[</span><span class="n">MessageChainDispatcher</span><span class="p">,</span> <span class="n">ContextDispatcher</span><span class="p">,</span> <span class="n">SourceDispatcher</span><span class="p">]</span>
 
         <span class="nd">@staticmethod</span>
         <span class="k">async</span> <span class="k">def</span> <span class="nf">catch</span><span class="p">(</span><span class="n">interface</span><span class="p">:</span> <span class="n">DispatcherInterface</span><span class="p">[</span><span class="s2">&quot;StrangerMessage&quot;</span><span class="p">]):</span>
@@ -1217,7 +1222,7 @@
                             <div id="StrangerMessage.Dispatcher.mixin" class="classattr">
                                             <div class="attr variable"><a class="headerlink" href="#StrangerMessage.Dispatcher.mixin">#&nbsp;&nbsp</a>
 
-        <span class="name">mixin</span><span class="annotation">: List[Union[graia.broadcast.entities.dispatcher.BaseDispatcher, Type[graia.broadcast.entities.dispatcher.BaseDispatcher]]]</span><span class="default_value"> = [&lt;class &#39;<a href="../dispatcher.html#MessageChainDispatcher">ariadne.dispatcher.MessageChainDispatcher</a>&#39;&gt;, &lt;class &#39;<a href="../dispatcher.html#ApplicationDispatcher">ariadne.dispatcher.ApplicationDispatcher</a>&#39;&gt;, &lt;class &#39;<a href="../dispatcher.html#SourceDispatcher">ariadne.dispatcher.SourceDispatcher</a>&#39;&gt;]</span>
+        <span class="name">mixin</span><span class="annotation">: List[Union[graia.broadcast.entities.dispatcher.BaseDispatcher, Type[graia.broadcast.entities.dispatcher.BaseDispatcher]]]</span><span class="default_value"> = [&lt;class &#39;<a href="../dispatcher.html#MessageChainDispatcher">ariadne.dispatcher.MessageChainDispatcher</a>&#39;&gt;, &lt;class &#39;<a href="../dispatcher.html#ContextDispatcher">ariadne.dispatcher.ContextDispatcher</a>&#39;&gt;, &lt;class &#39;<a href="../dispatcher.html#SourceDispatcher">ariadne.dispatcher.SourceDispatcher</a>&#39;&gt;]</span>
     </div>
 
             <div class="docstring"><p>声明该 Dispatcher 所包含的来自其他 Dispatcher 提供的参数解析支持,

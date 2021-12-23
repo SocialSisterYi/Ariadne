@@ -217,7 +217,13 @@
                                 <a class="function" href="#Ariadne.launch">launch</a>
                         </li>
                         <li>
+                                <a class="function" href="#Ariadne.stop">stop</a>
+                        </li>
+                        <li>
                                 <a class="function" href="#Ariadne.request_stop">request_stop</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#Ariadne.join">join</a>
                         </li>
                         <li>
                                 <a class="function" href="#Ariadne.wait_for_stop">wait_for_stop</a>
@@ -275,7 +281,7 @@
 
 <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">ARIADNE_ASCII_LOGO</span>
 <span class="kn">from</span> <span class="nn">.adapter</span> <span class="kn">import</span> <span class="n">Adapter</span><span class="p">,</span> <span class="n">DefaultAdapter</span>
-<span class="kn">from</span> <span class="nn">.context</span> <span class="kn">import</span> <span class="n">EventContext</span><span class="p">,</span> <span class="n">enter_message_send_context</span>
+<span class="kn">from</span> <span class="nn">.context</span> <span class="kn">import</span> <span class="n">enter_context</span><span class="p">,</span> <span class="n">enter_message_send_context</span>
 <span class="kn">from</span> <span class="nn">.event.lifecycle</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">AdapterLaunched</span><span class="p">,</span>
     <span class="n">AdapterShutdowned</span><span class="p">,</span>
@@ -301,9 +307,9 @@
     <span class="n">UploadMethod</span><span class="p">,</span>
 <span class="p">)</span>
 <span class="kn">from</span> <span class="nn">.util</span> <span class="kn">import</span> <span class="p">(</span>
-    <span class="n">ApplicationMiddlewareDispatcher</span><span class="p">,</span>
     <span class="n">app_ctx_manager</span><span class="p">,</span>
     <span class="n">await_predicate</span><span class="p">,</span>
+    <span class="n">deprecated</span><span class="p">,</span>
     <span class="n">inject_bypass_listener</span><span class="p">,</span>
     <span class="n">inject_loguru_traceback</span><span class="p">,</span>
     <span class="n">yield_with_timeout</span><span class="p">,</span>
@@ -1535,7 +1541,7 @@
                         <span class="bp">self</span><span class="o">.</span><span class="n">adapter</span><span class="o">.</span><span class="n">running</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="ow">in</span> <span class="p">{</span><span class="n">AriadneStatus</span><span class="o">.</span><span class="n">RUNNING</span><span class="p">,</span> <span class="n">AriadneStatus</span><span class="o">.</span><span class="n">LAUNCH</span><span class="p">}</span>
                     <span class="p">),</span>
                 <span class="p">):</span>
-                    <span class="k">with</span> <span class="n">EventContext</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+                    <span class="k">with</span> <span class="n">enter_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
                         <span class="bp">self</span><span class="o">.</span><span class="n">broadcast</span><span class="o">.</span><span class="n">postEvent</span><span class="p">(</span><span class="n">event</span><span class="p">)</span>
             <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
                 <span class="n">logger</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
@@ -1609,7 +1615,6 @@
 
             <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Launching app...&quot;</span><span class="p">)</span>
             <span class="n">start_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">broadcast</span><span class="o">.</span><span class="n">dispatcher_interface</span><span class="o">.</span><span class="n">inject_global_raw</span><span class="p">(</span><span class="n">ApplicationMiddlewareDispatcher</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span>
 
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">chat_log_cfg</span><span class="o">.</span><span class="n">enabled</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">chat_log_cfg</span><span class="o">.</span><span class="n">initialize</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
@@ -1624,20 +1629,32 @@
             <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Application launched with </span><span class="si">{</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">start_time</span><span class="si">:</span><span class="s2">.2</span><span class="si">}</span><span class="s2">s&quot;</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">broadcast</span><span class="o">.</span><span class="n">postEvent</span><span class="p">(</span><span class="n">ApplicationLaunched</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span>
 
-    <span class="k">async</span> <span class="k">def</span> <span class="nf">request_stop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">stop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;请求停止 Ariadne.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="ow">is</span> <span class="n">AriadneStatus</span><span class="o">.</span><span class="n">RUNNING</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="n">AriadneStatus</span><span class="o">.</span><span class="n">SHUTDOWN</span>
             <span class="k">await</span> <span class="n">await_predicate</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="ow">in</span> <span class="p">{</span><span class="n">AriadneStatus</span><span class="o">.</span><span class="n">CLEANUP</span><span class="p">,</span> <span class="n">AriadneStatus</span><span class="o">.</span><span class="n">STOP</span><span class="p">})</span>
 
-    <span class="k">async</span> <span class="k">def</span> <span class="nf">wait_for_stop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="nd">@deprecated</span><span class="p">(</span><span class="s2">&quot;0.5.0&quot;</span><span class="p">)</span>
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">request_stop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># pylint: disable</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;use &quot;stop&quot; instead!&quot;&quot;&quot;</span><span class="p">)</span>
+        <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
+
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">join</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;等待直到 Ariadne 真正停止.</span>
 <span class="sd">        不要在与 Broadcast 相关的任务中使用.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="ow">in</span> <span class="p">{</span><span class="n">AriadneStatus</span><span class="o">.</span><span class="n">RUNNING</span><span class="p">,</span> <span class="n">AriadneStatus</span><span class="o">.</span><span class="n">LAUNCH</span><span class="p">}:</span>
-            <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">request_stop</span><span class="p">()</span>
+            <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
             <span class="k">await</span> <span class="n">await_predicate</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="ow">is</span> <span class="n">AriadneStatus</span><span class="o">.</span><span class="n">STOP</span><span class="p">)</span>
             <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">daemon_task</span>
+
+    <span class="nd">@deprecated</span><span class="p">(</span><span class="s2">&quot;0.5.0&quot;</span><span class="p">)</span>
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">wait_for_stop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># pylint: disable</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;use &quot;join&quot; instead!&quot;&quot;&quot;</span><span class="p">)</span>
+        <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">join</span><span class="p">()</span>
 
     <span class="k">async</span> <span class="k">def</span> <span class="nf">lifecycle</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;以 async 阻塞方式启动 Ariadne 并等待其停止.&quot;&quot;&quot;</span>
@@ -1649,7 +1666,7 @@
         <span class="k">try</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">loop</span><span class="o">.</span><span class="n">run_until_complete</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">lifecycle</span><span class="p">())</span>
         <span class="k">except</span> <span class="ne">KeyboardInterrupt</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">loop</span><span class="o">.</span><span class="n">run_until_complete</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">wait_for_stop</span><span class="p">())</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">loop</span><span class="o">.</span><span class="n">run_until_complete</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">join</span><span class="p">())</span>
 
     <span class="nd">@app_ctx_manager</span>
     <span class="k">async</span> <span class="k">def</span> <span class="nf">getVersion</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">auto_set</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
@@ -1675,7 +1692,7 @@
         <span class="k">return</span> <span class="bp">self</span>
 
     <span class="k">async</span> <span class="k">def</span> <span class="fm">__aexit__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">exc</span><span class="p">):</span>
-        <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">wait_for_stop</span><span class="p">()</span>
+        <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">join</span><span class="p">()</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">account</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
@@ -5577,7 +5594,7 @@
                         <span class="bp">self</span><span class="o">.</span><span class="n">adapter</span><span class="o">.</span><span class="n">running</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="ow">in</span> <span class="p">{</span><span class="n">AriadneStatus</span><span class="o">.</span><span class="n">RUNNING</span><span class="p">,</span> <span class="n">AriadneStatus</span><span class="o">.</span><span class="n">LAUNCH</span><span class="p">}</span>
                     <span class="p">),</span>
                 <span class="p">):</span>
-                    <span class="k">with</span> <span class="n">EventContext</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+                    <span class="k">with</span> <span class="n">enter_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
                         <span class="bp">self</span><span class="o">.</span><span class="n">broadcast</span><span class="o">.</span><span class="n">postEvent</span><span class="p">(</span><span class="n">event</span><span class="p">)</span>
             <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
                 <span class="n">logger</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
@@ -5651,7 +5668,6 @@
 
             <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Launching app...&quot;</span><span class="p">)</span>
             <span class="n">start_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">broadcast</span><span class="o">.</span><span class="n">dispatcher_interface</span><span class="o">.</span><span class="n">inject_global_raw</span><span class="p">(</span><span class="n">ApplicationMiddlewareDispatcher</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span>
 
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">chat_log_cfg</span><span class="o">.</span><span class="n">enabled</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">chat_log_cfg</span><span class="o">.</span><span class="n">initialize</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
@@ -5666,20 +5682,32 @@
             <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Application launched with </span><span class="si">{</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">start_time</span><span class="si">:</span><span class="s2">.2</span><span class="si">}</span><span class="s2">s&quot;</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">broadcast</span><span class="o">.</span><span class="n">postEvent</span><span class="p">(</span><span class="n">ApplicationLaunched</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span>
 
-    <span class="k">async</span> <span class="k">def</span> <span class="nf">request_stop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">stop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;请求停止 Ariadne.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="ow">is</span> <span class="n">AriadneStatus</span><span class="o">.</span><span class="n">RUNNING</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="n">AriadneStatus</span><span class="o">.</span><span class="n">SHUTDOWN</span>
             <span class="k">await</span> <span class="n">await_predicate</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="ow">in</span> <span class="p">{</span><span class="n">AriadneStatus</span><span class="o">.</span><span class="n">CLEANUP</span><span class="p">,</span> <span class="n">AriadneStatus</span><span class="o">.</span><span class="n">STOP</span><span class="p">})</span>
 
-    <span class="k">async</span> <span class="k">def</span> <span class="nf">wait_for_stop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="nd">@deprecated</span><span class="p">(</span><span class="s2">&quot;0.5.0&quot;</span><span class="p">)</span>
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">request_stop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># pylint: disable</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;use &quot;stop&quot; instead!&quot;&quot;&quot;</span><span class="p">)</span>
+        <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
+
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">join</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;等待直到 Ariadne 真正停止.</span>
 <span class="sd">        不要在与 Broadcast 相关的任务中使用.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="ow">in</span> <span class="p">{</span><span class="n">AriadneStatus</span><span class="o">.</span><span class="n">RUNNING</span><span class="p">,</span> <span class="n">AriadneStatus</span><span class="o">.</span><span class="n">LAUNCH</span><span class="p">}:</span>
-            <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">request_stop</span><span class="p">()</span>
+            <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
             <span class="k">await</span> <span class="n">await_predicate</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="ow">is</span> <span class="n">AriadneStatus</span><span class="o">.</span><span class="n">STOP</span><span class="p">)</span>
             <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">daemon_task</span>
+
+    <span class="nd">@deprecated</span><span class="p">(</span><span class="s2">&quot;0.5.0&quot;</span><span class="p">)</span>
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">wait_for_stop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># pylint: disable</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;use &quot;join&quot; instead!&quot;&quot;&quot;</span><span class="p">)</span>
+        <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">join</span><span class="p">()</span>
 
     <span class="k">async</span> <span class="k">def</span> <span class="nf">lifecycle</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;以 async 阻塞方式启动 Ariadne 并等待其停止.&quot;&quot;&quot;</span>
@@ -5691,7 +5719,7 @@
         <span class="k">try</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">loop</span><span class="o">.</span><span class="n">run_until_complete</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">lifecycle</span><span class="p">())</span>
         <span class="k">except</span> <span class="ne">KeyboardInterrupt</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">loop</span><span class="o">.</span><span class="n">run_until_complete</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">wait_for_stop</span><span class="p">())</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">loop</span><span class="o">.</span><span class="n">run_until_complete</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">join</span><span class="p">())</span>
 
     <span class="nd">@app_ctx_manager</span>
     <span class="k">async</span> <span class="k">def</span> <span class="nf">getVersion</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">auto_set</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
@@ -5717,7 +5745,7 @@
         <span class="k">return</span> <span class="bp">self</span>
 
     <span class="k">async</span> <span class="k">def</span> <span class="fm">__aexit__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">exc</span><span class="p">):</span>
-        <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">wait_for_stop</span><span class="p">()</span>
+        <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">join</span><span class="p">()</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">account</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
@@ -5953,7 +5981,7 @@
                         <span class="bp">self</span><span class="o">.</span><span class="n">adapter</span><span class="o">.</span><span class="n">running</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="ow">in</span> <span class="p">{</span><span class="n">AriadneStatus</span><span class="o">.</span><span class="n">RUNNING</span><span class="p">,</span> <span class="n">AriadneStatus</span><span class="o">.</span><span class="n">LAUNCH</span><span class="p">}</span>
                     <span class="p">),</span>
                 <span class="p">):</span>
-                    <span class="k">with</span> <span class="n">EventContext</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+                    <span class="k">with</span> <span class="n">enter_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
                         <span class="bp">self</span><span class="o">.</span><span class="n">broadcast</span><span class="o">.</span><span class="n">postEvent</span><span class="p">(</span><span class="n">event</span><span class="p">)</span>
             <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
                 <span class="n">logger</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
@@ -6051,7 +6079,6 @@
 
             <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Launching app...&quot;</span><span class="p">)</span>
             <span class="n">start_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">broadcast</span><span class="o">.</span><span class="n">dispatcher_interface</span><span class="o">.</span><span class="n">inject_global_raw</span><span class="p">(</span><span class="n">ApplicationMiddlewareDispatcher</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span>
 
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">chat_log_cfg</span><span class="o">.</span><span class="n">enabled</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">chat_log_cfg</span><span class="o">.</span><span class="n">initialize</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
@@ -6074,17 +6101,17 @@
 
 
                             </div>
-                            <div id="Ariadne.request_stop" class="classattr">
-                                        <div class="attr function"><a class="headerlink" href="#Ariadne.request_stop">#&nbsp;&nbsp</a>
+                            <div id="Ariadne.stop" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#Ariadne.stop">#&nbsp;&nbsp</a>
 
         
             <span class="def">async def</span>
-            <span class="name">request_stop</span><span class="signature">(self)</span>:
+            <span class="name">stop</span><span class="signature">(self)</span>:
     </div>
 
                 <details>
             <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span>    <span class="k">async</span> <span class="k">def</span> <span class="nf">request_stop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <div class="codehilite"><pre><span></span>    <span class="k">async</span> <span class="k">def</span> <span class="nf">stop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;请求停止 Ariadne.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="ow">is</span> <span class="n">AriadneStatus</span><span class="o">.</span><span class="n">RUNNING</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="n">AriadneStatus</span><span class="o">.</span><span class="n">SHUTDOWN</span>
@@ -6098,22 +6125,45 @@
 
 
                             </div>
-                            <div id="Ariadne.wait_for_stop" class="classattr">
-                                        <div class="attr function"><a class="headerlink" href="#Ariadne.wait_for_stop">#&nbsp;&nbsp</a>
+                            <div id="Ariadne.request_stop" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#Ariadne.request_stop">#&nbsp;&nbsp</a>
 
-        
-            <span class="def">async def</span>
-            <span class="name">wait_for_stop</span><span class="signature">(self)</span>:
+                <div class="decorator">@deprecated(&#39;0.5.0&#39;)</div>
+
+            <span class="def">def</span>
+            <span class="name">request_stop</span><span class="signature">(self)</span>:
     </div>
 
                 <details>
             <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span>    <span class="k">async</span> <span class="k">def</span> <span class="nf">wait_for_stop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <div class="codehilite"><pre><span></span>    <span class="nd">@deprecated</span><span class="p">(</span><span class="s2">&quot;0.5.0&quot;</span><span class="p">)</span>
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">request_stop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># pylint: disable</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;use &quot;stop&quot; instead!&quot;&quot;&quot;</span><span class="p">)</span>
+        <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
+</pre></div>
+
+        </details>
+
+    
+
+                            </div>
+                            <div id="Ariadne.join" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#Ariadne.join">#&nbsp;&nbsp</a>
+
+        
+            <span class="def">async def</span>
+            <span class="name">join</span><span class="signature">(self)</span>:
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span>    <span class="k">async</span> <span class="k">def</span> <span class="nf">join</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;等待直到 Ariadne 真正停止.</span>
 <span class="sd">        不要在与 Broadcast 相关的任务中使用.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="ow">in</span> <span class="p">{</span><span class="n">AriadneStatus</span><span class="o">.</span><span class="n">RUNNING</span><span class="p">,</span> <span class="n">AriadneStatus</span><span class="o">.</span><span class="n">LAUNCH</span><span class="p">}:</span>
-            <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">request_stop</span><span class="p">()</span>
+            <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
             <span class="k">await</span> <span class="n">await_predicate</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="ow">is</span> <span class="n">AriadneStatus</span><span class="o">.</span><span class="n">STOP</span><span class="p">)</span>
             <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">daemon_task</span>
 </pre></div>
@@ -6124,6 +6174,29 @@
 不要在与 Broadcast 相关的任务中使用.</p>
 </div>
 
+
+                            </div>
+                            <div id="Ariadne.wait_for_stop" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#Ariadne.wait_for_stop">#&nbsp;&nbsp</a>
+
+                <div class="decorator">@deprecated(&#39;0.5.0&#39;)</div>
+
+            <span class="def">def</span>
+            <span class="name">wait_for_stop</span><span class="signature">(self)</span>:
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span>    <span class="nd">@deprecated</span><span class="p">(</span><span class="s2">&quot;0.5.0&quot;</span><span class="p">)</span>
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">wait_for_stop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># pylint: disable</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;use &quot;join&quot; instead!&quot;&quot;&quot;</span><span class="p">)</span>
+        <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">join</span><span class="p">()</span>
+</pre></div>
+
+        </details>
+
+    
 
                             </div>
                             <div id="Ariadne.lifecycle" class="classattr">
@@ -6164,7 +6237,7 @@
         <span class="k">try</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">loop</span><span class="o">.</span><span class="n">run_until_complete</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">lifecycle</span><span class="p">())</span>
         <span class="k">except</span> <span class="ne">KeyboardInterrupt</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">loop</span><span class="o">.</span><span class="n">run_until_complete</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">wait_for_stop</span><span class="p">())</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">loop</span><span class="o">.</span><span class="n">run_until_complete</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">join</span><span class="p">())</span>
 </pre></div>
 
         </details>

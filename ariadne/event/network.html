@@ -80,19 +80,19 @@
             <div class="codehilite"><pre><span></span><span class="sd">&quot;&quot;&quot;网络相关的事件, 通常为异常发生&quot;&quot;&quot;</span>
 <span class="kn">from</span> <span class="nn">graia.broadcast.entities.event</span> <span class="kn">import</span> <span class="n">Dispatchable</span>
 
-<span class="kn">from</span> <span class="nn">..dispatcher</span> <span class="kn">import</span> <span class="n">ApplicationDispatcher</span>
+<span class="kn">from</span> <span class="nn">..dispatcher</span> <span class="kn">import</span> <span class="n">ContextDispatcher</span>
 
 
 <span class="k">class</span> <span class="nc">RemoteException</span><span class="p">(</span><span class="n">Dispatchable</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;网络异常: 无头客户端处发生错误, 你应该检查其输出的错误日志.&quot;&quot;&quot;</span>
 
-    <span class="n">Dispatcher</span> <span class="o">=</span> <span class="n">ApplicationDispatcher</span>
+    <span class="n">Dispatcher</span> <span class="o">=</span> <span class="n">ContextDispatcher</span>
 
 
 <span class="k">class</span> <span class="nc">InvalidRequest</span><span class="p">(</span><span class="n">Dispatchable</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;网络异常: 意料之外地, 发出了不被无头客户端接收的 HTTP 请求, 你应该通过相应渠道向我们汇报此问题&quot;&quot;&quot;</span>
 
-    <span class="n">Dispatcher</span> <span class="o">=</span> <span class="n">ApplicationDispatcher</span>
+    <span class="n">Dispatcher</span> <span class="o">=</span> <span class="n">ContextDispatcher</span>
 </pre></div>
 
         </details>
@@ -112,7 +112,7 @@
             <div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">RemoteException</span><span class="p">(</span><span class="n">Dispatchable</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;网络异常: 无头客户端处发生错误, 你应该检查其输出的错误日志.&quot;&quot;&quot;</span>
 
-    <span class="n">Dispatcher</span> <span class="o">=</span> <span class="n">ApplicationDispatcher</span>
+    <span class="n">Dispatcher</span> <span class="o">=</span> <span class="n">ContextDispatcher</span>
 </pre></div>
 
         </details>
@@ -144,27 +144,44 @@
 
                 <details>
             <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">ApplicationDispatcher</span><span class="p">(</span><span class="n">BaseDispatcher</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;提取 Ariadne 实例的 Dispatcher&quot;&quot;&quot;</span>
+            <div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">ContextDispatcher</span><span class="p">(</span><span class="n">BaseDispatcher</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;提取上下文的 Dispatcher&quot;&quot;&quot;</span>
 
     <span class="nd">@staticmethod</span>
     <span class="k">async</span> <span class="k">def</span> <span class="nf">catch</span><span class="p">(</span><span class="n">interface</span><span class="p">:</span> <span class="n">DispatcherInterface</span><span class="p">):</span>
-        <span class="k">if</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">interface</span><span class="o">.</span><span class="n">annotation</span><span class="p">,</span> <span class="s2">&quot;__name__&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="o">==</span> <span class="s2">&quot;Ariadne&quot;</span><span class="p">:</span>
+        <span class="kn">from</span> <span class="nn">asyncio</span> <span class="kn">import</span> <span class="n">AbstractEventLoop</span>
+
+        <span class="kn">from</span> <span class="nn">graia.broadcast</span> <span class="kn">import</span> <span class="n">Broadcast</span>
+
+        <span class="kn">from</span> <span class="nn">.adapter</span> <span class="kn">import</span> <span class="n">Adapter</span>
+        <span class="kn">from</span> <span class="nn">.app</span> <span class="kn">import</span> <span class="n">Ariadne</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">interface</span><span class="o">.</span><span class="n">annotation</span><span class="p">,</span> <span class="nb">type</span><span class="p">):</span>
+            <span class="k">return</span>
+        <span class="k">if</span> <span class="nb">issubclass</span><span class="p">(</span><span class="n">interface</span><span class="o">.</span><span class="n">annotation</span><span class="p">,</span> <span class="n">Ariadne</span><span class="p">):</span>
             <span class="k">return</span> <span class="n">ariadne_ctx</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+        <span class="k">if</span> <span class="nb">issubclass</span><span class="p">(</span><span class="n">interface</span><span class="o">.</span><span class="n">annotation</span><span class="p">,</span> <span class="n">Broadcast</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">broadcast_ctx</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+        <span class="k">if</span> <span class="nb">issubclass</span><span class="p">(</span><span class="n">interface</span><span class="o">.</span><span class="n">annotation</span><span class="p">,</span> <span class="n">AbstractEventLoop</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">event_loop_ctx</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+        <span class="k">if</span> <span class="nb">issubclass</span><span class="p">(</span><span class="n">interface</span><span class="o">.</span><span class="n">annotation</span><span class="p">,</span> <span class="n">Adapter</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">adapter_ctx</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+        <span class="k">if</span> <span class="nb">issubclass</span><span class="p">(</span><span class="n">interface</span><span class="o">.</span><span class="n">annotation</span><span class="p">,</span> <span class="n">Dispatchable</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">interface</span><span class="o">.</span><span class="n">event</span>
 </pre></div>
 
         </details>
 
-            <div class="docstring"><p>提取 Ariadne 实例的 Dispatcher</p>
+            <div class="docstring"><p>提取上下文的 Dispatcher</p>
 </div>
 
 
                             <div class="inherited">
                                 <h5>Inherited Members</h5>
                                 <dl>
-                                    <div><dt><a href="../dispatcher.html#ApplicationDispatcher">ariadne.dispatcher.ApplicationDispatcher</a></dt>
-                                <dd id="RemoteException.Dispatcher.__init__" class="function"><a href="../dispatcher.html#ApplicationDispatcher.__init__">ApplicationDispatcher</a></dd>
-                <dd id="RemoteException.Dispatcher.catch" class="function"><a href="../dispatcher.html#ApplicationDispatcher.catch">catch</a></dd>
+                                    <div><dt><a href="../dispatcher.html#ContextDispatcher">ariadne.dispatcher.ContextDispatcher</a></dt>
+                                <dd id="RemoteException.Dispatcher.__init__" class="function"><a href="../dispatcher.html#ContextDispatcher.__init__">ContextDispatcher</a></dd>
+                <dd id="RemoteException.Dispatcher.catch" class="function"><a href="../dispatcher.html#ContextDispatcher.catch">catch</a></dd>
 
             </div>
             <div><dt>graia.broadcast.entities.dispatcher.BaseDispatcher</dt>
@@ -191,7 +208,7 @@
             <div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">InvalidRequest</span><span class="p">(</span><span class="n">Dispatchable</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;网络异常: 意料之外地, 发出了不被无头客户端接收的 HTTP 请求, 你应该通过相应渠道向我们汇报此问题&quot;&quot;&quot;</span>
 
-    <span class="n">Dispatcher</span> <span class="o">=</span> <span class="n">ApplicationDispatcher</span>
+    <span class="n">Dispatcher</span> <span class="o">=</span> <span class="n">ContextDispatcher</span>
 </pre></div>
 
         </details>
@@ -223,27 +240,44 @@
 
                 <details>
             <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">ApplicationDispatcher</span><span class="p">(</span><span class="n">BaseDispatcher</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;提取 Ariadne 实例的 Dispatcher&quot;&quot;&quot;</span>
+            <div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">ContextDispatcher</span><span class="p">(</span><span class="n">BaseDispatcher</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;提取上下文的 Dispatcher&quot;&quot;&quot;</span>
 
     <span class="nd">@staticmethod</span>
     <span class="k">async</span> <span class="k">def</span> <span class="nf">catch</span><span class="p">(</span><span class="n">interface</span><span class="p">:</span> <span class="n">DispatcherInterface</span><span class="p">):</span>
-        <span class="k">if</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">interface</span><span class="o">.</span><span class="n">annotation</span><span class="p">,</span> <span class="s2">&quot;__name__&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="o">==</span> <span class="s2">&quot;Ariadne&quot;</span><span class="p">:</span>
+        <span class="kn">from</span> <span class="nn">asyncio</span> <span class="kn">import</span> <span class="n">AbstractEventLoop</span>
+
+        <span class="kn">from</span> <span class="nn">graia.broadcast</span> <span class="kn">import</span> <span class="n">Broadcast</span>
+
+        <span class="kn">from</span> <span class="nn">.adapter</span> <span class="kn">import</span> <span class="n">Adapter</span>
+        <span class="kn">from</span> <span class="nn">.app</span> <span class="kn">import</span> <span class="n">Ariadne</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">interface</span><span class="o">.</span><span class="n">annotation</span><span class="p">,</span> <span class="nb">type</span><span class="p">):</span>
+            <span class="k">return</span>
+        <span class="k">if</span> <span class="nb">issubclass</span><span class="p">(</span><span class="n">interface</span><span class="o">.</span><span class="n">annotation</span><span class="p">,</span> <span class="n">Ariadne</span><span class="p">):</span>
             <span class="k">return</span> <span class="n">ariadne_ctx</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+        <span class="k">if</span> <span class="nb">issubclass</span><span class="p">(</span><span class="n">interface</span><span class="o">.</span><span class="n">annotation</span><span class="p">,</span> <span class="n">Broadcast</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">broadcast_ctx</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+        <span class="k">if</span> <span class="nb">issubclass</span><span class="p">(</span><span class="n">interface</span><span class="o">.</span><span class="n">annotation</span><span class="p">,</span> <span class="n">AbstractEventLoop</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">event_loop_ctx</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+        <span class="k">if</span> <span class="nb">issubclass</span><span class="p">(</span><span class="n">interface</span><span class="o">.</span><span class="n">annotation</span><span class="p">,</span> <span class="n">Adapter</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">adapter_ctx</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+        <span class="k">if</span> <span class="nb">issubclass</span><span class="p">(</span><span class="n">interface</span><span class="o">.</span><span class="n">annotation</span><span class="p">,</span> <span class="n">Dispatchable</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">interface</span><span class="o">.</span><span class="n">event</span>
 </pre></div>
 
         </details>
 
-            <div class="docstring"><p>提取 Ariadne 实例的 Dispatcher</p>
+            <div class="docstring"><p>提取上下文的 Dispatcher</p>
 </div>
 
 
                             <div class="inherited">
                                 <h5>Inherited Members</h5>
                                 <dl>
-                                    <div><dt><a href="../dispatcher.html#ApplicationDispatcher">ariadne.dispatcher.ApplicationDispatcher</a></dt>
-                                <dd id="InvalidRequest.Dispatcher.__init__" class="function"><a href="../dispatcher.html#ApplicationDispatcher.__init__">ApplicationDispatcher</a></dd>
-                <dd id="InvalidRequest.Dispatcher.catch" class="function"><a href="../dispatcher.html#ApplicationDispatcher.catch">catch</a></dd>
+                                    <div><dt><a href="../dispatcher.html#ContextDispatcher">ariadne.dispatcher.ContextDispatcher</a></dt>
+                                <dd id="InvalidRequest.Dispatcher.__init__" class="function"><a href="../dispatcher.html#ContextDispatcher.__init__">ContextDispatcher</a></dd>
+                <dd id="InvalidRequest.Dispatcher.catch" class="function"><a href="../dispatcher.html#ContextDispatcher.catch">catch</a></dd>
 
             </div>
             <div><dt>graia.broadcast.entities.dispatcher.BaseDispatcher</dt>

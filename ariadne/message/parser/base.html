@@ -78,10 +78,13 @@
                     <h1 class="modulename">
 <a href="./../../../ariadne.html">ariadne</a><wbr>.<a href="./../../message.html">message</a><wbr>.<a href="./../parser.html">parser</a><wbr>.base    </h1>
 
-                
+                        <div class="docstring"><p>Ariadne 基础的 parser, 包括 DetectPrefix 与 DetectSuffix</p>
+</div>
+
                         <details>
             <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span><span class="kn">from</span> <span class="nn">graia.broadcast.entities.decorator</span> <span class="kn">import</span> <span class="n">Decorator</span>
+            <div class="codehilite"><pre><span></span><span class="sd">&quot;&quot;&quot;Ariadne 基础的 parser, 包括 DetectPrefix 与 DetectSuffix&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">graia.broadcast.entities.decorator</span> <span class="kn">import</span> <span class="n">Decorator</span>
 <span class="kn">from</span> <span class="nn">graia.broadcast.exceptions</span> <span class="kn">import</span> <span class="n">ExecutionStop</span>
 <span class="kn">from</span> <span class="nn">graia.broadcast.interfaces.decorator</span> <span class="kn">import</span> <span class="n">DecoratorInterface</span>
 
@@ -104,6 +107,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">prefix</span> <span class="o">=</span> <span class="n">prefix</span>
 
     <span class="k">def</span> <span class="nf">target</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">interface</span><span class="p">:</span> <span class="n">DecoratorInterface</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;检测前缀并 decorate 参数&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">interface</span><span class="o">.</span><span class="n">event</span><span class="p">,</span> <span class="n">MessageEvent</span><span class="p">):</span>
             <span class="k">raise</span> <span class="n">ExecutionStop</span>
         <span class="n">header</span> <span class="o">=</span> <span class="n">interface</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">messageChain</span><span class="o">.</span><span class="n">include</span><span class="p">(</span><span class="n">Quote</span><span class="p">,</span> <span class="n">Source</span><span class="p">)</span>
@@ -113,6 +117,7 @@
         <span class="n">result</span> <span class="o">=</span> <span class="n">rest</span><span class="o">.</span><span class="n">removeprefix</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">prefix</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">interface</span><span class="o">.</span><span class="n">annotation</span> <span class="ow">is</span> <span class="n">MessageChain</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">header</span> <span class="o">+</span> <span class="n">result</span>
+        <span class="k">return</span> <span class="kc">None</span>
 
 
 <span class="k">class</span> <span class="nc">DetectSuffix</span><span class="p">(</span><span class="n">Decorator</span><span class="p">):</span>
@@ -129,6 +134,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">suffix</span> <span class="o">=</span> <span class="n">suffix</span>
 
     <span class="k">def</span> <span class="nf">target</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">interface</span><span class="p">:</span> <span class="n">DecoratorInterface</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;检测后缀并 decorate 参数&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">interface</span><span class="o">.</span><span class="n">event</span><span class="p">,</span> <span class="n">MessageEvent</span><span class="p">):</span>
             <span class="k">raise</span> <span class="n">ExecutionStop</span>
         <span class="n">header</span> <span class="o">=</span> <span class="n">interface</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">messageChain</span><span class="o">.</span><span class="n">include</span><span class="p">(</span><span class="n">Quote</span><span class="p">,</span> <span class="n">Source</span><span class="p">)</span>
@@ -138,6 +144,7 @@
         <span class="n">result</span> <span class="o">=</span> <span class="n">rest</span><span class="o">.</span><span class="n">removesuffix</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">suffix</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">interface</span><span class="o">.</span><span class="n">annotation</span> <span class="ow">is</span> <span class="n">MessageChain</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">header</span> <span class="o">+</span> <span class="n">result</span>
+        <span class="k">return</span> <span class="kc">None</span>
 </pre></div>
 
         </details>
@@ -168,6 +175,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">prefix</span> <span class="o">=</span> <span class="n">prefix</span>
 
     <span class="k">def</span> <span class="nf">target</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">interface</span><span class="p">:</span> <span class="n">DecoratorInterface</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;检测前缀并 decorate 参数&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">interface</span><span class="o">.</span><span class="n">event</span><span class="p">,</span> <span class="n">MessageEvent</span><span class="p">):</span>
             <span class="k">raise</span> <span class="n">ExecutionStop</span>
         <span class="n">header</span> <span class="o">=</span> <span class="n">interface</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">messageChain</span><span class="o">.</span><span class="n">include</span><span class="p">(</span><span class="n">Quote</span><span class="p">,</span> <span class="n">Source</span><span class="p">)</span>
@@ -177,6 +185,7 @@
         <span class="n">result</span> <span class="o">=</span> <span class="n">rest</span><span class="o">.</span><span class="n">removeprefix</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">prefix</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">interface</span><span class="o">.</span><span class="n">annotation</span> <span class="ow">is</span> <span class="n">MessageChain</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">header</span> <span class="o">+</span> <span class="n">result</span>
+        <span class="k">return</span> <span class="kc">None</span>
 </pre></div>
 
         </details>
@@ -239,6 +248,7 @@
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">target</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">interface</span><span class="p">:</span> <span class="n">DecoratorInterface</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;检测前缀并 decorate 参数&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">interface</span><span class="o">.</span><span class="n">event</span><span class="p">,</span> <span class="n">MessageEvent</span><span class="p">):</span>
             <span class="k">raise</span> <span class="n">ExecutionStop</span>
         <span class="n">header</span> <span class="o">=</span> <span class="n">interface</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">messageChain</span><span class="o">.</span><span class="n">include</span><span class="p">(</span><span class="n">Quote</span><span class="p">,</span> <span class="n">Source</span><span class="p">)</span>
@@ -248,11 +258,14 @@
         <span class="n">result</span> <span class="o">=</span> <span class="n">rest</span><span class="o">.</span><span class="n">removeprefix</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">prefix</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">interface</span><span class="o">.</span><span class="n">annotation</span> <span class="ow">is</span> <span class="n">MessageChain</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">header</span> <span class="o">+</span> <span class="n">result</span>
+        <span class="k">return</span> <span class="kc">None</span>
 </pre></div>
 
         </details>
 
-    
+            <div class="docstring"><p>检测前缀并 decorate 参数</p>
+</div>
+
 
                             </div>
                 </section>
@@ -281,6 +294,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">suffix</span> <span class="o">=</span> <span class="n">suffix</span>
 
     <span class="k">def</span> <span class="nf">target</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">interface</span><span class="p">:</span> <span class="n">DecoratorInterface</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;检测后缀并 decorate 参数&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">interface</span><span class="o">.</span><span class="n">event</span><span class="p">,</span> <span class="n">MessageEvent</span><span class="p">):</span>
             <span class="k">raise</span> <span class="n">ExecutionStop</span>
         <span class="n">header</span> <span class="o">=</span> <span class="n">interface</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">messageChain</span><span class="o">.</span><span class="n">include</span><span class="p">(</span><span class="n">Quote</span><span class="p">,</span> <span class="n">Source</span><span class="p">)</span>
@@ -290,6 +304,7 @@
         <span class="n">result</span> <span class="o">=</span> <span class="n">rest</span><span class="o">.</span><span class="n">removesuffix</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">suffix</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">interface</span><span class="o">.</span><span class="n">annotation</span> <span class="ow">is</span> <span class="n">MessageChain</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">header</span> <span class="o">+</span> <span class="n">result</span>
+        <span class="k">return</span> <span class="kc">None</span>
 </pre></div>
 
         </details>
@@ -352,6 +367,7 @@
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">target</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">interface</span><span class="p">:</span> <span class="n">DecoratorInterface</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;检测后缀并 decorate 参数&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">interface</span><span class="o">.</span><span class="n">event</span><span class="p">,</span> <span class="n">MessageEvent</span><span class="p">):</span>
             <span class="k">raise</span> <span class="n">ExecutionStop</span>
         <span class="n">header</span> <span class="o">=</span> <span class="n">interface</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">messageChain</span><span class="o">.</span><span class="n">include</span><span class="p">(</span><span class="n">Quote</span><span class="p">,</span> <span class="n">Source</span><span class="p">)</span>
@@ -361,11 +377,14 @@
         <span class="n">result</span> <span class="o">=</span> <span class="n">rest</span><span class="o">.</span><span class="n">removesuffix</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">suffix</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">interface</span><span class="o">.</span><span class="n">annotation</span> <span class="ow">is</span> <span class="n">MessageChain</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">header</span> <span class="o">+</span> <span class="n">result</span>
+        <span class="k">return</span> <span class="kc">None</span>
 </pre></div>
 
         </details>
 
-    
+            <div class="docstring"><p>检测后缀并 decorate 参数</p>
+</div>
+
 
                             </div>
                 </section>

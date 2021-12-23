@@ -64,13 +64,13 @@
 
             </li>
             <li>
-                    <a class="class" href="#AdapterShutdowned">AdapterShutdowned</a>
+                    <a class="class" href="#AdapterLaunched">AdapterLaunched</a>
                             <ul class="memberlist">
                 </ul>
 
             </li>
             <li>
-                    <a class="class" href="#AdapterLaunched">AdapterLaunched</a>
+                    <a class="class" href="#AdapterShutdowned">AdapterShutdowned</a>
                             <ul class="memberlist">
                 </ul>
 
@@ -93,10 +93,13 @@
                     <h1 class="modulename">
 <a href="./../../ariadne.html">ariadne</a><wbr>.<a href="./../event.html">event</a><wbr>.lifecycle    </h1>
 
-                
+                        <div class="docstring"><p>Ariadne, Adapter 生命周期相关事件</p>
+</div>
+
                         <details>
             <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span><span class="kn">import</span> <span class="nn">typing</span>
+            <div class="codehilite"><pre><span></span><span class="sd">&quot;&quot;&quot;Ariadne, Adapter 生命周期相关事件&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">typing</span>
 
 <span class="kn">from</span> <span class="nn">graia.broadcast.entities.dispatcher</span> <span class="kn">import</span> <span class="n">BaseDispatcher</span>
 <span class="kn">from</span> <span class="nn">graia.broadcast.entities.event</span> <span class="kn">import</span> <span class="n">Dispatchable</span>
@@ -116,7 +119,7 @@
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">app</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">app</span> <span class="o">=</span> <span class="n">app</span>
 
-    <span class="k">class</span> <span class="nc">Dispatcher</span><span class="p">(</span><span class="n">BaseDispatcher</span><span class="p">):</span>
+    <span class="k">class</span> <span class="nc">Dispatcher</span><span class="p">(</span><span class="n">BaseDispatcher</span><span class="p">):</span>  <span class="c1"># pylint: disable=missing-class-docstring</span>
         <span class="nd">@staticmethod</span>
         <span class="k">async</span> <span class="k">def</span> <span class="nf">catch</span><span class="p">(</span><span class="n">interface</span><span class="p">:</span> <span class="s2">&quot;DispatcherInterface[ApplicationLifecycleEvent]&quot;</span><span class="p">):</span>
             <span class="kn">from</span> <span class="nn">..app</span> <span class="kn">import</span> <span class="n">Ariadne</span>
@@ -137,15 +140,15 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
 
-<span class="k">class</span> <span class="nc">AdapterShutdowned</span><span class="p">(</span><span class="n">ApplicationLifecycleEvent</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    指示远程适配器关闭了.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-
-
 <span class="k">class</span> <span class="nc">AdapterLaunched</span><span class="p">(</span><span class="n">ApplicationLifecycleEvent</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    指示远程适配器启动了.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+
+<span class="k">class</span> <span class="nc">AdapterShutdowned</span><span class="p">(</span><span class="n">ApplicationLifecycleEvent</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    指示远程适配器关闭了.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 </pre></div>
 
@@ -173,7 +176,7 @@
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">app</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">app</span> <span class="o">=</span> <span class="n">app</span>
 
-    <span class="k">class</span> <span class="nc">Dispatcher</span><span class="p">(</span><span class="n">BaseDispatcher</span><span class="p">):</span>
+    <span class="k">class</span> <span class="nc">Dispatcher</span><span class="p">(</span><span class="n">BaseDispatcher</span><span class="p">):</span>  <span class="c1"># pylint: disable=missing-class-docstring</span>
         <span class="nd">@staticmethod</span>
         <span class="k">async</span> <span class="k">def</span> <span class="nf">catch</span><span class="p">(</span><span class="n">interface</span><span class="p">:</span> <span class="s2">&quot;DispatcherInterface[ApplicationLifecycleEvent]&quot;</span><span class="p">):</span>
             <span class="kn">from</span> <span class="nn">..app</span> <span class="kn">import</span> <span class="n">Ariadne</span>
@@ -218,7 +221,7 @@
 
                 <details>
             <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span>    <span class="k">class</span> <span class="nc">Dispatcher</span><span class="p">(</span><span class="n">BaseDispatcher</span><span class="p">):</span>
+            <div class="codehilite"><pre><span></span>    <span class="k">class</span> <span class="nc">Dispatcher</span><span class="p">(</span><span class="n">BaseDispatcher</span><span class="p">):</span>  <span class="c1"># pylint: disable=missing-class-docstring</span>
         <span class="nd">@staticmethod</span>
         <span class="k">async</span> <span class="k">def</span> <span class="nf">catch</span><span class="p">(</span><span class="n">interface</span><span class="p">:</span> <span class="s2">&quot;DispatcherInterface[ApplicationLifecycleEvent]&quot;</span><span class="p">):</span>
             <span class="kn">from</span> <span class="nn">..app</span> <span class="kn">import</span> <span class="n">Ariadne</span>
@@ -364,40 +367,6 @@
                                 </dl>
                             </div>
                 </section>
-                <section id="AdapterShutdowned">
-                                <div class="attr class">
-        <a class="headerlink" href="#AdapterShutdowned">#&nbsp;&nbsp</a>
-
-        
-        <span class="def">class</span>
-        <span class="name">AdapterShutdowned</span><wbr>(<span class="base"><a href="#ApplicationLifecycleEvent">ApplicationLifecycleEvent</a></span>):
-    </div>
-
-                <details>
-            <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">AdapterShutdowned</span><span class="p">(</span><span class="n">ApplicationLifecycleEvent</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    指示远程适配器关闭了.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-</pre></div>
-
-        </details>
-
-            <div class="docstring"><p>指示远程适配器关闭了.</p>
-</div>
-
-
-                            <div class="inherited">
-                                <h5>Inherited Members</h5>
-                                <dl>
-                                    <div><dt><a href="#ApplicationLifecycleEvent">ApplicationLifecycleEvent</a></dt>
-                                <dd id="AdapterShutdowned.__init__" class="function"><a href="#ApplicationLifecycleEvent.__init__">ApplicationLifecycleEvent</a></dd>
-                <dd id="AdapterShutdowned.Dispatcher" class="class"><a href="#ApplicationLifecycleEvent.Dispatcher">Dispatcher</a></dd>
-
-            </div>
-                                </dl>
-                            </div>
-                </section>
                 <section id="AdapterLaunched">
                                 <div class="attr class">
         <a class="headerlink" href="#AdapterLaunched">#&nbsp;&nbsp</a>
@@ -427,6 +396,40 @@
                                     <div><dt><a href="#ApplicationLifecycleEvent">ApplicationLifecycleEvent</a></dt>
                                 <dd id="AdapterLaunched.__init__" class="function"><a href="#ApplicationLifecycleEvent.__init__">ApplicationLifecycleEvent</a></dd>
                 <dd id="AdapterLaunched.Dispatcher" class="class"><a href="#ApplicationLifecycleEvent.Dispatcher">Dispatcher</a></dd>
+
+            </div>
+                                </dl>
+                            </div>
+                </section>
+                <section id="AdapterShutdowned">
+                                <div class="attr class">
+        <a class="headerlink" href="#AdapterShutdowned">#&nbsp;&nbsp</a>
+
+        
+        <span class="def">class</span>
+        <span class="name">AdapterShutdowned</span><wbr>(<span class="base"><a href="#ApplicationLifecycleEvent">ApplicationLifecycleEvent</a></span>):
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">AdapterShutdowned</span><span class="p">(</span><span class="n">ApplicationLifecycleEvent</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    指示远程适配器关闭了.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+</pre></div>
+
+        </details>
+
+            <div class="docstring"><p>指示远程适配器关闭了.</p>
+</div>
+
+
+                            <div class="inherited">
+                                <h5>Inherited Members</h5>
+                                <dl>
+                                    <div><dt><a href="#ApplicationLifecycleEvent">ApplicationLifecycleEvent</a></dt>
+                                <dd id="AdapterShutdowned.__init__" class="function"><a href="#ApplicationLifecycleEvent.__init__">ApplicationLifecycleEvent</a></dd>
+                <dd id="AdapterShutdowned.Dispatcher" class="class"><a href="#ApplicationLifecycleEvent.Dispatcher">Dispatcher</a></dd>
 
             </div>
                                 </dl>
