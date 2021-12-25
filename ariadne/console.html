@@ -108,6 +108,7 @@
 <span class="kn">from</span> <span class="nn">prompt_toolkit.shortcuts.prompt</span> <span class="kn">import</span> <span class="n">PromptSession</span>
 <span class="kn">from</span> <span class="nn">prompt_toolkit.styles</span> <span class="kn">import</span> <span class="n">Style</span>
 
+<span class="kn">from</span> <span class="nn">..dispatcher</span> <span class="kn">import</span> <span class="n">ContextDispatcher</span>
 <span class="kn">from</span> <span class="nn">..event.lifecycle</span> <span class="kn">import</span> <span class="n">ApplicationLaunched</span><span class="p">,</span> <span class="n">ApplicationShutdowned</span>
 
 
@@ -256,7 +257,8 @@
             <span class="k">for</span> <span class="n">func</span><span class="p">,</span> <span class="n">dispatchers</span><span class="p">,</span> <span class="n">decorators</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">registry</span><span class="p">:</span>
                 <span class="k">try</span><span class="p">:</span>
                     <span class="n">result</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">broadcast</span><span class="o">.</span><span class="n">Executor</span><span class="p">(</span>
-                        <span class="n">ExecTarget</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="p">[</span><span class="n">_Dispatcher</span><span class="p">(</span><span class="n">command</span><span class="p">,</span> <span class="bp">self</span><span class="p">)]</span> <span class="o">+</span> <span class="n">dispatchers</span><span class="p">),</span> <span class="n">decorators</span>
+                        <span class="n">ExecTarget</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="p">[</span><span class="n">_Dispatcher</span><span class="p">(</span><span class="n">command</span><span class="p">,</span> <span class="bp">self</span><span class="p">),</span> <span class="n">ContextDispatcher</span><span class="p">()]</span> <span class="o">+</span> <span class="n">dispatchers</span><span class="p">),</span>
+                        <span class="n">decorators</span><span class="p">,</span>
                     <span class="p">)</span>
                 <span class="k">except</span> <span class="n">DisabledNamespace</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
                     <span class="n">logger</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
@@ -477,7 +479,8 @@
             <span class="k">for</span> <span class="n">func</span><span class="p">,</span> <span class="n">dispatchers</span><span class="p">,</span> <span class="n">decorators</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">registry</span><span class="p">:</span>
                 <span class="k">try</span><span class="p">:</span>
                     <span class="n">result</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">broadcast</span><span class="o">.</span><span class="n">Executor</span><span class="p">(</span>
-                        <span class="n">ExecTarget</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="p">[</span><span class="n">_Dispatcher</span><span class="p">(</span><span class="n">command</span><span class="p">,</span> <span class="bp">self</span><span class="p">)]</span> <span class="o">+</span> <span class="n">dispatchers</span><span class="p">),</span> <span class="n">decorators</span>
+                        <span class="n">ExecTarget</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="p">[</span><span class="n">_Dispatcher</span><span class="p">(</span><span class="n">command</span><span class="p">,</span> <span class="bp">self</span><span class="p">),</span> <span class="n">ContextDispatcher</span><span class="p">()]</span> <span class="o">+</span> <span class="n">dispatchers</span><span class="p">),</span>
+                        <span class="n">decorators</span><span class="p">,</span>
                     <span class="p">)</span>
                 <span class="k">except</span> <span class="n">DisabledNamespace</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
                     <span class="n">logger</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
@@ -800,7 +803,8 @@
             <span class="k">for</span> <span class="n">func</span><span class="p">,</span> <span class="n">dispatchers</span><span class="p">,</span> <span class="n">decorators</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">registry</span><span class="p">:</span>
                 <span class="k">try</span><span class="p">:</span>
                     <span class="n">result</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">broadcast</span><span class="o">.</span><span class="n">Executor</span><span class="p">(</span>
-                        <span class="n">ExecTarget</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="p">[</span><span class="n">_Dispatcher</span><span class="p">(</span><span class="n">command</span><span class="p">,</span> <span class="bp">self</span><span class="p">)]</span> <span class="o">+</span> <span class="n">dispatchers</span><span class="p">),</span> <span class="n">decorators</span>
+                        <span class="n">ExecTarget</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="p">[</span><span class="n">_Dispatcher</span><span class="p">(</span><span class="n">command</span><span class="p">,</span> <span class="bp">self</span><span class="p">),</span> <span class="n">ContextDispatcher</span><span class="p">()]</span> <span class="o">+</span> <span class="n">dispatchers</span><span class="p">),</span>
+                        <span class="n">decorators</span><span class="p">,</span>
                     <span class="p">)</span>
                 <span class="k">except</span> <span class="n">DisabledNamespace</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
                     <span class="n">logger</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>

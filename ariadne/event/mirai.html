@@ -231,6 +231,9 @@
             <li>
                     <a class="class" href="#NudgeEvent">NudgeEvent</a>
                             <ul class="memberlist">
+                        <li>
+                                <a class="function" href="#NudgeEvent.__init__">NudgeEvent</a>
+                        </li>
                 </ul>
 
             </li>
@@ -651,7 +654,6 @@
 <span class="kn">from</span> <span class="nn">graia.broadcast.entities.dispatcher</span> <span class="kn">import</span> <span class="n">BaseDispatcher</span>
 <span class="kn">from</span> <span class="nn">graia.broadcast.interfaces.dispatcher</span> <span class="kn">import</span> <span class="n">DispatcherInterface</span>
 <span class="kn">from</span> <span class="nn">pydantic</span> <span class="kn">import</span> <span class="n">Field</span>
-<span class="kn">from</span> <span class="nn">pydantic.class_validators</span> <span class="kn">import</span> <span class="n">validator</span>
 <span class="kn">from</span> <span class="nn">typing_extensions</span> <span class="kn">import</span> <span class="n">Literal</span>
 
 <span class="kn">from</span> <span class="nn">..context</span> <span class="kn">import</span> <span class="n">adapter_ctx</span>
@@ -976,19 +978,13 @@
 
     <span class="n">context_type</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;friend&quot;</span><span class="p">,</span> <span class="s2">&quot;group&quot;</span><span class="p">,</span> <span class="s2">&quot;stranger&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
 
-    <span class="nd">@validator</span><span class="p">(</span><span class="s2">&quot;friend_id&quot;</span><span class="p">,</span> <span class="n">pre</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">always</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">allow_reuse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-    <span class="k">def</span> <span class="nf">_</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">values</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">values</span><span class="p">[</span><span class="s2">&quot;origin_subject_info&quot;</span><span class="p">][</span><span class="s2">&quot;kind&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;Friend&quot;</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">values</span><span class="p">[</span><span class="s2">&quot;origin_subject_info&quot;</span><span class="p">][</span><span class="s2">&quot;id&quot;</span><span class="p">]</span>
-
-    <span class="nd">@validator</span><span class="p">(</span><span class="s2">&quot;group_id&quot;</span><span class="p">,</span> <span class="n">pre</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">always</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">allow_reuse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-    <span class="k">def</span> <span class="nf">_</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">values</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">values</span><span class="p">[</span><span class="s2">&quot;origin_subject_info&quot;</span><span class="p">][</span><span class="s2">&quot;kind&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;Group&quot;</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">values</span><span class="p">[</span><span class="s2">&quot;origin_subject_info&quot;</span><span class="p">][</span><span class="s2">&quot;id&quot;</span><span class="p">]</span>
-
-    <span class="nd">@validator</span><span class="p">(</span><span class="s2">&quot;context_type&quot;</span><span class="p">,</span> <span class="n">pre</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">always</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">allow_reuse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-    <span class="k">def</span> <span class="nf">_</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">values</span><span class="p">):</span>
-        <span class="k">return</span> <span class="nb">str</span><span class="o">.</span><span class="n">lower</span><span class="p">(</span><span class="n">values</span><span class="p">[</span><span class="s2">&quot;origin_subject_info&quot;</span><span class="p">][</span><span class="s2">&quot;kind&quot;</span><span class="p">])</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">data</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">ctx_type</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;context_type&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="o">.</span><span class="n">lower</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;subject&quot;</span><span class="p">][</span><span class="s2">&quot;kind&quot;</span><span class="p">])</span>
+        <span class="k">if</span> <span class="n">ctx_type</span> <span class="o">==</span> <span class="s2">&quot;group&quot;</span><span class="p">:</span>
+            <span class="n">data</span><span class="p">[</span><span class="s2">&quot;group_id&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;subject&quot;</span><span class="p">][</span><span class="s2">&quot;id&quot;</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">data</span><span class="p">[</span><span class="s2">&quot;friend_id&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;subject&quot;</span><span class="p">][</span><span class="s2">&quot;id&quot;</span><span class="p">]</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">data</span><span class="p">)</span>
 
 
 <span class="k">class</span> <span class="nc">GroupNameChangeEvent</span><span class="p">(</span><span class="n">GroupEvent</span><span class="p">):</span>
@@ -3619,19 +3615,13 @@
 
     <span class="n">context_type</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;friend&quot;</span><span class="p">,</span> <span class="s2">&quot;group&quot;</span><span class="p">,</span> <span class="s2">&quot;stranger&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
 
-    <span class="nd">@validator</span><span class="p">(</span><span class="s2">&quot;friend_id&quot;</span><span class="p">,</span> <span class="n">pre</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">always</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">allow_reuse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-    <span class="k">def</span> <span class="nf">_</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">values</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">values</span><span class="p">[</span><span class="s2">&quot;origin_subject_info&quot;</span><span class="p">][</span><span class="s2">&quot;kind&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;Friend&quot;</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">values</span><span class="p">[</span><span class="s2">&quot;origin_subject_info&quot;</span><span class="p">][</span><span class="s2">&quot;id&quot;</span><span class="p">]</span>
-
-    <span class="nd">@validator</span><span class="p">(</span><span class="s2">&quot;group_id&quot;</span><span class="p">,</span> <span class="n">pre</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">always</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">allow_reuse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-    <span class="k">def</span> <span class="nf">_</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">values</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">values</span><span class="p">[</span><span class="s2">&quot;origin_subject_info&quot;</span><span class="p">][</span><span class="s2">&quot;kind&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;Group&quot;</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">values</span><span class="p">[</span><span class="s2">&quot;origin_subject_info&quot;</span><span class="p">][</span><span class="s2">&quot;id&quot;</span><span class="p">]</span>
-
-    <span class="nd">@validator</span><span class="p">(</span><span class="s2">&quot;context_type&quot;</span><span class="p">,</span> <span class="n">pre</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">always</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">allow_reuse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-    <span class="k">def</span> <span class="nf">_</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">values</span><span class="p">):</span>
-        <span class="k">return</span> <span class="nb">str</span><span class="o">.</span><span class="n">lower</span><span class="p">(</span><span class="n">values</span><span class="p">[</span><span class="s2">&quot;origin_subject_info&quot;</span><span class="p">][</span><span class="s2">&quot;kind&quot;</span><span class="p">])</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">data</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">ctx_type</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;context_type&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="o">.</span><span class="n">lower</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;subject&quot;</span><span class="p">][</span><span class="s2">&quot;kind&quot;</span><span class="p">])</span>
+        <span class="k">if</span> <span class="n">ctx_type</span> <span class="o">==</span> <span class="s2">&quot;group&quot;</span><span class="p">:</span>
+            <span class="n">data</span><span class="p">[</span><span class="s2">&quot;group_id&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;subject&quot;</span><span class="p">][</span><span class="s2">&quot;id&quot;</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">data</span><span class="p">[</span><span class="s2">&quot;friend_id&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;subject&quot;</span><span class="p">][</span><span class="s2">&quot;id&quot;</span><span class="p">]</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">data</span><span class="p">)</span>
 </pre></div>
 
         </details>
@@ -3645,12 +3635,48 @@
 </div>
 
 
+                            <div id="NudgeEvent.__init__" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#NudgeEvent.__init__">#&nbsp;&nbsp</a>
+
+        
+            <span class="name">NudgeEvent</span><span class="signature">(**data: Any)</span>
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">data</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">ctx_type</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;context_type&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="o">.</span><span class="n">lower</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;subject&quot;</span><span class="p">][</span><span class="s2">&quot;kind&quot;</span><span class="p">])</span>
+        <span class="k">if</span> <span class="n">ctx_type</span> <span class="o">==</span> <span class="s2">&quot;group&quot;</span><span class="p">:</span>
+            <span class="n">data</span><span class="p">[</span><span class="s2">&quot;group_id&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;subject&quot;</span><span class="p">][</span><span class="s2">&quot;id&quot;</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">data</span><span class="p">[</span><span class="s2">&quot;friend_id&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;subject&quot;</span><span class="p">][</span><span class="s2">&quot;id&quot;</span><span class="p">]</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">data</span><span class="p">)</span>
+</pre></div>
+
+        </details>
+
+            <div class="docstring"><p>Create a new model by parsing and validating input data from keyword arguments.</p>
+
+<p>Raises ValidationError if the input data cannot be parsed to form a valid model.</p>
+</div>
+
+
+                            </div>
                             <div class="inherited">
                                 <h5>Inherited Members</h5>
                                 <dl>
-                                    <div><dt>pydantic.main.BaseModel</dt>
-                                <dd id="NudgeEvent.__init__" class="function">BaseModel</dd>
-                <dd id="NudgeEvent.json" class="function">json</dd>
+                                    <div><dt><a href="../event.html#MiraiEvent">ariadne.event.MiraiEvent</a></dt>
+                                <dd id="NudgeEvent.validate_event_type" class="function"><a href="../event.html#MiraiEvent.validate_event_type">validate_event_type</a></dd>
+                <dd id="NudgeEvent.Dispatcher" class="class"><a href="../event.html#MiraiEvent.Dispatcher">Dispatcher</a></dd>
+
+            </div>
+            <div><dt><a href="../model.html#AriadneBaseModel">ariadne.model.AriadneBaseModel</a></dt>
+                                <dd id="NudgeEvent.dict" class="function"><a href="../model.html#AriadneBaseModel.dict">dict</a></dd>
+                <dd id="NudgeEvent.Config" class="class"><a href="../model.html#AriadneBaseModel.Config">Config</a></dd>
+
+            </div>
+            <div><dt>pydantic.main.BaseModel</dt>
+                                <dd id="NudgeEvent.json" class="function">json</dd>
                 <dd id="NudgeEvent.parse_obj" class="function">parse_obj</dd>
                 <dd id="NudgeEvent.parse_raw" class="function">parse_raw</dd>
                 <dd id="NudgeEvent.parse_file" class="function">parse_file</dd>
@@ -3661,16 +3687,6 @@
                 <dd id="NudgeEvent.schema_json" class="function">schema_json</dd>
                 <dd id="NudgeEvent.validate" class="function">validate</dd>
                 <dd id="NudgeEvent.update_forward_refs" class="function">update_forward_refs</dd>
-
-            </div>
-            <div><dt><a href="../event.html#MiraiEvent">ariadne.event.MiraiEvent</a></dt>
-                                <dd id="NudgeEvent.validate_event_type" class="function"><a href="../event.html#MiraiEvent.validate_event_type">validate_event_type</a></dd>
-                <dd id="NudgeEvent.Dispatcher" class="class"><a href="../event.html#MiraiEvent.Dispatcher">Dispatcher</a></dd>
-
-            </div>
-            <div><dt><a href="../model.html#AriadneBaseModel">ariadne.model.AriadneBaseModel</a></dt>
-                                <dd id="NudgeEvent.dict" class="function"><a href="../model.html#AriadneBaseModel.dict">dict</a></dd>
-                <dd id="NudgeEvent.Config" class="class"><a href="../model.html#AriadneBaseModel.Config">Config</a></dd>
 
             </div>
                                 </dl>
