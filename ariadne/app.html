@@ -1438,7 +1438,6 @@
         <span class="n">chat_log_config</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ChatLogConfig</span><span class="p">,</span> <span class="n">Literal</span><span class="p">[</span><span class="kc">False</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">use_loguru_traceback</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
         <span class="n">use_bypass_listener</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-        <span class="n">await_task</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="n">disable_telemetry</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="n">disable_logo</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="p">):</span>
@@ -1453,7 +1452,6 @@
 <span class="sd">            设置为 False 则会完全禁用聊天日志.</span>
 <span class="sd">            use_loguru_traceback (bool): 是否注入 loguru 以获得对 traceback.print_exception() 与 sys.excepthook 的完全控制.</span>
 <span class="sd">            use_bypass_listener (bool): 是否注入 BypassListener 以获得子事件监听支持.</span>
-<span class="sd">            await_task (bool): 是否等待所有 Executor 任务完成再退出.</span>
 <span class="sd">            disable_telemetry (bool): 是否禁用版本记录.</span>
 <span class="sd">            disable_logo (bool): 是否禁用 logo 显示.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -1480,7 +1478,6 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">status</span><span class="p">:</span> <span class="n">AriadneStatus</span> <span class="o">=</span> <span class="n">AriadneStatus</span><span class="o">.</span><span class="n">STOP</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">remote_version</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">max_retry</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">max_retry</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">await_task</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">await_task</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">disable_telemetry</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">disable_telemetry</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">disable_logo</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">disable_logo</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">info</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">type</span><span class="p">,</span> <span class="nb">object</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
@@ -1567,7 +1564,6 @@
                 <span class="k">else</span><span class="p">:</span>
                     <span class="n">retry_cnt</span> <span class="o">=</span> <span class="mi">0</span>
                 <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">adapter</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
-                <span class="nb">print</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">adapter</span><span class="o">.</span><span class="n">mirai_session</span><span class="p">)</span>
                 <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;daemon: adapter down, restart in </span><span class="si">{</span><span class="n">retry_interval</span><span class="si">}</span><span class="s2">s&quot;</span><span class="p">)</span>
                 <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="n">retry_interval</span><span class="p">)</span>
                 <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;daemon: restarting adapter&quot;</span><span class="p">)</span>
@@ -1582,14 +1578,10 @@
             <span class="k">if</span> <span class="n">t</span> <span class="ow">is</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">current_task</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">loop</span><span class="p">):</span>
                 <span class="k">continue</span>
             <span class="n">coro</span><span class="p">:</span> <span class="n">Coroutine</span> <span class="o">=</span> <span class="n">t</span><span class="o">.</span><span class="n">get_coro</span><span class="p">()</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">coro</span><span class="o">.</span><span class="vm">__qualname__</span><span class="p">)</span>
             <span class="k">try</span><span class="p">:</span>
-                <span class="k">if</span> <span class="n">coro</span><span class="o">.</span><span class="vm">__qualname__</span> <span class="o">==</span> <span class="s2">&quot;Broadcast.Executor&quot;</span><span class="p">:</span>
-                    <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">await_task</span><span class="p">:</span>
-                        <span class="n">t</span><span class="o">.</span><span class="n">cancel</span><span class="p">()</span>
-                    <span class="k">await</span> <span class="n">t</span>
-                <span class="k">elif</span> <span class="n">coro</span><span class="o">.</span><span class="vm">__qualname__</span> <span class="o">==</span> <span class="s2">&quot;print_track_async.&lt;locals&gt;.wrapper&quot;</span><span class="p">:</span>  <span class="c1"># Scheduler run</span>
+                <span class="k">if</span> <span class="n">coro</span><span class="o">.</span><span class="vm">__qualname__</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;Broadcast.Executor&quot;</span><span class="p">,</span> <span class="s2">&quot;print_track_async.&lt;locals&gt;.wrapper&quot;</span><span class="p">):</span>
                     <span class="n">t</span><span class="o">.</span><span class="n">cancel</span><span class="p">()</span>
+                    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Cancelling </span><span class="si">{</span><span class="n">t</span><span class="o">.</span><span class="n">get_name</span><span class="p">()</span><span class="si">}</span><span class="s2"> wrapping </span><span class="si">{</span><span class="n">coro</span><span class="o">.</span><span class="vm">__qualname__</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
             <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
                 <span class="n">exceptions</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">e</span><span class="o">.</span><span class="vm">__class__</span><span class="p">,</span> <span class="n">e</span><span class="o">.</span><span class="n">args</span><span class="p">))</span>
 
@@ -5505,7 +5497,6 @@
         <span class="n">chat_log_config</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ChatLogConfig</span><span class="p">,</span> <span class="n">Literal</span><span class="p">[</span><span class="kc">False</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">use_loguru_traceback</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
         <span class="n">use_bypass_listener</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-        <span class="n">await_task</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="n">disable_telemetry</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="n">disable_logo</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="p">):</span>
@@ -5520,7 +5511,6 @@
 <span class="sd">            设置为 False 则会完全禁用聊天日志.</span>
 <span class="sd">            use_loguru_traceback (bool): 是否注入 loguru 以获得对 traceback.print_exception() 与 sys.excepthook 的完全控制.</span>
 <span class="sd">            use_bypass_listener (bool): 是否注入 BypassListener 以获得子事件监听支持.</span>
-<span class="sd">            await_task (bool): 是否等待所有 Executor 任务完成再退出.</span>
 <span class="sd">            disable_telemetry (bool): 是否禁用版本记录.</span>
 <span class="sd">            disable_logo (bool): 是否禁用 logo 显示.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -5547,7 +5537,6 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">status</span><span class="p">:</span> <span class="n">AriadneStatus</span> <span class="o">=</span> <span class="n">AriadneStatus</span><span class="o">.</span><span class="n">STOP</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">remote_version</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">max_retry</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">max_retry</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">await_task</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">await_task</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">disable_telemetry</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">disable_telemetry</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">disable_logo</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">disable_logo</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">info</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">type</span><span class="p">,</span> <span class="nb">object</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
@@ -5634,7 +5623,6 @@
                 <span class="k">else</span><span class="p">:</span>
                     <span class="n">retry_cnt</span> <span class="o">=</span> <span class="mi">0</span>
                 <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">adapter</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
-                <span class="nb">print</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">adapter</span><span class="o">.</span><span class="n">mirai_session</span><span class="p">)</span>
                 <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;daemon: adapter down, restart in </span><span class="si">{</span><span class="n">retry_interval</span><span class="si">}</span><span class="s2">s&quot;</span><span class="p">)</span>
                 <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="n">retry_interval</span><span class="p">)</span>
                 <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;daemon: restarting adapter&quot;</span><span class="p">)</span>
@@ -5649,14 +5637,10 @@
             <span class="k">if</span> <span class="n">t</span> <span class="ow">is</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">current_task</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">loop</span><span class="p">):</span>
                 <span class="k">continue</span>
             <span class="n">coro</span><span class="p">:</span> <span class="n">Coroutine</span> <span class="o">=</span> <span class="n">t</span><span class="o">.</span><span class="n">get_coro</span><span class="p">()</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">coro</span><span class="o">.</span><span class="vm">__qualname__</span><span class="p">)</span>
             <span class="k">try</span><span class="p">:</span>
-                <span class="k">if</span> <span class="n">coro</span><span class="o">.</span><span class="vm">__qualname__</span> <span class="o">==</span> <span class="s2">&quot;Broadcast.Executor&quot;</span><span class="p">:</span>
-                    <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">await_task</span><span class="p">:</span>
-                        <span class="n">t</span><span class="o">.</span><span class="n">cancel</span><span class="p">()</span>
-                    <span class="k">await</span> <span class="n">t</span>
-                <span class="k">elif</span> <span class="n">coro</span><span class="o">.</span><span class="vm">__qualname__</span> <span class="o">==</span> <span class="s2">&quot;print_track_async.&lt;locals&gt;.wrapper&quot;</span><span class="p">:</span>  <span class="c1"># Scheduler run</span>
+                <span class="k">if</span> <span class="n">coro</span><span class="o">.</span><span class="vm">__qualname__</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;Broadcast.Executor&quot;</span><span class="p">,</span> <span class="s2">&quot;print_track_async.&lt;locals&gt;.wrapper&quot;</span><span class="p">):</span>
                     <span class="n">t</span><span class="o">.</span><span class="n">cancel</span><span class="p">()</span>
+                    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Cancelling </span><span class="si">{</span><span class="n">t</span><span class="o">.</span><span class="n">get_name</span><span class="p">()</span><span class="si">}</span><span class="s2"> wrapping </span><span class="si">{</span><span class="n">coro</span><span class="o">.</span><span class="vm">__qualname__</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
             <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
                 <span class="n">exceptions</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">e</span><span class="o">.</span><span class="vm">__class__</span><span class="p">,</span> <span class="n">e</span><span class="o">.</span><span class="n">args</span><span class="p">))</span>
 
@@ -5824,7 +5808,6 @@
     chat_log_config: Union[<a href="model.html#ChatLogConfig">ariadne.model.ChatLogConfig</a>, Literal[False], NoneType] = None,
     use_loguru_traceback: Optional[bool] = True,
     use_bypass_listener: Optional[bool] = False,
-    await_task: bool = False,
     disable_telemetry: bool = False,
     disable_logo: bool = False
 )</span>
@@ -5842,7 +5825,6 @@
         <span class="n">chat_log_config</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ChatLogConfig</span><span class="p">,</span> <span class="n">Literal</span><span class="p">[</span><span class="kc">False</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">use_loguru_traceback</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
         <span class="n">use_bypass_listener</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-        <span class="n">await_task</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="n">disable_telemetry</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="n">disable_logo</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="p">):</span>
@@ -5857,7 +5839,6 @@
 <span class="sd">            设置为 False 则会完全禁用聊天日志.</span>
 <span class="sd">            use_loguru_traceback (bool): 是否注入 loguru 以获得对 traceback.print_exception() 与 sys.excepthook 的完全控制.</span>
 <span class="sd">            use_bypass_listener (bool): 是否注入 BypassListener 以获得子事件监听支持.</span>
-<span class="sd">            await_task (bool): 是否等待所有 Executor 任务完成再退出.</span>
 <span class="sd">            disable_telemetry (bool): 是否禁用版本记录.</span>
 <span class="sd">            disable_logo (bool): 是否禁用 logo 显示.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -5884,7 +5865,6 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">status</span><span class="p">:</span> <span class="n">AriadneStatus</span> <span class="o">=</span> <span class="n">AriadneStatus</span><span class="o">.</span><span class="n">STOP</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">remote_version</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">max_retry</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">max_retry</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">await_task</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">await_task</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">disable_telemetry</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">disable_telemetry</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">disable_logo</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">disable_logo</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">info</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">type</span><span class="p">,</span> <span class="nb">object</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
@@ -5918,7 +5898,6 @@
 <li>设置为 False 则会完全禁用聊天日志.</li>
 <li><strong>use_loguru_traceback (bool):</strong>  是否注入 loguru 以获得对 traceback.print_exception() 与 sys.excepthook 的完全控制.</li>
 <li><strong>use_bypass_listener (bool):</strong>  是否注入 BypassListener 以获得子事件监听支持.</li>
-<li><strong>await_task (bool):</strong>  是否等待所有 Executor 任务完成再退出.</li>
 <li><strong>disable_telemetry (bool):</strong>  是否禁用版本记录.</li>
 <li><strong>disable_logo (bool):</strong>  是否禁用 logo 显示.</li>
 </ul>
@@ -6035,7 +6014,6 @@
                 <span class="k">else</span><span class="p">:</span>
                     <span class="n">retry_cnt</span> <span class="o">=</span> <span class="mi">0</span>
                 <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">adapter</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
-                <span class="nb">print</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">adapter</span><span class="o">.</span><span class="n">mirai_session</span><span class="p">)</span>
                 <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;daemon: adapter down, restart in </span><span class="si">{</span><span class="n">retry_interval</span><span class="si">}</span><span class="s2">s&quot;</span><span class="p">)</span>
                 <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="n">retry_interval</span><span class="p">)</span>
                 <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;daemon: restarting adapter&quot;</span><span class="p">)</span>
@@ -6050,14 +6028,10 @@
             <span class="k">if</span> <span class="n">t</span> <span class="ow">is</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">current_task</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">loop</span><span class="p">):</span>
                 <span class="k">continue</span>
             <span class="n">coro</span><span class="p">:</span> <span class="n">Coroutine</span> <span class="o">=</span> <span class="n">t</span><span class="o">.</span><span class="n">get_coro</span><span class="p">()</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">coro</span><span class="o">.</span><span class="vm">__qualname__</span><span class="p">)</span>
             <span class="k">try</span><span class="p">:</span>
-                <span class="k">if</span> <span class="n">coro</span><span class="o">.</span><span class="vm">__qualname__</span> <span class="o">==</span> <span class="s2">&quot;Broadcast.Executor&quot;</span><span class="p">:</span>
-                    <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">await_task</span><span class="p">:</span>
-                        <span class="n">t</span><span class="o">.</span><span class="n">cancel</span><span class="p">()</span>
-                    <span class="k">await</span> <span class="n">t</span>
-                <span class="k">elif</span> <span class="n">coro</span><span class="o">.</span><span class="vm">__qualname__</span> <span class="o">==</span> <span class="s2">&quot;print_track_async.&lt;locals&gt;.wrapper&quot;</span><span class="p">:</span>  <span class="c1"># Scheduler run</span>
+                <span class="k">if</span> <span class="n">coro</span><span class="o">.</span><span class="vm">__qualname__</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;Broadcast.Executor&quot;</span><span class="p">,</span> <span class="s2">&quot;print_track_async.&lt;locals&gt;.wrapper&quot;</span><span class="p">):</span>
                     <span class="n">t</span><span class="o">.</span><span class="n">cancel</span><span class="p">()</span>
+                    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Cancelling </span><span class="si">{</span><span class="n">t</span><span class="o">.</span><span class="n">get_name</span><span class="p">()</span><span class="si">}</span><span class="s2"> wrapping </span><span class="si">{</span><span class="n">coro</span><span class="o">.</span><span class="vm">__qualname__</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
             <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
                 <span class="n">exceptions</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">e</span><span class="o">.</span><span class="vm">__class__</span><span class="p">,</span> <span class="n">e</span><span class="o">.</span><span class="n">args</span><span class="p">))</span>
 
