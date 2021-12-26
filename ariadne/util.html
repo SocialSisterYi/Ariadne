@@ -129,7 +129,6 @@
 <span class="kn">from</span> <span class="nn">graia.broadcast.entities.event</span> <span class="kn">import</span> <span class="n">Dispatchable</span>
 <span class="kn">from</span> <span class="nn">graia.broadcast.entities.listener</span> <span class="kn">import</span> <span class="n">Listener</span>
 <span class="kn">from</span> <span class="nn">graia.broadcast.entities.namespace</span> <span class="kn">import</span> <span class="n">Namespace</span>
-<span class="kn">from</span> <span class="nn">graia.broadcast.interfaces.dispatcher</span> <span class="kn">import</span> <span class="n">DispatcherInterface</span>
 <span class="kn">from</span> <span class="nn">graia.broadcast.typing</span> <span class="kn">import</span> <span class="n">T_Dispatcher</span>
 <span class="kn">from</span> <span class="nn">loguru</span> <span class="kn">import</span> <span class="n">logger</span>
 
@@ -252,16 +251,6 @@
                 <span class="n">decorators</span><span class="o">=</span><span class="n">decorators</span><span class="p">,</span>
                 <span class="n">priority</span><span class="o">=</span><span class="n">priority</span><span class="p">,</span>
             <span class="p">)</span>
-
-    <span class="nd">@broadcast</span><span class="o">.</span><span class="n">dispatcher_interface</span><span class="o">.</span><span class="n">inject_global_raw</span>
-    <span class="k">async</span> <span class="k">def</span> <span class="nf">_</span><span class="p">(</span><span class="n">interface</span><span class="p">:</span> <span class="n">DispatcherInterface</span><span class="p">):</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">interface</span><span class="o">.</span><span class="n">event</span><span class="p">,</span> <span class="n">interface</span><span class="o">.</span><span class="n">annotation</span><span class="p">):</span>
-            <span class="k">return</span> <span class="n">interface</span><span class="o">.</span><span class="n">event</span>
-        <span class="k">if</span> <span class="p">(</span>
-            <span class="nb">hasattr</span><span class="p">(</span><span class="n">interface</span><span class="o">.</span><span class="n">annotation</span><span class="p">,</span> <span class="s2">&quot;__origin__&quot;</span><span class="p">)</span>
-            <span class="ow">and</span> <span class="n">interface</span><span class="o">.</span><span class="n">annotation</span><span class="o">.</span><span class="n">__origin__</span> <span class="ow">is</span> <span class="n">DispatcherInterface</span>
-        <span class="p">):</span>
-            <span class="k">return</span> <span class="n">interface</span>
 
     <span class="kn">import</span> <span class="nn">graia.broadcast.entities.listener</span>
 
@@ -595,16 +584,6 @@
                 <span class="n">decorators</span><span class="o">=</span><span class="n">decorators</span><span class="p">,</span>
                 <span class="n">priority</span><span class="o">=</span><span class="n">priority</span><span class="p">,</span>
             <span class="p">)</span>
-
-    <span class="nd">@broadcast</span><span class="o">.</span><span class="n">dispatcher_interface</span><span class="o">.</span><span class="n">inject_global_raw</span>
-    <span class="k">async</span> <span class="k">def</span> <span class="nf">_</span><span class="p">(</span><span class="n">interface</span><span class="p">:</span> <span class="n">DispatcherInterface</span><span class="p">):</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">interface</span><span class="o">.</span><span class="n">event</span><span class="p">,</span> <span class="n">interface</span><span class="o">.</span><span class="n">annotation</span><span class="p">):</span>
-            <span class="k">return</span> <span class="n">interface</span><span class="o">.</span><span class="n">event</span>
-        <span class="k">if</span> <span class="p">(</span>
-            <span class="nb">hasattr</span><span class="p">(</span><span class="n">interface</span><span class="o">.</span><span class="n">annotation</span><span class="p">,</span> <span class="s2">&quot;__origin__&quot;</span><span class="p">)</span>
-            <span class="ow">and</span> <span class="n">interface</span><span class="o">.</span><span class="n">annotation</span><span class="o">.</span><span class="n">__origin__</span> <span class="ow">is</span> <span class="n">DispatcherInterface</span>
-        <span class="p">):</span>
-            <span class="k">return</span> <span class="n">interface</span>
 
     <span class="kn">import</span> <span class="nn">graia.broadcast.entities.listener</span>
 

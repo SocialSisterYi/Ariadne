@@ -274,7 +274,18 @@
 <span class="kn">import</span> <span class="nn">time</span>
 <span class="kn">from</span> <span class="nn">asyncio.events</span> <span class="kn">import</span> <span class="n">AbstractEventLoop</span>
 <span class="kn">from</span> <span class="nn">asyncio.tasks</span> <span class="kn">import</span> <span class="n">Task</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Literal</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Type</span><span class="p">,</span> <span class="n">Union</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">TYPE_CHECKING</span><span class="p">,</span>
+    <span class="n">Any</span><span class="p">,</span>
+    <span class="n">Coroutine</span><span class="p">,</span>
+    <span class="n">Dict</span><span class="p">,</span>
+    <span class="n">List</span><span class="p">,</span>
+    <span class="n">Literal</span><span class="p">,</span>
+    <span class="n">Optional</span><span class="p">,</span>
+    <span class="n">Tuple</span><span class="p">,</span>
+    <span class="n">Type</span><span class="p">,</span>
+    <span class="n">Union</span><span class="p">,</span>
+<span class="p">)</span>
 
 <span class="kn">from</span> <span class="nn">graia.broadcast</span> <span class="kn">import</span> <span class="n">Broadcast</span>
 <span class="kn">from</span> <span class="nn">loguru</span> <span class="kn">import</span> <span class="n">logger</span>
@@ -1568,17 +1579,19 @@
         <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Stopping Ariadne...&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="n">AriadneStatus</span><span class="o">.</span><span class="n">CLEANUP</span>
         <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">all_tasks</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">loop</span><span class="p">):</span>
-            <span class="k">if</span> <span class="p">(</span>
-                <span class="n">t</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">current_task</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">loop</span><span class="p">)</span>
-                <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">get_coro</span><span class="p">(),</span> <span class="s2">&quot;__qualname__&quot;</span><span class="p">)</span>
-                <span class="ow">and</span> <span class="n">t</span><span class="o">.</span><span class="n">get_coro</span><span class="p">()</span><span class="o">.</span><span class="vm">__qualname__</span> <span class="o">==</span> <span class="s2">&quot;Broadcast.Executor&quot;</span>
-            <span class="p">):</span>
-                <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">await_task</span><span class="p">:</span>
-                    <span class="n">t</span><span class="o">.</span><span class="n">cancel</span><span class="p">()</span>
-                <span class="k">try</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">t</span> <span class="ow">is</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">current_task</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">loop</span><span class="p">):</span>
+                <span class="k">continue</span>
+            <span class="n">coro</span><span class="p">:</span> <span class="n">Coroutine</span> <span class="o">=</span> <span class="n">t</span><span class="o">.</span><span class="n">get_coro</span><span class="p">()</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">coro</span><span class="o">.</span><span class="vm">__qualname__</span><span class="p">)</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">coro</span><span class="o">.</span><span class="vm">__qualname__</span> <span class="o">==</span> <span class="s2">&quot;Broadcast.Executor&quot;</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">await_task</span><span class="p">:</span>
+                        <span class="n">t</span><span class="o">.</span><span class="n">cancel</span><span class="p">()</span>
                     <span class="k">await</span> <span class="n">t</span>
-                <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-                    <span class="n">exceptions</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">e</span><span class="o">.</span><span class="vm">__class__</span><span class="p">,</span> <span class="n">e</span><span class="o">.</span><span class="n">args</span><span class="p">))</span>
+                <span class="k">elif</span> <span class="n">coro</span><span class="o">.</span><span class="vm">__qualname__</span> <span class="o">==</span> <span class="s2">&quot;print_track_async.&lt;locals&gt;.wrapper&quot;</span><span class="p">:</span>  <span class="c1"># Scheduler run</span>
+                    <span class="n">t</span><span class="o">.</span><span class="n">cancel</span><span class="p">()</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="n">exceptions</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">e</span><span class="o">.</span><span class="vm">__class__</span><span class="p">,</span> <span class="n">e</span><span class="o">.</span><span class="n">args</span><span class="p">))</span>
 
         <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Posting Ariadne shutdown event...&quot;</span><span class="p">)</span>
 
@@ -5633,17 +5646,19 @@
         <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Stopping Ariadne...&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="n">AriadneStatus</span><span class="o">.</span><span class="n">CLEANUP</span>
         <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">all_tasks</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">loop</span><span class="p">):</span>
-            <span class="k">if</span> <span class="p">(</span>
-                <span class="n">t</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">current_task</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">loop</span><span class="p">)</span>
-                <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">get_coro</span><span class="p">(),</span> <span class="s2">&quot;__qualname__&quot;</span><span class="p">)</span>
-                <span class="ow">and</span> <span class="n">t</span><span class="o">.</span><span class="n">get_coro</span><span class="p">()</span><span class="o">.</span><span class="vm">__qualname__</span> <span class="o">==</span> <span class="s2">&quot;Broadcast.Executor&quot;</span>
-            <span class="p">):</span>
-                <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">await_task</span><span class="p">:</span>
-                    <span class="n">t</span><span class="o">.</span><span class="n">cancel</span><span class="p">()</span>
-                <span class="k">try</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">t</span> <span class="ow">is</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">current_task</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">loop</span><span class="p">):</span>
+                <span class="k">continue</span>
+            <span class="n">coro</span><span class="p">:</span> <span class="n">Coroutine</span> <span class="o">=</span> <span class="n">t</span><span class="o">.</span><span class="n">get_coro</span><span class="p">()</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">coro</span><span class="o">.</span><span class="vm">__qualname__</span><span class="p">)</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">coro</span><span class="o">.</span><span class="vm">__qualname__</span> <span class="o">==</span> <span class="s2">&quot;Broadcast.Executor&quot;</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">await_task</span><span class="p">:</span>
+                        <span class="n">t</span><span class="o">.</span><span class="n">cancel</span><span class="p">()</span>
                     <span class="k">await</span> <span class="n">t</span>
-                <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-                    <span class="n">exceptions</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">e</span><span class="o">.</span><span class="vm">__class__</span><span class="p">,</span> <span class="n">e</span><span class="o">.</span><span class="n">args</span><span class="p">))</span>
+                <span class="k">elif</span> <span class="n">coro</span><span class="o">.</span><span class="vm">__qualname__</span> <span class="o">==</span> <span class="s2">&quot;print_track_async.&lt;locals&gt;.wrapper&quot;</span><span class="p">:</span>  <span class="c1"># Scheduler run</span>
+                    <span class="n">t</span><span class="o">.</span><span class="n">cancel</span><span class="p">()</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="n">exceptions</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">e</span><span class="o">.</span><span class="vm">__class__</span><span class="p">,</span> <span class="n">e</span><span class="o">.</span><span class="n">args</span><span class="p">))</span>
 
         <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Posting Ariadne shutdown event...&quot;</span><span class="p">)</span>
 
@@ -6032,17 +6047,19 @@
         <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Stopping Ariadne...&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="n">AriadneStatus</span><span class="o">.</span><span class="n">CLEANUP</span>
         <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">all_tasks</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">loop</span><span class="p">):</span>
-            <span class="k">if</span> <span class="p">(</span>
-                <span class="n">t</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">current_task</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">loop</span><span class="p">)</span>
-                <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">get_coro</span><span class="p">(),</span> <span class="s2">&quot;__qualname__&quot;</span><span class="p">)</span>
-                <span class="ow">and</span> <span class="n">t</span><span class="o">.</span><span class="n">get_coro</span><span class="p">()</span><span class="o">.</span><span class="vm">__qualname__</span> <span class="o">==</span> <span class="s2">&quot;Broadcast.Executor&quot;</span>
-            <span class="p">):</span>
-                <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">await_task</span><span class="p">:</span>
-                    <span class="n">t</span><span class="o">.</span><span class="n">cancel</span><span class="p">()</span>
-                <span class="k">try</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">t</span> <span class="ow">is</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">current_task</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">loop</span><span class="p">):</span>
+                <span class="k">continue</span>
+            <span class="n">coro</span><span class="p">:</span> <span class="n">Coroutine</span> <span class="o">=</span> <span class="n">t</span><span class="o">.</span><span class="n">get_coro</span><span class="p">()</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">coro</span><span class="o">.</span><span class="vm">__qualname__</span><span class="p">)</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">coro</span><span class="o">.</span><span class="vm">__qualname__</span> <span class="o">==</span> <span class="s2">&quot;Broadcast.Executor&quot;</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">await_task</span><span class="p">:</span>
+                        <span class="n">t</span><span class="o">.</span><span class="n">cancel</span><span class="p">()</span>
                     <span class="k">await</span> <span class="n">t</span>
-                <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-                    <span class="n">exceptions</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">e</span><span class="o">.</span><span class="vm">__class__</span><span class="p">,</span> <span class="n">e</span><span class="o">.</span><span class="n">args</span><span class="p">))</span>
+                <span class="k">elif</span> <span class="n">coro</span><span class="o">.</span><span class="vm">__qualname__</span> <span class="o">==</span> <span class="s2">&quot;print_track_async.&lt;locals&gt;.wrapper&quot;</span><span class="p">:</span>  <span class="c1"># Scheduler run</span>
+                    <span class="n">t</span><span class="o">.</span><span class="n">cancel</span><span class="p">()</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="n">exceptions</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">e</span><span class="o">.</span><span class="vm">__class__</span><span class="p">,</span> <span class="n">e</span><span class="o">.</span><span class="n">args</span><span class="p">))</span>
 
         <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Posting Ariadne shutdown event...&quot;</span><span class="p">)</span>
 
