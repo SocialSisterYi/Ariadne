@@ -1322,25 +1322,34 @@
     <span class="k">async</span> <span class="k">def</span> <span class="nf">uploadFile</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">data</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">,</span>
-        <span class="n">method</span><span class="p">:</span> <span class="n">UploadMethod</span><span class="p">,</span>
-        <span class="n">target</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Friend</span><span class="p">,</span> <span class="n">Group</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span>
+        <span class="n">method</span><span class="p">:</span> <span class="n">UploadMethod</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">target</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Friend</span><span class="p">,</span> <span class="n">Group</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
         <span class="n">path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+        <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;FileInfo&quot;</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        上传文件到指定目标, 需要提供: 文件的原始数据(bytes), 文件的上传类型,</span>
 <span class="sd">        上传目标, (可选)上传目录ID.</span>
 <span class="sd">        Args:</span>
 <span class="sd">            data (bytes): 文件的原始数据</span>
-<span class="sd">            method (UploadMethod): 文件的上传类型</span>
+<span class="sd">            method (UploadMethod, optional): 文件的上传类型</span>
+<span class="sd">            target (Union[Friend, Group, int]): 文件上传目标, 即群组</span>
+<span class="sd">            path (str): 目标路径, 默认为根路径.</span>
+<span class="sd">            name (str): 文件名, 可选, 若 path 存在斜杠可从 path 推断.</span>
 <span class="sd">        Returns:</span>
 <span class="sd">            FileInfo: 文件信息</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">method</span> <span class="o">=</span> <span class="n">method</span> <span class="ow">or</span> <span class="n">UploadMethod</span><span class="p">[</span><span class="n">target</span><span class="o">.</span><span class="vm">__class__</span><span class="p">]</span>
 
         <span class="k">if</span> <span class="n">method</span> <span class="o">!=</span> <span class="n">UploadMethod</span><span class="o">.</span><span class="n">Group</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">Friend</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Not implemented for </span><span class="si">{</span><span class="n">method</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
         <span class="n">target</span> <span class="o">=</span> <span class="n">target</span><span class="o">.</span><span class="n">id</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">Friend</span><span class="p">)</span> <span class="k">else</span> <span class="n">target</span>
         <span class="n">target</span> <span class="o">=</span> <span class="n">target</span><span class="o">.</span><span class="n">id</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">Group</span><span class="p">)</span> <span class="k">else</span> <span class="n">target</span>
+
+        <span class="k">if</span> <span class="s2">&quot;/&quot;</span> <span class="ow">in</span> <span class="n">path</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">name</span><span class="p">:</span>
+            <span class="n">path</span><span class="p">,</span> <span class="n">name</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">rsplit</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
 
         <span class="n">result</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">adapter</span><span class="o">.</span><span class="n">call_api</span><span class="p">(</span>
             <span class="s2">&quot;file/upload&quot;</span><span class="p">,</span>
@@ -1350,7 +1359,7 @@
                 <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="n">method</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
                 <span class="s2">&quot;target&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">target</span><span class="p">),</span>
                 <span class="s2">&quot;path&quot;</span><span class="p">:</span> <span class="n">path</span><span class="p">,</span>
-                <span class="s2">&quot;file&quot;</span><span class="p">:</span> <span class="n">data</span><span class="p">,</span>
+                <span class="s2">&quot;file&quot;</span><span class="p">:</span> <span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;filename&quot;</span><span class="p">:</span> <span class="n">name</span><span class="p">}</span> <span class="k">if</span> <span class="n">name</span> <span class="k">else</span> <span class="p">{}),</span>
             <span class="p">},</span>
         <span class="p">)</span>
 
@@ -4638,25 +4647,34 @@
     <span class="k">async</span> <span class="k">def</span> <span class="nf">uploadFile</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">data</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">,</span>
-        <span class="n">method</span><span class="p">:</span> <span class="n">UploadMethod</span><span class="p">,</span>
-        <span class="n">target</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Friend</span><span class="p">,</span> <span class="n">Group</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span>
+        <span class="n">method</span><span class="p">:</span> <span class="n">UploadMethod</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">target</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Friend</span><span class="p">,</span> <span class="n">Group</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
         <span class="n">path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+        <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;FileInfo&quot;</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        上传文件到指定目标, 需要提供: 文件的原始数据(bytes), 文件的上传类型,</span>
 <span class="sd">        上传目标, (可选)上传目录ID.</span>
 <span class="sd">        Args:</span>
 <span class="sd">            data (bytes): 文件的原始数据</span>
-<span class="sd">            method (UploadMethod): 文件的上传类型</span>
+<span class="sd">            method (UploadMethod, optional): 文件的上传类型</span>
+<span class="sd">            target (Union[Friend, Group, int]): 文件上传目标, 即群组</span>
+<span class="sd">            path (str): 目标路径, 默认为根路径.</span>
+<span class="sd">            name (str): 文件名, 可选, 若 path 存在斜杠可从 path 推断.</span>
 <span class="sd">        Returns:</span>
 <span class="sd">            FileInfo: 文件信息</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">method</span> <span class="o">=</span> <span class="n">method</span> <span class="ow">or</span> <span class="n">UploadMethod</span><span class="p">[</span><span class="n">target</span><span class="o">.</span><span class="vm">__class__</span><span class="p">]</span>
 
         <span class="k">if</span> <span class="n">method</span> <span class="o">!=</span> <span class="n">UploadMethod</span><span class="o">.</span><span class="n">Group</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">Friend</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Not implemented for </span><span class="si">{</span><span class="n">method</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
         <span class="n">target</span> <span class="o">=</span> <span class="n">target</span><span class="o">.</span><span class="n">id</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">Friend</span><span class="p">)</span> <span class="k">else</span> <span class="n">target</span>
         <span class="n">target</span> <span class="o">=</span> <span class="n">target</span><span class="o">.</span><span class="n">id</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">Group</span><span class="p">)</span> <span class="k">else</span> <span class="n">target</span>
+
+        <span class="k">if</span> <span class="s2">&quot;/&quot;</span> <span class="ow">in</span> <span class="n">path</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">name</span><span class="p">:</span>
+            <span class="n">path</span><span class="p">,</span> <span class="n">name</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">rsplit</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
 
         <span class="n">result</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">adapter</span><span class="o">.</span><span class="n">call_api</span><span class="p">(</span>
             <span class="s2">&quot;file/upload&quot;</span><span class="p">,</span>
@@ -4666,7 +4684,7 @@
                 <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="n">method</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
                 <span class="s2">&quot;target&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">target</span><span class="p">),</span>
                 <span class="s2">&quot;path&quot;</span><span class="p">:</span> <span class="n">path</span><span class="p">,</span>
-                <span class="s2">&quot;file&quot;</span><span class="p">:</span> <span class="n">data</span><span class="p">,</span>
+                <span class="s2">&quot;file&quot;</span><span class="p">:</span> <span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;filename&quot;</span><span class="p">:</span> <span class="n">name</span><span class="p">}</span> <span class="k">if</span> <span class="n">name</span> <span class="k">else</span> <span class="p">{}),</span>
             <span class="p">},</span>
         <span class="p">)</span>
 
@@ -5159,9 +5177,10 @@
             <span class="name">uploadFile</span><span class="signature">(
     self,
     data: bytes,
-    method: <a href="model.html#UploadMethod">ariadne.model.UploadMethod</a>,
-    target: Union[<a href="model.html#Friend">ariadne.model.Friend</a>, <a href="model.html#Group">ariadne.model.Group</a>, int],
-    path: str = &#39;&#39;
+    method: <a href="model.html#UploadMethod">ariadne.model.UploadMethod</a> = None,
+    target: Union[<a href="model.html#Friend">ariadne.model.Friend</a>, <a href="model.html#Group">ariadne.model.Group</a>, int] = -1,
+    path: str = &#39;&#39;,
+    name: str = &#39;&#39;
 ) -&gt; <a href="model.html#FileInfo">ariadne.model.FileInfo</a></span>:
     </div>
 
@@ -5171,25 +5190,34 @@
     <span class="k">async</span> <span class="k">def</span> <span class="nf">uploadFile</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">data</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">,</span>
-        <span class="n">method</span><span class="p">:</span> <span class="n">UploadMethod</span><span class="p">,</span>
-        <span class="n">target</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Friend</span><span class="p">,</span> <span class="n">Group</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span>
+        <span class="n">method</span><span class="p">:</span> <span class="n">UploadMethod</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">target</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Friend</span><span class="p">,</span> <span class="n">Group</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
         <span class="n">path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+        <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;FileInfo&quot;</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        上传文件到指定目标, 需要提供: 文件的原始数据(bytes), 文件的上传类型,</span>
 <span class="sd">        上传目标, (可选)上传目录ID.</span>
 <span class="sd">        Args:</span>
 <span class="sd">            data (bytes): 文件的原始数据</span>
-<span class="sd">            method (UploadMethod): 文件的上传类型</span>
+<span class="sd">            method (UploadMethod, optional): 文件的上传类型</span>
+<span class="sd">            target (Union[Friend, Group, int]): 文件上传目标, 即群组</span>
+<span class="sd">            path (str): 目标路径, 默认为根路径.</span>
+<span class="sd">            name (str): 文件名, 可选, 若 path 存在斜杠可从 path 推断.</span>
 <span class="sd">        Returns:</span>
 <span class="sd">            FileInfo: 文件信息</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">method</span> <span class="o">=</span> <span class="n">method</span> <span class="ow">or</span> <span class="n">UploadMethod</span><span class="p">[</span><span class="n">target</span><span class="o">.</span><span class="vm">__class__</span><span class="p">]</span>
 
         <span class="k">if</span> <span class="n">method</span> <span class="o">!=</span> <span class="n">UploadMethod</span><span class="o">.</span><span class="n">Group</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">Friend</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Not implemented for </span><span class="si">{</span><span class="n">method</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
         <span class="n">target</span> <span class="o">=</span> <span class="n">target</span><span class="o">.</span><span class="n">id</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">Friend</span><span class="p">)</span> <span class="k">else</span> <span class="n">target</span>
         <span class="n">target</span> <span class="o">=</span> <span class="n">target</span><span class="o">.</span><span class="n">id</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">Group</span><span class="p">)</span> <span class="k">else</span> <span class="n">target</span>
+
+        <span class="k">if</span> <span class="s2">&quot;/&quot;</span> <span class="ow">in</span> <span class="n">path</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">name</span><span class="p">:</span>
+            <span class="n">path</span><span class="p">,</span> <span class="n">name</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">rsplit</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
 
         <span class="n">result</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">adapter</span><span class="o">.</span><span class="n">call_api</span><span class="p">(</span>
             <span class="s2">&quot;file/upload&quot;</span><span class="p">,</span>
@@ -5199,7 +5227,7 @@
                 <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="n">method</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
                 <span class="s2">&quot;target&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">target</span><span class="p">),</span>
                 <span class="s2">&quot;path&quot;</span><span class="p">:</span> <span class="n">path</span><span class="p">,</span>
-                <span class="s2">&quot;file&quot;</span><span class="p">:</span> <span class="n">data</span><span class="p">,</span>
+                <span class="s2">&quot;file&quot;</span><span class="p">:</span> <span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;filename&quot;</span><span class="p">:</span> <span class="n">name</span><span class="p">}</span> <span class="k">if</span> <span class="n">name</span> <span class="k">else</span> <span class="p">{}),</span>
             <span class="p">},</span>
         <span class="p">)</span>
 
@@ -5215,7 +5243,10 @@
 
 <ul>
 <li><strong>data (bytes):</strong>  文件的原始数据</li>
-<li><strong>method (UploadMethod):</strong>  文件的上传类型</li>
+<li><strong>method (UploadMethod, optional):</strong>  文件的上传类型</li>
+<li><strong>target (Union[Friend, Group, int]):</strong>  文件上传目标, 即群组</li>
+<li><strong>path (str):</strong>  目标路径, 默认为根路径.</li>
+<li><strong>name (str):</strong>  文件名, 可选, 若 path 存在斜杠可从 path 推断.</li>
 </ul>
 
 <h6 id="returns">Returns</h6>
