@@ -220,13 +220,7 @@
                                 <a class="function" href="#Ariadne.stop">stop</a>
                         </li>
                         <li>
-                                <a class="function" href="#Ariadne.request_stop">request_stop</a>
-                        </li>
-                        <li>
                                 <a class="function" href="#Ariadne.join">join</a>
-                        </li>
-                        <li>
-                                <a class="function" href="#Ariadne.wait_for_stop">wait_for_stop</a>
                         </li>
                         <li>
                                 <a class="function" href="#Ariadne.lifecycle">lifecycle</a>
@@ -321,7 +315,6 @@
 <span class="kn">from</span> <span class="nn">.util</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">app_ctx_manager</span><span class="p">,</span>
     <span class="n">await_predicate</span><span class="p">,</span>
-    <span class="n">deprecated</span><span class="p">,</span>
     <span class="n">inject_bypass_listener</span><span class="p">,</span>
     <span class="n">inject_loguru_traceback</span><span class="p">,</span>
     <span class="n">yield_with_timeout</span><span class="p">,</span>
@@ -1355,7 +1348,7 @@
             <span class="p">{</span>
                 <span class="s2">&quot;sessionKey&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">session_key</span><span class="p">,</span>
                 <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="n">method</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
-                <span class="s2">&quot;target&quot;</span><span class="p">:</span> <span class="n">target</span><span class="p">,</span>
+                <span class="s2">&quot;target&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">target</span><span class="p">),</span>
                 <span class="s2">&quot;path&quot;</span><span class="p">:</span> <span class="n">path</span><span class="p">,</span>
                 <span class="s2">&quot;file&quot;</span><span class="p">:</span> <span class="n">data</span><span class="p">,</span>
             <span class="p">},</span>
@@ -1653,12 +1646,6 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="n">AriadneStatus</span><span class="o">.</span><span class="n">SHUTDOWN</span>
             <span class="k">await</span> <span class="n">await_predicate</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="ow">in</span> <span class="p">{</span><span class="n">AriadneStatus</span><span class="o">.</span><span class="n">CLEANUP</span><span class="p">,</span> <span class="n">AriadneStatus</span><span class="o">.</span><span class="n">STOP</span><span class="p">})</span>
 
-    <span class="nd">@deprecated</span><span class="p">(</span><span class="s2">&quot;0.5.0&quot;</span><span class="p">)</span>
-    <span class="k">async</span> <span class="k">def</span> <span class="nf">request_stop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>  <span class="c1"># pylint: disable=missing-function-docstring</span>
-        <span class="c1"># pylint: disable</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;use &quot;stop&quot; instead!&quot;&quot;&quot;</span><span class="p">)</span>
-        <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
-
     <span class="k">async</span> <span class="k">def</span> <span class="nf">join</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;等待直到 Ariadne 真正停止.</span>
 <span class="sd">        不要在与 Broadcast 相关的任务中使用.</span>
@@ -1667,12 +1654,6 @@
             <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
         <span class="k">await</span> <span class="n">await_predicate</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="ow">is</span> <span class="n">AriadneStatus</span><span class="o">.</span><span class="n">STOP</span><span class="p">)</span>
         <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">daemon_task</span>
-
-    <span class="nd">@deprecated</span><span class="p">(</span><span class="s2">&quot;0.5.0&quot;</span><span class="p">)</span>
-    <span class="k">async</span> <span class="k">def</span> <span class="nf">wait_for_stop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>  <span class="c1"># pylint: disable=missing-function-docstring</span>
-        <span class="c1"># pylint: disable</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;use &quot;join&quot; instead!&quot;&quot;&quot;</span><span class="p">)</span>
-        <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">join</span><span class="p">()</span>
 
     <span class="k">async</span> <span class="k">def</span> <span class="nf">lifecycle</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;以 async 阻塞方式启动 Ariadne 并等待其停止.&quot;&quot;&quot;</span>
@@ -4683,7 +4664,7 @@
             <span class="p">{</span>
                 <span class="s2">&quot;sessionKey&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">session_key</span><span class="p">,</span>
                 <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="n">method</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
-                <span class="s2">&quot;target&quot;</span><span class="p">:</span> <span class="n">target</span><span class="p">,</span>
+                <span class="s2">&quot;target&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">target</span><span class="p">),</span>
                 <span class="s2">&quot;path&quot;</span><span class="p">:</span> <span class="n">path</span><span class="p">,</span>
                 <span class="s2">&quot;file&quot;</span><span class="p">:</span> <span class="n">data</span><span class="p">,</span>
             <span class="p">},</span>
@@ -5216,7 +5197,7 @@
             <span class="p">{</span>
                 <span class="s2">&quot;sessionKey&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">session_key</span><span class="p">,</span>
                 <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="n">method</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
-                <span class="s2">&quot;target&quot;</span><span class="p">:</span> <span class="n">target</span><span class="p">,</span>
+                <span class="s2">&quot;target&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">target</span><span class="p">),</span>
                 <span class="s2">&quot;path&quot;</span><span class="p">:</span> <span class="n">path</span><span class="p">,</span>
                 <span class="s2">&quot;file&quot;</span><span class="p">:</span> <span class="n">data</span><span class="p">,</span>
             <span class="p">},</span>
@@ -5712,12 +5693,6 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="n">AriadneStatus</span><span class="o">.</span><span class="n">SHUTDOWN</span>
             <span class="k">await</span> <span class="n">await_predicate</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="ow">in</span> <span class="p">{</span><span class="n">AriadneStatus</span><span class="o">.</span><span class="n">CLEANUP</span><span class="p">,</span> <span class="n">AriadneStatus</span><span class="o">.</span><span class="n">STOP</span><span class="p">})</span>
 
-    <span class="nd">@deprecated</span><span class="p">(</span><span class="s2">&quot;0.5.0&quot;</span><span class="p">)</span>
-    <span class="k">async</span> <span class="k">def</span> <span class="nf">request_stop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>  <span class="c1"># pylint: disable=missing-function-docstring</span>
-        <span class="c1"># pylint: disable</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;use &quot;stop&quot; instead!&quot;&quot;&quot;</span><span class="p">)</span>
-        <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
-
     <span class="k">async</span> <span class="k">def</span> <span class="nf">join</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;等待直到 Ariadne 真正停止.</span>
 <span class="sd">        不要在与 Broadcast 相关的任务中使用.</span>
@@ -5726,12 +5701,6 @@
             <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
         <span class="k">await</span> <span class="n">await_predicate</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="ow">is</span> <span class="n">AriadneStatus</span><span class="o">.</span><span class="n">STOP</span><span class="p">)</span>
         <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">daemon_task</span>
-
-    <span class="nd">@deprecated</span><span class="p">(</span><span class="s2">&quot;0.5.0&quot;</span><span class="p">)</span>
-    <span class="k">async</span> <span class="k">def</span> <span class="nf">wait_for_stop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>  <span class="c1"># pylint: disable=missing-function-docstring</span>
-        <span class="c1"># pylint: disable</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;use &quot;join&quot; instead!&quot;&quot;&quot;</span><span class="p">)</span>
-        <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">join</span><span class="p">()</span>
 
     <span class="k">async</span> <span class="k">def</span> <span class="nf">lifecycle</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;以 async 阻塞方式启动 Ariadne 并等待其停止.&quot;&quot;&quot;</span>
@@ -6153,29 +6122,6 @@
 
 
                             </div>
-                            <div id="Ariadne.request_stop" class="classattr">
-                                        <div class="attr function"><a class="headerlink" href="#Ariadne.request_stop">#&nbsp;&nbsp</a>
-
-                <div class="decorator">@deprecated(&#39;0.5.0&#39;)</div>
-
-            <span class="def">def</span>
-            <span class="name">request_stop</span><span class="signature">(self)</span>:
-    </div>
-
-                <details>
-            <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span>    <span class="nd">@deprecated</span><span class="p">(</span><span class="s2">&quot;0.5.0&quot;</span><span class="p">)</span>
-    <span class="k">async</span> <span class="k">def</span> <span class="nf">request_stop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>  <span class="c1"># pylint: disable=missing-function-docstring</span>
-        <span class="c1"># pylint: disable</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;use &quot;stop&quot; instead!&quot;&quot;&quot;</span><span class="p">)</span>
-        <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
-</pre></div>
-
-        </details>
-
-    
-
-                            </div>
                             <div id="Ariadne.join" class="classattr">
                                         <div class="attr function"><a class="headerlink" href="#Ariadne.join">#&nbsp;&nbsp</a>
 
@@ -6202,29 +6148,6 @@
 不要在与 Broadcast 相关的任务中使用.</p>
 </div>
 
-
-                            </div>
-                            <div id="Ariadne.wait_for_stop" class="classattr">
-                                        <div class="attr function"><a class="headerlink" href="#Ariadne.wait_for_stop">#&nbsp;&nbsp</a>
-
-                <div class="decorator">@deprecated(&#39;0.5.0&#39;)</div>
-
-            <span class="def">def</span>
-            <span class="name">wait_for_stop</span><span class="signature">(self)</span>:
-    </div>
-
-                <details>
-            <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span>    <span class="nd">@deprecated</span><span class="p">(</span><span class="s2">&quot;0.5.0&quot;</span><span class="p">)</span>
-    <span class="k">async</span> <span class="k">def</span> <span class="nf">wait_for_stop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>  <span class="c1"># pylint: disable=missing-function-docstring</span>
-        <span class="c1"># pylint: disable</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;use &quot;join&quot; instead!&quot;&quot;&quot;</span><span class="p">)</span>
-        <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">join</span><span class="p">()</span>
-</pre></div>
-
-        </details>
-
-    
 
                             </div>
                             <div id="Ariadne.lifecycle" class="classattr">

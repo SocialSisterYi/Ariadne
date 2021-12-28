@@ -34,6 +34,12 @@
                     <a class="variable" href="#elem_mapping_ctx">elem_mapping_ctx</a>
             </li>
             <li>
+                    <a class="function" href="#escape">escape</a>
+            </li>
+            <li>
+                    <a class="function" href="#unescape">unescape</a>
+            </li>
+            <li>
                     <a class="function" href="#split">split</a>
             </li>
             <li>
@@ -105,6 +111,46 @@
 <span class="kn">from</span> <span class="nn">..chain</span> <span class="kn">import</span> <span class="n">Element_T</span><span class="p">,</span> <span class="n">MessageChain</span>
 
 <span class="n">elem_mapping_ctx</span><span class="p">:</span> <span class="n">ContextVar</span><span class="p">[</span><span class="s2">&quot;MessageChain&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ContextVar</span><span class="p">(</span><span class="s2">&quot;elem_mapping_ctx&quot;</span><span class="p">)</span>
+
+<span class="n">L_PAREN</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;{&quot;</span><span class="p">,</span> <span class="s2">&quot;[&quot;</span><span class="p">)</span>
+<span class="n">R_PAREN</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;}&quot;</span><span class="p">,</span> <span class="s2">&quot;]&quot;</span><span class="p">)</span>
+<span class="n">ESCAPE</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;</span><span class="se">\\</span><span class="s2">&quot;</span><span class="p">:</span> <span class="s2">&quot;</span><span class="se">\x00</span><span class="s2">&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;[&quot;</span><span class="p">:</span> <span class="s2">&quot;</span><span class="se">\x01</span><span class="s2">&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;]&quot;</span><span class="p">:</span> <span class="s2">&quot;</span><span class="se">\x02</span><span class="s2">&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;{&quot;</span><span class="p">:</span> <span class="s2">&quot;</span><span class="se">\x03</span><span class="s2">&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;}&quot;</span><span class="p">:</span> <span class="s2">&quot;</span><span class="se">\x04</span><span class="s2">&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;|&quot;</span><span class="p">:</span> <span class="s2">&quot;</span><span class="se">\x05</span><span class="s2">&quot;</span><span class="p">,</span>
+<span class="p">}</span>
+<span class="n">R_ESCAPE</span> <span class="o">=</span> <span class="p">{</span><span class="n">v</span><span class="p">:</span> <span class="n">k</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">ESCAPE</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
+
+
+<span class="k">def</span> <span class="nf">escape</span><span class="p">(</span><span class="n">string</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;转义字符串</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        string (str): 要转义的字符串</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        str: 转义后的字符串</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">ESCAPE</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="n">string</span> <span class="o">=</span> <span class="n">string</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\\</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">string</span>
+
+
+<span class="k">def</span> <span class="nf">unescape</span><span class="p">(</span><span class="n">string</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;逆转义字符串</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        string (str): 要逆转义的字符串</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        str: 逆转义后的字符串</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">R_ESCAPE</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="n">string</span> <span class="o">=</span> <span class="n">string</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">string</span>
 
 
 <span class="k">def</span> <span class="nf">split</span><span class="p">(</span><span class="n">string</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
@@ -248,6 +294,92 @@
     </div>
 
     
+
+                </section>
+                <section id="escape">
+                            <div class="attr function"><a class="headerlink" href="#escape">#&nbsp;&nbsp</a>
+
+        
+            <span class="def">def</span>
+            <span class="name">escape</span><span class="signature">(string: str)</span>:
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span><span class="k">def</span> <span class="nf">escape</span><span class="p">(</span><span class="n">string</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;转义字符串</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        string (str): 要转义的字符串</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        str: 转义后的字符串</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">ESCAPE</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="n">string</span> <span class="o">=</span> <span class="n">string</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\\</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">string</span>
+</pre></div>
+
+        </details>
+
+            <div class="docstring"><p>转义字符串</p>
+
+<h6 id="args">Args</h6>
+
+<ul>
+<li><strong>string (str):</strong>  要转义的字符串</li>
+</ul>
+
+<h6 id="returns">Returns</h6>
+
+<blockquote>
+  <p>str: 转义后的字符串</p>
+</blockquote>
+</div>
+
+
+                </section>
+                <section id="unescape">
+                            <div class="attr function"><a class="headerlink" href="#unescape">#&nbsp;&nbsp</a>
+
+        
+            <span class="def">def</span>
+            <span class="name">unescape</span><span class="signature">(string: str)</span>:
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span><span class="k">def</span> <span class="nf">unescape</span><span class="p">(</span><span class="n">string</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;逆转义字符串</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        string (str): 要逆转义的字符串</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        str: 逆转义后的字符串</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">R_ESCAPE</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="n">string</span> <span class="o">=</span> <span class="n">string</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">string</span>
+</pre></div>
+
+        </details>
+
+            <div class="docstring"><p>逆转义字符串</p>
+
+<h6 id="args">Args</h6>
+
+<ul>
+<li><strong>string (str):</strong>  要逆转义的字符串</li>
+</ul>
+
+<h6 id="returns">Returns</h6>
+
+<blockquote>
+  <p>str: 逆转义后的字符串</p>
+</blockquote>
+</div>
+
 
                 </section>
                 <section id="split">
