@@ -169,6 +169,9 @@
                                 <a class="function" href="#Sparkle.get_match">get_match</a>
                         </li>
                         <li>
+                                <a class="function" href="#Sparkle.get_param">get_param</a>
+                        </li>
+                        <li>
                                 <a class="function" href="#Sparkle.from_command">from_command</a>
                         </li>
                         <li>
@@ -315,11 +318,12 @@
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;You can&#39;t instantiate Match class directly!&quot;</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">__repr_args__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="p">[</span>
-            <span class="p">(</span><span class="s2">&quot;matched&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">matched</span><span class="p">),</span>
-            <span class="p">(</span><span class="s2">&quot;result&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">result</span><span class="p">),</span>
-            <span class="p">(</span><span class="s2">&quot;pattern&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">pattern</span><span class="p">),</span>
-        <span class="p">]</span>
+        <span class="n">args</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">matched</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">args</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="s2">&quot;matched&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">matched</span><span class="p">))</span>
+            <span class="n">args</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="s2">&quot;result&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">result</span><span class="p">))</span>
+        <span class="n">args</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="s2">&quot;pattern&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">pattern</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">args</span>
 
 
 <span class="k">class</span> <span class="nc">RegexMatch</span><span class="p">(</span><span class="n">Match</span><span class="p">):</span>
@@ -365,13 +369,19 @@
         <span class="sd">&quot;&quot;&quot;生成用于 `Sparkle.get_help()` 的描述性字符串.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">pattern</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;( )?&quot;</span><span class="p">,</span> <span class="s2">&quot; &quot;</span><span class="p">)</span> <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">alt_help</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">alt_help</span>
 
+    <span class="k">def</span> <span class="nf">__repr_args__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__repr_args__</span><span class="p">()</span> <span class="o">+</span> <span class="p">[(</span><span class="s2">&quot;space&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">space</span><span class="o">.</span><span class="n">name</span><span class="p">)]</span>
+
 
 <span class="k">class</span> <span class="nc">ParamMatch</span><span class="p">(</span><span class="n">RegexMatch</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;与 WildcardMatch 类似, 但需要至少一个字符. 且仅匹配用空格分开的一段. (不支持输入的转义处理, 但是可以处理不同引号包裹)&quot;&quot;&quot;</span>
 
+    <span class="n">num_tags</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span>
+    <span class="n">str_tags</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
+
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="o">*</span><span class="p">,</span>
+        <span class="o">*</span><span class="n">tags</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span>
         <span class="n">optional</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="n">flags</span><span class="p">:</span> <span class="n">re</span><span class="o">.</span><span class="n">RegexFlag</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">RegexFlag</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span>
         <span class="n">space</span><span class="p">:</span> <span class="n">SpacePolicy</span> <span class="o">=</span> <span class="n">SpacePolicy</span><span class="o">.</span><span class="n">PRESERVE</span><span class="p">,</span>
@@ -388,9 +398,14 @@
             <span class="n">alt_help</span><span class="o">=</span><span class="n">alt_help</span><span class="p">,</span>
             <span class="n">preserve_space</span><span class="o">=</span><span class="n">preserve_space</span><span class="p">,</span>
         <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">num_tags</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="nb">int</span><span class="p">),</span> <span class="n">tags</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">str_tags</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="nb">str</span><span class="p">),</span> <span class="n">tags</span><span class="p">))</span>
 
     <span class="k">def</span> <span class="nf">get_help</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="k">return</span> <span class="s2">&quot;PARAM&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__repr_args__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__repr_args__</span><span class="p">()</span> <span class="o">+</span> <span class="p">[(</span><span class="s2">&quot;tags&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_tags</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">str_tags</span><span class="p">)]</span>
 
 
 <span class="k">class</span> <span class="nc">WildcardMatch</span><span class="p">(</span><span class="n">RegexMatch</span><span class="p">):</span>
@@ -626,6 +641,18 @@
     <span class="k">def</span> <span class="nf">get_match</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">T_RMatch</span><span class="p">,</span> <span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">T_RMatch</span><span class="p">:</span>
         <span class="o">...</span>
 
+    <span class="k">def</span> <span class="nf">get_param</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tag</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">ParamMatch</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;通过 tag 获取对应的 ParamMatch 实例</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            tag (Union[int, str]): ParamMatch 的 tag</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            ParamMatch: 获取到的 ParamMatch</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_param_match_ref</span><span class="p">[</span><span class="n">tag</span><span class="p">]</span>
+
     <span class="k">def</span> <span class="nf">get_match</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="n">Type</span><span class="p">[</span><span class="n">T_Match</span><span class="p">],</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Type</span><span class="p">[</span><span class="n">T_RMatch</span><span class="p">],</span> <span class="nb">int</span><span class="p">]]</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Match</span><span class="p">],</span> <span class="n">Match</span><span class="p">]:</span>
@@ -662,6 +689,7 @@
         <span class="n">copied</span><span class="o">.</span><span class="n">_mapping_regex_match</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_mapping_regex_match</span><span class="p">,</span> <span class="n">memo</span><span class="p">)</span>
         <span class="n">copied</span><span class="o">.</span><span class="n">_parser_ref</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_parser_ref</span><span class="p">,</span> <span class="n">memo</span><span class="p">)</span>
         <span class="n">copied</span><span class="o">.</span><span class="n">_match_ref</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_match_ref</span><span class="p">,</span> <span class="n">memo</span><span class="p">)</span>
+        <span class="n">copied</span><span class="o">.</span><span class="n">_param_match_ref</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_param_match_ref</span><span class="p">,</span> <span class="n">memo</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">copied</span>
 
@@ -710,8 +738,16 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_parser</span> <span class="o">=</span> <span class="n">TwilightParser</span><span class="p">(</span><span class="n">prog</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">add_help</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
+        <span class="bp">self</span><span class="o">.</span><span class="n">_param_match_ref</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span> <span class="n">ParamMatch</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+
         <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">check</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_match_ref</span><span class="p">[</span><span class="n">v</span><span class="o">.</span><span class="vm">__class__</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">ParamMatch</span><span class="p">):</span>  <span class="c1"># Validate ParamMatch&#39;s tags</span>
+                <span class="k">for</span> <span class="n">tag</span> <span class="ow">in</span> <span class="n">v</span><span class="o">.</span><span class="n">num_tags</span> <span class="o">+</span> <span class="n">v</span><span class="o">.</span><span class="n">str_tags</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">tag</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_param_match_ref</span><span class="p">:</span>
+                        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Duplicated ParamMatch tag with </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_param_match_ref</span><span class="p">[</span><span class="n">tag</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_param_match_ref</span><span class="p">[</span><span class="n">tag</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span>
 
         <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">match_map</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="k">if</span> <span class="n">k</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;_&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">k</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">in</span> <span class="n">string</span><span class="o">.</span><span class="n">digits</span><span class="p">:</span>
@@ -734,9 +770,17 @@
                 <span class="k">continue</span>
 
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">RegexMatch</span><span class="p">):</span>  <span class="c1"># add to self._mapping_regex_match</span>
+
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">ParamMatch</span><span class="p">):</span>  <span class="c1"># Validate ParamMatch&#39;s tags</span>
+                    <span class="k">for</span> <span class="n">tag</span> <span class="ow">in</span> <span class="n">v</span><span class="o">.</span><span class="n">num_tags</span> <span class="o">+</span> <span class="n">v</span><span class="o">.</span><span class="n">str_tags</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="n">tag</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_param_match_ref</span><span class="p">:</span>
+                            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Duplicated ParamMatch tag with </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_param_match_ref</span><span class="p">[</span><span class="n">tag</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_param_match_ref</span><span class="p">[</span><span class="n">tag</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span>
+
                 <span class="bp">self</span><span class="o">.</span><span class="n">_mapping_regex_match</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">group_cnt</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
                 <span class="n">group_cnt</span> <span class="o">+=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="n">v</span><span class="o">.</span><span class="n">gen_regex</span><span class="p">())</span><span class="o">.</span><span class="n">groups</span>
                 <span class="n">match_pattern_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">v</span><span class="o">.</span><span class="n">gen_regex</span><span class="p">())</span>
+
                 <span class="k">continue</span>
 
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">v</span><span class="si">}</span><span class="s2"> is neither RegexMatch nor ArgumentMatch!&quot;</span><span class="p">)</span>
@@ -768,7 +812,7 @@
 
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">from_command</span><span class="p">(</span>  <span class="c1"># ANCHOR: Sparkle: From command</span>
-        <span class="bp">cls</span><span class="p">,</span> <span class="n">command</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">extra_arg_mapping</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">ArgumentMatch</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">cls</span><span class="p">:</span> <span class="s2">&quot;Type[Sparkle]&quot;</span><span class="p">,</span> <span class="n">command</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">extra_arg_mapping</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">ArgumentMatch</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;Sparkle&quot;</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;从 shell 式命令生成 Sparkle.</span>
 
@@ -788,37 +832,41 @@
         <span class="n">char_stk</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
 
         <span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">char</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">command</span><span class="p">):</span>
-            <span class="k">if</span> <span class="n">char</span> <span class="ow">in</span> <span class="n">L_PAREN</span> <span class="o">+</span> <span class="n">R_PAREN</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">char</span> <span class="ow">in</span> <span class="n">L_PAREN</span> <span class="o">+</span> <span class="n">R_PAREN</span> <span class="o">+</span> <span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">,):</span>
                 <span class="k">if</span> <span class="n">char</span> <span class="ow">in</span> <span class="n">L_PAREN</span><span class="p">:</span>
-                    <span class="k">if</span> <span class="n">char_stk</span><span class="p">:</span>
-                        <span class="n">match</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">FullMatch</span><span class="p">(</span><span class="n">unescape</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">char_stk</span><span class="p">)),</span> <span class="n">space</span><span class="o">=</span><span class="n">SpacePolicy</span><span class="o">.</span><span class="n">NOSPACE</span><span class="p">))</span>
-                        <span class="n">char_stk</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
                     <span class="k">if</span> <span class="n">paren</span><span class="p">:</span>
                         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
                             <span class="sa">f</span><span class="s2">&quot;Duplicated parenthesis character at index </span><span class="si">{</span><span class="n">index</span><span class="si">}</span><span class="s2">!&quot;</span>
                             <span class="sd">&quot;&quot;&quot;Are you sure you&#39;ve escaped with &quot;\\&quot;?&quot;&quot;&quot;</span>
                         <span class="p">)</span>
                     <span class="n">paren</span> <span class="o">=</span> <span class="n">char</span>
-                <span class="k">else</span><span class="p">:</span>  <span class="c1"># char in R_PAREN</span>
+                <span class="k">elif</span> <span class="n">char</span> <span class="ow">in</span> <span class="n">R_PAREN</span><span class="p">:</span>
                     <span class="k">if</span> <span class="n">paren</span> <span class="o">==</span> <span class="s2">&quot;[&quot;</span><span class="p">:</span>  <span class="c1"># UnionMatch</span>
                         <span class="n">match</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
-                            <span class="n">UnionMatch</span><span class="p">(</span>
-                                <span class="o">*</span><span class="nb">map</span><span class="p">(</span><span class="n">unescape</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">char_stk</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;|&quot;</span><span class="p">)),</span> <span class="n">space</span><span class="o">=</span><span class="n">SpacePolicy</span><span class="o">.</span><span class="n">NOSPACE</span>
-                            <span class="p">)</span>
+                            <span class="n">UnionMatch</span><span class="p">(</span><span class="o">*</span><span class="nb">map</span><span class="p">(</span><span class="n">unescape</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">char_stk</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;|&quot;</span><span class="p">)),</span> <span class="n">space</span><span class="o">=</span><span class="n">SpacePolicy</span><span class="o">.</span><span class="n">FORCE</span><span class="p">)</span>
                         <span class="p">)</span>
                     <span class="k">elif</span> <span class="n">paren</span> <span class="o">==</span> <span class="s2">&quot;{&quot;</span><span class="p">:</span>  <span class="c1"># ParamMatch</span>
-                        <span class="n">match</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ParamMatch</span><span class="p">(</span><span class="n">space</span><span class="o">=</span><span class="n">SpacePolicy</span><span class="o">.</span><span class="n">NOSPACE</span><span class="p">))</span>
-                        <span class="c1"># ANCHOR: parse &quot;|&quot; and verify index</span>
-
+                        <span class="n">placeholders</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">char_stk</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;|&quot;</span><span class="p">)</span>
+                        <span class="n">placeholders</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">if</span> <span class="n">re</span><span class="o">.</span><span class="n">fullmatch</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;\d+&quot;</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span> <span class="k">else</span> <span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">char_stk</span><span class="p">)</span>
+                        <span class="n">match</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ParamMatch</span><span class="p">(</span><span class="o">*</span><span class="n">placeholders</span><span class="p">,</span> <span class="n">space</span><span class="o">=</span><span class="n">SpacePolicy</span><span class="o">.</span><span class="n">FORCE</span><span class="p">))</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;No matching parenthesis: </span><span class="si">{</span><span class="n">paren</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
                     <span class="n">char_stk</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
                     <span class="n">paren</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
-
+                <span class="k">elif</span> <span class="n">char_stk</span><span class="p">:</span>
+                    <span class="n">match</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">FullMatch</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">char_stk</span><span class="p">),</span> <span class="n">space</span><span class="o">=</span><span class="n">SpacePolicy</span><span class="o">.</span><span class="n">FORCE</span><span class="p">))</span>
+                    <span class="n">char_stk</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">char_stk</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">char</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">paren</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unclosed parenthesis: </span><span class="si">{</span><span class="n">paren</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">char_stk</span><span class="p">:</span>
-            <span class="n">match</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">FullMatch</span><span class="p">(</span><span class="n">unescape</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">char_stk</span><span class="p">)),</span> <span class="n">space</span><span class="o">=</span><span class="n">SpacePolicy</span><span class="o">.</span><span class="n">NOSPACE</span><span class="p">))</span>
+            <span class="n">match</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">FullMatch</span><span class="p">(</span><span class="n">unescape</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">char_stk</span><span class="p">)),</span> <span class="n">space</span><span class="o">=</span><span class="n">SpacePolicy</span><span class="o">.</span><span class="n">FORCE</span><span class="p">))</span>
             <span class="n">char_stk</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">match</span><span class="p">:</span>
+            <span class="n">match</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">space</span> <span class="o">=</span> <span class="n">SpacePolicy</span><span class="o">.</span><span class="n">NOSPACE</span>
 
         <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">match</span><span class="p">,</span> <span class="n">extra_arg_mapping</span><span class="p">)</span>
 
@@ -1269,11 +1317,12 @@
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;You can&#39;t instantiate Match class directly!&quot;</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">__repr_args__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="p">[</span>
-            <span class="p">(</span><span class="s2">&quot;matched&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">matched</span><span class="p">),</span>
-            <span class="p">(</span><span class="s2">&quot;result&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">result</span><span class="p">),</span>
-            <span class="p">(</span><span class="s2">&quot;pattern&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">pattern</span><span class="p">),</span>
-        <span class="p">]</span>
+        <span class="n">args</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">matched</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">args</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="s2">&quot;matched&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">matched</span><span class="p">))</span>
+            <span class="n">args</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="s2">&quot;result&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">result</span><span class="p">))</span>
+        <span class="n">args</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="s2">&quot;pattern&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">pattern</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">args</span>
 </pre></div>
 
         </details>
@@ -1361,6 +1410,9 @@
     <span class="k">def</span> <span class="nf">get_help</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;生成用于 `Sparkle.get_help()` 的描述性字符串.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">pattern</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;( )?&quot;</span><span class="p">,</span> <span class="s2">&quot; &quot;</span><span class="p">)</span> <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">alt_help</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">alt_help</span>
+
+    <span class="k">def</span> <span class="nf">__repr_args__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__repr_args__</span><span class="p">()</span> <span class="o">+</span> <span class="p">[(</span><span class="s2">&quot;space&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">space</span><span class="o">.</span><span class="n">name</span><span class="p">)]</span>
 </pre></div>
 
         </details>
@@ -1488,9 +1540,12 @@
             <div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">ParamMatch</span><span class="p">(</span><span class="n">RegexMatch</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;与 WildcardMatch 类似, 但需要至少一个字符. 且仅匹配用空格分开的一段. (不支持输入的转义处理, 但是可以处理不同引号包裹)&quot;&quot;&quot;</span>
 
+    <span class="n">num_tags</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span>
+    <span class="n">str_tags</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
+
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="o">*</span><span class="p">,</span>
+        <span class="o">*</span><span class="n">tags</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span>
         <span class="n">optional</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="n">flags</span><span class="p">:</span> <span class="n">re</span><span class="o">.</span><span class="n">RegexFlag</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">RegexFlag</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span>
         <span class="n">space</span><span class="p">:</span> <span class="n">SpacePolicy</span> <span class="o">=</span> <span class="n">SpacePolicy</span><span class="o">.</span><span class="n">PRESERVE</span><span class="p">,</span>
@@ -1507,9 +1562,14 @@
             <span class="n">alt_help</span><span class="o">=</span><span class="n">alt_help</span><span class="p">,</span>
             <span class="n">preserve_space</span><span class="o">=</span><span class="n">preserve_space</span><span class="p">,</span>
         <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">num_tags</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="nb">int</span><span class="p">),</span> <span class="n">tags</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">str_tags</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="nb">str</span><span class="p">),</span> <span class="n">tags</span><span class="p">))</span>
 
     <span class="k">def</span> <span class="nf">get_help</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="k">return</span> <span class="s2">&quot;PARAM&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__repr_args__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__repr_args__</span><span class="p">()</span> <span class="o">+</span> <span class="p">[(</span><span class="s2">&quot;tags&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_tags</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">str_tags</span><span class="p">)]</span>
 </pre></div>
 
         </details>
@@ -1523,7 +1583,7 @@
 
         
             <span class="name">ParamMatch</span><span class="signature">(
-    *,
+    *tags: Union[str, int],
     optional: bool = False,
     flags: re.RegexFlag = ,
     space: <a href="#SpacePolicy">ariadne.message.parser.twilight.SpacePolicy</a> = &lt;<a href="#SpacePolicy.PRESERVE">SpacePolicy.PRESERVE</a>: &#39;( )?&#39;&gt;,
@@ -1537,7 +1597,7 @@
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="o">*</span><span class="p">,</span>
+        <span class="o">*</span><span class="n">tags</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span>
         <span class="n">optional</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="n">flags</span><span class="p">:</span> <span class="n">re</span><span class="o">.</span><span class="n">RegexFlag</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">RegexFlag</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span>
         <span class="n">space</span><span class="p">:</span> <span class="n">SpacePolicy</span> <span class="o">=</span> <span class="n">SpacePolicy</span><span class="o">.</span><span class="n">PRESERVE</span><span class="p">,</span>
@@ -1554,6 +1614,8 @@
             <span class="n">alt_help</span><span class="o">=</span><span class="n">alt_help</span><span class="p">,</span>
             <span class="n">preserve_space</span><span class="o">=</span><span class="n">preserve_space</span><span class="p">,</span>
         <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">num_tags</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="nb">int</span><span class="p">),</span> <span class="n">tags</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">str_tags</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="nb">str</span><span class="p">),</span> <span class="n">tags</span><span class="p">))</span>
 </pre></div>
 
         </details>
@@ -2273,6 +2335,18 @@
     <span class="k">def</span> <span class="nf">get_match</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">T_RMatch</span><span class="p">,</span> <span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">T_RMatch</span><span class="p">:</span>
         <span class="o">...</span>
 
+    <span class="k">def</span> <span class="nf">get_param</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tag</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">ParamMatch</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;通过 tag 获取对应的 ParamMatch 实例</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            tag (Union[int, str]): ParamMatch 的 tag</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            ParamMatch: 获取到的 ParamMatch</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_param_match_ref</span><span class="p">[</span><span class="n">tag</span><span class="p">]</span>
+
     <span class="k">def</span> <span class="nf">get_match</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="n">Type</span><span class="p">[</span><span class="n">T_Match</span><span class="p">],</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Type</span><span class="p">[</span><span class="n">T_RMatch</span><span class="p">],</span> <span class="nb">int</span><span class="p">]]</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Match</span><span class="p">],</span> <span class="n">Match</span><span class="p">]:</span>
@@ -2309,6 +2383,7 @@
         <span class="n">copied</span><span class="o">.</span><span class="n">_mapping_regex_match</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_mapping_regex_match</span><span class="p">,</span> <span class="n">memo</span><span class="p">)</span>
         <span class="n">copied</span><span class="o">.</span><span class="n">_parser_ref</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_parser_ref</span><span class="p">,</span> <span class="n">memo</span><span class="p">)</span>
         <span class="n">copied</span><span class="o">.</span><span class="n">_match_ref</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_match_ref</span><span class="p">,</span> <span class="n">memo</span><span class="p">)</span>
+        <span class="n">copied</span><span class="o">.</span><span class="n">_param_match_ref</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_param_match_ref</span><span class="p">,</span> <span class="n">memo</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">copied</span>
 
@@ -2357,8 +2432,16 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_parser</span> <span class="o">=</span> <span class="n">TwilightParser</span><span class="p">(</span><span class="n">prog</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">add_help</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
+        <span class="bp">self</span><span class="o">.</span><span class="n">_param_match_ref</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span> <span class="n">ParamMatch</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+
         <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">check</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_match_ref</span><span class="p">[</span><span class="n">v</span><span class="o">.</span><span class="vm">__class__</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">ParamMatch</span><span class="p">):</span>  <span class="c1"># Validate ParamMatch&#39;s tags</span>
+                <span class="k">for</span> <span class="n">tag</span> <span class="ow">in</span> <span class="n">v</span><span class="o">.</span><span class="n">num_tags</span> <span class="o">+</span> <span class="n">v</span><span class="o">.</span><span class="n">str_tags</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">tag</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_param_match_ref</span><span class="p">:</span>
+                        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Duplicated ParamMatch tag with </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_param_match_ref</span><span class="p">[</span><span class="n">tag</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_param_match_ref</span><span class="p">[</span><span class="n">tag</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span>
 
         <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">match_map</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="k">if</span> <span class="n">k</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;_&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">k</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">in</span> <span class="n">string</span><span class="o">.</span><span class="n">digits</span><span class="p">:</span>
@@ -2381,9 +2464,17 @@
                 <span class="k">continue</span>
 
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">RegexMatch</span><span class="p">):</span>  <span class="c1"># add to self._mapping_regex_match</span>
+
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">ParamMatch</span><span class="p">):</span>  <span class="c1"># Validate ParamMatch&#39;s tags</span>
+                    <span class="k">for</span> <span class="n">tag</span> <span class="ow">in</span> <span class="n">v</span><span class="o">.</span><span class="n">num_tags</span> <span class="o">+</span> <span class="n">v</span><span class="o">.</span><span class="n">str_tags</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="n">tag</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_param_match_ref</span><span class="p">:</span>
+                            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Duplicated ParamMatch tag with </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_param_match_ref</span><span class="p">[</span><span class="n">tag</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_param_match_ref</span><span class="p">[</span><span class="n">tag</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span>
+
                 <span class="bp">self</span><span class="o">.</span><span class="n">_mapping_regex_match</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">group_cnt</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
                 <span class="n">group_cnt</span> <span class="o">+=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="n">v</span><span class="o">.</span><span class="n">gen_regex</span><span class="p">())</span><span class="o">.</span><span class="n">groups</span>
                 <span class="n">match_pattern_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">v</span><span class="o">.</span><span class="n">gen_regex</span><span class="p">())</span>
+
                 <span class="k">continue</span>
 
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">v</span><span class="si">}</span><span class="s2"> is neither RegexMatch nor ArgumentMatch!&quot;</span><span class="p">)</span>
@@ -2415,7 +2506,7 @@
 
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">from_command</span><span class="p">(</span>  <span class="c1"># ANCHOR: Sparkle: From command</span>
-        <span class="bp">cls</span><span class="p">,</span> <span class="n">command</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">extra_arg_mapping</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">ArgumentMatch</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">cls</span><span class="p">:</span> <span class="s2">&quot;Type[Sparkle]&quot;</span><span class="p">,</span> <span class="n">command</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">extra_arg_mapping</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">ArgumentMatch</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;Sparkle&quot;</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;从 shell 式命令生成 Sparkle.</span>
 
@@ -2435,37 +2526,41 @@
         <span class="n">char_stk</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
 
         <span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">char</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">command</span><span class="p">):</span>
-            <span class="k">if</span> <span class="n">char</span> <span class="ow">in</span> <span class="n">L_PAREN</span> <span class="o">+</span> <span class="n">R_PAREN</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">char</span> <span class="ow">in</span> <span class="n">L_PAREN</span> <span class="o">+</span> <span class="n">R_PAREN</span> <span class="o">+</span> <span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">,):</span>
                 <span class="k">if</span> <span class="n">char</span> <span class="ow">in</span> <span class="n">L_PAREN</span><span class="p">:</span>
-                    <span class="k">if</span> <span class="n">char_stk</span><span class="p">:</span>
-                        <span class="n">match</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">FullMatch</span><span class="p">(</span><span class="n">unescape</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">char_stk</span><span class="p">)),</span> <span class="n">space</span><span class="o">=</span><span class="n">SpacePolicy</span><span class="o">.</span><span class="n">NOSPACE</span><span class="p">))</span>
-                        <span class="n">char_stk</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
                     <span class="k">if</span> <span class="n">paren</span><span class="p">:</span>
                         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
                             <span class="sa">f</span><span class="s2">&quot;Duplicated parenthesis character at index </span><span class="si">{</span><span class="n">index</span><span class="si">}</span><span class="s2">!&quot;</span>
                             <span class="sd">&quot;&quot;&quot;Are you sure you&#39;ve escaped with &quot;\\&quot;?&quot;&quot;&quot;</span>
                         <span class="p">)</span>
                     <span class="n">paren</span> <span class="o">=</span> <span class="n">char</span>
-                <span class="k">else</span><span class="p">:</span>  <span class="c1"># char in R_PAREN</span>
+                <span class="k">elif</span> <span class="n">char</span> <span class="ow">in</span> <span class="n">R_PAREN</span><span class="p">:</span>
                     <span class="k">if</span> <span class="n">paren</span> <span class="o">==</span> <span class="s2">&quot;[&quot;</span><span class="p">:</span>  <span class="c1"># UnionMatch</span>
                         <span class="n">match</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
-                            <span class="n">UnionMatch</span><span class="p">(</span>
-                                <span class="o">*</span><span class="nb">map</span><span class="p">(</span><span class="n">unescape</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">char_stk</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;|&quot;</span><span class="p">)),</span> <span class="n">space</span><span class="o">=</span><span class="n">SpacePolicy</span><span class="o">.</span><span class="n">NOSPACE</span>
-                            <span class="p">)</span>
+                            <span class="n">UnionMatch</span><span class="p">(</span><span class="o">*</span><span class="nb">map</span><span class="p">(</span><span class="n">unescape</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">char_stk</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;|&quot;</span><span class="p">)),</span> <span class="n">space</span><span class="o">=</span><span class="n">SpacePolicy</span><span class="o">.</span><span class="n">FORCE</span><span class="p">)</span>
                         <span class="p">)</span>
                     <span class="k">elif</span> <span class="n">paren</span> <span class="o">==</span> <span class="s2">&quot;{&quot;</span><span class="p">:</span>  <span class="c1"># ParamMatch</span>
-                        <span class="n">match</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ParamMatch</span><span class="p">(</span><span class="n">space</span><span class="o">=</span><span class="n">SpacePolicy</span><span class="o">.</span><span class="n">NOSPACE</span><span class="p">))</span>
-                        <span class="c1"># ANCHOR: parse &quot;|&quot; and verify index</span>
-
+                        <span class="n">placeholders</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">char_stk</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;|&quot;</span><span class="p">)</span>
+                        <span class="n">placeholders</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">if</span> <span class="n">re</span><span class="o">.</span><span class="n">fullmatch</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;\d+&quot;</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span> <span class="k">else</span> <span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">char_stk</span><span class="p">)</span>
+                        <span class="n">match</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ParamMatch</span><span class="p">(</span><span class="o">*</span><span class="n">placeholders</span><span class="p">,</span> <span class="n">space</span><span class="o">=</span><span class="n">SpacePolicy</span><span class="o">.</span><span class="n">FORCE</span><span class="p">))</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;No matching parenthesis: </span><span class="si">{</span><span class="n">paren</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
                     <span class="n">char_stk</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
                     <span class="n">paren</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
-
+                <span class="k">elif</span> <span class="n">char_stk</span><span class="p">:</span>
+                    <span class="n">match</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">FullMatch</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">char_stk</span><span class="p">),</span> <span class="n">space</span><span class="o">=</span><span class="n">SpacePolicy</span><span class="o">.</span><span class="n">FORCE</span><span class="p">))</span>
+                    <span class="n">char_stk</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">char_stk</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">char</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">paren</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unclosed parenthesis: </span><span class="si">{</span><span class="n">paren</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">char_stk</span><span class="p">:</span>
-            <span class="n">match</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">FullMatch</span><span class="p">(</span><span class="n">unescape</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">char_stk</span><span class="p">)),</span> <span class="n">space</span><span class="o">=</span><span class="n">SpacePolicy</span><span class="o">.</span><span class="n">NOSPACE</span><span class="p">))</span>
+            <span class="n">match</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">FullMatch</span><span class="p">(</span><span class="n">unescape</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">char_stk</span><span class="p">)),</span> <span class="n">space</span><span class="o">=</span><span class="n">SpacePolicy</span><span class="o">.</span><span class="n">FORCE</span><span class="p">))</span>
             <span class="n">char_stk</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">match</span><span class="p">:</span>
+            <span class="n">match</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">space</span> <span class="o">=</span> <span class="n">SpacePolicy</span><span class="o">.</span><span class="n">NOSPACE</span>
 
         <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">match</span><span class="p">,</span> <span class="n">extra_arg_mapping</span><span class="p">)</span>
 
@@ -2652,8 +2747,16 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_parser</span> <span class="o">=</span> <span class="n">TwilightParser</span><span class="p">(</span><span class="n">prog</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">add_help</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
+        <span class="bp">self</span><span class="o">.</span><span class="n">_param_match_ref</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span> <span class="n">ParamMatch</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+
         <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">check</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_match_ref</span><span class="p">[</span><span class="n">v</span><span class="o">.</span><span class="vm">__class__</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">ParamMatch</span><span class="p">):</span>  <span class="c1"># Validate ParamMatch&#39;s tags</span>
+                <span class="k">for</span> <span class="n">tag</span> <span class="ow">in</span> <span class="n">v</span><span class="o">.</span><span class="n">num_tags</span> <span class="o">+</span> <span class="n">v</span><span class="o">.</span><span class="n">str_tags</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">tag</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_param_match_ref</span><span class="p">:</span>
+                        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Duplicated ParamMatch tag with </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_param_match_ref</span><span class="p">[</span><span class="n">tag</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_param_match_ref</span><span class="p">[</span><span class="n">tag</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span>
 
         <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">match_map</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="k">if</span> <span class="n">k</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;_&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">k</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">in</span> <span class="n">string</span><span class="o">.</span><span class="n">digits</span><span class="p">:</span>
@@ -2676,9 +2779,17 @@
                 <span class="k">continue</span>
 
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">RegexMatch</span><span class="p">):</span>  <span class="c1"># add to self._mapping_regex_match</span>
+
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">ParamMatch</span><span class="p">):</span>  <span class="c1"># Validate ParamMatch&#39;s tags</span>
+                    <span class="k">for</span> <span class="n">tag</span> <span class="ow">in</span> <span class="n">v</span><span class="o">.</span><span class="n">num_tags</span> <span class="o">+</span> <span class="n">v</span><span class="o">.</span><span class="n">str_tags</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="n">tag</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_param_match_ref</span><span class="p">:</span>
+                            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Duplicated ParamMatch tag with </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_param_match_ref</span><span class="p">[</span><span class="n">tag</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_param_match_ref</span><span class="p">[</span><span class="n">tag</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span>
+
                 <span class="bp">self</span><span class="o">.</span><span class="n">_mapping_regex_match</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">group_cnt</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
                 <span class="n">group_cnt</span> <span class="o">+=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="n">v</span><span class="o">.</span><span class="n">gen_regex</span><span class="p">())</span><span class="o">.</span><span class="n">groups</span>
                 <span class="n">match_pattern_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">v</span><span class="o">.</span><span class="n">gen_regex</span><span class="p">())</span>
+
                 <span class="k">continue</span>
 
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">v</span><span class="si">}</span><span class="s2"> is neither RegexMatch nor ArgumentMatch!&quot;</span><span class="p">)</span>
@@ -2781,6 +2892,51 @@
 
 
                             </div>
+                            <div id="Sparkle.get_param" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#Sparkle.get_param">#&nbsp;&nbsp</a>
+
+        
+            <span class="def">def</span>
+            <span class="name">get_param</span><span class="signature">(
+    self,
+    tag: Union[int, str]
+) -&gt; <a href="#ParamMatch">ariadne.message.parser.twilight.ParamMatch</a></span>:
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">get_param</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tag</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">ParamMatch</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;通过 tag 获取对应的 ParamMatch 实例</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            tag (Union[int, str]): ParamMatch 的 tag</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            ParamMatch: 获取到的 ParamMatch</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_param_match_ref</span><span class="p">[</span><span class="n">tag</span><span class="p">]</span>
+</pre></div>
+
+        </details>
+
+            <div class="docstring"><p>通过 tag 获取对应的 ParamMatch 实例</p>
+
+<h6 id="args">Args</h6>
+
+<ul>
+<li><strong>tag (Union[int, str]):</strong>  ParamMatch 的 tag</li>
+</ul>
+
+<h6 id="returns">Returns</h6>
+
+<blockquote>
+  <p>ParamMatch: 获取到的 ParamMatch</p>
+</blockquote>
+</div>
+
+
+                            </div>
                             <div id="Sparkle.from_command" class="classattr">
                                         <div class="attr function"><a class="headerlink" href="#Sparkle.from_command">#&nbsp;&nbsp</a>
 
@@ -2788,7 +2944,7 @@
 
             <span class="def">def</span>
             <span class="name">from_command</span><span class="signature">(
-    cls,
+    cls: Type[<a href="#Sparkle">ariadne.message.parser.twilight.Sparkle</a>],
     command: str,
     extra_arg_mapping: Optional[Dict[str, <a href="#ArgumentMatch">ariadne.message.parser.twilight.ArgumentMatch</a>]] = None
 ) -&gt; <a href="#Sparkle">ariadne.message.parser.twilight.Sparkle</a></span>:
@@ -2798,7 +2954,7 @@
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">from_command</span><span class="p">(</span>  <span class="c1"># ANCHOR: Sparkle: From command</span>
-        <span class="bp">cls</span><span class="p">,</span> <span class="n">command</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">extra_arg_mapping</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">ArgumentMatch</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">cls</span><span class="p">:</span> <span class="s2">&quot;Type[Sparkle]&quot;</span><span class="p">,</span> <span class="n">command</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">extra_arg_mapping</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">ArgumentMatch</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;Sparkle&quot;</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;从 shell 式命令生成 Sparkle.</span>
 
@@ -2818,37 +2974,41 @@
         <span class="n">char_stk</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
 
         <span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">char</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">command</span><span class="p">):</span>
-            <span class="k">if</span> <span class="n">char</span> <span class="ow">in</span> <span class="n">L_PAREN</span> <span class="o">+</span> <span class="n">R_PAREN</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">char</span> <span class="ow">in</span> <span class="n">L_PAREN</span> <span class="o">+</span> <span class="n">R_PAREN</span> <span class="o">+</span> <span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">,):</span>
                 <span class="k">if</span> <span class="n">char</span> <span class="ow">in</span> <span class="n">L_PAREN</span><span class="p">:</span>
-                    <span class="k">if</span> <span class="n">char_stk</span><span class="p">:</span>
-                        <span class="n">match</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">FullMatch</span><span class="p">(</span><span class="n">unescape</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">char_stk</span><span class="p">)),</span> <span class="n">space</span><span class="o">=</span><span class="n">SpacePolicy</span><span class="o">.</span><span class="n">NOSPACE</span><span class="p">))</span>
-                        <span class="n">char_stk</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
                     <span class="k">if</span> <span class="n">paren</span><span class="p">:</span>
                         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
                             <span class="sa">f</span><span class="s2">&quot;Duplicated parenthesis character at index </span><span class="si">{</span><span class="n">index</span><span class="si">}</span><span class="s2">!&quot;</span>
                             <span class="sd">&quot;&quot;&quot;Are you sure you&#39;ve escaped with &quot;\\&quot;?&quot;&quot;&quot;</span>
                         <span class="p">)</span>
                     <span class="n">paren</span> <span class="o">=</span> <span class="n">char</span>
-                <span class="k">else</span><span class="p">:</span>  <span class="c1"># char in R_PAREN</span>
+                <span class="k">elif</span> <span class="n">char</span> <span class="ow">in</span> <span class="n">R_PAREN</span><span class="p">:</span>
                     <span class="k">if</span> <span class="n">paren</span> <span class="o">==</span> <span class="s2">&quot;[&quot;</span><span class="p">:</span>  <span class="c1"># UnionMatch</span>
                         <span class="n">match</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
-                            <span class="n">UnionMatch</span><span class="p">(</span>
-                                <span class="o">*</span><span class="nb">map</span><span class="p">(</span><span class="n">unescape</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">char_stk</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;|&quot;</span><span class="p">)),</span> <span class="n">space</span><span class="o">=</span><span class="n">SpacePolicy</span><span class="o">.</span><span class="n">NOSPACE</span>
-                            <span class="p">)</span>
+                            <span class="n">UnionMatch</span><span class="p">(</span><span class="o">*</span><span class="nb">map</span><span class="p">(</span><span class="n">unescape</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">char_stk</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;|&quot;</span><span class="p">)),</span> <span class="n">space</span><span class="o">=</span><span class="n">SpacePolicy</span><span class="o">.</span><span class="n">FORCE</span><span class="p">)</span>
                         <span class="p">)</span>
                     <span class="k">elif</span> <span class="n">paren</span> <span class="o">==</span> <span class="s2">&quot;{&quot;</span><span class="p">:</span>  <span class="c1"># ParamMatch</span>
-                        <span class="n">match</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ParamMatch</span><span class="p">(</span><span class="n">space</span><span class="o">=</span><span class="n">SpacePolicy</span><span class="o">.</span><span class="n">NOSPACE</span><span class="p">))</span>
-                        <span class="c1"># ANCHOR: parse &quot;|&quot; and verify index</span>
-
+                        <span class="n">placeholders</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">char_stk</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;|&quot;</span><span class="p">)</span>
+                        <span class="n">placeholders</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">if</span> <span class="n">re</span><span class="o">.</span><span class="n">fullmatch</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;\d+&quot;</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span> <span class="k">else</span> <span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">char_stk</span><span class="p">)</span>
+                        <span class="n">match</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ParamMatch</span><span class="p">(</span><span class="o">*</span><span class="n">placeholders</span><span class="p">,</span> <span class="n">space</span><span class="o">=</span><span class="n">SpacePolicy</span><span class="o">.</span><span class="n">FORCE</span><span class="p">))</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;No matching parenthesis: </span><span class="si">{</span><span class="n">paren</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
                     <span class="n">char_stk</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
                     <span class="n">paren</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
-
+                <span class="k">elif</span> <span class="n">char_stk</span><span class="p">:</span>
+                    <span class="n">match</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">FullMatch</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">char_stk</span><span class="p">),</span> <span class="n">space</span><span class="o">=</span><span class="n">SpacePolicy</span><span class="o">.</span><span class="n">FORCE</span><span class="p">))</span>
+                    <span class="n">char_stk</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">char_stk</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">char</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">paren</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unclosed parenthesis: </span><span class="si">{</span><span class="n">paren</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">char_stk</span><span class="p">:</span>
-            <span class="n">match</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">FullMatch</span><span class="p">(</span><span class="n">unescape</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">char_stk</span><span class="p">)),</span> <span class="n">space</span><span class="o">=</span><span class="n">SpacePolicy</span><span class="o">.</span><span class="n">NOSPACE</span><span class="p">))</span>
+            <span class="n">match</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">FullMatch</span><span class="p">(</span><span class="n">unescape</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">char_stk</span><span class="p">)),</span> <span class="n">space</span><span class="o">=</span><span class="n">SpacePolicy</span><span class="o">.</span><span class="n">FORCE</span><span class="p">))</span>
             <span class="n">char_stk</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">match</span><span class="p">:</span>
+            <span class="n">match</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">space</span> <span class="o">=</span> <span class="n">SpacePolicy</span><span class="o">.</span><span class="n">NOSPACE</span>
 
         <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">match</span><span class="p">,</span> <span class="n">extra_arg_mapping</span><span class="p">)</span>
 </pre></div>
