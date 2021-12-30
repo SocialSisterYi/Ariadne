@@ -40,13 +40,31 @@
                     <a class="function" href="#unescape">unescape</a>
             </li>
             <li>
+                    <a class="class" href="#CommandToken">CommandToken</a>
+                            <ul class="memberlist">
+                        <li>
+                                <a class="variable" href="#CommandToken.TEXT">TEXT</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#CommandToken.CHOICE">CHOICE</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#CommandToken.PARAM">PARAM</a>
+                        </li>
+                </ul>
+
+            </li>
+            <li>
+                    <a class="function" href="#tokenize_command">tokenize_command</a>
+            </li>
+            <li>
                     <a class="function" href="#split">split</a>
             </li>
             <li>
                     <a class="function" href="#gen_flags_repr">gen_flags_repr</a>
             </li>
             <li>
-                    <a class="function" href="#transformed_regex">transformed_regex</a>
+                    <a class="function" href="#transform_regex">transform_regex</a>
             </li>
             <li>
                     <a class="class" href="#MessageChainType">MessageChainType</a>
@@ -103,10 +121,11 @@
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span><span class="sd">&quot;&quot;&quot;消息链处理器用到的工具函数, 类&quot;&quot;&quot;</span>
 <span class="kn">import</span> <span class="nn">argparse</span>
+<span class="kn">import</span> <span class="nn">enum</span>
 <span class="kn">import</span> <span class="nn">inspect</span>
 <span class="kn">import</span> <span class="nn">re</span>
 <span class="kn">from</span> <span class="nn">contextvars</span> <span class="kn">import</span> <span class="n">ContextVar</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">NoReturn</span><span class="p">,</span> <span class="n">Type</span><span class="p">,</span> <span class="n">Union</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">NoReturn</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Type</span><span class="p">,</span> <span class="n">Union</span>
 
 <span class="kn">from</span> <span class="nn">..chain</span> <span class="kn">import</span> <span class="n">Element_T</span><span class="p">,</span> <span class="n">MessageChain</span>
 
@@ -152,6 +171,72 @@
     <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">R_ESCAPE</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
         <span class="n">string</span> <span class="o">=</span> <span class="n">string</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">string</span>
+
+
+<span class="k">class</span> <span class="nc">CommandToken</span><span class="p">(</span><span class="n">enum</span><span class="o">.</span><span class="n">Enum</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Command 的 Token.&quot;&quot;&quot;</span>
+
+    <span class="n">TEXT</span> <span class="o">=</span> <span class="s2">&quot;TEXT&quot;</span>
+    <span class="n">CHOICE</span> <span class="o">=</span> <span class="s2">&quot;CHOICE&quot;</span>
+    <span class="n">PARAM</span> <span class="o">=</span> <span class="s2">&quot;PARAM&quot;</span>
+
+
+<span class="k">def</span> <span class="nf">tokenize_command</span><span class="p">(</span><span class="n">string</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;将字符串转义化, 并处理为 Text, Choice, Param 三种 token</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        string (str): 要处理的字符串</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        List[Tuple[CommandToken, List[str]]]: 处理后的 Token</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">string</span> <span class="o">=</span> <span class="n">escape</span><span class="p">(</span><span class="n">string</span><span class="p">)</span>
+
+    <span class="n">paren</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+    <span class="n">char_stk</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">token</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="n">CommandToken</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]]]</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">char</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">string</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">char</span> <span class="ow">in</span> <span class="n">L_PAREN</span> <span class="o">+</span> <span class="n">R_PAREN</span> <span class="o">+</span> <span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">,):</span>
+            <span class="k">if</span> <span class="n">char</span> <span class="ow">in</span> <span class="n">L_PAREN</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">paren</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                        <span class="sa">f</span><span class="s2">&quot;&quot;&quot;Duplicated parenthesis character &quot;</span><span class="si">{</span><span class="n">char</span><span class="si">}</span><span class="s2">&quot; @ </span><span class="si">{</span><span class="n">index</span><span class="si">}</span><span class="s2"> !&quot;&quot;&quot;</span>
+                        <span class="sd">&quot;&quot;&quot;Are you sure you&#39;ve escaped with &quot;\\&quot;?&quot;&quot;&quot;</span>
+                    <span class="p">)</span>
+                <span class="n">paren</span> <span class="o">=</span> <span class="n">char</span>
+            <span class="k">elif</span> <span class="n">char</span> <span class="ow">in</span> <span class="n">R_PAREN</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">paren</span> <span class="o">==</span> <span class="s2">&quot;[&quot;</span><span class="p">:</span>  <span class="c1"># CHOICE</span>
+                    <span class="n">token</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">CommandToken</span><span class="o">.</span><span class="n">CHOICE</span><span class="p">,</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="n">unescape</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">char_stk</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;|&quot;</span><span class="p">)))))</span>
+                <span class="k">elif</span> <span class="n">paren</span> <span class="o">==</span> <span class="s2">&quot;{&quot;</span><span class="p">:</span>  <span class="c1"># PARAM</span>
+                    <span class="n">token</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                        <span class="p">(</span>
+                            <span class="n">CommandToken</span><span class="o">.</span><span class="n">PARAM</span><span class="p">,</span>
+                            <span class="p">[</span>
+                                <span class="nb">int</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">if</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;\d+&quot;</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span> <span class="k">else</span> <span class="n">unescape</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+                                <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">char_stk</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;|&quot;</span><span class="p">)</span>
+                            <span class="p">],</span>
+                        <span class="p">)</span>
+                    <span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;No matching parenthesis: </span><span class="si">{</span><span class="n">paren</span><span class="si">}</span><span class="s2"> @ </span><span class="si">{</span><span class="n">index</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="n">char_stk</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+                <span class="n">paren</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+            <span class="k">elif</span> <span class="n">char_stk</span><span class="p">:</span>
+                <span class="n">token</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">CommandToken</span><span class="o">.</span><span class="n">TEXT</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">char_stk</span><span class="p">)]))</span>
+            <span class="n">char_stk</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">char_stk</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">char</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">paren</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unclosed parenthesis: </span><span class="si">{</span><span class="n">paren</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">char_stk</span><span class="p">:</span>
+        <span class="n">token</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">CommandToken</span><span class="o">.</span><span class="n">TEXT</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">char_stk</span><span class="p">)]))</span>
+        <span class="n">char_stk</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+
+    <span class="k">return</span> <span class="n">token</span>
 
 
 <span class="k">def</span> <span class="nf">split</span><span class="p">(</span><span class="n">string</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
@@ -215,7 +300,7 @@
     <span class="k">return</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">flags_list</span><span class="p">)</span>
 
 
-<span class="k">def</span> <span class="nf">transformed_regex</span><span class="p">(</span><span class="n">flag</span><span class="p">:</span> <span class="n">re</span><span class="o">.</span><span class="n">RegexFlag</span><span class="p">,</span> <span class="n">regex_pattern</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="k">def</span> <span class="nf">transform_regex</span><span class="p">(</span><span class="n">flag</span><span class="p">:</span> <span class="n">re</span><span class="o">.</span><span class="n">RegexFlag</span><span class="p">,</span> <span class="n">regex_pattern</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;生成嵌套正则表达式字符串来达到至少最外层含有一个捕获组的效果</span>
 
 <span class="sd">    Args:</span>
@@ -384,6 +469,156 @@
 
 
                 </section>
+                <section id="CommandToken">
+                                <div class="attr class">
+        <a class="headerlink" href="#CommandToken">#&nbsp;&nbsp</a>
+
+        
+        <span class="def">class</span>
+        <span class="name">CommandToken</span><wbr>(<span class="base">enum.Enum</span>):
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">CommandToken</span><span class="p">(</span><span class="n">enum</span><span class="o">.</span><span class="n">Enum</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Command 的 Token.&quot;&quot;&quot;</span>
+
+    <span class="n">TEXT</span> <span class="o">=</span> <span class="s2">&quot;TEXT&quot;</span>
+    <span class="n">CHOICE</span> <span class="o">=</span> <span class="s2">&quot;CHOICE&quot;</span>
+    <span class="n">PARAM</span> <span class="o">=</span> <span class="s2">&quot;PARAM&quot;</span>
+</pre></div>
+
+        </details>
+
+            <div class="docstring"><p>Command 的 Token.</p>
+</div>
+
+
+                            <div id="CommandToken.TEXT" class="classattr">
+                                            <div class="attr variable"><a class="headerlink" href="#CommandToken.TEXT">#&nbsp;&nbsp</a>
+
+        <span class="name">TEXT</span><span class="default_value"> = &lt;<a href="#CommandToken.TEXT">CommandToken.TEXT</a>: &#39;TEXT&#39;&gt;</span>
+    </div>
+
+    
+
+                            </div>
+                            <div id="CommandToken.CHOICE" class="classattr">
+                                            <div class="attr variable"><a class="headerlink" href="#CommandToken.CHOICE">#&nbsp;&nbsp</a>
+
+        <span class="name">CHOICE</span><span class="default_value"> = &lt;<a href="#CommandToken.CHOICE">CommandToken.CHOICE</a>: &#39;CHOICE&#39;&gt;</span>
+    </div>
+
+    
+
+                            </div>
+                            <div id="CommandToken.PARAM" class="classattr">
+                                            <div class="attr variable"><a class="headerlink" href="#CommandToken.PARAM">#&nbsp;&nbsp</a>
+
+        <span class="name">PARAM</span><span class="default_value"> = &lt;<a href="#CommandToken.PARAM">CommandToken.PARAM</a>: &#39;PARAM&#39;&gt;</span>
+    </div>
+
+    
+
+                            </div>
+                            <div class="inherited">
+                                <h5>Inherited Members</h5>
+                                <dl>
+                                    <div><dt>enum.Enum</dt>
+                                <dd id="CommandToken.name" class="variable">name</dd>
+                <dd id="CommandToken.value" class="variable">value</dd>
+
+            </div>
+                                </dl>
+                            </div>
+                </section>
+                <section id="tokenize_command">
+                            <div class="attr function"><a class="headerlink" href="#tokenize_command">#&nbsp;&nbsp</a>
+
+        
+            <span class="def">def</span>
+            <span class="name">tokenize_command</span><span class="signature">(string: str)</span>:
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span><span class="k">def</span> <span class="nf">tokenize_command</span><span class="p">(</span><span class="n">string</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;将字符串转义化, 并处理为 Text, Choice, Param 三种 token</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        string (str): 要处理的字符串</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        List[Tuple[CommandToken, List[str]]]: 处理后的 Token</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">string</span> <span class="o">=</span> <span class="n">escape</span><span class="p">(</span><span class="n">string</span><span class="p">)</span>
+
+    <span class="n">paren</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+    <span class="n">char_stk</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">token</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="n">CommandToken</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]]]</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">char</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">string</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">char</span> <span class="ow">in</span> <span class="n">L_PAREN</span> <span class="o">+</span> <span class="n">R_PAREN</span> <span class="o">+</span> <span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">,):</span>
+            <span class="k">if</span> <span class="n">char</span> <span class="ow">in</span> <span class="n">L_PAREN</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">paren</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                        <span class="sa">f</span><span class="s2">&quot;&quot;&quot;Duplicated parenthesis character &quot;</span><span class="si">{</span><span class="n">char</span><span class="si">}</span><span class="s2">&quot; @ </span><span class="si">{</span><span class="n">index</span><span class="si">}</span><span class="s2"> !&quot;&quot;&quot;</span>
+                        <span class="sd">&quot;&quot;&quot;Are you sure you&#39;ve escaped with &quot;\\&quot;?&quot;&quot;&quot;</span>
+                    <span class="p">)</span>
+                <span class="n">paren</span> <span class="o">=</span> <span class="n">char</span>
+            <span class="k">elif</span> <span class="n">char</span> <span class="ow">in</span> <span class="n">R_PAREN</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">paren</span> <span class="o">==</span> <span class="s2">&quot;[&quot;</span><span class="p">:</span>  <span class="c1"># CHOICE</span>
+                    <span class="n">token</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">CommandToken</span><span class="o">.</span><span class="n">CHOICE</span><span class="p">,</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="n">unescape</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">char_stk</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;|&quot;</span><span class="p">)))))</span>
+                <span class="k">elif</span> <span class="n">paren</span> <span class="o">==</span> <span class="s2">&quot;{&quot;</span><span class="p">:</span>  <span class="c1"># PARAM</span>
+                    <span class="n">token</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                        <span class="p">(</span>
+                            <span class="n">CommandToken</span><span class="o">.</span><span class="n">PARAM</span><span class="p">,</span>
+                            <span class="p">[</span>
+                                <span class="nb">int</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">if</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;\d+&quot;</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span> <span class="k">else</span> <span class="n">unescape</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+                                <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">char_stk</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;|&quot;</span><span class="p">)</span>
+                            <span class="p">],</span>
+                        <span class="p">)</span>
+                    <span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;No matching parenthesis: </span><span class="si">{</span><span class="n">paren</span><span class="si">}</span><span class="s2"> @ </span><span class="si">{</span><span class="n">index</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="n">char_stk</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+                <span class="n">paren</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+            <span class="k">elif</span> <span class="n">char_stk</span><span class="p">:</span>
+                <span class="n">token</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">CommandToken</span><span class="o">.</span><span class="n">TEXT</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">char_stk</span><span class="p">)]))</span>
+            <span class="n">char_stk</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">char_stk</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">char</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">paren</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unclosed parenthesis: </span><span class="si">{</span><span class="n">paren</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">char_stk</span><span class="p">:</span>
+        <span class="n">token</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">CommandToken</span><span class="o">.</span><span class="n">TEXT</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">char_stk</span><span class="p">)]))</span>
+        <span class="n">char_stk</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+
+    <span class="k">return</span> <span class="n">token</span>
+</pre></div>
+
+        </details>
+
+            <div class="docstring"><p>将字符串转义化, 并处理为 Text, Choice, Param 三种 token</p>
+
+<h6 id="args">Args</h6>
+
+<ul>
+<li><strong>string (str):</strong>  要处理的字符串</li>
+</ul>
+
+<h6 id="returns">Returns</h6>
+
+<blockquote>
+  <p>List[Tuple[CommandToken, List[str]]]: 处理后的 Token</p>
+</blockquote>
+</div>
+
+
+                </section>
                 <section id="split">
                             <div class="attr function"><a class="headerlink" href="#split">#&nbsp;&nbsp</a>
 
@@ -503,17 +738,17 @@
 
 
                 </section>
-                <section id="transformed_regex">
-                            <div class="attr function"><a class="headerlink" href="#transformed_regex">#&nbsp;&nbsp</a>
+                <section id="transform_regex">
+                            <div class="attr function"><a class="headerlink" href="#transform_regex">#&nbsp;&nbsp</a>
 
         
             <span class="def">def</span>
-            <span class="name">transformed_regex</span><span class="signature">(flag: re.RegexFlag, regex_pattern: str) -&gt; str</span>:
+            <span class="name">transform_regex</span><span class="signature">(flag: re.RegexFlag, regex_pattern: str) -&gt; str</span>:
     </div>
 
                 <details>
             <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span><span class="k">def</span> <span class="nf">transformed_regex</span><span class="p">(</span><span class="n">flag</span><span class="p">:</span> <span class="n">re</span><span class="o">.</span><span class="n">RegexFlag</span><span class="p">,</span> <span class="n">regex_pattern</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+            <div class="codehilite"><pre><span></span><span class="k">def</span> <span class="nf">transform_regex</span><span class="p">(</span><span class="n">flag</span><span class="p">:</span> <span class="n">re</span><span class="o">.</span><span class="n">RegexFlag</span><span class="p">,</span> <span class="n">regex_pattern</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;生成嵌套正则表达式字符串来达到至少最外层含有一个捕获组的效果</span>
 
 <span class="sd">    Args:</span>
