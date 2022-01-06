@@ -700,14 +700,21 @@
         <span class="k">return</span> <span class="n">copied</span>
 
     <span class="nd">@overload</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">check</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Match</span><span class="p">]):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">check</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Match</span><span class="p">],</span>
+        <span class="n">description</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+        <span class="n">epilog</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+    <span class="p">):</span>
         <span class="o">...</span>
 
     <span class="nd">@overload</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">check</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Match</span><span class="p">]</span> <span class="o">=</span> <span class="p">(),</span>
+        <span class="n">check</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">Match</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="p">(),</span>
         <span class="n">match</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Match</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">description</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+        <span class="n">epilog</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
     <span class="p">):</span>
         <span class="o">...</span>
 
@@ -747,6 +754,9 @@
         <span class="n">check_pattern_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
 
         <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">check</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>  <span class="c1"># Regex string</span>
+                <span class="n">v</span> <span class="o">=</span> <span class="n">RegexMatch</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+
             <span class="bp">self</span><span class="o">.</span><span class="n">_match_ref</span><span class="p">[</span><span class="n">v</span><span class="o">.</span><span class="vm">__class__</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">RegexMatch</span><span class="p">):</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_list_check_match</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">v</span><span class="p">,</span> <span class="n">group_cnt</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span>
@@ -1036,7 +1046,7 @@
     <span class="nd">@overload</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">root</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">RegexMatch</span><span class="p">],</span>
+        <span class="n">root</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">Match</span><span class="p">,</span> <span class="nb">str</span><span class="p">]],</span>
         <span class="n">match</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Match</span><span class="p">]</span> <span class="o">=</span> <span class="o">...</span><span class="p">,</span>
         <span class="o">*</span><span class="p">,</span>
         <span class="n">map_params</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">bool</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -1045,7 +1055,7 @@
 
 <span class="sd">        Args:</span>
 <span class="sd">            check (Iterable[RegexMatch]): 用于检查的 Match 对象.</span>
-<span class="sd">            match (Dict[str, Match]): 额外匹配的映射.</span>
+<span class="sd">            match (Iterable[Union[Match, str]]): 额外匹配的映射 / 正则字符串.</span>
 <span class="sd">            map_params (Dict[str, bool], optional): 向 MessageChain.asMappingString 传入的参数.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
@@ -2395,14 +2405,21 @@
         <span class="k">return</span> <span class="n">copied</span>
 
     <span class="nd">@overload</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">check</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Match</span><span class="p">]):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">check</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Match</span><span class="p">],</span>
+        <span class="n">description</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+        <span class="n">epilog</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+    <span class="p">):</span>
         <span class="o">...</span>
 
     <span class="nd">@overload</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">check</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Match</span><span class="p">]</span> <span class="o">=</span> <span class="p">(),</span>
+        <span class="n">check</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">Match</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="p">(),</span>
         <span class="n">match</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Match</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">description</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+        <span class="n">epilog</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
     <span class="p">):</span>
         <span class="o">...</span>
 
@@ -2442,6 +2459,9 @@
         <span class="n">check_pattern_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
 
         <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">check</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>  <span class="c1"># Regex string</span>
+                <span class="n">v</span> <span class="o">=</span> <span class="n">RegexMatch</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+
             <span class="bp">self</span><span class="o">.</span><span class="n">_match_ref</span><span class="p">[</span><span class="n">v</span><span class="o">.</span><span class="vm">__class__</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">RegexMatch</span><span class="p">):</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_list_check_match</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">v</span><span class="p">,</span> <span class="n">group_cnt</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span>
@@ -2746,6 +2766,9 @@
         <span class="n">check_pattern_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
 
         <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">check</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>  <span class="c1"># Regex string</span>
+                <span class="n">v</span> <span class="o">=</span> <span class="n">RegexMatch</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+
             <span class="bp">self</span><span class="o">.</span><span class="n">_match_ref</span><span class="p">[</span><span class="n">v</span><span class="o">.</span><span class="vm">__class__</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">RegexMatch</span><span class="p">):</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_list_check_match</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">v</span><span class="p">,</span> <span class="n">group_cnt</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span>
@@ -3339,7 +3362,7 @@
     <span class="nd">@overload</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">root</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">RegexMatch</span><span class="p">],</span>
+        <span class="n">root</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">Match</span><span class="p">,</span> <span class="nb">str</span><span class="p">]],</span>
         <span class="n">match</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Match</span><span class="p">]</span> <span class="o">=</span> <span class="o">...</span><span class="p">,</span>
         <span class="o">*</span><span class="p">,</span>
         <span class="n">map_params</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">bool</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -3348,7 +3371,7 @@
 
 <span class="sd">        Args:</span>
 <span class="sd">            check (Iterable[RegexMatch]): 用于检查的 Match 对象.</span>
-<span class="sd">            match (Dict[str, Match]): 额外匹配的映射.</span>
+<span class="sd">            match (Iterable[Union[Match, str]]): 额外匹配的映射 / 正则字符串.</span>
 <span class="sd">            map_params (Dict[str, bool], optional): 向 MessageChain.asMappingString 传入的参数.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
