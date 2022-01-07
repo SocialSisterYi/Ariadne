@@ -324,6 +324,9 @@
         <span class="n">args</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="s2">&quot;pattern&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">pattern</span><span class="p">))</span>
         <span class="k">return</span> <span class="n">args</span>
 
+    <span class="k">def</span> <span class="nf">__deepcopy__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
 
 <span class="k">class</span> <span class="nc">RegexMatch</span><span class="p">(</span><span class="n">Match</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;基础的正则表达式匹配.&quot;&quot;&quot;</span>
@@ -690,12 +693,17 @@
     <span class="k">def</span> <span class="nf">__deepcopy__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">memo</span><span class="p">):</span>
         <span class="n">copied</span> <span class="o">=</span> <span class="n">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
 
-        <span class="n">copied</span><span class="o">.</span><span class="n">_list_check_match</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_list_check_match</span><span class="p">,</span> <span class="n">memo</span><span class="p">)</span>
-        <span class="n">copied</span><span class="o">.</span><span class="n">_mapping_arg_match</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_mapping_arg_match</span><span class="p">,</span> <span class="n">memo</span><span class="p">)</span>
-        <span class="n">copied</span><span class="o">.</span><span class="n">_mapping_regex_match</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_mapping_regex_match</span><span class="p">,</span> <span class="n">memo</span><span class="p">)</span>
-        <span class="n">copied</span><span class="o">.</span><span class="n">_parser_ref</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_parser_ref</span><span class="p">,</span> <span class="n">memo</span><span class="p">)</span>
-        <span class="n">copied</span><span class="o">.</span><span class="n">_match_ref</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_match_ref</span><span class="p">,</span> <span class="n">memo</span><span class="p">)</span>
-        <span class="n">copied</span><span class="o">.</span><span class="n">_param_match_ref</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_param_match_ref</span><span class="p">,</span> <span class="n">memo</span><span class="p">)</span>
+        <span class="n">COPY_ATTRS</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;_list_check_match&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;_mapping_arg_match&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;_mapping_regex_match&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;_parser_ref&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;_match_ref&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;_param_match_ref&quot;</span><span class="p">,</span>
+        <span class="p">}</span>
+
+        <span class="k">for</span> <span class="n">attr_name</span> <span class="ow">in</span> <span class="n">COPY_ATTRS</span><span class="p">:</span>
+            <span class="nb">setattr</span><span class="p">(</span><span class="n">copied</span><span class="p">,</span> <span class="n">attr_name</span><span class="p">,</span> <span class="n">deepcopy</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attr_name</span><span class="p">),</span> <span class="n">memo</span><span class="p">))</span>
 
         <span class="k">return</span> <span class="n">copied</span>
 
@@ -1328,6 +1336,9 @@
             <span class="n">args</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="s2">&quot;result&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">result</span><span class="p">))</span>
         <span class="n">args</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="s2">&quot;pattern&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">pattern</span><span class="p">))</span>
         <span class="k">return</span> <span class="n">args</span>
+
+    <span class="k">def</span> <span class="nf">__deepcopy__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
 </pre></div>
 
         </details>
@@ -2395,12 +2406,17 @@
     <span class="k">def</span> <span class="nf">__deepcopy__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">memo</span><span class="p">):</span>
         <span class="n">copied</span> <span class="o">=</span> <span class="n">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
 
-        <span class="n">copied</span><span class="o">.</span><span class="n">_list_check_match</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_list_check_match</span><span class="p">,</span> <span class="n">memo</span><span class="p">)</span>
-        <span class="n">copied</span><span class="o">.</span><span class="n">_mapping_arg_match</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_mapping_arg_match</span><span class="p">,</span> <span class="n">memo</span><span class="p">)</span>
-        <span class="n">copied</span><span class="o">.</span><span class="n">_mapping_regex_match</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_mapping_regex_match</span><span class="p">,</span> <span class="n">memo</span><span class="p">)</span>
-        <span class="n">copied</span><span class="o">.</span><span class="n">_parser_ref</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_parser_ref</span><span class="p">,</span> <span class="n">memo</span><span class="p">)</span>
-        <span class="n">copied</span><span class="o">.</span><span class="n">_match_ref</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_match_ref</span><span class="p">,</span> <span class="n">memo</span><span class="p">)</span>
-        <span class="n">copied</span><span class="o">.</span><span class="n">_param_match_ref</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_param_match_ref</span><span class="p">,</span> <span class="n">memo</span><span class="p">)</span>
+        <span class="n">COPY_ATTRS</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;_list_check_match&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;_mapping_arg_match&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;_mapping_regex_match&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;_parser_ref&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;_match_ref&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;_param_match_ref&quot;</span><span class="p">,</span>
+        <span class="p">}</span>
+
+        <span class="k">for</span> <span class="n">attr_name</span> <span class="ow">in</span> <span class="n">COPY_ATTRS</span><span class="p">:</span>
+            <span class="nb">setattr</span><span class="p">(</span><span class="n">copied</span><span class="p">,</span> <span class="n">attr_name</span><span class="p">,</span> <span class="n">deepcopy</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attr_name</span><span class="p">),</span> <span class="n">memo</span><span class="p">))</span>
 
         <span class="k">return</span> <span class="n">copied</span>
 
