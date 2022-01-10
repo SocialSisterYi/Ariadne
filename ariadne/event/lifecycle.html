@@ -43,6 +43,9 @@
                                             <a class="function" href="#ApplicationLifecycleEvent.Dispatcher.__init__">Dispatcher</a>
                                     </li>
                                     <li>
+                                            <a class="variable" href="#ApplicationLifecycleEvent.Dispatcher.mixin">mixin</a>
+                                    </li>
+                                    <li>
                                             <a class="function" href="#ApplicationLifecycleEvent.Dispatcher.catch">catch</a>
                                     </li>
                             </ul>
@@ -105,6 +108,8 @@
 <span class="kn">from</span> <span class="nn">graia.broadcast.entities.event</span> <span class="kn">import</span> <span class="n">Dispatchable</span>
 <span class="kn">from</span> <span class="nn">graia.broadcast.interfaces.dispatcher</span> <span class="kn">import</span> <span class="n">DispatcherInterface</span>
 
+<span class="kn">from</span> <span class="nn">..dispatcher</span> <span class="kn">import</span> <span class="n">ContextDispatcher</span>
+
 <span class="k">if</span> <span class="n">typing</span><span class="o">.</span><span class="n">TYPE_CHECKING</span><span class="p">:</span>
     <span class="kn">from</span> <span class="nn">..app</span> <span class="kn">import</span> <span class="n">Ariadne</span>
 
@@ -120,6 +125,9 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">app</span> <span class="o">=</span> <span class="n">app</span>
 
     <span class="k">class</span> <span class="nc">Dispatcher</span><span class="p">(</span><span class="n">BaseDispatcher</span><span class="p">):</span>  <span class="c1"># pylint: disable=missing-class-docstring</span>
+
+        <span class="n">mixin</span> <span class="o">=</span> <span class="p">[</span><span class="n">ContextDispatcher</span><span class="p">]</span>
+
         <span class="nd">@staticmethod</span>
         <span class="k">async</span> <span class="k">def</span> <span class="nf">catch</span><span class="p">(</span><span class="n">interface</span><span class="p">:</span> <span class="s2">&quot;DispatcherInterface[ApplicationLifecycleEvent]&quot;</span><span class="p">):</span>
             <span class="kn">from</span> <span class="nn">..app</span> <span class="kn">import</span> <span class="n">Ariadne</span>
@@ -177,6 +185,9 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">app</span> <span class="o">=</span> <span class="n">app</span>
 
     <span class="k">class</span> <span class="nc">Dispatcher</span><span class="p">(</span><span class="n">BaseDispatcher</span><span class="p">):</span>  <span class="c1"># pylint: disable=missing-class-docstring</span>
+
+        <span class="n">mixin</span> <span class="o">=</span> <span class="p">[</span><span class="n">ContextDispatcher</span><span class="p">]</span>
+
         <span class="nd">@staticmethod</span>
         <span class="k">async</span> <span class="k">def</span> <span class="nf">catch</span><span class="p">(</span><span class="n">interface</span><span class="p">:</span> <span class="s2">&quot;DispatcherInterface[ApplicationLifecycleEvent]&quot;</span><span class="p">):</span>
             <span class="kn">from</span> <span class="nn">..app</span> <span class="kn">import</span> <span class="n">Ariadne</span>
@@ -222,6 +233,9 @@
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span>    <span class="k">class</span> <span class="nc">Dispatcher</span><span class="p">(</span><span class="n">BaseDispatcher</span><span class="p">):</span>  <span class="c1"># pylint: disable=missing-class-docstring</span>
+
+        <span class="n">mixin</span> <span class="o">=</span> <span class="p">[</span><span class="n">ContextDispatcher</span><span class="p">]</span>
+
         <span class="nd">@staticmethod</span>
         <span class="k">async</span> <span class="k">def</span> <span class="nf">catch</span><span class="p">(</span><span class="n">interface</span><span class="p">:</span> <span class="s2">&quot;DispatcherInterface[ApplicationLifecycleEvent]&quot;</span><span class="p">):</span>
             <span class="kn">from</span> <span class="nn">..app</span> <span class="kn">import</span> <span class="n">Ariadne</span>
@@ -245,6 +259,19 @@
 
         
     
+
+                            </div>
+                            <div id="ApplicationLifecycleEvent.Dispatcher.mixin" class="classattr">
+                                            <div class="attr variable"><a class="headerlink" href="#ApplicationLifecycleEvent.Dispatcher.mixin">#&nbsp;&nbsp</a>
+
+        <span class="name">mixin</span><span class="annotation">: List[Union[graia.broadcast.entities.dispatcher.BaseDispatcher, Type[graia.broadcast.entities.dispatcher.BaseDispatcher]]]</span><span class="default_value"> = [&lt;class &#39;<a href="../dispatcher.html#ContextDispatcher">ariadne.dispatcher.ContextDispatcher</a>&#39;&gt;]</span>
+    </div>
+
+            <div class="docstring"><p>声明该 Dispatcher 所包含的来自其他 Dispatcher 提供的参数解析支持,
+若某参数该 Dispatcher 无法解析, 将跳转到该列表中并交由其中的 Dispatcher 进行解析,
+该列表中的 Dispatcher 全部被调用过且都不返回一有效值时才会将解析权交由其他的 Dispatcher.</p>
+</div>
+
 
                             </div>
                             <div id="ApplicationLifecycleEvent.Dispatcher.catch" class="classattr">
@@ -290,8 +317,7 @@
                                 <h5>Inherited Members</h5>
                                 <dl>
                                     <div><dt>graia.broadcast.entities.dispatcher.BaseDispatcher</dt>
-                                <dd id="ApplicationLifecycleEvent.Dispatcher.mixin" class="variable">mixin</dd>
-                <dd id="ApplicationLifecycleEvent.Dispatcher.beforeExecution" class="variable">beforeExecution</dd>
+                                <dd id="ApplicationLifecycleEvent.Dispatcher.beforeExecution" class="variable">beforeExecution</dd>
                 <dd id="ApplicationLifecycleEvent.Dispatcher.afterDispatch" class="variable">afterDispatch</dd>
                 <dd id="ApplicationLifecycleEvent.Dispatcher.afterExecution" class="variable">afterExecution</dd>
 
