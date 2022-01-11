@@ -489,6 +489,9 @@
     <span class="n">nickname</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">remark</span><span class="p">:</span> <span class="nb">str</span>
 
+    <span class="k">def</span> <span class="fm">__int__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span>
+
 
 <span class="k">class</span> <span class="nc">Stranger</span><span class="p">(</span><span class="n">AriadneBaseModel</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;描述 Tencent QQ 中的陌生人.&quot;&quot;&quot;</span>
@@ -496,6 +499,9 @@
     <span class="nb">id</span><span class="p">:</span> <span class="nb">int</span>
     <span class="n">nickname</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">remark</span><span class="p">:</span> <span class="nb">str</span>
+
+    <span class="k">def</span> <span class="fm">__int__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span>
 
 
 <span class="k">class</span> <span class="nc">MemberPerm</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
@@ -513,6 +519,9 @@
     <span class="n">name</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">accountPerm</span><span class="p">:</span> <span class="n">MemberPerm</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="o">...</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;permission&quot;</span><span class="p">)</span>
 
+    <span class="k">def</span> <span class="fm">__int__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span>
+
 
 <span class="k">class</span> <span class="nc">Member</span><span class="p">(</span><span class="n">AriadneBaseModel</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;描述用户在群组中所具备的有关状态, 包括所在群组, 群中昵称, 所具备的权限, 唯一ID.&quot;&quot;&quot;</span>
@@ -525,6 +534,9 @@
     <span class="n">lastSpeakTimestamp</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">mutetimeRemaining</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">group</span><span class="p">:</span> <span class="n">Group</span>
+
+    <span class="k">def</span> <span class="fm">__int__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span>
 
 
 <span class="k">class</span> <span class="nc">GroupConfig</span><span class="p">(</span><span class="n">AriadneBaseModel</span><span class="p">):</span>
@@ -939,7 +951,7 @@ implement default like this::</p>
                             <div id="AriadneBaseModel.Config.json_encoders" class="classattr">
                                             <div class="attr variable"><a class="headerlink" href="#AriadneBaseModel.Config.json_encoders">#&nbsp;&nbsp</a>
 
-        <span class="name">json_encoders</span><span class="default_value"> = {&lt;class &#39;datetime.datetime&#39;&gt;: &lt;function datetime_encoder at 0x7fb3984688b0&gt;}</span>
+        <span class="name">json_encoders</span><span class="default_value"> = {&lt;class &#39;datetime.datetime&#39;&gt;: &lt;function datetime_encoder at 0x7fc009ad3af0&gt;}</span>
     </div>
 
     
@@ -1452,6 +1464,9 @@ implement default like this::</p>
     <span class="nb">id</span><span class="p">:</span> <span class="nb">int</span>
     <span class="n">nickname</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">remark</span><span class="p">:</span> <span class="nb">str</span>
+
+    <span class="k">def</span> <span class="fm">__int__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span>
 </pre></div>
 
         </details>
@@ -1503,6 +1518,9 @@ implement default like this::</p>
     <span class="nb">id</span><span class="p">:</span> <span class="nb">int</span>
     <span class="n">nickname</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">remark</span><span class="p">:</span> <span class="nb">str</span>
+
+    <span class="k">def</span> <span class="fm">__int__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span>
 </pre></div>
 
         </details>
@@ -1617,6 +1635,9 @@ implement default like this::</p>
     <span class="nb">id</span><span class="p">:</span> <span class="nb">int</span>
     <span class="n">name</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">accountPerm</span><span class="p">:</span> <span class="n">MemberPerm</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="o">...</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;permission&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__int__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span>
 </pre></div>
 
         </details>
@@ -1673,6 +1694,9 @@ implement default like this::</p>
     <span class="n">lastSpeakTimestamp</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">mutetimeRemaining</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">group</span><span class="p">:</span> <span class="n">Group</span>
+
+    <span class="k">def</span> <span class="fm">__int__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span>
 </pre></div>
 
         </details>

@@ -159,15 +159,17 @@
 
 
 <span class="k">def</span> <span class="nf">chain_validator</span><span class="p">(</span><span class="n">value</span><span class="p">:</span> <span class="n">MessageChain</span><span class="p">,</span> <span class="n">field</span><span class="p">:</span> <span class="n">ModelField</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">MessageChain</span><span class="p">,</span> <span class="n">Element</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
-    <span class="sd">&quot;&quot;&quot;pydantic MessageChain validator,</span>
-<span class="sd">    convert MessageChain to string if type annotation is not related to MessageChain</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    MessageChain 处理函数.</span>
+<span class="sd">    应用作 pydantic 的 Model validator.</span>
+<span class="sd">    取决于字段类型标注, 若与消息链, 消息元素无关则会直接把消息链用 asDisplay 转换为字符串.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        v (MessageChain): message chain</span>
-<span class="sd">        field (ModelField): ModelField</span>
+<span class="sd">        value (MessageChain): 消息链</span>
+<span class="sd">        field (ModelField): 当前的 model 字段</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        Union[MessageChain, Element, str]: Depending on type annotation</span>
+<span class="sd">        Union[MessageChain, Element, str]: 取决于字段类型标注</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">field</span><span class="o">.</span><span class="n">type_</span> <span class="ow">is</span> <span class="n">MessageChain</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">value</span>
@@ -451,15 +453,17 @@
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span><span class="k">def</span> <span class="nf">chain_validator</span><span class="p">(</span><span class="n">value</span><span class="p">:</span> <span class="n">MessageChain</span><span class="p">,</span> <span class="n">field</span><span class="p">:</span> <span class="n">ModelField</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">MessageChain</span><span class="p">,</span> <span class="n">Element</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
-    <span class="sd">&quot;&quot;&quot;pydantic MessageChain validator,</span>
-<span class="sd">    convert MessageChain to string if type annotation is not related to MessageChain</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    MessageChain 处理函数.</span>
+<span class="sd">    应用作 pydantic 的 Model validator.</span>
+<span class="sd">    取决于字段类型标注, 若与消息链, 消息元素无关则会直接把消息链用 asDisplay 转换为字符串.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        v (MessageChain): message chain</span>
-<span class="sd">        field (ModelField): ModelField</span>
+<span class="sd">        value (MessageChain): 消息链</span>
+<span class="sd">        field (ModelField): 当前的 model 字段</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        Union[MessageChain, Element, str]: Depending on type annotation</span>
+<span class="sd">        Union[MessageChain, Element, str]: 取决于字段类型标注</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">field</span><span class="o">.</span><span class="n">type_</span> <span class="ow">is</span> <span class="n">MessageChain</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">value</span>
@@ -476,20 +480,21 @@
 
         </details>
 
-            <div class="docstring"><p>pydantic MessageChain validator,
-convert MessageChain to string if type annotation is not related to MessageChain</p>
+            <div class="docstring"><p>MessageChain 处理函数.
+应用作 pydantic 的 Model validator.
+取决于字段类型标注, 若与消息链, 消息元素无关则会直接把消息链用 asDisplay 转换为字符串.</p>
 
 <h6 id="args">Args</h6>
 
 <ul>
-<li><strong>v (MessageChain):</strong>  message chain</li>
-<li><strong>field (ModelField):</strong>  ModelField</li>
+<li><strong>value (MessageChain):</strong>  消息链</li>
+<li><strong>field (ModelField):</strong>  当前的 model 字段</li>
 </ul>
 
 <h6 id="returns">Returns</h6>
 
 <blockquote>
-  <p>Union[MessageChain, Element, str]: Depending on type annotation</p>
+  <p>Union[MessageChain, Element, str]: 取决于字段类型标注</p>
 </blockquote>
 </div>
 
