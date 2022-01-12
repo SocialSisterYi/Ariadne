@@ -137,7 +137,7 @@
     <span class="n">thread_exec</span><span class="p">:</span> <span class="n">ThreadPoolExecutor</span>
     <span class="n">proc_exec</span><span class="p">:</span> <span class="n">ProcessPoolExecutor</span>
     <span class="n">loop_ref_dict</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="n">AbstractEventLoop</span><span class="p">,</span> <span class="s2">&quot;ParallelExecutor&quot;</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{}</span>
-    <span class="n">func_mapping</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Callable</span><span class="p">[</span><span class="n">P</span><span class="p">,</span> <span class="n">R</span><span class="p">]]]</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">func_mapping</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Callable</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{}</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
@@ -195,7 +195,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">proc_exec</span><span class="o">.</span><span class="n">shutdown</span><span class="p">()</span>
 
     <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">run_func</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">module</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">args</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">R</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">run_func</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">module</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">args</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">:</span> <span class="nb">dict</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;运行函数的实现</span>
 
 <span class="sd">        Args:</span>
@@ -211,11 +211,11 @@
         <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">func_mapping</span><span class="p">[</span><span class="n">name</span><span class="p">](</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
     <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">run_func_static</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">func</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[</span><span class="n">P</span><span class="p">,</span> <span class="n">R</span><span class="p">],</span> <span class="n">args</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">R</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">run_func_static</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">func</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="n">R</span><span class="p">],</span> <span class="n">args</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">R</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;调用一个静态函数 (会自动解包装已被 ParallelExecutor 包装过的函数)</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            func (Callable[P, R]): 要调用的函数</span>
+<span class="sd">            func (Callable[..., R]): 要调用的函数</span>
 <span class="sd">            args (tuple): 位置参数</span>
 <span class="sd">            kwargs (dict): 关键字参数</span>
 
@@ -224,7 +224,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">func</span><span class="o">.</span><span class="vm">__qualname__</span> <span class="ow">in</span> <span class="bp">cls</span><span class="o">.</span><span class="n">func_mapping</span><span class="p">:</span>
             <span class="n">func</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">func_mapping</span><span class="p">[</span><span class="n">func</span><span class="o">.</span><span class="vm">__qualname__</span><span class="p">]</span>
-        <span class="k">return</span> <span class="n">func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>  <span class="c1"># type: ignore</span>
 
     <span class="k">def</span> <span class="nf">to_thread</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">func</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[</span><span class="n">P</span><span class="p">,</span> <span class="n">R</span><span class="p">],</span> <span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">P</span><span class="o">.</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">P</span><span class="o">.</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Awaitable</span><span class="p">[</span><span class="n">R</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;在线程中异步运行 func 函数.</span>
@@ -371,7 +371,7 @@
     <span class="n">thread_exec</span><span class="p">:</span> <span class="n">ThreadPoolExecutor</span>
     <span class="n">proc_exec</span><span class="p">:</span> <span class="n">ProcessPoolExecutor</span>
     <span class="n">loop_ref_dict</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="n">AbstractEventLoop</span><span class="p">,</span> <span class="s2">&quot;ParallelExecutor&quot;</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{}</span>
-    <span class="n">func_mapping</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Callable</span><span class="p">[</span><span class="n">P</span><span class="p">,</span> <span class="n">R</span><span class="p">]]]</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">func_mapping</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Callable</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{}</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
@@ -429,7 +429,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">proc_exec</span><span class="o">.</span><span class="n">shutdown</span><span class="p">()</span>
 
     <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">run_func</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">module</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">args</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">R</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">run_func</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">module</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">args</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">:</span> <span class="nb">dict</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;运行函数的实现</span>
 
 <span class="sd">        Args:</span>
@@ -445,11 +445,11 @@
         <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">func_mapping</span><span class="p">[</span><span class="n">name</span><span class="p">](</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
     <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">run_func_static</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">func</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[</span><span class="n">P</span><span class="p">,</span> <span class="n">R</span><span class="p">],</span> <span class="n">args</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">R</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">run_func_static</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">func</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="n">R</span><span class="p">],</span> <span class="n">args</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">R</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;调用一个静态函数 (会自动解包装已被 ParallelExecutor 包装过的函数)</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            func (Callable[P, R]): 要调用的函数</span>
+<span class="sd">            func (Callable[..., R]): 要调用的函数</span>
 <span class="sd">            args (tuple): 位置参数</span>
 <span class="sd">            kwargs (dict): 关键字参数</span>
 
@@ -458,7 +458,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">func</span><span class="o">.</span><span class="vm">__qualname__</span> <span class="ow">in</span> <span class="bp">cls</span><span class="o">.</span><span class="n">func_mapping</span><span class="p">:</span>
             <span class="n">func</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">func_mapping</span><span class="p">[</span><span class="n">func</span><span class="o">.</span><span class="vm">__qualname__</span><span class="p">]</span>
-        <span class="k">return</span> <span class="n">func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>  <span class="c1"># type: ignore</span>
 
     <span class="k">def</span> <span class="nf">to_thread</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">func</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[</span><span class="n">P</span><span class="p">,</span> <span class="n">R</span><span class="p">],</span> <span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">P</span><span class="o">.</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">P</span><span class="o">.</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Awaitable</span><span class="p">[</span><span class="n">R</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;在线程中异步运行 func 函数.</span>
@@ -569,7 +569,7 @@
                             <div id="ParallelExecutor.func_mapping" class="classattr">
                                             <div class="attr variable"><a class="headerlink" href="#ParallelExecutor.func_mapping">#&nbsp;&nbsp</a>
 
-        <span class="name">func_mapping</span><span class="annotation">: ClassVar[Dict[str, Callable[[~P], ~R]]]</span><span class="default_value"> = {}</span>
+        <span class="name">func_mapping</span><span class="annotation">: ClassVar[Dict[str, Callable]]</span><span class="default_value"> = {}</span>
     </div>
 
     
@@ -707,13 +707,13 @@
                 <div class="decorator">@classmethod</div>
 
             <span class="def">def</span>
-            <span class="name">run_func</span><span class="signature">(cls, name: str, module: str, args: tuple, kwargs: dict) -&gt; ~R</span>:
+            <span class="name">run_func</span><span class="signature">(cls, name: str, module: str, args: tuple, kwargs: dict)</span>:
     </div>
 
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span>    <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">run_func</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">module</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">args</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">R</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">run_func</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">module</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">args</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">:</span> <span class="nb">dict</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;运行函数的实现</span>
 
 <span class="sd">        Args:</span>
@@ -757,17 +757,17 @@
                 <div class="decorator">@classmethod</div>
 
             <span class="def">def</span>
-            <span class="name">run_func_static</span><span class="signature">(cls, func: Callable[[~P], ~R], args: tuple, kwargs: dict) -&gt; ~R</span>:
+            <span class="name">run_func_static</span><span class="signature">(cls, func: Callable[..., ~R], args: tuple, kwargs: dict) -&gt; ~R</span>:
     </div>
 
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span>    <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">run_func_static</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">func</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[</span><span class="n">P</span><span class="p">,</span> <span class="n">R</span><span class="p">],</span> <span class="n">args</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">R</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">run_func_static</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">func</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="n">R</span><span class="p">],</span> <span class="n">args</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">R</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;调用一个静态函数 (会自动解包装已被 ParallelExecutor 包装过的函数)</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            func (Callable[P, R]): 要调用的函数</span>
+<span class="sd">            func (Callable[..., R]): 要调用的函数</span>
 <span class="sd">            args (tuple): 位置参数</span>
 <span class="sd">            kwargs (dict): 关键字参数</span>
 
@@ -776,7 +776,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">func</span><span class="o">.</span><span class="vm">__qualname__</span> <span class="ow">in</span> <span class="bp">cls</span><span class="o">.</span><span class="n">func_mapping</span><span class="p">:</span>
             <span class="n">func</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">func_mapping</span><span class="p">[</span><span class="n">func</span><span class="o">.</span><span class="vm">__qualname__</span><span class="p">]</span>
-        <span class="k">return</span> <span class="n">func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>  <span class="c1"># type: ignore</span>
 </pre></div>
 
         </details>
@@ -786,7 +786,7 @@
 <h6 id="args">Args</h6>
 
 <ul>
-<li><strong>func (Callable[P, R]):</strong>  要调用的函数</li>
+<li><strong>func (Callable[..., R]):</strong>  要调用的函数</li>
 <li><strong>args (tuple):</strong>  位置参数</li>
 <li><strong>kwargs (dict):</strong>  关键字参数</li>
 </ul>

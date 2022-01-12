@@ -110,6 +110,7 @@
 
 <span class="kn">from</span> <span class="nn">..dispatcher</span> <span class="kn">import</span> <span class="n">ContextDispatcher</span>
 <span class="kn">from</span> <span class="nn">..event.lifecycle</span> <span class="kn">import</span> <span class="n">ApplicationLaunched</span><span class="p">,</span> <span class="n">ApplicationShutdowned</span>
+<span class="kn">from</span> <span class="nn">..util</span> <span class="kn">import</span> <span class="n">resolve_dispatchers_mixin</span>
 
 
 <span class="k">class</span> <span class="nc">Console</span><span class="p">:</span>
@@ -257,8 +258,13 @@
             <span class="k">for</span> <span class="n">func</span><span class="p">,</span> <span class="n">dispatchers</span><span class="p">,</span> <span class="n">decorators</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">registry</span><span class="p">:</span>
                 <span class="k">try</span><span class="p">:</span>
                     <span class="n">result</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">broadcast</span><span class="o">.</span><span class="n">Executor</span><span class="p">(</span>
-                        <span class="n">ExecTarget</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="p">[</span><span class="n">_Dispatcher</span><span class="p">(</span><span class="n">command</span><span class="p">,</span> <span class="bp">self</span><span class="p">),</span> <span class="n">ContextDispatcher</span><span class="p">()]</span> <span class="o">+</span> <span class="n">dispatchers</span><span class="p">),</span>
-                        <span class="n">decorators</span><span class="p">,</span>
+                        <span class="n">ExecTarget</span><span class="p">(</span>
+                            <span class="n">func</span><span class="p">,</span>
+                            <span class="n">resolve_dispatchers_mixin</span><span class="p">(</span>
+                                <span class="p">[</span><span class="n">_Dispatcher</span><span class="p">(</span><span class="n">command</span><span class="p">,</span> <span class="bp">self</span><span class="p">),</span> <span class="n">ContextDispatcher</span><span class="p">(),</span> <span class="o">*</span><span class="n">dispatchers</span><span class="p">]</span>
+                            <span class="p">),</span>
+                            <span class="n">decorators</span><span class="p">,</span>
+                        <span class="p">),</span>
                     <span class="p">)</span>
                 <span class="k">except</span> <span class="n">DisabledNamespace</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
                     <span class="n">logger</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
@@ -283,7 +289,7 @@
                 <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
                     <span class="k">pass</span>
 
-                <span class="bp">self</span><span class="o">.</span><span class="n">handler_id</span> <span class="o">=</span> <span class="n">logger</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">StdoutProxy</span><span class="p">(</span><span class="n">raw</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">handler_id</span> <span class="o">=</span> <span class="n">logger</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">StdoutProxy</span><span class="p">(</span><span class="n">raw</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>  <span class="c1"># type: ignore</span>
 
             <span class="bp">self</span><span class="o">.</span><span class="n">task</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">broadcast</span><span class="o">.</span><span class="n">loop</span><span class="o">.</span><span class="n">create_task</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">loop</span><span class="p">())</span>
 
@@ -479,8 +485,13 @@
             <span class="k">for</span> <span class="n">func</span><span class="p">,</span> <span class="n">dispatchers</span><span class="p">,</span> <span class="n">decorators</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">registry</span><span class="p">:</span>
                 <span class="k">try</span><span class="p">:</span>
                     <span class="n">result</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">broadcast</span><span class="o">.</span><span class="n">Executor</span><span class="p">(</span>
-                        <span class="n">ExecTarget</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="p">[</span><span class="n">_Dispatcher</span><span class="p">(</span><span class="n">command</span><span class="p">,</span> <span class="bp">self</span><span class="p">),</span> <span class="n">ContextDispatcher</span><span class="p">()]</span> <span class="o">+</span> <span class="n">dispatchers</span><span class="p">),</span>
-                        <span class="n">decorators</span><span class="p">,</span>
+                        <span class="n">ExecTarget</span><span class="p">(</span>
+                            <span class="n">func</span><span class="p">,</span>
+                            <span class="n">resolve_dispatchers_mixin</span><span class="p">(</span>
+                                <span class="p">[</span><span class="n">_Dispatcher</span><span class="p">(</span><span class="n">command</span><span class="p">,</span> <span class="bp">self</span><span class="p">),</span> <span class="n">ContextDispatcher</span><span class="p">(),</span> <span class="o">*</span><span class="n">dispatchers</span><span class="p">]</span>
+                            <span class="p">),</span>
+                            <span class="n">decorators</span><span class="p">,</span>
+                        <span class="p">),</span>
                     <span class="p">)</span>
                 <span class="k">except</span> <span class="n">DisabledNamespace</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
                     <span class="n">logger</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
@@ -505,7 +516,7 @@
                 <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
                     <span class="k">pass</span>
 
-                <span class="bp">self</span><span class="o">.</span><span class="n">handler_id</span> <span class="o">=</span> <span class="n">logger</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">StdoutProxy</span><span class="p">(</span><span class="n">raw</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">handler_id</span> <span class="o">=</span> <span class="n">logger</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">StdoutProxy</span><span class="p">(</span><span class="n">raw</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>  <span class="c1"># type: ignore</span>
 
             <span class="bp">self</span><span class="o">.</span><span class="n">task</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">broadcast</span><span class="o">.</span><span class="n">loop</span><span class="o">.</span><span class="n">create_task</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">loop</span><span class="p">())</span>
 
@@ -803,8 +814,13 @@
             <span class="k">for</span> <span class="n">func</span><span class="p">,</span> <span class="n">dispatchers</span><span class="p">,</span> <span class="n">decorators</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">registry</span><span class="p">:</span>
                 <span class="k">try</span><span class="p">:</span>
                     <span class="n">result</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">broadcast</span><span class="o">.</span><span class="n">Executor</span><span class="p">(</span>
-                        <span class="n">ExecTarget</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="p">[</span><span class="n">_Dispatcher</span><span class="p">(</span><span class="n">command</span><span class="p">,</span> <span class="bp">self</span><span class="p">),</span> <span class="n">ContextDispatcher</span><span class="p">()]</span> <span class="o">+</span> <span class="n">dispatchers</span><span class="p">),</span>
-                        <span class="n">decorators</span><span class="p">,</span>
+                        <span class="n">ExecTarget</span><span class="p">(</span>
+                            <span class="n">func</span><span class="p">,</span>
+                            <span class="n">resolve_dispatchers_mixin</span><span class="p">(</span>
+                                <span class="p">[</span><span class="n">_Dispatcher</span><span class="p">(</span><span class="n">command</span><span class="p">,</span> <span class="bp">self</span><span class="p">),</span> <span class="n">ContextDispatcher</span><span class="p">(),</span> <span class="o">*</span><span class="n">dispatchers</span><span class="p">]</span>
+                            <span class="p">),</span>
+                            <span class="n">decorators</span><span class="p">,</span>
+                        <span class="p">),</span>
                     <span class="p">)</span>
                 <span class="k">except</span> <span class="n">DisabledNamespace</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
                     <span class="n">logger</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
@@ -847,7 +863,7 @@
                 <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
                     <span class="k">pass</span>
 
-                <span class="bp">self</span><span class="o">.</span><span class="n">handler_id</span> <span class="o">=</span> <span class="n">logger</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">StdoutProxy</span><span class="p">(</span><span class="n">raw</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">handler_id</span> <span class="o">=</span> <span class="n">logger</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">StdoutProxy</span><span class="p">(</span><span class="n">raw</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>  <span class="c1"># type: ignore</span>
 
             <span class="bp">self</span><span class="o">.</span><span class="n">task</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">broadcast</span><span class="o">.</span><span class="n">loop</span><span class="o">.</span><span class="n">create_task</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">loop</span><span class="p">())</span>
 </pre></div>

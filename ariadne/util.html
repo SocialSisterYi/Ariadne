@@ -71,6 +71,9 @@
                     <a class="function" href="#deprecated">deprecated</a>
             </li>
             <li>
+                    <a class="function" href="#resolve_dispatchers_mixin">resolve_dispatchers_mixin</a>
+            </li>
+            <li>
                     <a class="class" href="#Dummy">Dummy</a>
                             <ul class="memberlist">
                         <li>
@@ -113,7 +116,10 @@
 <span class="kn">import</span> <span class="nn">warnings</span>
 <span class="kn">from</span> <span class="nn">asyncio.events</span> <span class="kn">import</span> <span class="n">AbstractEventLoop</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">TYPE_CHECKING</span><span class="p">,</span>
+    <span class="n">Any</span><span class="p">,</span>
     <span class="n">AsyncIterator</span><span class="p">,</span>
+    <span class="n">Awaitable</span><span class="p">,</span>
     <span class="n">Callable</span><span class="p">,</span>
     <span class="n">Coroutine</span><span class="p">,</span>
     <span class="n">Dict</span><span class="p">,</span>
@@ -130,7 +136,9 @@
 <span class="kn">from</span> <span class="nn">graia.broadcast.entities.listener</span> <span class="kn">import</span> <span class="n">Listener</span>
 <span class="kn">from</span> <span class="nn">graia.broadcast.entities.namespace</span> <span class="kn">import</span> <span class="n">Namespace</span>
 <span class="kn">from</span> <span class="nn">graia.broadcast.typing</span> <span class="kn">import</span> <span class="n">T_Dispatcher</span>
+<span class="kn">from</span> <span class="nn">graia.broadcast.utilles</span> <span class="kn">import</span> <span class="n">dispatcher_mixin_handler</span>
 <span class="kn">from</span> <span class="nn">loguru</span> <span class="kn">import</span> <span class="n">logger</span>
+<span class="kn">from</span> <span class="nn">typing_extensions</span> <span class="kn">import</span> <span class="n">Concatenate</span>
 
 <span class="kn">from</span> <span class="nn">..exception</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">AccountMuted</span><span class="p">,</span>
@@ -144,6 +152,9 @@
     <span class="n">UnVerifiedSession</span><span class="p">,</span>
 <span class="p">)</span>
 <span class="kn">from</span> <span class="nn">..typing</span> <span class="kn">import</span> <span class="n">P</span><span class="p">,</span> <span class="n">R</span><span class="p">,</span> <span class="n">T</span>
+
+<span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">..app</span> <span class="kn">import</span> <span class="n">Ariadne</span>
 
 <span class="n">code_exceptions_mapping</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Type</span><span class="p">[</span><span class="ne">Exception</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{</span>
     <span class="mi">1</span><span class="p">:</span> <span class="n">InvalidVerifyKey</span><span class="p">,</span>
@@ -159,7 +170,7 @@
 <span class="p">}</span>
 
 
-<span class="k">def</span> <span class="nf">validate_response</span><span class="p">(</span><span class="n">code</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">dict</span><span class="p">,</span> <span class="nb">int</span><span class="p">]):</span>
+<span class="k">def</span> <span class="nf">validate_response</span><span class="p">(</span><span class="n">code</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Any</span><span class="p">]],</span> <span class="nb">int</span><span class="p">]):</span>
     <span class="sd">&quot;&quot;&quot;验证远程服务器的返回值</span>
 
 <span class="sd">    Args:</span>
@@ -168,15 +179,16 @@
 <span class="sd">    Raises:</span>
 <span class="sd">        Exception: 请参照 code_exceptions_mapping</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">origin</span> <span class="o">=</span> <span class="n">code</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">code</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
-        <span class="n">code</span> <span class="o">=</span> <span class="n">code</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;code&quot;</span><span class="p">)</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">code</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="ow">or</span> <span class="n">code</span> <span class="o">==</span> <span class="mi">200</span> <span class="ow">or</span> <span class="n">code</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">int_code</span> <span class="o">=</span> <span class="n">code</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;code&quot;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">int_code</span> <span class="o">=</span> <span class="n">code</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">int_code</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="ow">or</span> <span class="n">int_code</span> <span class="o">==</span> <span class="mi">200</span> <span class="ow">or</span> <span class="n">int_code</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
         <span class="k">return</span>
-    <span class="n">exc_cls</span> <span class="o">=</span> <span class="n">code_exceptions_mapping</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">code</span><span class="p">)</span>
+    <span class="n">exc_cls</span> <span class="o">=</span> <span class="n">code_exceptions_mapping</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">int_code</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">exc_cls</span><span class="p">:</span>
         <span class="k">raise</span> <span class="n">exc_cls</span><span class="p">(</span><span class="n">exc_cls</span><span class="o">.</span><span class="vm">__doc__</span><span class="p">)</span>
-    <span class="k">raise</span> <span class="n">UnknownError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">origin</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">raise</span> <span class="n">UnknownError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">code</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
 
 <span class="k">def</span> <span class="nf">loguru_excepthook</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">val</span><span class="p">,</span> <span class="n">tb</span><span class="p">,</span> <span class="o">*</span><span class="n">_</span><span class="p">,</span> <span class="o">**</span><span class="n">__</span><span class="p">):</span>
@@ -256,7 +268,9 @@
         <span class="k">pass</span>
 
 
-<span class="k">def</span> <span class="nf">app_ctx_manager</span><span class="p">(</span><span class="n">func</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[</span><span class="n">P</span><span class="p">,</span> <span class="n">R</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">[</span><span class="n">P</span><span class="p">,</span> <span class="n">R</span><span class="p">]:</span>
+<span class="k">def</span> <span class="nf">app_ctx_manager</span><span class="p">(</span>
+    <span class="n">func</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[</span><span class="n">Concatenate</span><span class="p">[</span><span class="s2">&quot;Ariadne&quot;</span><span class="p">,</span> <span class="n">P</span><span class="p">],</span> <span class="n">Awaitable</span><span class="p">[</span><span class="n">R</span><span class="p">]]</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">[</span><span class="n">Concatenate</span><span class="p">[</span><span class="s2">&quot;Ariadne&quot;</span><span class="p">,</span> <span class="n">P</span><span class="p">],</span> <span class="n">Awaitable</span><span class="p">[</span><span class="n">R</span><span class="p">]]:</span>
     <span class="sd">&quot;&quot;&quot;包装声明需要在 Ariadne Context 中执行的函数</span>
 
 <span class="sd">    Args:</span>
@@ -287,6 +301,8 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">yield</span> <span class="bp">cls</span>
     <span class="k">for</span> <span class="n">sub_cls</span> <span class="ow">in</span> <span class="bp">cls</span><span class="o">.</span><span class="n">__subclasses__</span><span class="p">():</span>
+        <span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
+            <span class="k">assert</span> <span class="nb">issubclass</span><span class="p">(</span><span class="n">sub_cls</span><span class="p">,</span> <span class="bp">cls</span><span class="p">)</span>
         <span class="k">yield from</span> <span class="n">gen_subclass</span><span class="p">(</span><span class="n">sub_cls</span><span class="p">)</span>
 
 
@@ -338,7 +354,7 @@
             <span class="n">tsk</span><span class="o">.</span><span class="n">cancel</span><span class="p">()</span>
 
 
-<span class="k">def</span> <span class="nf">deprecated</span><span class="p">(</span><span class="n">remove_ver</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">T_Callable</span><span class="p">],</span> <span class="n">T_Callable</span><span class="p">]:</span>
+<span class="k">def</span> <span class="nf">deprecated</span><span class="p">(</span><span class="n">remove_ver</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">Callable</span><span class="p">[</span><span class="n">P</span><span class="p">,</span> <span class="n">R</span><span class="p">]],</span> <span class="n">Callable</span><span class="p">[</span><span class="n">P</span><span class="p">,</span> <span class="n">R</span><span class="p">]]:</span>
     <span class="sd">&quot;&quot;&quot;标注一个方法 / 函数已被弃用</span>
 
 <span class="sd">    Args:</span>
@@ -348,9 +364,9 @@
 <span class="sd">        Callable[[T_Callable], T_Callable]: 包装器.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">out_wrapper</span><span class="p">(</span><span class="n">func</span><span class="p">:</span> <span class="n">T_Callable</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">T_Callable</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">out_wrapper</span><span class="p">(</span><span class="n">func</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[</span><span class="n">P</span><span class="p">,</span> <span class="n">R</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">[</span><span class="n">P</span><span class="p">,</span> <span class="n">R</span><span class="p">]:</span>
         <span class="nd">@functools</span><span class="o">.</span><span class="n">wraps</span><span class="p">(</span><span class="n">func</span><span class="p">)</span>
-        <span class="k">def</span> <span class="nf">wrapper</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">def</span> <span class="nf">wrapper</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">P</span><span class="o">.</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">P</span><span class="o">.</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">R</span><span class="p">:</span>
             <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="ne">DeprecationWarning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">func</span><span class="o">.</span><span class="vm">__qualname__</span><span class="si">}</span><span class="s2"> will be removed in </span><span class="si">{</span><span class="n">remove_ver</span><span class="si">}</span><span class="s2">!&quot;</span><span class="p">))</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Deprecated function: </span><span class="si">{</span><span class="n">func</span><span class="o">.</span><span class="vm">__qualname__</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">func</span><span class="o">.</span><span class="vm">__qualname__</span><span class="si">}</span><span class="s2"> will be removed in </span><span class="si">{</span><span class="n">remove_ver</span><span class="si">}</span><span class="s2">!&quot;</span><span class="p">)</span>
@@ -359,6 +375,21 @@
         <span class="k">return</span> <span class="n">wrapper</span>
 
     <span class="k">return</span> <span class="n">out_wrapper</span>
+
+
+<span class="k">def</span> <span class="nf">resolve_dispatchers_mixin</span><span class="p">(</span><span class="n">dispatchers</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">T_Dispatcher</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">T_Dispatcher</span><span class="p">]:</span>
+    <span class="sd">&quot;&quot;&quot;解析 dispatcher list 的 mixin</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        dispatchers (List[T_Dispatcher]): dispatcher 列表</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        List[T_Dispatcher]: 解析后的 dispatcher 列表</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">dispatcher</span> <span class="ow">in</span> <span class="n">dispatchers</span><span class="p">:</span>
+        <span class="n">result</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">dispatcher_mixin_handler</span><span class="p">(</span><span class="n">dispatcher</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">result</span>
 
 
 <span class="k">class</span> <span class="nc">Dummy</span><span class="p">:</span>
@@ -402,12 +433,12 @@
 
         
             <span class="def">def</span>
-            <span class="name">validate_response</span><span class="signature">(code: Union[dict, int])</span>:
+            <span class="name">validate_response</span><span class="signature">(code: Union[Dict[str, Union[int, Any]], int])</span>:
     </div>
 
                 <details>
             <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span><span class="k">def</span> <span class="nf">validate_response</span><span class="p">(</span><span class="n">code</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">dict</span><span class="p">,</span> <span class="nb">int</span><span class="p">]):</span>
+            <div class="codehilite"><pre><span></span><span class="k">def</span> <span class="nf">validate_response</span><span class="p">(</span><span class="n">code</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Any</span><span class="p">]],</span> <span class="nb">int</span><span class="p">]):</span>
     <span class="sd">&quot;&quot;&quot;验证远程服务器的返回值</span>
 
 <span class="sd">    Args:</span>
@@ -416,15 +447,16 @@
 <span class="sd">    Raises:</span>
 <span class="sd">        Exception: 请参照 code_exceptions_mapping</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">origin</span> <span class="o">=</span> <span class="n">code</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">code</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
-        <span class="n">code</span> <span class="o">=</span> <span class="n">code</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;code&quot;</span><span class="p">)</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">code</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="ow">or</span> <span class="n">code</span> <span class="o">==</span> <span class="mi">200</span> <span class="ow">or</span> <span class="n">code</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">int_code</span> <span class="o">=</span> <span class="n">code</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;code&quot;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">int_code</span> <span class="o">=</span> <span class="n">code</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">int_code</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="ow">or</span> <span class="n">int_code</span> <span class="o">==</span> <span class="mi">200</span> <span class="ow">or</span> <span class="n">int_code</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
         <span class="k">return</span>
-    <span class="n">exc_cls</span> <span class="o">=</span> <span class="n">code_exceptions_mapping</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">code</span><span class="p">)</span>
+    <span class="n">exc_cls</span> <span class="o">=</span> <span class="n">code_exceptions_mapping</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">int_code</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">exc_cls</span><span class="p">:</span>
         <span class="k">raise</span> <span class="n">exc_cls</span><span class="p">(</span><span class="n">exc_cls</span><span class="o">.</span><span class="vm">__doc__</span><span class="p">)</span>
-    <span class="k">raise</span> <span class="n">UnknownError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">origin</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">raise</span> <span class="n">UnknownError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">code</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 </pre></div>
 
         </details>
@@ -617,12 +649,16 @@
 
         
             <span class="def">def</span>
-            <span class="name">app_ctx_manager</span><span class="signature">(func: Callable[[~P], ~R]) -&gt; Callable[[~P], ~R]</span>:
+            <span class="name">app_ctx_manager</span><span class="signature">(
+    func: Callable[[<a href="app.html#Ariadne">ariadne.app.Ariadne</a>, ~P], Awaitable[~R]]
+) -&gt; Callable[[<a href="app.html#Ariadne">ariadne.app.Ariadne</a>, ~P], Awaitable[~R]]</span>:
     </div>
 
                 <details>
             <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span><span class="k">def</span> <span class="nf">app_ctx_manager</span><span class="p">(</span><span class="n">func</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[</span><span class="n">P</span><span class="p">,</span> <span class="n">R</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">[</span><span class="n">P</span><span class="p">,</span> <span class="n">R</span><span class="p">]:</span>
+            <div class="codehilite"><pre><span></span><span class="k">def</span> <span class="nf">app_ctx_manager</span><span class="p">(</span>
+    <span class="n">func</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[</span><span class="n">Concatenate</span><span class="p">[</span><span class="s2">&quot;Ariadne&quot;</span><span class="p">,</span> <span class="n">P</span><span class="p">],</span> <span class="n">Awaitable</span><span class="p">[</span><span class="n">R</span><span class="p">]]</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">[</span><span class="n">Concatenate</span><span class="p">[</span><span class="s2">&quot;Ariadne&quot;</span><span class="p">,</span> <span class="n">P</span><span class="p">],</span> <span class="n">Awaitable</span><span class="p">[</span><span class="n">R</span><span class="p">]]:</span>
     <span class="sd">&quot;&quot;&quot;包装声明需要在 Ariadne Context 中执行的函数</span>
 
 <span class="sd">    Args:</span>
@@ -682,6 +718,8 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">yield</span> <span class="bp">cls</span>
     <span class="k">for</span> <span class="n">sub_cls</span> <span class="ow">in</span> <span class="bp">cls</span><span class="o">.</span><span class="n">__subclasses__</span><span class="p">():</span>
+        <span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
+            <span class="k">assert</span> <span class="nb">issubclass</span><span class="p">(</span><span class="n">sub_cls</span><span class="p">,</span> <span class="bp">cls</span><span class="p">)</span>
         <span class="k">yield from</span> <span class="n">gen_subclass</span><span class="p">(</span><span class="n">sub_cls</span><span class="p">)</span>
 </pre></div>
 
@@ -830,12 +868,14 @@
 
         
             <span class="def">def</span>
-            <span class="name">deprecated</span><span class="signature">(remove_ver: str) -&gt; Callable[[~T_Callable], ~T_Callable]</span>:
+            <span class="name">deprecated</span><span class="signature">(
+    remove_ver: str
+) -&gt; Callable[[Callable[[~P], ~R]], Callable[[~P], ~R]]</span>:
     </div>
 
                 <details>
             <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span><span class="k">def</span> <span class="nf">deprecated</span><span class="p">(</span><span class="n">remove_ver</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">T_Callable</span><span class="p">],</span> <span class="n">T_Callable</span><span class="p">]:</span>
+            <div class="codehilite"><pre><span></span><span class="k">def</span> <span class="nf">deprecated</span><span class="p">(</span><span class="n">remove_ver</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">Callable</span><span class="p">[</span><span class="n">P</span><span class="p">,</span> <span class="n">R</span><span class="p">]],</span> <span class="n">Callable</span><span class="p">[</span><span class="n">P</span><span class="p">,</span> <span class="n">R</span><span class="p">]]:</span>
     <span class="sd">&quot;&quot;&quot;标注一个方法 / 函数已被弃用</span>
 
 <span class="sd">    Args:</span>
@@ -845,9 +885,9 @@
 <span class="sd">        Callable[[T_Callable], T_Callable]: 包装器.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">out_wrapper</span><span class="p">(</span><span class="n">func</span><span class="p">:</span> <span class="n">T_Callable</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">T_Callable</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">out_wrapper</span><span class="p">(</span><span class="n">func</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[</span><span class="n">P</span><span class="p">,</span> <span class="n">R</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">[</span><span class="n">P</span><span class="p">,</span> <span class="n">R</span><span class="p">]:</span>
         <span class="nd">@functools</span><span class="o">.</span><span class="n">wraps</span><span class="p">(</span><span class="n">func</span><span class="p">)</span>
-        <span class="k">def</span> <span class="nf">wrapper</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">def</span> <span class="nf">wrapper</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">P</span><span class="o">.</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">P</span><span class="o">.</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">R</span><span class="p">:</span>
             <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="ne">DeprecationWarning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">func</span><span class="o">.</span><span class="vm">__qualname__</span><span class="si">}</span><span class="s2"> will be removed in </span><span class="si">{</span><span class="n">remove_ver</span><span class="si">}</span><span class="s2">!&quot;</span><span class="p">))</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Deprecated function: </span><span class="si">{</span><span class="n">func</span><span class="o">.</span><span class="vm">__qualname__</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">func</span><span class="o">.</span><span class="vm">__qualname__</span><span class="si">}</span><span class="s2"> will be removed in </span><span class="si">{</span><span class="n">remove_ver</span><span class="si">}</span><span class="s2">!&quot;</span><span class="p">)</span>
@@ -872,6 +912,52 @@
 
 <blockquote>
   <p>Callable[[T_Callable], T_Callable]: 包装器.</p>
+</blockquote>
+</div>
+
+
+                </section>
+                <section id="resolve_dispatchers_mixin">
+                            <div class="attr function"><a class="headerlink" href="#resolve_dispatchers_mixin">#&nbsp;&nbsp</a>
+
+        
+            <span class="def">def</span>
+            <span class="name">resolve_dispatchers_mixin</span><span class="signature">(
+    dispatchers: List[Union[Type[ForwardRef(&#39;BaseDispatcher&#39;)], ForwardRef(&#39;BaseDispatcher&#39;), Callable[[ForwardRef(&#39;DispatcherInterface&#39;)], Any]]]
+) -&gt; List[Union[Type[ForwardRef(&#39;BaseDispatcher&#39;)], ForwardRef(&#39;BaseDispatcher&#39;), Callable[[ForwardRef(&#39;DispatcherInterface&#39;)], Any]]]</span>:
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span><span class="k">def</span> <span class="nf">resolve_dispatchers_mixin</span><span class="p">(</span><span class="n">dispatchers</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">T_Dispatcher</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">T_Dispatcher</span><span class="p">]:</span>
+    <span class="sd">&quot;&quot;&quot;解析 dispatcher list 的 mixin</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        dispatchers (List[T_Dispatcher]): dispatcher 列表</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        List[T_Dispatcher]: 解析后的 dispatcher 列表</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">dispatcher</span> <span class="ow">in</span> <span class="n">dispatchers</span><span class="p">:</span>
+        <span class="n">result</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">dispatcher_mixin_handler</span><span class="p">(</span><span class="n">dispatcher</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">result</span>
+</pre></div>
+
+        </details>
+
+            <div class="docstring"><p>解析 dispatcher list 的 mixin</p>
+
+<h6 id="args">Args</h6>
+
+<ul>
+<li><strong>dispatchers (List[T_Dispatcher]):</strong>  dispatcher 列表</li>
+</ul>
+
+<h6 id="returns">Returns</h6>
+
+<blockquote>
+  <p>List[T_Dispatcher]: 解析后的 dispatcher 列表</p>
 </blockquote>
 </div>
 
