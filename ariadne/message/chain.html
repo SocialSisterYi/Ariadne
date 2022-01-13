@@ -204,7 +204,7 @@
 
 <span class="k">class</span> <span class="nc">MessageChain</span><span class="p">(</span><span class="n">AriadneBaseModel</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    即 &quot;消息链&quot;, 被用于承载整个消息内容的数据结构, 包含有一有序列表, 包含有继承了 Element 的各式类实例.</span>
+<span class="sd">    即 &quot;消息链&quot;, 被用于承载整个消息内容的数据结构, 包含有一有序列表, 包含有元素实例.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">__root__</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Element</span><span class="p">]</span>
@@ -263,6 +263,9 @@
 <span class="sd">        Args:</span>
 <span class="sd">            *elements(Union[Iterable[Element], Element, str]): 元素的容器, 为承载元素的可迭代对象/单元素实例,</span>
 <span class="sd">            字符串会被自动不可逆的转换为 `Plain`</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            MessageChain: 创建的消息链</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="n">element_list</span> <span class="o">=</span> <span class="p">[]</span>
@@ -289,9 +292,7 @@
                 <span class="n">i</span><span class="o">.</span><span class="n">prepare</span><span class="p">()</span>
             <span class="k">except</span> <span class="n">NotSendableElement</span><span class="p">:</span>
                 <span class="n">chain_ref</span><span class="o">.</span><span class="n">__root__</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">copy</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">chain_ref</span>
-        <span class="k">return</span> <span class="bp">self</span>
+        <span class="k">return</span> <span class="n">chain_ref</span>
 
     <span class="k">def</span> <span class="nf">has</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Element</span><span class="p">,</span> <span class="n">Type</span><span class="p">[</span><span class="n">Element</span><span class="p">],</span> <span class="s2">&quot;MessageChain&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -304,7 +305,7 @@
 <span class="sd">            bool: 判断结果</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
-            <span class="n">item</span> <span class="o">=</span> <span class="n">MessageChain</span><span class="p">([</span><span class="n">Plain</span><span class="p">(</span><span class="n">item</span><span class="p">)],</span> <span class="n">inline</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">Plain</span><span class="p">(</span><span class="n">item</span><span class="p">)</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">copy</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">__root__</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">Element</span><span class="p">):</span>
             <span class="k">return</span> <span class="n">item</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">copy</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">__root__</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="nb">type</span><span class="p">):</span>
@@ -530,7 +531,7 @@
 <span class="sd">        Returns:</span>
 <span class="sd">            MessageChain: 返回的消息链中不包含参数中给出的消息元素类型</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">MessageChain</span><span class="p">([</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__root__</span> <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">types</span><span class="p">],</span> <span class="n">inline</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">MessageChain</span><span class="p">([</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span><span class="o">.</span><span class="n">__root__</span> <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">types</span><span class="p">],</span> <span class="n">inline</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">include</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">types</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="n">Element</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="s2">&quot;MessageChain&quot;</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;将只在给出的消息元素类型中符合的消息元素重新包装为一个新的消息链</span>
@@ -541,7 +542,7 @@
 <span class="sd">        Returns:</span>
 <span class="sd">            MessageChain: 返回的消息链中只包含参数中给出的消息元素类型</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">MessageChain</span><span class="p">([</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__root__</span> <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="ow">in</span> <span class="n">types</span><span class="p">],</span> <span class="n">inline</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">MessageChain</span><span class="p">([</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span><span class="o">.</span><span class="n">__root__</span> <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="ow">in</span> <span class="n">types</span><span class="p">],</span> <span class="n">inline</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">split</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pattern</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot; &quot;</span><span class="p">,</span> <span class="n">raw_string</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="s2">&quot;MessageChain&quot;</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;和 `str.split` 差不多, 提供一个字符串, 然后返回分割结果.</span>
@@ -646,13 +647,22 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">__root__</span> <span class="o">=</span> <span class="n">result</span>
         <span class="k">return</span> <span class="bp">self</span>
 
-    <span class="k">def</span> <span class="nf">append</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">element</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Element</span><span class="p">,</span> <span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">append</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">element</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Element</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span> <span class="n">copy</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;MessageChain&quot;</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        向消息链最后追加单个元素</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            element (Element): 要添加的元素</span>
+<span class="sd">            copy (bool): 是否要在副本上修改.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            MessageChain: copy = True 时返回副本, 否则返回自己的引用.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">chain_ref</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span> <span class="k">if</span> <span class="n">copy</span> <span class="k">else</span> <span class="bp">self</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">element</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
             <span class="n">element</span> <span class="o">=</span> <span class="n">Plain</span><span class="p">(</span><span class="n">element</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">__root__</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">element</span><span class="p">)</span>
+        <span class="n">chain_ref</span><span class="o">.</span><span class="n">__root__</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">element</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">chain_ref</span>
 
     <span class="k">def</span> <span class="nf">extend</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
@@ -661,8 +671,9 @@
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;MessageChain&quot;</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        向消息链最后添加元素/元素列表/消息链</span>
+
 <span class="sd">        Args:</span>
-<span class="sd">            *content (Union[MessageChain, Element, List[Element]])：要添加的元素/元素容器.</span>
+<span class="sd">            *content (Union[MessageChain, Element, List[Element]]): 要添加的元素/元素容器.</span>
 <span class="sd">            copy (bool): 是否要在副本上修改.</span>
 
 <span class="sd">        Returns:</span>
@@ -690,6 +701,7 @@
     <span class="k">def</span> <span class="nf">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;MessageChain&quot;</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        拷贝本消息链.</span>
+
 <span class="sd">        Returns:</span>
 <span class="sd">            MessageChain: 拷贝的副本.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -698,6 +710,13 @@
     <span class="k">def</span> <span class="nf">index</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">element_type</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="n">Element_T</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        寻找第一个特定类型的元素, 并返回其下标.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            element_type (Type[Element]): 元素或元素类型</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Optional[int]: 元素下标, 若未找到则为 None.</span>
+
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">e</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__root__</span><span class="p">):</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="n">element_type</span><span class="p">):</span>
@@ -707,6 +726,12 @@
     <span class="k">def</span> <span class="nf">count</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">element</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Type</span><span class="p">[</span><span class="n">Element_T</span><span class="p">],</span> <span class="n">Element_T</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        统计共有多少个指定的元素.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            element (Type[Element] | Element): 元素或元素类型</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            int: 元素数量</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">element</span><span class="p">,</span> <span class="n">Element</span><span class="p">):</span>
             <span class="k">return</span> <span class="nb">sum</span><span class="p">(</span><span class="n">i</span> <span class="o">==</span> <span class="n">element</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__root__</span><span class="p">)</span>
@@ -965,7 +990,7 @@
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">MessageChain</span><span class="p">(</span><span class="n">AriadneBaseModel</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    即 &quot;消息链&quot;, 被用于承载整个消息内容的数据结构, 包含有一有序列表, 包含有继承了 Element 的各式类实例.</span>
+<span class="sd">    即 &quot;消息链&quot;, 被用于承载整个消息内容的数据结构, 包含有一有序列表, 包含有元素实例.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">__root__</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Element</span><span class="p">]</span>
@@ -1024,6 +1049,9 @@
 <span class="sd">        Args:</span>
 <span class="sd">            *elements(Union[Iterable[Element], Element, str]): 元素的容器, 为承载元素的可迭代对象/单元素实例,</span>
 <span class="sd">            字符串会被自动不可逆的转换为 `Plain`</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            MessageChain: 创建的消息链</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="n">element_list</span> <span class="o">=</span> <span class="p">[]</span>
@@ -1050,9 +1078,7 @@
                 <span class="n">i</span><span class="o">.</span><span class="n">prepare</span><span class="p">()</span>
             <span class="k">except</span> <span class="n">NotSendableElement</span><span class="p">:</span>
                 <span class="n">chain_ref</span><span class="o">.</span><span class="n">__root__</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">copy</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">chain_ref</span>
-        <span class="k">return</span> <span class="bp">self</span>
+        <span class="k">return</span> <span class="n">chain_ref</span>
 
     <span class="k">def</span> <span class="nf">has</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Element</span><span class="p">,</span> <span class="n">Type</span><span class="p">[</span><span class="n">Element</span><span class="p">],</span> <span class="s2">&quot;MessageChain&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -1065,7 +1091,7 @@
 <span class="sd">            bool: 判断结果</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
-            <span class="n">item</span> <span class="o">=</span> <span class="n">MessageChain</span><span class="p">([</span><span class="n">Plain</span><span class="p">(</span><span class="n">item</span><span class="p">)],</span> <span class="n">inline</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">Plain</span><span class="p">(</span><span class="n">item</span><span class="p">)</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">copy</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">__root__</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">Element</span><span class="p">):</span>
             <span class="k">return</span> <span class="n">item</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">copy</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">__root__</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="nb">type</span><span class="p">):</span>
@@ -1291,7 +1317,7 @@
 <span class="sd">        Returns:</span>
 <span class="sd">            MessageChain: 返回的消息链中不包含参数中给出的消息元素类型</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">MessageChain</span><span class="p">([</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__root__</span> <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">types</span><span class="p">],</span> <span class="n">inline</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">MessageChain</span><span class="p">([</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span><span class="o">.</span><span class="n">__root__</span> <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">types</span><span class="p">],</span> <span class="n">inline</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">include</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">types</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="n">Element</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="s2">&quot;MessageChain&quot;</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;将只在给出的消息元素类型中符合的消息元素重新包装为一个新的消息链</span>
@@ -1302,7 +1328,7 @@
 <span class="sd">        Returns:</span>
 <span class="sd">            MessageChain: 返回的消息链中只包含参数中给出的消息元素类型</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">MessageChain</span><span class="p">([</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__root__</span> <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="ow">in</span> <span class="n">types</span><span class="p">],</span> <span class="n">inline</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">MessageChain</span><span class="p">([</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span><span class="o">.</span><span class="n">__root__</span> <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="ow">in</span> <span class="n">types</span><span class="p">],</span> <span class="n">inline</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">split</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pattern</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot; &quot;</span><span class="p">,</span> <span class="n">raw_string</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="s2">&quot;MessageChain&quot;</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;和 `str.split` 差不多, 提供一个字符串, 然后返回分割结果.</span>
@@ -1407,13 +1433,22 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">__root__</span> <span class="o">=</span> <span class="n">result</span>
         <span class="k">return</span> <span class="bp">self</span>
 
-    <span class="k">def</span> <span class="nf">append</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">element</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Element</span><span class="p">,</span> <span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">append</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">element</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Element</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span> <span class="n">copy</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;MessageChain&quot;</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        向消息链最后追加单个元素</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            element (Element): 要添加的元素</span>
+<span class="sd">            copy (bool): 是否要在副本上修改.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            MessageChain: copy = True 时返回副本, 否则返回自己的引用.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">chain_ref</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span> <span class="k">if</span> <span class="n">copy</span> <span class="k">else</span> <span class="bp">self</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">element</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
             <span class="n">element</span> <span class="o">=</span> <span class="n">Plain</span><span class="p">(</span><span class="n">element</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">__root__</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">element</span><span class="p">)</span>
+        <span class="n">chain_ref</span><span class="o">.</span><span class="n">__root__</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">element</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">chain_ref</span>
 
     <span class="k">def</span> <span class="nf">extend</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
@@ -1422,8 +1457,9 @@
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;MessageChain&quot;</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        向消息链最后添加元素/元素列表/消息链</span>
+
 <span class="sd">        Args:</span>
-<span class="sd">            *content (Union[MessageChain, Element, List[Element]])：要添加的元素/元素容器.</span>
+<span class="sd">            *content (Union[MessageChain, Element, List[Element]]): 要添加的元素/元素容器.</span>
 <span class="sd">            copy (bool): 是否要在副本上修改.</span>
 
 <span class="sd">        Returns:</span>
@@ -1451,6 +1487,7 @@
     <span class="k">def</span> <span class="nf">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;MessageChain&quot;</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        拷贝本消息链.</span>
+
 <span class="sd">        Returns:</span>
 <span class="sd">            MessageChain: 拷贝的副本.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -1459,6 +1496,13 @@
     <span class="k">def</span> <span class="nf">index</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">element_type</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="n">Element_T</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        寻找第一个特定类型的元素, 并返回其下标.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            element_type (Type[Element]): 元素或元素类型</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Optional[int]: 元素下标, 若未找到则为 None.</span>
+
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">e</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__root__</span><span class="p">):</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="n">element_type</span><span class="p">):</span>
@@ -1468,6 +1512,12 @@
     <span class="k">def</span> <span class="nf">count</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">element</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Type</span><span class="p">[</span><span class="n">Element_T</span><span class="p">],</span> <span class="n">Element_T</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        统计共有多少个指定的元素.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            element (Type[Element] | Element): 元素或元素类型</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            int: 元素数量</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">element</span><span class="p">,</span> <span class="n">Element</span><span class="p">):</span>
             <span class="k">return</span> <span class="nb">sum</span><span class="p">(</span><span class="n">i</span> <span class="o">==</span> <span class="n">element</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__root__</span><span class="p">)</span>
@@ -1700,7 +1750,7 @@
 
         </details>
 
-            <div class="docstring"><p>即 "消息链", 被用于承载整个消息内容的数据结构, 包含有一有序列表, 包含有继承了 Element 的各式类实例.</p>
+            <div class="docstring"><p>即 "消息链", 被用于承载整个消息内容的数据结构, 包含有一有序列表, 包含有元素实例.</p>
 </div>
 
 
@@ -1861,6 +1911,9 @@
 <span class="sd">        Args:</span>
 <span class="sd">            *elements(Union[Iterable[Element], Element, str]): 元素的容器, 为承载元素的可迭代对象/单元素实例,</span>
 <span class="sd">            字符串会被自动不可逆的转换为 `Plain`</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            MessageChain: 创建的消息链</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="n">element_list</span> <span class="o">=</span> <span class="p">[]</span>
@@ -1885,6 +1938,12 @@
 <li><strong>*elements(Union[Iterable[Element], Element, str]):</strong>  元素的容器, 为承载元素的可迭代对象/单元素实例,</li>
 <li>字符串会被自动不可逆的转换为 <code>Plain</code></li>
 </ul>
+
+<h6 id="returns">Returns</h6>
+
+<blockquote>
+  <p>MessageChain: 创建的消息链</p>
+</blockquote>
 </div>
 
 
@@ -1913,9 +1972,7 @@
                 <span class="n">i</span><span class="o">.</span><span class="n">prepare</span><span class="p">()</span>
             <span class="k">except</span> <span class="n">NotSendableElement</span><span class="p">:</span>
                 <span class="n">chain_ref</span><span class="o">.</span><span class="n">__root__</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">copy</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">chain_ref</span>
-        <span class="k">return</span> <span class="bp">self</span>
+        <span class="k">return</span> <span class="n">chain_ref</span>
 </pre></div>
 
         </details>
@@ -1955,7 +2012,7 @@
 <span class="sd">            bool: 判断结果</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
-            <span class="n">item</span> <span class="o">=</span> <span class="n">MessageChain</span><span class="p">([</span><span class="n">Plain</span><span class="p">(</span><span class="n">item</span><span class="p">)],</span> <span class="n">inline</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">Plain</span><span class="p">(</span><span class="n">item</span><span class="p">)</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">copy</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">__root__</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">Element</span><span class="p">):</span>
             <span class="k">return</span> <span class="n">item</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">copy</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">__root__</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="nb">type</span><span class="p">):</span>
@@ -2352,7 +2409,7 @@
 <span class="sd">        Returns:</span>
 <span class="sd">            MessageChain: 返回的消息链中不包含参数中给出的消息元素类型</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">MessageChain</span><span class="p">([</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__root__</span> <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">types</span><span class="p">],</span> <span class="n">inline</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">MessageChain</span><span class="p">([</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span><span class="o">.</span><span class="n">__root__</span> <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">types</span><span class="p">],</span> <span class="n">inline</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 
         </details>
@@ -2396,7 +2453,7 @@
 <span class="sd">        Returns:</span>
 <span class="sd">            MessageChain: 返回的消息链中只包含参数中给出的消息元素类型</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">MessageChain</span><span class="p">([</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__root__</span> <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="ow">in</span> <span class="n">types</span><span class="p">],</span> <span class="n">inline</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">MessageChain</span><span class="p">([</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span><span class="o">.</span><span class="n">__root__</span> <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="ow">in</span> <span class="n">types</span><span class="p">],</span> <span class="n">inline</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 
         </details>
@@ -2668,23 +2725,49 @@
 
         
             <span class="def">def</span>
-            <span class="name">append</span><span class="signature">(self, element: Union[<a href="element.html#Element">ariadne.message.element.Element</a>, str]) -&gt; None</span>:
+            <span class="name">append</span><span class="signature">(
+    self,
+    element: Union[<a href="element.html#Element">ariadne.message.element.Element</a>, str],
+    copy: bool = False
+) -&gt; <a href="#MessageChain">ariadne.message.chain.MessageChain</a></span>:
     </div>
 
                 <details>
             <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">append</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">element</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Element</span><span class="p">,</span> <span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+            <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">append</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">element</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Element</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span> <span class="n">copy</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;MessageChain&quot;</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        向消息链最后追加单个元素</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            element (Element): 要添加的元素</span>
+<span class="sd">            copy (bool): 是否要在副本上修改.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            MessageChain: copy = True 时返回副本, 否则返回自己的引用.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">chain_ref</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span> <span class="k">if</span> <span class="n">copy</span> <span class="k">else</span> <span class="bp">self</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">element</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
             <span class="n">element</span> <span class="o">=</span> <span class="n">Plain</span><span class="p">(</span><span class="n">element</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">__root__</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">element</span><span class="p">)</span>
+        <span class="n">chain_ref</span><span class="o">.</span><span class="n">__root__</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">element</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">chain_ref</span>
 </pre></div>
 
         </details>
 
             <div class="docstring"><p>向消息链最后追加单个元素</p>
+
+<h6 id="args">Args</h6>
+
+<ul>
+<li><strong>element (Element):</strong>  要添加的元素</li>
+<li><strong>copy (bool):</strong>  是否要在副本上修改.</li>
+</ul>
+
+<h6 id="returns">Returns</h6>
+
+<blockquote>
+  <p>MessageChain: copy = True 时返回副本, 否则返回自己的引用.</p>
+</blockquote>
 </div>
 
 
@@ -2710,8 +2793,9 @@
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;MessageChain&quot;</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        向消息链最后添加元素/元素列表/消息链</span>
+
 <span class="sd">        Args:</span>
-<span class="sd">            *content (Union[MessageChain, Element, List[Element]])：要添加的元素/元素容器.</span>
+<span class="sd">            *content (Union[MessageChain, Element, List[Element]]): 要添加的元素/元素容器.</span>
 <span class="sd">            copy (bool): 是否要在副本上修改.</span>
 
 <span class="sd">        Returns:</span>
@@ -2744,7 +2828,7 @@
 <h6 id="args">Args</h6>
 
 <ul>
-<li>*content (Union[MessageChain, Element, List[Element]])：要添加的元素/元素容器.</li>
+<li><strong>*content (Union[MessageChain, Element, List[Element]]):</strong>  要添加的元素/元素容器.</li>
 <li><strong>copy (bool):</strong>  是否要在副本上修改.</li>
 </ul>
 
@@ -2770,6 +2854,7 @@
             <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;MessageChain&quot;</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        拷贝本消息链.</span>
+
 <span class="sd">        Returns:</span>
 <span class="sd">            MessageChain: 拷贝的副本.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -2802,6 +2887,13 @@
             <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">index</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">element_type</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="n">Element_T</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        寻找第一个特定类型的元素, 并返回其下标.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            element_type (Type[Element]): 元素或元素类型</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Optional[int]: 元素下标, 若未找到则为 None.</span>
+
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">e</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__root__</span><span class="p">):</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="n">element_type</span><span class="p">):</span>
@@ -2812,6 +2904,18 @@
         </details>
 
             <div class="docstring"><p>寻找第一个特定类型的元素, 并返回其下标.</p>
+
+<h6 id="args">Args</h6>
+
+<ul>
+<li><strong>element_type (Type[Element]):</strong>  元素或元素类型</li>
+</ul>
+
+<h6 id="returns">Returns</h6>
+
+<blockquote>
+  <p>Optional[int]: 元素下标, 若未找到则为 None.</p>
+</blockquote>
 </div>
 
 
@@ -2829,6 +2933,12 @@
             <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">count</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">element</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Type</span><span class="p">[</span><span class="n">Element_T</span><span class="p">],</span> <span class="n">Element_T</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        统计共有多少个指定的元素.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            element (Type[Element] | Element): 元素或元素类型</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            int: 元素数量</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">element</span><span class="p">,</span> <span class="n">Element</span><span class="p">):</span>
             <span class="k">return</span> <span class="nb">sum</span><span class="p">(</span><span class="n">i</span> <span class="o">==</span> <span class="n">element</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__root__</span><span class="p">)</span>
@@ -2838,6 +2948,18 @@
         </details>
 
             <div class="docstring"><p>统计共有多少个指定的元素.</p>
+
+<h6 id="args">Args</h6>
+
+<ul>
+<li><strong>element (Type[Element] | Element):</strong>  元素或元素类型</li>
+</ul>
+
+<h6 id="returns">Returns</h6>
+
+<blockquote>
+  <p>int: 元素数量</p>
+</blockquote>
 </div>
 
 
