@@ -205,14 +205,14 @@
 <span class="kn">from</span> <span class="nn">graia.broadcast</span> <span class="kn">import</span> <span class="n">Broadcast</span>
 <span class="kn">from</span> <span class="nn">graia.broadcast.entities.event</span> <span class="kn">import</span> <span class="n">Dispatchable</span>
 <span class="kn">from</span> <span class="nn">loguru</span> <span class="kn">import</span> <span class="n">logger</span>
-<span class="kn">from</span> <span class="nn">typing_extensions</span> <span class="kn">import</span> <span class="n">Concatenate</span>
+<span class="kn">from</span> <span class="nn">typing_extensions</span> <span class="kn">import</span> <span class="n">Concatenate</span><span class="p">,</span> <span class="n">Self</span>
 <span class="kn">from</span> <span class="nn">yarl</span> <span class="kn">import</span> <span class="n">URL</span>
 
 <span class="kn">from</span> <span class="nn">.event</span> <span class="kn">import</span> <span class="n">MiraiEvent</span>
 <span class="kn">from</span> <span class="nn">.event.network</span> <span class="kn">import</span> <span class="n">RemoteException</span>
 <span class="kn">from</span> <span class="nn">.exception</span> <span class="kn">import</span> <span class="n">InvalidArgument</span><span class="p">,</span> <span class="n">InvalidSession</span><span class="p">,</span> <span class="n">NotSupportedAction</span>
 <span class="kn">from</span> <span class="nn">.model</span> <span class="kn">import</span> <span class="n">CallMethod</span><span class="p">,</span> <span class="n">DatetimeEncoder</span><span class="p">,</span> <span class="n">MiraiSession</span>
-<span class="kn">from</span> <span class="nn">.typing</span> <span class="kn">import</span> <span class="n">P</span><span class="p">,</span> <span class="n">R</span><span class="p">,</span> <span class="n">Self</span>
+<span class="kn">from</span> <span class="nn">.typing</span> <span class="kn">import</span> <span class="n">P</span><span class="p">,</span> <span class="n">R</span>
 <span class="kn">from</span> <span class="nn">.util</span> <span class="kn">import</span> <span class="n">await_predicate</span><span class="p">,</span> <span class="n">validate_response</span><span class="p">,</span> <span class="n">yield_with_timeout</span>
 
 
@@ -778,8 +778,8 @@
         
             <span class="def">def</span>
             <span class="name">error_wrapper</span><span class="signature">(
-    network_action_callable: Callable[[~Self, ~P], Awaitable[~R]]
-) -&gt; Callable[[~Self, ~P], Awaitable[~R]]</span>:
+    network_action_callable: Callable[[typing_extensions.Self, ~P], Awaitable[~R]]
+) -&gt; Callable[[typing_extensions.Self, ~P], Awaitable[~R]]</span>:
     </div>
 
                 <details>
