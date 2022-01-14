@@ -279,6 +279,7 @@
     <span class="n">Tuple</span><span class="p">,</span>
     <span class="n">Type</span><span class="p">,</span>
     <span class="n">Union</span><span class="p">,</span>
+    <span class="n">cast</span><span class="p">,</span>
 <span class="p">)</span>
 
 <span class="kn">from</span> <span class="nn">graia.broadcast</span> <span class="kn">import</span> <span class="n">Broadcast</span>
@@ -312,6 +313,7 @@
     <span class="n">Profile</span><span class="p">,</span>
     <span class="n">UploadMethod</span><span class="p">,</span>
 <span class="p">)</span>
+<span class="kn">from</span> <span class="nn">.typing</span> <span class="kn">import</span> <span class="n">SendMessageAction</span><span class="p">,</span> <span class="n">SendMessageDict</span><span class="p">,</span> <span class="n">SendMessageException</span>
 <span class="kn">from</span> <span class="nn">.util</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">app_ctx_manager</span><span class="p">,</span>
     <span class="n">await_predicate</span><span class="p">,</span>
@@ -319,6 +321,7 @@
     <span class="n">inject_loguru_traceback</span><span class="p">,</span>
     <span class="n">yield_with_timeout</span><span class="p">,</span>
 <span class="p">)</span>
+<span class="kn">from</span> <span class="nn">.util.send</span> <span class="kn">import</span> <span class="n">strict</span>
 
 <span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
     <span class="kn">from</span> <span class="nn">.message.element</span> <span class="kn">import</span> <span class="n">Image</span><span class="p">,</span> <span class="n">Voice</span>
@@ -341,6 +344,8 @@
 
 <span class="k">class</span> <span class="nc">MessageMixin</span><span class="p">(</span><span class="n">AriadneMixin</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;用于发送, 撤回, 获取消息的 Mixin 类.&quot;&quot;&quot;</span>
+
+    <span class="n">default_action</span><span class="p">:</span> <span class="n">SendMessageAction</span>
 
     <span class="nd">@app_ctx_manager</span>
     <span class="k">async</span> <span class="k">def</span> <span class="nf">getMessageFromId</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">messageId</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">MessageEvent</span><span class="p">:</span>
@@ -499,7 +504,8 @@
         <span class="n">message</span><span class="p">:</span> <span class="n">MessageChain</span><span class="p">,</span>
         <span class="o">*</span><span class="p">,</span>
         <span class="n">quote</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">bool</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="n">Source</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BotMessage</span><span class="p">:</span>
+        <span class="n">action</span><span class="p">:</span> <span class="n">SendMessageAction</span><span class="p">[</span><span class="s2">&quot;T&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="o">...</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;T&quot;</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        依据传入的 `target` 自动发送消息.</span>
 <span class="sd">        请注意发送给群成员时会自动作为临时消息发送.</span>
@@ -509,10 +515,14 @@
 <span class="sd">            message (MessageChain): 要发送的消息链.</span>
 <span class="sd">            quote (Union[bool, int, Source]): 若为布尔类型, 则会尝试通过传入对象解析要回复的消息,</span>
 <span class="sd">            否则会视为 `messageId` 处理.</span>
+<span class="sd">            action (SendMessageCaller[T], optional): 消息发送的处理 action, 可以在 graia.ariadne.util.send 查看自带的 action,</span>
+<span class="sd">            未传入使用默认 action</span>
 
 <span class="sd">        Returns:</span>
+<span class="sd">            T: 默认实现为 Optional[BotMessage] (None 代表失败了)</span>
 <span class="sd">            BotMessage: 即当前会话账号所发出消息的元数据, 内包含有一 `messageId` 属性, 可用于回复.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">action</span> <span class="o">=</span> <span class="n">action</span> <span class="k">if</span> <span class="n">action</span> <span class="ow">is</span> <span class="ow">not</span> <span class="o">...</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_action</span>
         <span class="n">data</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;message&quot;</span><span class="p">:</span> <span class="n">message</span><span class="p">}</span>
         <span class="c1"># quote</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">quote</span><span class="p">,</span> <span class="nb">bool</span><span class="p">)</span> <span class="ow">and</span> <span class="n">quote</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">MessageEvent</span><span class="p">):</span>
@@ -526,14 +536,24 @@
             <span class="n">data</span><span class="p">[</span><span class="s2">&quot;target&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">target</span><span class="o">.</span><span class="n">sender</span>
         <span class="k">else</span><span class="p">:</span>  <span class="c1"># target: sender</span>
             <span class="n">data</span><span class="p">[</span><span class="s2">&quot;target&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">target</span>
+        <span class="n">send_data</span><span class="p">:</span> <span class="n">SendMessageDict</span> <span class="o">=</span> <span class="n">SendMessageDict</span><span class="p">(</span><span class="o">**</span><span class="n">data</span><span class="p">)</span>
         <span class="c1"># send message</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;target&quot;</span><span class="p">],</span> <span class="n">Friend</span><span class="p">):</span>
-            <span class="k">return</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">sendFriendMessage</span><span class="p">(</span><span class="o">**</span><span class="n">data</span><span class="p">)</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;target&quot;</span><span class="p">],</span> <span class="n">Group</span><span class="p">):</span>
-            <span class="k">return</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">sendGroupMessage</span><span class="p">(</span><span class="o">**</span><span class="n">data</span><span class="p">)</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;target&quot;</span><span class="p">],</span> <span class="n">Member</span><span class="p">):</span>
-            <span class="k">return</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">sendTempMessage</span><span class="p">(</span><span class="o">**</span><span class="n">data</span><span class="p">)</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unable to send message with </span><span class="si">{</span><span class="n">target</span><span class="si">}</span><span class="s2"> as target.&quot;</span><span class="p">)</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="k">await</span> <span class="n">action</span><span class="p">(</span><span class="n">send_data</span><span class="p">)</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;target&quot;</span><span class="p">],</span> <span class="n">Friend</span><span class="p">):</span>
+                <span class="n">val</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">sendFriendMessage</span><span class="p">(</span><span class="o">**</span><span class="n">data</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;target&quot;</span><span class="p">],</span> <span class="n">Group</span><span class="p">):</span>
+                <span class="n">val</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">sendGroupMessage</span><span class="p">(</span><span class="o">**</span><span class="n">data</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;target&quot;</span><span class="p">],</span> <span class="n">Member</span><span class="p">):</span>
+                <span class="n">val</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">sendTempMessage</span><span class="p">(</span><span class="o">**</span><span class="n">data</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unable to send message with </span><span class="si">{</span><span class="n">target</span><span class="si">}</span><span class="s2"> as target.&quot;</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">e</span><span class="o">.</span><span class="n">send_data</span> <span class="o">=</span> <span class="n">send_data</span>
+            <span class="k">return</span> <span class="k">await</span> <span class="n">action</span><span class="p">(</span><span class="n">cast</span><span class="p">(</span><span class="n">SendMessageException</span><span class="p">,</span> <span class="n">e</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="k">await</span> <span class="n">action</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
 
     <span class="nd">@app_ctx_manager</span>
     <span class="k">async</span> <span class="k">def</span> <span class="nf">sendNudge</span><span class="p">(</span>
@@ -1446,6 +1466,7 @@
         <span class="o">*</span><span class="p">,</span>
         <span class="n">loop</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">AbstractEventLoop</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">broadcast</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Broadcast</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">default_action</span><span class="p">:</span> <span class="n">SendMessageAction</span> <span class="o">=</span> <span class="n">strict</span><span class="p">,</span>
         <span class="n">max_retry</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
         <span class="n">chat_log_config</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ChatLogConfig</span><span class="p">,</span> <span class="n">Literal</span><span class="p">[</span><span class="kc">False</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">use_loguru_traceback</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
@@ -1460,6 +1481,7 @@
 <span class="sd">            connect_info (Union[Adapter, MiraiSession]) 提供与 `mirai-api-http` 交互的信息.</span>
 <span class="sd">            loop (AbstractEventLoop, optional): 事件循环.</span>
 <span class="sd">            broadcast (Broadcast, optional): 被指定的, 外置的事件系统, 即 `Broadcast Control` 实例.</span>
+<span class="sd">            default_action (SendMessageAction, optional): sendMessage 方法的默认 action, 未配置则为 strict.</span>
 <span class="sd">            chat_log_config (ChatLogConfig or Literal[False]): 聊天日志的配置, 请移步 `ChatLogConfig` 查看使用方法.</span>
 <span class="sd">            设置为 False 则会完全禁用聊天日志.</span>
 <span class="sd">            use_loguru_traceback (bool): 是否注入 loguru 以获得对 traceback.print_exception() 与 sys.excepthook 的完全控制.</span>
@@ -1502,6 +1524,8 @@
 
         <span class="n">chat_log_enabled</span> <span class="o">=</span> <span class="n">chat_log_config</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">False</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">chat_log_cfg</span><span class="p">:</span> <span class="n">ChatLogConfig</span> <span class="o">=</span> <span class="n">chat_log_config</span> <span class="ow">or</span> <span class="n">ChatLogConfig</span><span class="p">(</span><span class="n">enabled</span><span class="o">=</span><span class="n">chat_log_enabled</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">default_action</span> <span class="o">=</span> <span class="n">default_action</span>
 
         <span class="k">if</span> <span class="n">use_bypass_listener</span><span class="p">:</span>
             <span class="n">inject_bypass_listener</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">broadcast</span><span class="p">)</span>
@@ -1573,11 +1597,14 @@
                                 <span class="bp">self</span><span class="o">.</span><span class="n">broadcast</span><span class="o">.</span><span class="n">postEvent</span><span class="p">(</span><span class="n">event</span><span class="p">)</span>
                         <span class="k">else</span><span class="p">:</span>
                             <span class="bp">self</span><span class="o">.</span><span class="n">broadcast</span><span class="o">.</span><span class="n">postEvent</span><span class="p">(</span><span class="n">event</span><span class="p">)</span>
+            <span class="k">except</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">TimeoutError</span><span class="p">:</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">critical</span><span class="p">(</span><span class="s2">&quot;Timeout when connecting to mirai-api-http. Configuration problem?&quot;</span><span class="p">)</span>
             <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
                 <span class="n">logger</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">broadcast</span><span class="o">.</span><span class="n">postEvent</span><span class="p">(</span><span class="n">AdapterShutdowned</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span>
             <span class="k">if</span> <span class="n">retry_cnt</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_retry</span><span class="p">:</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">critical</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Max retry exceeded: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">max_retry</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">critical</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Max retry exceeded: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">max_retry</span><span class="si">}</span><span class="s2">. Stop Ariadne.&quot;</span><span class="p">)</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Press Ctrl-C to confirm exit.&quot;</span><span class="p">)</span>
                 <span class="k">break</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="ow">in</span> <span class="p">{</span><span class="n">AriadneStatus</span><span class="o">.</span><span class="n">RUNNING</span><span class="p">,</span> <span class="n">AriadneStatus</span><span class="o">.</span><span class="n">LAUNCH</span><span class="p">}:</span>
                 <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">adapter</span><span class="o">.</span><span class="n">session_activated</span><span class="p">:</span>
@@ -1798,6 +1825,8 @@
             <div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">MessageMixin</span><span class="p">(</span><span class="n">AriadneMixin</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;用于发送, 撤回, 获取消息的 Mixin 类.&quot;&quot;&quot;</span>
 
+    <span class="n">default_action</span><span class="p">:</span> <span class="n">SendMessageAction</span>
+
     <span class="nd">@app_ctx_manager</span>
     <span class="k">async</span> <span class="k">def</span> <span class="nf">getMessageFromId</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">messageId</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">MessageEvent</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;从 消息 ID 提取 消息事件.</span>
@@ -1955,7 +1984,8 @@
         <span class="n">message</span><span class="p">:</span> <span class="n">MessageChain</span><span class="p">,</span>
         <span class="o">*</span><span class="p">,</span>
         <span class="n">quote</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">bool</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="n">Source</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BotMessage</span><span class="p">:</span>
+        <span class="n">action</span><span class="p">:</span> <span class="n">SendMessageAction</span><span class="p">[</span><span class="s2">&quot;T&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="o">...</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;T&quot;</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        依据传入的 `target` 自动发送消息.</span>
 <span class="sd">        请注意发送给群成员时会自动作为临时消息发送.</span>
@@ -1965,10 +1995,14 @@
 <span class="sd">            message (MessageChain): 要发送的消息链.</span>
 <span class="sd">            quote (Union[bool, int, Source]): 若为布尔类型, 则会尝试通过传入对象解析要回复的消息,</span>
 <span class="sd">            否则会视为 `messageId` 处理.</span>
+<span class="sd">            action (SendMessageCaller[T], optional): 消息发送的处理 action, 可以在 graia.ariadne.util.send 查看自带的 action,</span>
+<span class="sd">            未传入使用默认 action</span>
 
 <span class="sd">        Returns:</span>
+<span class="sd">            T: 默认实现为 Optional[BotMessage] (None 代表失败了)</span>
 <span class="sd">            BotMessage: 即当前会话账号所发出消息的元数据, 内包含有一 `messageId` 属性, 可用于回复.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">action</span> <span class="o">=</span> <span class="n">action</span> <span class="k">if</span> <span class="n">action</span> <span class="ow">is</span> <span class="ow">not</span> <span class="o">...</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_action</span>
         <span class="n">data</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;message&quot;</span><span class="p">:</span> <span class="n">message</span><span class="p">}</span>
         <span class="c1"># quote</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">quote</span><span class="p">,</span> <span class="nb">bool</span><span class="p">)</span> <span class="ow">and</span> <span class="n">quote</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">MessageEvent</span><span class="p">):</span>
@@ -1982,14 +2016,24 @@
             <span class="n">data</span><span class="p">[</span><span class="s2">&quot;target&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">target</span><span class="o">.</span><span class="n">sender</span>
         <span class="k">else</span><span class="p">:</span>  <span class="c1"># target: sender</span>
             <span class="n">data</span><span class="p">[</span><span class="s2">&quot;target&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">target</span>
+        <span class="n">send_data</span><span class="p">:</span> <span class="n">SendMessageDict</span> <span class="o">=</span> <span class="n">SendMessageDict</span><span class="p">(</span><span class="o">**</span><span class="n">data</span><span class="p">)</span>
         <span class="c1"># send message</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;target&quot;</span><span class="p">],</span> <span class="n">Friend</span><span class="p">):</span>
-            <span class="k">return</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">sendFriendMessage</span><span class="p">(</span><span class="o">**</span><span class="n">data</span><span class="p">)</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;target&quot;</span><span class="p">],</span> <span class="n">Group</span><span class="p">):</span>
-            <span class="k">return</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">sendGroupMessage</span><span class="p">(</span><span class="o">**</span><span class="n">data</span><span class="p">)</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;target&quot;</span><span class="p">],</span> <span class="n">Member</span><span class="p">):</span>
-            <span class="k">return</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">sendTempMessage</span><span class="p">(</span><span class="o">**</span><span class="n">data</span><span class="p">)</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unable to send message with </span><span class="si">{</span><span class="n">target</span><span class="si">}</span><span class="s2"> as target.&quot;</span><span class="p">)</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="k">await</span> <span class="n">action</span><span class="p">(</span><span class="n">send_data</span><span class="p">)</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;target&quot;</span><span class="p">],</span> <span class="n">Friend</span><span class="p">):</span>
+                <span class="n">val</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">sendFriendMessage</span><span class="p">(</span><span class="o">**</span><span class="n">data</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;target&quot;</span><span class="p">],</span> <span class="n">Group</span><span class="p">):</span>
+                <span class="n">val</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">sendGroupMessage</span><span class="p">(</span><span class="o">**</span><span class="n">data</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;target&quot;</span><span class="p">],</span> <span class="n">Member</span><span class="p">):</span>
+                <span class="n">val</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">sendTempMessage</span><span class="p">(</span><span class="o">**</span><span class="n">data</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unable to send message with </span><span class="si">{</span><span class="n">target</span><span class="si">}</span><span class="s2"> as target.&quot;</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">e</span><span class="o">.</span><span class="n">send_data</span> <span class="o">=</span> <span class="n">send_data</span>
+            <span class="k">return</span> <span class="k">await</span> <span class="n">action</span><span class="p">(</span><span class="n">cast</span><span class="p">(</span><span class="n">SendMessageException</span><span class="p">,</span> <span class="n">e</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="k">await</span> <span class="n">action</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
 
     <span class="nd">@app_ctx_manager</span>
     <span class="k">async</span> <span class="k">def</span> <span class="nf">sendNudge</span><span class="p">(</span>
@@ -2373,8 +2417,9 @@
     target: Union[<a href="event/message.html#MessageEvent">ariadne.event.message.MessageEvent</a>, <a href="model.html#Group">ariadne.model.Group</a>, <a href="model.html#Friend">ariadne.model.Friend</a>, <a href="model.html#Member">ariadne.model.Member</a>],
     message: <a href="message/chain.html#MessageChain">ariadne.message.chain.MessageChain</a>,
     *,
-    quote: Union[bool, int, <a href="message/element.html#Source">ariadne.message.element.Source</a>] = False
-) -&gt; <a href="model.html#BotMessage">ariadne.model.BotMessage</a></span>:
+    quote: Union[bool, int, <a href="message/element.html#Source">ariadne.message.element.Source</a>] = False,
+    action: <a href="typing.html#SendMessageAction">ariadne.typing.SendMessageAction</a>[~T] = Ellipsis
+) -&gt; ~T</span>:
     </div>
 
                 <details>
@@ -2386,7 +2431,8 @@
         <span class="n">message</span><span class="p">:</span> <span class="n">MessageChain</span><span class="p">,</span>
         <span class="o">*</span><span class="p">,</span>
         <span class="n">quote</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">bool</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="n">Source</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BotMessage</span><span class="p">:</span>
+        <span class="n">action</span><span class="p">:</span> <span class="n">SendMessageAction</span><span class="p">[</span><span class="s2">&quot;T&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="o">...</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;T&quot;</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        依据传入的 `target` 自动发送消息.</span>
 <span class="sd">        请注意发送给群成员时会自动作为临时消息发送.</span>
@@ -2396,10 +2442,14 @@
 <span class="sd">            message (MessageChain): 要发送的消息链.</span>
 <span class="sd">            quote (Union[bool, int, Source]): 若为布尔类型, 则会尝试通过传入对象解析要回复的消息,</span>
 <span class="sd">            否则会视为 `messageId` 处理.</span>
+<span class="sd">            action (SendMessageCaller[T], optional): 消息发送的处理 action, 可以在 graia.ariadne.util.send 查看自带的 action,</span>
+<span class="sd">            未传入使用默认 action</span>
 
 <span class="sd">        Returns:</span>
+<span class="sd">            T: 默认实现为 Optional[BotMessage] (None 代表失败了)</span>
 <span class="sd">            BotMessage: 即当前会话账号所发出消息的元数据, 内包含有一 `messageId` 属性, 可用于回复.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">action</span> <span class="o">=</span> <span class="n">action</span> <span class="k">if</span> <span class="n">action</span> <span class="ow">is</span> <span class="ow">not</span> <span class="o">...</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_action</span>
         <span class="n">data</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;message&quot;</span><span class="p">:</span> <span class="n">message</span><span class="p">}</span>
         <span class="c1"># quote</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">quote</span><span class="p">,</span> <span class="nb">bool</span><span class="p">)</span> <span class="ow">and</span> <span class="n">quote</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">MessageEvent</span><span class="p">):</span>
@@ -2413,14 +2463,24 @@
             <span class="n">data</span><span class="p">[</span><span class="s2">&quot;target&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">target</span><span class="o">.</span><span class="n">sender</span>
         <span class="k">else</span><span class="p">:</span>  <span class="c1"># target: sender</span>
             <span class="n">data</span><span class="p">[</span><span class="s2">&quot;target&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">target</span>
+        <span class="n">send_data</span><span class="p">:</span> <span class="n">SendMessageDict</span> <span class="o">=</span> <span class="n">SendMessageDict</span><span class="p">(</span><span class="o">**</span><span class="n">data</span><span class="p">)</span>
         <span class="c1"># send message</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;target&quot;</span><span class="p">],</span> <span class="n">Friend</span><span class="p">):</span>
-            <span class="k">return</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">sendFriendMessage</span><span class="p">(</span><span class="o">**</span><span class="n">data</span><span class="p">)</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;target&quot;</span><span class="p">],</span> <span class="n">Group</span><span class="p">):</span>
-            <span class="k">return</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">sendGroupMessage</span><span class="p">(</span><span class="o">**</span><span class="n">data</span><span class="p">)</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;target&quot;</span><span class="p">],</span> <span class="n">Member</span><span class="p">):</span>
-            <span class="k">return</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">sendTempMessage</span><span class="p">(</span><span class="o">**</span><span class="n">data</span><span class="p">)</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unable to send message with </span><span class="si">{</span><span class="n">target</span><span class="si">}</span><span class="s2"> as target.&quot;</span><span class="p">)</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="k">await</span> <span class="n">action</span><span class="p">(</span><span class="n">send_data</span><span class="p">)</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;target&quot;</span><span class="p">],</span> <span class="n">Friend</span><span class="p">):</span>
+                <span class="n">val</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">sendFriendMessage</span><span class="p">(</span><span class="o">**</span><span class="n">data</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;target&quot;</span><span class="p">],</span> <span class="n">Group</span><span class="p">):</span>
+                <span class="n">val</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">sendGroupMessage</span><span class="p">(</span><span class="o">**</span><span class="n">data</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;target&quot;</span><span class="p">],</span> <span class="n">Member</span><span class="p">):</span>
+                <span class="n">val</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">sendTempMessage</span><span class="p">(</span><span class="o">**</span><span class="n">data</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unable to send message with </span><span class="si">{</span><span class="n">target</span><span class="si">}</span><span class="s2"> as target.&quot;</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">e</span><span class="o">.</span><span class="n">send_data</span> <span class="o">=</span> <span class="n">send_data</span>
+            <span class="k">return</span> <span class="k">await</span> <span class="n">action</span><span class="p">(</span><span class="n">cast</span><span class="p">(</span><span class="n">SendMessageException</span><span class="p">,</span> <span class="n">e</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="k">await</span> <span class="n">action</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
 </pre></div>
 
         </details>
@@ -2435,12 +2495,15 @@
 <li><strong>message (MessageChain):</strong>  要发送的消息链.</li>
 <li><strong>quote (Union[bool, int, Source]):</strong>  若为布尔类型, 则会尝试通过传入对象解析要回复的消息,</li>
 <li>否则会视为 <code>messageId</code> 处理.</li>
+<li><strong>action (SendMessageCaller[T], optional):</strong>  消息发送的处理 action, 可以在 graia.ariadne.util.send 查看自带的 action,</li>
+<li>未传入使用默认 action</li>
 </ul>
 
 <h6 id="returns">Returns</h6>
 
 <blockquote>
-  <p>BotMessage: 即当前会话账号所发出消息的元数据, 内包含有一 <code>messageId</code> 属性, 可用于回复.</p>
+  <p>T: 默认实现为 Optional[BotMessage] (None 代表失败了)
+  BotMessage: 即当前会话账号所发出消息的元数据, 内包含有一 <code>messageId</code> 属性, 可用于回复.</p>
 </blockquote>
 </div>
 
@@ -5539,6 +5602,7 @@
         <span class="o">*</span><span class="p">,</span>
         <span class="n">loop</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">AbstractEventLoop</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">broadcast</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Broadcast</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">default_action</span><span class="p">:</span> <span class="n">SendMessageAction</span> <span class="o">=</span> <span class="n">strict</span><span class="p">,</span>
         <span class="n">max_retry</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
         <span class="n">chat_log_config</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ChatLogConfig</span><span class="p">,</span> <span class="n">Literal</span><span class="p">[</span><span class="kc">False</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">use_loguru_traceback</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
@@ -5553,6 +5617,7 @@
 <span class="sd">            connect_info (Union[Adapter, MiraiSession]) 提供与 `mirai-api-http` 交互的信息.</span>
 <span class="sd">            loop (AbstractEventLoop, optional): 事件循环.</span>
 <span class="sd">            broadcast (Broadcast, optional): 被指定的, 外置的事件系统, 即 `Broadcast Control` 实例.</span>
+<span class="sd">            default_action (SendMessageAction, optional): sendMessage 方法的默认 action, 未配置则为 strict.</span>
 <span class="sd">            chat_log_config (ChatLogConfig or Literal[False]): 聊天日志的配置, 请移步 `ChatLogConfig` 查看使用方法.</span>
 <span class="sd">            设置为 False 则会完全禁用聊天日志.</span>
 <span class="sd">            use_loguru_traceback (bool): 是否注入 loguru 以获得对 traceback.print_exception() 与 sys.excepthook 的完全控制.</span>
@@ -5595,6 +5660,8 @@
 
         <span class="n">chat_log_enabled</span> <span class="o">=</span> <span class="n">chat_log_config</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">False</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">chat_log_cfg</span><span class="p">:</span> <span class="n">ChatLogConfig</span> <span class="o">=</span> <span class="n">chat_log_config</span> <span class="ow">or</span> <span class="n">ChatLogConfig</span><span class="p">(</span><span class="n">enabled</span><span class="o">=</span><span class="n">chat_log_enabled</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">default_action</span> <span class="o">=</span> <span class="n">default_action</span>
 
         <span class="k">if</span> <span class="n">use_bypass_listener</span><span class="p">:</span>
             <span class="n">inject_bypass_listener</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">broadcast</span><span class="p">)</span>
@@ -5666,11 +5733,14 @@
                                 <span class="bp">self</span><span class="o">.</span><span class="n">broadcast</span><span class="o">.</span><span class="n">postEvent</span><span class="p">(</span><span class="n">event</span><span class="p">)</span>
                         <span class="k">else</span><span class="p">:</span>
                             <span class="bp">self</span><span class="o">.</span><span class="n">broadcast</span><span class="o">.</span><span class="n">postEvent</span><span class="p">(</span><span class="n">event</span><span class="p">)</span>
+            <span class="k">except</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">TimeoutError</span><span class="p">:</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">critical</span><span class="p">(</span><span class="s2">&quot;Timeout when connecting to mirai-api-http. Configuration problem?&quot;</span><span class="p">)</span>
             <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
                 <span class="n">logger</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">broadcast</span><span class="o">.</span><span class="n">postEvent</span><span class="p">(</span><span class="n">AdapterShutdowned</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span>
             <span class="k">if</span> <span class="n">retry_cnt</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_retry</span><span class="p">:</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">critical</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Max retry exceeded: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">max_retry</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">critical</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Max retry exceeded: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">max_retry</span><span class="si">}</span><span class="s2">. Stop Ariadne.&quot;</span><span class="p">)</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Press Ctrl-C to confirm exit.&quot;</span><span class="p">)</span>
                 <span class="k">break</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="ow">in</span> <span class="p">{</span><span class="n">AriadneStatus</span><span class="o">.</span><span class="n">RUNNING</span><span class="p">,</span> <span class="n">AriadneStatus</span><span class="o">.</span><span class="n">LAUNCH</span><span class="p">}:</span>
                 <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">adapter</span><span class="o">.</span><span class="n">session_activated</span><span class="p">:</span>
@@ -5847,6 +5917,7 @@
     *,
     loop: Optional[asyncio.events.AbstractEventLoop] = None,
     broadcast: Optional[graia.broadcast.Broadcast] = None,
+    default_action: <a href="typing.html#SendMessageAction">ariadne.typing.SendMessageAction</a> = &lt;function strict&gt;,
     max_retry: int = -1,
     chat_log_config: Union[<a href="model.html#ChatLogConfig">ariadne.model.ChatLogConfig</a>, Literal[False], NoneType] = None,
     use_loguru_traceback: Optional[bool] = True,
@@ -5864,6 +5935,7 @@
         <span class="o">*</span><span class="p">,</span>
         <span class="n">loop</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">AbstractEventLoop</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">broadcast</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Broadcast</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">default_action</span><span class="p">:</span> <span class="n">SendMessageAction</span> <span class="o">=</span> <span class="n">strict</span><span class="p">,</span>
         <span class="n">max_retry</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
         <span class="n">chat_log_config</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ChatLogConfig</span><span class="p">,</span> <span class="n">Literal</span><span class="p">[</span><span class="kc">False</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">use_loguru_traceback</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
@@ -5878,6 +5950,7 @@
 <span class="sd">            connect_info (Union[Adapter, MiraiSession]) 提供与 `mirai-api-http` 交互的信息.</span>
 <span class="sd">            loop (AbstractEventLoop, optional): 事件循环.</span>
 <span class="sd">            broadcast (Broadcast, optional): 被指定的, 外置的事件系统, 即 `Broadcast Control` 实例.</span>
+<span class="sd">            default_action (SendMessageAction, optional): sendMessage 方法的默认 action, 未配置则为 strict.</span>
 <span class="sd">            chat_log_config (ChatLogConfig or Literal[False]): 聊天日志的配置, 请移步 `ChatLogConfig` 查看使用方法.</span>
 <span class="sd">            设置为 False 则会完全禁用聊天日志.</span>
 <span class="sd">            use_loguru_traceback (bool): 是否注入 loguru 以获得对 traceback.print_exception() 与 sys.excepthook 的完全控制.</span>
@@ -5921,6 +5994,8 @@
         <span class="n">chat_log_enabled</span> <span class="o">=</span> <span class="n">chat_log_config</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">False</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">chat_log_cfg</span><span class="p">:</span> <span class="n">ChatLogConfig</span> <span class="o">=</span> <span class="n">chat_log_config</span> <span class="ow">or</span> <span class="n">ChatLogConfig</span><span class="p">(</span><span class="n">enabled</span><span class="o">=</span><span class="n">chat_log_enabled</span><span class="p">)</span>
 
+        <span class="bp">self</span><span class="o">.</span><span class="n">default_action</span> <span class="o">=</span> <span class="n">default_action</span>
+
         <span class="k">if</span> <span class="n">use_bypass_listener</span><span class="p">:</span>
             <span class="n">inject_bypass_listener</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">broadcast</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">use_loguru_traceback</span><span class="p">:</span>
@@ -5937,6 +6012,7 @@
 <li>connect_info (Union[Adapter, MiraiSession]) 提供与 <code>mirai-api-http</code> 交互的信息.</li>
 <li><strong>loop (AbstractEventLoop, optional):</strong>  事件循环.</li>
 <li><strong>broadcast (Broadcast, optional):</strong>  被指定的, 外置的事件系统, 即 <code>Broadcast Control</code> 实例.</li>
+<li><strong>default_action (SendMessageAction, optional):</strong>  sendMessage 方法的默认 action, 未配置则为 strict.</li>
 <li><strong>chat_log_config (ChatLogConfig or Literal[False]):</strong>  聊天日志的配置, 请移步 <code>ChatLogConfig</code> 查看使用方法.</li>
 <li>设置为 False 则会完全禁用聊天日志.</li>
 <li><strong>use_loguru_traceback (bool):</strong>  是否注入 loguru 以获得对 traceback.print_exception() 与 sys.excepthook 的完全控制.</li>
@@ -6054,11 +6130,14 @@
                                 <span class="bp">self</span><span class="o">.</span><span class="n">broadcast</span><span class="o">.</span><span class="n">postEvent</span><span class="p">(</span><span class="n">event</span><span class="p">)</span>
                         <span class="k">else</span><span class="p">:</span>
                             <span class="bp">self</span><span class="o">.</span><span class="n">broadcast</span><span class="o">.</span><span class="n">postEvent</span><span class="p">(</span><span class="n">event</span><span class="p">)</span>
+            <span class="k">except</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">TimeoutError</span><span class="p">:</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">critical</span><span class="p">(</span><span class="s2">&quot;Timeout when connecting to mirai-api-http. Configuration problem?&quot;</span><span class="p">)</span>
             <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
                 <span class="n">logger</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">broadcast</span><span class="o">.</span><span class="n">postEvent</span><span class="p">(</span><span class="n">AdapterShutdowned</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span>
             <span class="k">if</span> <span class="n">retry_cnt</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_retry</span><span class="p">:</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">critical</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Max retry exceeded: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">max_retry</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">critical</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Max retry exceeded: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">max_retry</span><span class="si">}</span><span class="s2">. Stop Ariadne.&quot;</span><span class="p">)</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Press Ctrl-C to confirm exit.&quot;</span><span class="p">)</span>
                 <span class="k">break</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="ow">in</span> <span class="p">{</span><span class="n">AriadneStatus</span><span class="o">.</span><span class="n">RUNNING</span><span class="p">,</span> <span class="n">AriadneStatus</span><span class="o">.</span><span class="n">LAUNCH</span><span class="p">}:</span>
                 <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">adapter</span><span class="o">.</span><span class="n">session_activated</span><span class="p">:</span>

@@ -288,6 +288,9 @@
                         <li>
                                 <a class="function" href="#File.asPersistentString">asPersistentString</a>
                         </li>
+                        <li>
+                                <a class="function" href="#File.prepare">prepare</a>
+                        </li>
                 </ul>
 
             </li>
@@ -802,6 +805,9 @@
 
     <span class="k">def</span> <span class="nf">asPersistentString</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="k">return</span> <span class="s2">&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">NotSendableElement</span>
 
 
 <span class="k">class</span> <span class="nc">MiraiCode</span><span class="p">(</span><span class="n">Element</span><span class="p">):</span>
@@ -3305,6 +3311,9 @@ type (str): 元素类型</p>
 
     <span class="k">def</span> <span class="nf">asPersistentString</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="k">return</span> <span class="s2">&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">NotSendableElement</span>
 </pre></div>
 
         </details>
@@ -3367,6 +3376,32 @@ type (str): 元素类型</p>
 
 
                             </div>
+                            <div id="File.prepare" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#File.prepare">#&nbsp;&nbsp</a>
+
+        
+            <span class="def">def</span>
+            <span class="name">prepare</span><span class="signature">(self) -&gt; None</span>:
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">NotSendableElement</span>
+</pre></div>
+
+        </details>
+
+            <div class="docstring"><p>为元素被发送进行准备,
+若无异常被引发, 则完成本方法后元素应可被发送.</p>
+
+<p>保留空实现以允许不需要 <code><a href="#File.prepare">prepare</a></code>的元素类型存在.</p>
+
+<p>若本元素设计时便不可被发送, 请引发 <code><a href="#NotSendableElement">NotSendableElement</a></code> 异常.</p>
+</div>
+
+
+                            </div>
                             <div class="inherited">
                                 <h5>Inherited Members</h5>
                                 <dl>
@@ -3383,10 +3418,6 @@ type (str): 元素类型</p>
                 <dd id="File.schema_json" class="function">schema_json</dd>
                 <dd id="File.validate" class="function">validate</dd>
                 <dd id="File.update_forward_refs" class="function">update_forward_refs</dd>
-
-            </div>
-            <div><dt><a href="#Element">Element</a></dt>
-                                <dd id="File.prepare" class="function"><a href="#Element.prepare">prepare</a></dd>
 
             </div>
             <div><dt><a href="../model.html#AriadneBaseModel">ariadne.model.AriadneBaseModel</a></dt>

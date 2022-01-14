@@ -581,20 +581,23 @@
     <span class="k">def</span> <span class="fm">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterator</span><span class="p">[</span><span class="n">Element</span><span class="p">]:</span>
         <span class="k">return</span> <span class="nb">iter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__root__</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">startswith</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">string</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">startswith</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">string</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">ignore_header</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        判定消息链是否以相应字符串开头</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            string (str): 需要判断的字符串</span>
+<span class="sd">            ignore_header(bool): 是否忽略元数据</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            bool: 是否以此字符串开头</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">__root__</span> <span class="ow">or</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__root__</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">Plain</span><span class="p">):</span>
+        <span class="n">ref_root</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">asSendable</span><span class="p">()</span><span class="o">.</span><span class="n">__root__</span> <span class="k">if</span> <span class="n">ignore_header</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">__root__</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">ref_root</span> <span class="ow">or</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ref_root</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">Plain</span><span class="p">):</span>
             <span class="k">return</span> <span class="kc">False</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__root__</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">string</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">ref_root</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">string</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">endswith</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">string</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -1370,20 +1373,23 @@
     <span class="k">def</span> <span class="fm">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterator</span><span class="p">[</span><span class="n">Element</span><span class="p">]:</span>
         <span class="k">return</span> <span class="nb">iter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__root__</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">startswith</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">string</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">startswith</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">string</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">ignore_header</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        判定消息链是否以相应字符串开头</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            string (str): 需要判断的字符串</span>
+<span class="sd">            ignore_header(bool): 是否忽略元数据</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            bool: 是否以此字符串开头</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">__root__</span> <span class="ow">or</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__root__</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">Plain</span><span class="p">):</span>
+        <span class="n">ref_root</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">asSendable</span><span class="p">()</span><span class="o">.</span><span class="n">__root__</span> <span class="k">if</span> <span class="n">ignore_header</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">__root__</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">ref_root</span> <span class="ow">or</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ref_root</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">Plain</span><span class="p">):</span>
             <span class="k">return</span> <span class="kc">False</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__root__</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">string</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">ref_root</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">string</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">endswith</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">string</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -2555,25 +2561,28 @@
 
         
             <span class="def">def</span>
-            <span class="name">startswith</span><span class="signature">(self, string: str) -&gt; bool</span>:
+            <span class="name">startswith</span><span class="signature">(self, string: str, ignore_header: bool = True) -&gt; bool</span>:
     </div>
 
                 <details>
             <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">startswith</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">string</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+            <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">startswith</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">string</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">ignore_header</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        判定消息链是否以相应字符串开头</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            string (str): 需要判断的字符串</span>
+<span class="sd">            ignore_header(bool): 是否忽略元数据</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            bool: 是否以此字符串开头</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">__root__</span> <span class="ow">or</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__root__</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">Plain</span><span class="p">):</span>
+        <span class="n">ref_root</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">asSendable</span><span class="p">()</span><span class="o">.</span><span class="n">__root__</span> <span class="k">if</span> <span class="n">ignore_header</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">__root__</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">ref_root</span> <span class="ow">or</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ref_root</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">Plain</span><span class="p">):</span>
             <span class="k">return</span> <span class="kc">False</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__root__</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">string</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">ref_root</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">string</span><span class="p">)</span>
 </pre></div>
 
         </details>
@@ -2584,6 +2593,7 @@
 
 <ul>
 <li><strong>string (str):</strong>  需要判断的字符串</li>
+<li><strong>ignore_header(bool):</strong>  是否忽略元数据</li>
 </ul>
 
 <h6 id="returns">Returns</h6>
