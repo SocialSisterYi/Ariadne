@@ -1322,7 +1322,7 @@
     <span class="k">async</span> <span class="k">def</span> <span class="nf">uploadFile</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">data</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">,</span>
-        <span class="n">method</span><span class="p">:</span> <span class="n">UploadMethod</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">method</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">UploadMethod</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">target</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Friend</span><span class="p">,</span> <span class="n">Group</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
         <span class="n">path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
         <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
@@ -1332,7 +1332,7 @@
 <span class="sd">        上传目标, (可选)上传目录ID.</span>
 <span class="sd">        Args:</span>
 <span class="sd">            data (bytes): 文件的原始数据</span>
-<span class="sd">            method (UploadMethod, optional): 文件的上传类型</span>
+<span class="sd">            method (str | UploadMethod, optional): 文件的上传类型</span>
 <span class="sd">            target (Union[Friend, Group, int]): 文件上传目标, 即群组</span>
 <span class="sd">            path (str): 目标路径, 默认为根路径.</span>
 <span class="sd">            name (str): 文件名, 可选, 若 path 存在斜杠可从 path 推断.</span>
@@ -1340,13 +1340,12 @@
 <span class="sd">            FileInfo: 文件信息</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="n">method</span> <span class="o">=</span> <span class="n">method</span> <span class="ow">or</span> <span class="n">UploadMethod</span><span class="p">[</span><span class="n">target</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">]</span>
+        <span class="n">method</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">method</span> <span class="ow">or</span> <span class="n">UploadMethod</span><span class="p">[</span><span class="n">target</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">])</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
 
-        <span class="k">if</span> <span class="n">method</span> <span class="o">!=</span> <span class="n">UploadMethod</span><span class="o">.</span><span class="n">Group</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">Friend</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">method</span> <span class="o">!=</span> <span class="s2">&quot;group&quot;</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Not implemented for </span><span class="si">{</span><span class="n">method</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
-        <span class="n">target</span> <span class="o">=</span> <span class="n">target</span><span class="o">.</span><span class="n">id</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">Friend</span><span class="p">)</span> <span class="k">else</span> <span class="n">target</span>
-        <span class="n">target</span> <span class="o">=</span> <span class="n">target</span><span class="o">.</span><span class="n">id</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">Group</span><span class="p">)</span> <span class="k">else</span> <span class="n">target</span>
+        <span class="n">target</span> <span class="o">=</span> <span class="n">target</span><span class="o">.</span><span class="n">id</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="p">(</span><span class="n">Friend</span><span class="p">,</span> <span class="n">Group</span><span class="p">))</span> <span class="k">else</span> <span class="n">target</span>
 
         <span class="k">if</span> <span class="s2">&quot;/&quot;</span> <span class="ow">in</span> <span class="n">path</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">name</span><span class="p">:</span>
             <span class="n">path</span><span class="p">,</span> <span class="n">name</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">rsplit</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
@@ -1356,7 +1355,7 @@
             <span class="n">CallMethod</span><span class="o">.</span><span class="n">MULTIPART</span><span class="p">,</span>
             <span class="p">{</span>
                 <span class="s2">&quot;sessionKey&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">session_key</span><span class="p">,</span>
-                <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="n">method</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
+                <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="n">method</span><span class="p">,</span>
                 <span class="s2">&quot;target&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">target</span><span class="p">),</span>
                 <span class="s2">&quot;path&quot;</span><span class="p">:</span> <span class="n">path</span><span class="p">,</span>
                 <span class="s2">&quot;file&quot;</span><span class="p">:</span> <span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;filename&quot;</span><span class="p">:</span> <span class="n">name</span><span class="p">}</span> <span class="k">if</span> <span class="n">name</span> <span class="k">else</span> <span class="p">{}),</span>
@@ -1370,25 +1369,25 @@
     <span class="sd">&quot;&quot;&quot;用于与多媒体信息交互的 Mixin 类.&quot;&quot;&quot;</span>
 
     <span class="nd">@app_ctx_manager</span>
-    <span class="k">async</span> <span class="k">def</span> <span class="nf">uploadImage</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">,</span> <span class="n">method</span><span class="p">:</span> <span class="n">UploadMethod</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;Image&quot;</span><span class="p">:</span>
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">uploadImage</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">,</span> <span class="n">method</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">UploadMethod</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;Image&quot;</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;上传一张图片到远端服务器, 需要提供: 图片的原始数据(bytes), 图片的上传类型.</span>
 <span class="sd">        Args:</span>
 <span class="sd">            image_bytes (bytes): 图片的原始数据</span>
-<span class="sd">            method (UploadMethod): 图片的上传类型, 可从上下文推断</span>
+<span class="sd">            method (str | UploadMethod, optional): 图片的上传类型, 可从上下文推断</span>
 <span class="sd">        Returns:</span>
 <span class="sd">            Image: 生成的图片消息元素</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="kn">from</span> <span class="nn">.context</span> <span class="kn">import</span> <span class="n">upload_method_ctx</span>
         <span class="kn">from</span> <span class="nn">.message.element</span> <span class="kn">import</span> <span class="n">Image</span>
 
-        <span class="n">method</span> <span class="o">=</span> <span class="n">method</span> <span class="ow">or</span> <span class="n">upload_method_ctx</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+        <span class="n">method</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">method</span> <span class="ow">or</span> <span class="n">upload_method_ctx</span><span class="o">.</span><span class="n">get</span><span class="p">())</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
 
         <span class="n">result</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">adapter</span><span class="o">.</span><span class="n">call_api</span><span class="p">(</span>
             <span class="s2">&quot;uploadImage&quot;</span><span class="p">,</span>
             <span class="n">CallMethod</span><span class="o">.</span><span class="n">MULTIPART</span><span class="p">,</span>
             <span class="p">{</span>
                 <span class="s2">&quot;sessionKey&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">session_key</span><span class="p">,</span>
-                <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="n">method</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
+                <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="n">method</span><span class="p">,</span>
                 <span class="s2">&quot;img&quot;</span><span class="p">:</span> <span class="n">data</span><span class="p">,</span>
             <span class="p">},</span>
         <span class="p">)</span>
@@ -1396,25 +1395,25 @@
         <span class="k">return</span> <span class="n">Image</span><span class="o">.</span><span class="n">parse_obj</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
 
     <span class="nd">@app_ctx_manager</span>
-    <span class="k">async</span> <span class="k">def</span> <span class="nf">uploadVoice</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">,</span> <span class="n">method</span><span class="p">:</span> <span class="n">UploadMethod</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;Voice&quot;</span><span class="p">:</span>
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">uploadVoice</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">,</span> <span class="n">method</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">UploadMethod</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;Voice&quot;</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;上传语音到远端服务器, 需要提供: 语音的原始数据(bytes), 语音的上传类型.</span>
 <span class="sd">        Args:</span>
 <span class="sd">            data (bytes): 语音的原始数据</span>
-<span class="sd">            method (UploadMethod): 语音的上传类型, 可从上下文推断</span>
+<span class="sd">            method (str | UploadMethod, optional): 语音的上传类型, 可从上下文推断</span>
 <span class="sd">        Returns:</span>
 <span class="sd">            Voice: 生成的语音消息元素</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="kn">from</span> <span class="nn">.context</span> <span class="kn">import</span> <span class="n">upload_method_ctx</span>
         <span class="kn">from</span> <span class="nn">.message.element</span> <span class="kn">import</span> <span class="n">Voice</span>
 
-        <span class="n">method</span> <span class="o">=</span> <span class="n">method</span> <span class="ow">or</span> <span class="n">upload_method_ctx</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+        <span class="n">method</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">method</span> <span class="ow">or</span> <span class="n">upload_method_ctx</span><span class="o">.</span><span class="n">get</span><span class="p">())</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
 
         <span class="n">result</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">adapter</span><span class="o">.</span><span class="n">call_api</span><span class="p">(</span>
             <span class="s2">&quot;uploadVoice&quot;</span><span class="p">,</span>
             <span class="n">CallMethod</span><span class="o">.</span><span class="n">MULTIPART</span><span class="p">,</span>
             <span class="p">{</span>
                 <span class="s2">&quot;sessionKey&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">session_key</span><span class="p">,</span>
-                <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="n">method</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
+                <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="n">method</span><span class="p">,</span>
                 <span class="s2">&quot;voice&quot;</span><span class="p">:</span> <span class="n">data</span><span class="p">,</span>
             <span class="p">},</span>
         <span class="p">)</span>
@@ -4667,7 +4666,7 @@
     <span class="k">async</span> <span class="k">def</span> <span class="nf">uploadFile</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">data</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">,</span>
-        <span class="n">method</span><span class="p">:</span> <span class="n">UploadMethod</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">method</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">UploadMethod</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">target</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Friend</span><span class="p">,</span> <span class="n">Group</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
         <span class="n">path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
         <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
@@ -4677,7 +4676,7 @@
 <span class="sd">        上传目标, (可选)上传目录ID.</span>
 <span class="sd">        Args:</span>
 <span class="sd">            data (bytes): 文件的原始数据</span>
-<span class="sd">            method (UploadMethod, optional): 文件的上传类型</span>
+<span class="sd">            method (str | UploadMethod, optional): 文件的上传类型</span>
 <span class="sd">            target (Union[Friend, Group, int]): 文件上传目标, 即群组</span>
 <span class="sd">            path (str): 目标路径, 默认为根路径.</span>
 <span class="sd">            name (str): 文件名, 可选, 若 path 存在斜杠可从 path 推断.</span>
@@ -4685,13 +4684,12 @@
 <span class="sd">            FileInfo: 文件信息</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="n">method</span> <span class="o">=</span> <span class="n">method</span> <span class="ow">or</span> <span class="n">UploadMethod</span><span class="p">[</span><span class="n">target</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">]</span>
+        <span class="n">method</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">method</span> <span class="ow">or</span> <span class="n">UploadMethod</span><span class="p">[</span><span class="n">target</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">])</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
 
-        <span class="k">if</span> <span class="n">method</span> <span class="o">!=</span> <span class="n">UploadMethod</span><span class="o">.</span><span class="n">Group</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">Friend</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">method</span> <span class="o">!=</span> <span class="s2">&quot;group&quot;</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Not implemented for </span><span class="si">{</span><span class="n">method</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
-        <span class="n">target</span> <span class="o">=</span> <span class="n">target</span><span class="o">.</span><span class="n">id</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">Friend</span><span class="p">)</span> <span class="k">else</span> <span class="n">target</span>
-        <span class="n">target</span> <span class="o">=</span> <span class="n">target</span><span class="o">.</span><span class="n">id</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">Group</span><span class="p">)</span> <span class="k">else</span> <span class="n">target</span>
+        <span class="n">target</span> <span class="o">=</span> <span class="n">target</span><span class="o">.</span><span class="n">id</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="p">(</span><span class="n">Friend</span><span class="p">,</span> <span class="n">Group</span><span class="p">))</span> <span class="k">else</span> <span class="n">target</span>
 
         <span class="k">if</span> <span class="s2">&quot;/&quot;</span> <span class="ow">in</span> <span class="n">path</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">name</span><span class="p">:</span>
             <span class="n">path</span><span class="p">,</span> <span class="n">name</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">rsplit</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
@@ -4701,7 +4699,7 @@
             <span class="n">CallMethod</span><span class="o">.</span><span class="n">MULTIPART</span><span class="p">,</span>
             <span class="p">{</span>
                 <span class="s2">&quot;sessionKey&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">session_key</span><span class="p">,</span>
-                <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="n">method</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
+                <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="n">method</span><span class="p">,</span>
                 <span class="s2">&quot;target&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">target</span><span class="p">),</span>
                 <span class="s2">&quot;path&quot;</span><span class="p">:</span> <span class="n">path</span><span class="p">,</span>
                 <span class="s2">&quot;file&quot;</span><span class="p">:</span> <span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;filename&quot;</span><span class="p">:</span> <span class="n">name</span><span class="p">}</span> <span class="k">if</span> <span class="n">name</span> <span class="k">else</span> <span class="p">{}),</span>
@@ -5197,7 +5195,7 @@
             <span class="name">uploadFile</span><span class="signature">(
     self,
     data: bytes,
-    method: <a href="model.html#UploadMethod">ariadne.model.UploadMethod</a> = None,
+    method: Union[str, <a href="model.html#UploadMethod">ariadne.model.UploadMethod</a>] = None,
     target: Union[<a href="model.html#Friend">ariadne.model.Friend</a>, <a href="model.html#Group">ariadne.model.Group</a>, int] = -1,
     path: str = &#39;&#39;,
     name: str = &#39;&#39;
@@ -5210,7 +5208,7 @@
     <span class="k">async</span> <span class="k">def</span> <span class="nf">uploadFile</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">data</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">,</span>
-        <span class="n">method</span><span class="p">:</span> <span class="n">UploadMethod</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">method</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">UploadMethod</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">target</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Friend</span><span class="p">,</span> <span class="n">Group</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
         <span class="n">path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
         <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
@@ -5220,7 +5218,7 @@
 <span class="sd">        上传目标, (可选)上传目录ID.</span>
 <span class="sd">        Args:</span>
 <span class="sd">            data (bytes): 文件的原始数据</span>
-<span class="sd">            method (UploadMethod, optional): 文件的上传类型</span>
+<span class="sd">            method (str | UploadMethod, optional): 文件的上传类型</span>
 <span class="sd">            target (Union[Friend, Group, int]): 文件上传目标, 即群组</span>
 <span class="sd">            path (str): 目标路径, 默认为根路径.</span>
 <span class="sd">            name (str): 文件名, 可选, 若 path 存在斜杠可从 path 推断.</span>
@@ -5228,13 +5226,12 @@
 <span class="sd">            FileInfo: 文件信息</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="n">method</span> <span class="o">=</span> <span class="n">method</span> <span class="ow">or</span> <span class="n">UploadMethod</span><span class="p">[</span><span class="n">target</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">]</span>
+        <span class="n">method</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">method</span> <span class="ow">or</span> <span class="n">UploadMethod</span><span class="p">[</span><span class="n">target</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">])</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
 
-        <span class="k">if</span> <span class="n">method</span> <span class="o">!=</span> <span class="n">UploadMethod</span><span class="o">.</span><span class="n">Group</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">Friend</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">method</span> <span class="o">!=</span> <span class="s2">&quot;group&quot;</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Not implemented for </span><span class="si">{</span><span class="n">method</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
-        <span class="n">target</span> <span class="o">=</span> <span class="n">target</span><span class="o">.</span><span class="n">id</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">Friend</span><span class="p">)</span> <span class="k">else</span> <span class="n">target</span>
-        <span class="n">target</span> <span class="o">=</span> <span class="n">target</span><span class="o">.</span><span class="n">id</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">Group</span><span class="p">)</span> <span class="k">else</span> <span class="n">target</span>
+        <span class="n">target</span> <span class="o">=</span> <span class="n">target</span><span class="o">.</span><span class="n">id</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="p">(</span><span class="n">Friend</span><span class="p">,</span> <span class="n">Group</span><span class="p">))</span> <span class="k">else</span> <span class="n">target</span>
 
         <span class="k">if</span> <span class="s2">&quot;/&quot;</span> <span class="ow">in</span> <span class="n">path</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">name</span><span class="p">:</span>
             <span class="n">path</span><span class="p">,</span> <span class="n">name</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">rsplit</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
@@ -5244,7 +5241,7 @@
             <span class="n">CallMethod</span><span class="o">.</span><span class="n">MULTIPART</span><span class="p">,</span>
             <span class="p">{</span>
                 <span class="s2">&quot;sessionKey&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">session_key</span><span class="p">,</span>
-                <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="n">method</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
+                <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="n">method</span><span class="p">,</span>
                 <span class="s2">&quot;target&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">target</span><span class="p">),</span>
                 <span class="s2">&quot;path&quot;</span><span class="p">:</span> <span class="n">path</span><span class="p">,</span>
                 <span class="s2">&quot;file&quot;</span><span class="p">:</span> <span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;filename&quot;</span><span class="p">:</span> <span class="n">name</span><span class="p">}</span> <span class="k">if</span> <span class="n">name</span> <span class="k">else</span> <span class="p">{}),</span>
@@ -5263,7 +5260,7 @@
 
 <ul>
 <li><strong>data (bytes):</strong>  文件的原始数据</li>
-<li><strong>method (UploadMethod, optional):</strong>  文件的上传类型</li>
+<li><strong>method (str | UploadMethod, optional):</strong>  文件的上传类型</li>
 <li><strong>target (Union[Friend, Group, int]):</strong>  文件上传目标, 即群组</li>
 <li><strong>path (str):</strong>  目标路径, 默认为根路径.</li>
 <li><strong>name (str):</strong>  文件名, 可选, 若 path 存在斜杠可从 path 推断.</li>
@@ -5303,25 +5300,25 @@
     <span class="sd">&quot;&quot;&quot;用于与多媒体信息交互的 Mixin 类.&quot;&quot;&quot;</span>
 
     <span class="nd">@app_ctx_manager</span>
-    <span class="k">async</span> <span class="k">def</span> <span class="nf">uploadImage</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">,</span> <span class="n">method</span><span class="p">:</span> <span class="n">UploadMethod</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;Image&quot;</span><span class="p">:</span>
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">uploadImage</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">,</span> <span class="n">method</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">UploadMethod</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;Image&quot;</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;上传一张图片到远端服务器, 需要提供: 图片的原始数据(bytes), 图片的上传类型.</span>
 <span class="sd">        Args:</span>
 <span class="sd">            image_bytes (bytes): 图片的原始数据</span>
-<span class="sd">            method (UploadMethod): 图片的上传类型, 可从上下文推断</span>
+<span class="sd">            method (str | UploadMethod, optional): 图片的上传类型, 可从上下文推断</span>
 <span class="sd">        Returns:</span>
 <span class="sd">            Image: 生成的图片消息元素</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="kn">from</span> <span class="nn">.context</span> <span class="kn">import</span> <span class="n">upload_method_ctx</span>
         <span class="kn">from</span> <span class="nn">.message.element</span> <span class="kn">import</span> <span class="n">Image</span>
 
-        <span class="n">method</span> <span class="o">=</span> <span class="n">method</span> <span class="ow">or</span> <span class="n">upload_method_ctx</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+        <span class="n">method</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">method</span> <span class="ow">or</span> <span class="n">upload_method_ctx</span><span class="o">.</span><span class="n">get</span><span class="p">())</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
 
         <span class="n">result</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">adapter</span><span class="o">.</span><span class="n">call_api</span><span class="p">(</span>
             <span class="s2">&quot;uploadImage&quot;</span><span class="p">,</span>
             <span class="n">CallMethod</span><span class="o">.</span><span class="n">MULTIPART</span><span class="p">,</span>
             <span class="p">{</span>
                 <span class="s2">&quot;sessionKey&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">session_key</span><span class="p">,</span>
-                <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="n">method</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
+                <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="n">method</span><span class="p">,</span>
                 <span class="s2">&quot;img&quot;</span><span class="p">:</span> <span class="n">data</span><span class="p">,</span>
             <span class="p">},</span>
         <span class="p">)</span>
@@ -5329,25 +5326,25 @@
         <span class="k">return</span> <span class="n">Image</span><span class="o">.</span><span class="n">parse_obj</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
 
     <span class="nd">@app_ctx_manager</span>
-    <span class="k">async</span> <span class="k">def</span> <span class="nf">uploadVoice</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">,</span> <span class="n">method</span><span class="p">:</span> <span class="n">UploadMethod</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;Voice&quot;</span><span class="p">:</span>
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">uploadVoice</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">,</span> <span class="n">method</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">UploadMethod</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;Voice&quot;</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;上传语音到远端服务器, 需要提供: 语音的原始数据(bytes), 语音的上传类型.</span>
 <span class="sd">        Args:</span>
 <span class="sd">            data (bytes): 语音的原始数据</span>
-<span class="sd">            method (UploadMethod): 语音的上传类型, 可从上下文推断</span>
+<span class="sd">            method (str | UploadMethod, optional): 语音的上传类型, 可从上下文推断</span>
 <span class="sd">        Returns:</span>
 <span class="sd">            Voice: 生成的语音消息元素</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="kn">from</span> <span class="nn">.context</span> <span class="kn">import</span> <span class="n">upload_method_ctx</span>
         <span class="kn">from</span> <span class="nn">.message.element</span> <span class="kn">import</span> <span class="n">Voice</span>
 
-        <span class="n">method</span> <span class="o">=</span> <span class="n">method</span> <span class="ow">or</span> <span class="n">upload_method_ctx</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+        <span class="n">method</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">method</span> <span class="ow">or</span> <span class="n">upload_method_ctx</span><span class="o">.</span><span class="n">get</span><span class="p">())</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
 
         <span class="n">result</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">adapter</span><span class="o">.</span><span class="n">call_api</span><span class="p">(</span>
             <span class="s2">&quot;uploadVoice&quot;</span><span class="p">,</span>
             <span class="n">CallMethod</span><span class="o">.</span><span class="n">MULTIPART</span><span class="p">,</span>
             <span class="p">{</span>
                 <span class="s2">&quot;sessionKey&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">session_key</span><span class="p">,</span>
-                <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="n">method</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
+                <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="n">method</span><span class="p">,</span>
                 <span class="s2">&quot;voice&quot;</span><span class="p">:</span> <span class="n">data</span><span class="p">,</span>
             <span class="p">},</span>
         <span class="p">)</span>
@@ -5381,32 +5378,32 @@
             <span class="name">uploadImage</span><span class="signature">(
     self,
     data: bytes,
-    method: <a href="model.html#UploadMethod">ariadne.model.UploadMethod</a> = None
+    method: Union[str, <a href="model.html#UploadMethod">ariadne.model.UploadMethod</a>] = None
 ) -&gt; <a href="message/element.html#Image">ariadne.message.element.Image</a></span>:
     </div>
 
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span>    <span class="nd">@app_ctx_manager</span>
-    <span class="k">async</span> <span class="k">def</span> <span class="nf">uploadImage</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">,</span> <span class="n">method</span><span class="p">:</span> <span class="n">UploadMethod</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;Image&quot;</span><span class="p">:</span>
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">uploadImage</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">,</span> <span class="n">method</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">UploadMethod</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;Image&quot;</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;上传一张图片到远端服务器, 需要提供: 图片的原始数据(bytes), 图片的上传类型.</span>
 <span class="sd">        Args:</span>
 <span class="sd">            image_bytes (bytes): 图片的原始数据</span>
-<span class="sd">            method (UploadMethod): 图片的上传类型, 可从上下文推断</span>
+<span class="sd">            method (str | UploadMethod, optional): 图片的上传类型, 可从上下文推断</span>
 <span class="sd">        Returns:</span>
 <span class="sd">            Image: 生成的图片消息元素</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="kn">from</span> <span class="nn">.context</span> <span class="kn">import</span> <span class="n">upload_method_ctx</span>
         <span class="kn">from</span> <span class="nn">.message.element</span> <span class="kn">import</span> <span class="n">Image</span>
 
-        <span class="n">method</span> <span class="o">=</span> <span class="n">method</span> <span class="ow">or</span> <span class="n">upload_method_ctx</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+        <span class="n">method</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">method</span> <span class="ow">or</span> <span class="n">upload_method_ctx</span><span class="o">.</span><span class="n">get</span><span class="p">())</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
 
         <span class="n">result</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">adapter</span><span class="o">.</span><span class="n">call_api</span><span class="p">(</span>
             <span class="s2">&quot;uploadImage&quot;</span><span class="p">,</span>
             <span class="n">CallMethod</span><span class="o">.</span><span class="n">MULTIPART</span><span class="p">,</span>
             <span class="p">{</span>
                 <span class="s2">&quot;sessionKey&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">session_key</span><span class="p">,</span>
-                <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="n">method</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
+                <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="n">method</span><span class="p">,</span>
                 <span class="s2">&quot;img&quot;</span><span class="p">:</span> <span class="n">data</span><span class="p">,</span>
             <span class="p">},</span>
         <span class="p">)</span>
@@ -5422,7 +5419,7 @@
 
 <ul>
 <li><strong>image_bytes (bytes):</strong>  图片的原始数据</li>
-<li><strong>method (UploadMethod):</strong>  图片的上传类型, 可从上下文推断</li>
+<li><strong>method (str | UploadMethod, optional):</strong>  图片的上传类型, 可从上下文推断</li>
 </ul>
 
 <h6 id="returns">Returns</h6>
@@ -5443,32 +5440,32 @@
             <span class="name">uploadVoice</span><span class="signature">(
     self,
     data: bytes,
-    method: <a href="model.html#UploadMethod">ariadne.model.UploadMethod</a> = None
+    method: Union[str, <a href="model.html#UploadMethod">ariadne.model.UploadMethod</a>] = None
 ) -&gt; <a href="message/element.html#Voice">ariadne.message.element.Voice</a></span>:
     </div>
 
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span>    <span class="nd">@app_ctx_manager</span>
-    <span class="k">async</span> <span class="k">def</span> <span class="nf">uploadVoice</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">,</span> <span class="n">method</span><span class="p">:</span> <span class="n">UploadMethod</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;Voice&quot;</span><span class="p">:</span>
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">uploadVoice</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">,</span> <span class="n">method</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">UploadMethod</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;Voice&quot;</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;上传语音到远端服务器, 需要提供: 语音的原始数据(bytes), 语音的上传类型.</span>
 <span class="sd">        Args:</span>
 <span class="sd">            data (bytes): 语音的原始数据</span>
-<span class="sd">            method (UploadMethod): 语音的上传类型, 可从上下文推断</span>
+<span class="sd">            method (str | UploadMethod, optional): 语音的上传类型, 可从上下文推断</span>
 <span class="sd">        Returns:</span>
 <span class="sd">            Voice: 生成的语音消息元素</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="kn">from</span> <span class="nn">.context</span> <span class="kn">import</span> <span class="n">upload_method_ctx</span>
         <span class="kn">from</span> <span class="nn">.message.element</span> <span class="kn">import</span> <span class="n">Voice</span>
 
-        <span class="n">method</span> <span class="o">=</span> <span class="n">method</span> <span class="ow">or</span> <span class="n">upload_method_ctx</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+        <span class="n">method</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">method</span> <span class="ow">or</span> <span class="n">upload_method_ctx</span><span class="o">.</span><span class="n">get</span><span class="p">())</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
 
         <span class="n">result</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">adapter</span><span class="o">.</span><span class="n">call_api</span><span class="p">(</span>
             <span class="s2">&quot;uploadVoice&quot;</span><span class="p">,</span>
             <span class="n">CallMethod</span><span class="o">.</span><span class="n">MULTIPART</span><span class="p">,</span>
             <span class="p">{</span>
                 <span class="s2">&quot;sessionKey&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">session_key</span><span class="p">,</span>
-                <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="n">method</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
+                <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="n">method</span><span class="p">,</span>
                 <span class="s2">&quot;voice&quot;</span><span class="p">:</span> <span class="n">data</span><span class="p">,</span>
             <span class="p">},</span>
         <span class="p">)</span>
@@ -5484,7 +5481,7 @@
 
 <ul>
 <li><strong>data (bytes):</strong>  语音的原始数据</li>
-<li><strong>method (UploadMethod):</strong>  语音的上传类型, 可从上下文推断</li>
+<li><strong>method (str | UploadMethod, optional):</strong>  语音的上传类型, 可从上下文推断</li>
 </ul>
 
 <h6 id="returns">Returns</h6>

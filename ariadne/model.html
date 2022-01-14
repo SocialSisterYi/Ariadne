@@ -504,7 +504,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span>
 
 
-<span class="k">class</span> <span class="nc">MemberPerm</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">MemberPerm</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;描述群成员在群组中所具备的权限&quot;&quot;&quot;</span>
 
     <span class="n">Member</span> <span class="o">=</span> <span class="s2">&quot;MEMBER&quot;</span>  <span class="c1"># 普通成员</span>
@@ -593,7 +593,7 @@
 <span class="n">FileInfo</span><span class="o">.</span><span class="n">update_forward_refs</span><span class="p">(</span><span class="n">FileInfo</span><span class="o">=</span><span class="n">FileInfo</span><span class="p">)</span>
 
 
-<span class="k">class</span> <span class="nc">UploadMethod</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">UploadMethod</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;用于向 `upload` 系列方法描述上传类型&quot;&quot;&quot;</span>
 
     <span class="n">Friend</span> <span class="o">=</span> <span class="s2">&quot;friend&quot;</span>
@@ -601,7 +601,7 @@
     <span class="n">Temp</span> <span class="o">=</span> <span class="s2">&quot;temp&quot;</span>
 
 
-<span class="k">class</span> <span class="nc">CallMethod</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">CallMethod</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    用于向 `Adapter.call_api` 指示操作类型.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -951,7 +951,7 @@ implement default like this::</p>
                             <div id="AriadneBaseModel.Config.json_encoders" class="classattr">
                                             <div class="attr variable"><a class="headerlink" href="#AriadneBaseModel.Config.json_encoders">#&nbsp;&nbsp</a>
 
-        <span class="name">json_encoders</span><span class="default_value"> = {&lt;class &#39;datetime.datetime&#39;&gt;: &lt;function datetime_encoder at 0x7ffbc4477e50&gt;}</span>
+        <span class="name">json_encoders</span><span class="default_value"> = {&lt;class &#39;datetime.datetime&#39;&gt;: &lt;function datetime_encoder at 0x7faed88eae50&gt;}</span>
     </div>
 
     
@@ -1561,12 +1561,12 @@ implement default like this::</p>
 
         
         <span class="def">class</span>
-        <span class="name">MemberPerm</span><wbr>(<span class="base">enum.Enum</span>):
+        <span class="name">MemberPerm</span><wbr>(<span class="base">builtins.str</span>, <span class="base">enum.Enum</span>):
     </div>
 
                 <details>
             <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">MemberPerm</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+            <div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">MemberPerm</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;描述群成员在群组中所具备的权限&quot;&quot;&quot;</span>
 
     <span class="n">Member</span> <span class="o">=</span> <span class="s2">&quot;MEMBER&quot;</span>  <span class="c1"># 普通成员</span>
@@ -1613,6 +1613,56 @@ implement default like this::</p>
                                     <div><dt>enum.Enum</dt>
                                 <dd id="MemberPerm.name" class="variable">name</dd>
                 <dd id="MemberPerm.value" class="variable">value</dd>
+
+            </div>
+            <div><dt>builtins.str</dt>
+                                <dd id="MemberPerm.encode" class="function">encode</dd>
+                <dd id="MemberPerm.replace" class="function">replace</dd>
+                <dd id="MemberPerm.split" class="function">split</dd>
+                <dd id="MemberPerm.rsplit" class="function">rsplit</dd>
+                <dd id="MemberPerm.join" class="function">join</dd>
+                <dd id="MemberPerm.capitalize" class="function">capitalize</dd>
+                <dd id="MemberPerm.casefold" class="function">casefold</dd>
+                <dd id="MemberPerm.title" class="function">title</dd>
+                <dd id="MemberPerm.center" class="function">center</dd>
+                <dd id="MemberPerm.count" class="function">count</dd>
+                <dd id="MemberPerm.expandtabs" class="function">expandtabs</dd>
+                <dd id="MemberPerm.find" class="function">find</dd>
+                <dd id="MemberPerm.partition" class="function">partition</dd>
+                <dd id="MemberPerm.index" class="function">index</dd>
+                <dd id="MemberPerm.ljust" class="function">ljust</dd>
+                <dd id="MemberPerm.lower" class="function">lower</dd>
+                <dd id="MemberPerm.lstrip" class="function">lstrip</dd>
+                <dd id="MemberPerm.rfind" class="function">rfind</dd>
+                <dd id="MemberPerm.rindex" class="function">rindex</dd>
+                <dd id="MemberPerm.rjust" class="function">rjust</dd>
+                <dd id="MemberPerm.rstrip" class="function">rstrip</dd>
+                <dd id="MemberPerm.rpartition" class="function">rpartition</dd>
+                <dd id="MemberPerm.splitlines" class="function">splitlines</dd>
+                <dd id="MemberPerm.strip" class="function">strip</dd>
+                <dd id="MemberPerm.swapcase" class="function">swapcase</dd>
+                <dd id="MemberPerm.translate" class="function">translate</dd>
+                <dd id="MemberPerm.upper" class="function">upper</dd>
+                <dd id="MemberPerm.startswith" class="function">startswith</dd>
+                <dd id="MemberPerm.endswith" class="function">endswith</dd>
+                <dd id="MemberPerm.removeprefix" class="function">removeprefix</dd>
+                <dd id="MemberPerm.removesuffix" class="function">removesuffix</dd>
+                <dd id="MemberPerm.isascii" class="function">isascii</dd>
+                <dd id="MemberPerm.islower" class="function">islower</dd>
+                <dd id="MemberPerm.isupper" class="function">isupper</dd>
+                <dd id="MemberPerm.istitle" class="function">istitle</dd>
+                <dd id="MemberPerm.isspace" class="function">isspace</dd>
+                <dd id="MemberPerm.isdecimal" class="function">isdecimal</dd>
+                <dd id="MemberPerm.isdigit" class="function">isdigit</dd>
+                <dd id="MemberPerm.isnumeric" class="function">isnumeric</dd>
+                <dd id="MemberPerm.isalpha" class="function">isalpha</dd>
+                <dd id="MemberPerm.isalnum" class="function">isalnum</dd>
+                <dd id="MemberPerm.isidentifier" class="function">isidentifier</dd>
+                <dd id="MemberPerm.isprintable" class="function">isprintable</dd>
+                <dd id="MemberPerm.zfill" class="function">zfill</dd>
+                <dd id="MemberPerm.format" class="function">format</dd>
+                <dd id="MemberPerm.format_map" class="function">format_map</dd>
+                <dd id="MemberPerm.maketrans" class="function">maketrans</dd>
 
             </div>
                                 </dl>
@@ -1960,12 +2010,12 @@ implement default like this::</p>
 
         
         <span class="def">class</span>
-        <span class="name">UploadMethod</span><wbr>(<span class="base">enum.Enum</span>):
+        <span class="name">UploadMethod</span><wbr>(<span class="base">builtins.str</span>, <span class="base">enum.Enum</span>):
     </div>
 
                 <details>
             <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">UploadMethod</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+            <div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">UploadMethod</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;用于向 `upload` 系列方法描述上传类型&quot;&quot;&quot;</span>
 
     <span class="n">Friend</span> <span class="o">=</span> <span class="s2">&quot;friend&quot;</span>
@@ -2014,6 +2064,56 @@ implement default like this::</p>
                 <dd id="UploadMethod.value" class="variable">value</dd>
 
             </div>
+            <div><dt>builtins.str</dt>
+                                <dd id="UploadMethod.encode" class="function">encode</dd>
+                <dd id="UploadMethod.replace" class="function">replace</dd>
+                <dd id="UploadMethod.split" class="function">split</dd>
+                <dd id="UploadMethod.rsplit" class="function">rsplit</dd>
+                <dd id="UploadMethod.join" class="function">join</dd>
+                <dd id="UploadMethod.capitalize" class="function">capitalize</dd>
+                <dd id="UploadMethod.casefold" class="function">casefold</dd>
+                <dd id="UploadMethod.title" class="function">title</dd>
+                <dd id="UploadMethod.center" class="function">center</dd>
+                <dd id="UploadMethod.count" class="function">count</dd>
+                <dd id="UploadMethod.expandtabs" class="function">expandtabs</dd>
+                <dd id="UploadMethod.find" class="function">find</dd>
+                <dd id="UploadMethod.partition" class="function">partition</dd>
+                <dd id="UploadMethod.index" class="function">index</dd>
+                <dd id="UploadMethod.ljust" class="function">ljust</dd>
+                <dd id="UploadMethod.lower" class="function">lower</dd>
+                <dd id="UploadMethod.lstrip" class="function">lstrip</dd>
+                <dd id="UploadMethod.rfind" class="function">rfind</dd>
+                <dd id="UploadMethod.rindex" class="function">rindex</dd>
+                <dd id="UploadMethod.rjust" class="function">rjust</dd>
+                <dd id="UploadMethod.rstrip" class="function">rstrip</dd>
+                <dd id="UploadMethod.rpartition" class="function">rpartition</dd>
+                <dd id="UploadMethod.splitlines" class="function">splitlines</dd>
+                <dd id="UploadMethod.strip" class="function">strip</dd>
+                <dd id="UploadMethod.swapcase" class="function">swapcase</dd>
+                <dd id="UploadMethod.translate" class="function">translate</dd>
+                <dd id="UploadMethod.upper" class="function">upper</dd>
+                <dd id="UploadMethod.startswith" class="function">startswith</dd>
+                <dd id="UploadMethod.endswith" class="function">endswith</dd>
+                <dd id="UploadMethod.removeprefix" class="function">removeprefix</dd>
+                <dd id="UploadMethod.removesuffix" class="function">removesuffix</dd>
+                <dd id="UploadMethod.isascii" class="function">isascii</dd>
+                <dd id="UploadMethod.islower" class="function">islower</dd>
+                <dd id="UploadMethod.isupper" class="function">isupper</dd>
+                <dd id="UploadMethod.istitle" class="function">istitle</dd>
+                <dd id="UploadMethod.isspace" class="function">isspace</dd>
+                <dd id="UploadMethod.isdecimal" class="function">isdecimal</dd>
+                <dd id="UploadMethod.isdigit" class="function">isdigit</dd>
+                <dd id="UploadMethod.isnumeric" class="function">isnumeric</dd>
+                <dd id="UploadMethod.isalpha" class="function">isalpha</dd>
+                <dd id="UploadMethod.isalnum" class="function">isalnum</dd>
+                <dd id="UploadMethod.isidentifier" class="function">isidentifier</dd>
+                <dd id="UploadMethod.isprintable" class="function">isprintable</dd>
+                <dd id="UploadMethod.zfill" class="function">zfill</dd>
+                <dd id="UploadMethod.format" class="function">format</dd>
+                <dd id="UploadMethod.format_map" class="function">format_map</dd>
+                <dd id="UploadMethod.maketrans" class="function">maketrans</dd>
+
+            </div>
                                 </dl>
                             </div>
                 </section>
@@ -2023,12 +2123,12 @@ implement default like this::</p>
 
         
         <span class="def">class</span>
-        <span class="name">CallMethod</span><wbr>(<span class="base">enum.Enum</span>):
+        <span class="name">CallMethod</span><wbr>(<span class="base">builtins.str</span>, <span class="base">enum.Enum</span>):
     </div>
 
                 <details>
             <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">CallMethod</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+            <div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">CallMethod</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    用于向 `Adapter.call_api` 指示操作类型.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -2097,6 +2197,56 @@ implement default like this::</p>
                                     <div><dt>enum.Enum</dt>
                                 <dd id="CallMethod.name" class="variable">name</dd>
                 <dd id="CallMethod.value" class="variable">value</dd>
+
+            </div>
+            <div><dt>builtins.str</dt>
+                                <dd id="CallMethod.encode" class="function">encode</dd>
+                <dd id="CallMethod.replace" class="function">replace</dd>
+                <dd id="CallMethod.split" class="function">split</dd>
+                <dd id="CallMethod.rsplit" class="function">rsplit</dd>
+                <dd id="CallMethod.join" class="function">join</dd>
+                <dd id="CallMethod.capitalize" class="function">capitalize</dd>
+                <dd id="CallMethod.casefold" class="function">casefold</dd>
+                <dd id="CallMethod.title" class="function">title</dd>
+                <dd id="CallMethod.center" class="function">center</dd>
+                <dd id="CallMethod.count" class="function">count</dd>
+                <dd id="CallMethod.expandtabs" class="function">expandtabs</dd>
+                <dd id="CallMethod.find" class="function">find</dd>
+                <dd id="CallMethod.partition" class="function">partition</dd>
+                <dd id="CallMethod.index" class="function">index</dd>
+                <dd id="CallMethod.ljust" class="function">ljust</dd>
+                <dd id="CallMethod.lower" class="function">lower</dd>
+                <dd id="CallMethod.lstrip" class="function">lstrip</dd>
+                <dd id="CallMethod.rfind" class="function">rfind</dd>
+                <dd id="CallMethod.rindex" class="function">rindex</dd>
+                <dd id="CallMethod.rjust" class="function">rjust</dd>
+                <dd id="CallMethod.rstrip" class="function">rstrip</dd>
+                <dd id="CallMethod.rpartition" class="function">rpartition</dd>
+                <dd id="CallMethod.splitlines" class="function">splitlines</dd>
+                <dd id="CallMethod.strip" class="function">strip</dd>
+                <dd id="CallMethod.swapcase" class="function">swapcase</dd>
+                <dd id="CallMethod.translate" class="function">translate</dd>
+                <dd id="CallMethod.upper" class="function">upper</dd>
+                <dd id="CallMethod.startswith" class="function">startswith</dd>
+                <dd id="CallMethod.endswith" class="function">endswith</dd>
+                <dd id="CallMethod.removeprefix" class="function">removeprefix</dd>
+                <dd id="CallMethod.removesuffix" class="function">removesuffix</dd>
+                <dd id="CallMethod.isascii" class="function">isascii</dd>
+                <dd id="CallMethod.islower" class="function">islower</dd>
+                <dd id="CallMethod.isupper" class="function">isupper</dd>
+                <dd id="CallMethod.istitle" class="function">istitle</dd>
+                <dd id="CallMethod.isspace" class="function">isspace</dd>
+                <dd id="CallMethod.isdecimal" class="function">isdecimal</dd>
+                <dd id="CallMethod.isdigit" class="function">isdigit</dd>
+                <dd id="CallMethod.isnumeric" class="function">isnumeric</dd>
+                <dd id="CallMethod.isalpha" class="function">isalpha</dd>
+                <dd id="CallMethod.isalnum" class="function">isalnum</dd>
+                <dd id="CallMethod.isidentifier" class="function">isidentifier</dd>
+                <dd id="CallMethod.isprintable" class="function">isprintable</dd>
+                <dd id="CallMethod.zfill" class="function">zfill</dd>
+                <dd id="CallMethod.format" class="function">format</dd>
+                <dd id="CallMethod.format_map" class="function">format_map</dd>
+                <dd id="CallMethod.maketrans" class="function">maketrans</dd>
 
             </div>
                                 </dl>
