@@ -321,11 +321,10 @@
     <span class="n">inject_loguru_traceback</span><span class="p">,</span>
     <span class="n">yield_with_timeout</span><span class="p">,</span>
 <span class="p">)</span>
-<span class="kn">from</span> <span class="nn">.util.send</span> <span class="kn">import</span> <span class="n">strict</span>
 
 <span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
     <span class="kn">from</span> <span class="nn">.message.element</span> <span class="kn">import</span> <span class="n">Image</span><span class="p">,</span> <span class="n">Voice</span>
-    <span class="kn">from</span> <span class="nn">.typing</span> <span class="kn">import</span> <span class="n">T</span>
+    <span class="kn">from</span> <span class="nn">.typing</span> <span class="kn">import</span> <span class="n">R</span><span class="p">,</span> <span class="n">T</span>
 
 
 <span class="k">class</span> <span class="nc">AriadneMixin</span><span class="p">:</span>
@@ -504,8 +503,8 @@
         <span class="n">message</span><span class="p">:</span> <span class="n">MessageChain</span><span class="p">,</span>
         <span class="o">*</span><span class="p">,</span>
         <span class="n">quote</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">bool</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="n">Source</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-        <span class="n">action</span><span class="p">:</span> <span class="n">SendMessageAction</span><span class="p">[</span><span class="s2">&quot;T&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="o">...</span><span class="p">,</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;T&quot;</span><span class="p">:</span>
+        <span class="n">action</span><span class="p">:</span> <span class="n">SendMessageAction</span><span class="p">[</span><span class="s2">&quot;T&quot;</span><span class="p">,</span> <span class="s2">&quot;R&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="o">...</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="s2">&quot;T&quot;</span><span class="p">,</span> <span class="s2">&quot;R&quot;</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        依据传入的 `target` 自动发送消息.</span>
 <span class="sd">        请注意发送给群成员时会自动作为临时消息发送.</span>
@@ -519,8 +518,7 @@
 <span class="sd">            未传入使用默认 action</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            T: 默认实现为 Optional[BotMessage] (None 代表失败了)</span>
-<span class="sd">            BotMessage: 即当前会话账号所发出消息的元数据, 内包含有一 `messageId` 属性, 可用于回复.</span>
+<span class="sd">            T, R: 默认实现为 BotMessage</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">action</span> <span class="o">=</span> <span class="n">action</span> <span class="k">if</span> <span class="n">action</span> <span class="ow">is</span> <span class="ow">not</span> <span class="o">...</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_action</span>
         <span class="n">data</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;message&quot;</span><span class="p">:</span> <span class="n">message</span><span class="p">}</span>
@@ -538,7 +536,7 @@
             <span class="n">data</span><span class="p">[</span><span class="s2">&quot;target&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">target</span>
         <span class="n">send_data</span><span class="p">:</span> <span class="n">SendMessageDict</span> <span class="o">=</span> <span class="n">SendMessageDict</span><span class="p">(</span><span class="o">**</span><span class="n">data</span><span class="p">)</span>
         <span class="c1"># send message</span>
-        <span class="n">data</span> <span class="o">=</span> <span class="k">await</span> <span class="n">action</span><span class="p">(</span><span class="n">send_data</span><span class="p">)</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="k">await</span> <span class="n">action</span><span class="o">.</span><span class="n">param</span><span class="p">(</span><span class="n">send_data</span><span class="p">)</span>
 
         <span class="k">try</span><span class="p">:</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;target&quot;</span><span class="p">],</span> <span class="n">Friend</span><span class="p">):</span>
@@ -551,9 +549,9 @@
                 <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unable to send message with </span><span class="si">{</span><span class="n">target</span><span class="si">}</span><span class="s2"> as target.&quot;</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
             <span class="n">e</span><span class="o">.</span><span class="n">send_data</span> <span class="o">=</span> <span class="n">send_data</span>
-            <span class="k">return</span> <span class="k">await</span> <span class="n">action</span><span class="p">(</span><span class="n">cast</span><span class="p">(</span><span class="n">SendMessageException</span><span class="p">,</span> <span class="n">e</span><span class="p">))</span>
+            <span class="k">return</span> <span class="k">await</span> <span class="n">action</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="n">cast</span><span class="p">(</span><span class="n">SendMessageException</span><span class="p">,</span> <span class="n">e</span><span class="p">))</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="k">await</span> <span class="n">action</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
+            <span class="k">return</span> <span class="k">await</span> <span class="n">action</span><span class="o">.</span><span class="n">result</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
 
     <span class="nd">@app_ctx_manager</span>
     <span class="k">async</span> <span class="k">def</span> <span class="nf">sendNudge</span><span class="p">(</span>
@@ -1466,7 +1464,6 @@
         <span class="o">*</span><span class="p">,</span>
         <span class="n">loop</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">AbstractEventLoop</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">broadcast</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Broadcast</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">default_action</span><span class="p">:</span> <span class="n">SendMessageAction</span> <span class="o">=</span> <span class="n">strict</span><span class="p">,</span>
         <span class="n">max_retry</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
         <span class="n">chat_log_config</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ChatLogConfig</span><span class="p">,</span> <span class="n">Literal</span><span class="p">[</span><span class="kc">False</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">use_loguru_traceback</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
@@ -1481,7 +1478,6 @@
 <span class="sd">            connect_info (Union[Adapter, MiraiSession]) 提供与 `mirai-api-http` 交互的信息.</span>
 <span class="sd">            loop (AbstractEventLoop, optional): 事件循环.</span>
 <span class="sd">            broadcast (Broadcast, optional): 被指定的, 外置的事件系统, 即 `Broadcast Control` 实例.</span>
-<span class="sd">            default_action (SendMessageAction, optional): sendMessage 方法的默认 action, 未配置则为 strict.</span>
 <span class="sd">            chat_log_config (ChatLogConfig or Literal[False]): 聊天日志的配置, 请移步 `ChatLogConfig` 查看使用方法.</span>
 <span class="sd">            设置为 False 则会完全禁用聊天日志.</span>
 <span class="sd">            use_loguru_traceback (bool): 是否注入 loguru 以获得对 traceback.print_exception() 与 sys.excepthook 的完全控制.</span>
@@ -1525,7 +1521,9 @@
         <span class="n">chat_log_enabled</span> <span class="o">=</span> <span class="n">chat_log_config</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">False</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">chat_log_cfg</span><span class="p">:</span> <span class="n">ChatLogConfig</span> <span class="o">=</span> <span class="n">chat_log_config</span> <span class="ow">or</span> <span class="n">ChatLogConfig</span><span class="p">(</span><span class="n">enabled</span><span class="o">=</span><span class="n">chat_log_enabled</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">default_action</span> <span class="o">=</span> <span class="n">default_action</span>
+        <span class="kn">from</span> <span class="nn">.util.send</span> <span class="kn">import</span> <span class="n">Strict</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">default_action</span> <span class="o">=</span> <span class="n">Strict</span>
 
         <span class="k">if</span> <span class="n">use_bypass_listener</span><span class="p">:</span>
             <span class="n">inject_bypass_listener</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">broadcast</span><span class="p">)</span>
@@ -1984,8 +1982,8 @@
         <span class="n">message</span><span class="p">:</span> <span class="n">MessageChain</span><span class="p">,</span>
         <span class="o">*</span><span class="p">,</span>
         <span class="n">quote</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">bool</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="n">Source</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-        <span class="n">action</span><span class="p">:</span> <span class="n">SendMessageAction</span><span class="p">[</span><span class="s2">&quot;T&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="o">...</span><span class="p">,</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;T&quot;</span><span class="p">:</span>
+        <span class="n">action</span><span class="p">:</span> <span class="n">SendMessageAction</span><span class="p">[</span><span class="s2">&quot;T&quot;</span><span class="p">,</span> <span class="s2">&quot;R&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="o">...</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="s2">&quot;T&quot;</span><span class="p">,</span> <span class="s2">&quot;R&quot;</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        依据传入的 `target` 自动发送消息.</span>
 <span class="sd">        请注意发送给群成员时会自动作为临时消息发送.</span>
@@ -1999,8 +1997,7 @@
 <span class="sd">            未传入使用默认 action</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            T: 默认实现为 Optional[BotMessage] (None 代表失败了)</span>
-<span class="sd">            BotMessage: 即当前会话账号所发出消息的元数据, 内包含有一 `messageId` 属性, 可用于回复.</span>
+<span class="sd">            T, R: 默认实现为 BotMessage</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">action</span> <span class="o">=</span> <span class="n">action</span> <span class="k">if</span> <span class="n">action</span> <span class="ow">is</span> <span class="ow">not</span> <span class="o">...</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_action</span>
         <span class="n">data</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;message&quot;</span><span class="p">:</span> <span class="n">message</span><span class="p">}</span>
@@ -2018,7 +2015,7 @@
             <span class="n">data</span><span class="p">[</span><span class="s2">&quot;target&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">target</span>
         <span class="n">send_data</span><span class="p">:</span> <span class="n">SendMessageDict</span> <span class="o">=</span> <span class="n">SendMessageDict</span><span class="p">(</span><span class="o">**</span><span class="n">data</span><span class="p">)</span>
         <span class="c1"># send message</span>
-        <span class="n">data</span> <span class="o">=</span> <span class="k">await</span> <span class="n">action</span><span class="p">(</span><span class="n">send_data</span><span class="p">)</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="k">await</span> <span class="n">action</span><span class="o">.</span><span class="n">param</span><span class="p">(</span><span class="n">send_data</span><span class="p">)</span>
 
         <span class="k">try</span><span class="p">:</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;target&quot;</span><span class="p">],</span> <span class="n">Friend</span><span class="p">):</span>
@@ -2031,9 +2028,9 @@
                 <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unable to send message with </span><span class="si">{</span><span class="n">target</span><span class="si">}</span><span class="s2"> as target.&quot;</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
             <span class="n">e</span><span class="o">.</span><span class="n">send_data</span> <span class="o">=</span> <span class="n">send_data</span>
-            <span class="k">return</span> <span class="k">await</span> <span class="n">action</span><span class="p">(</span><span class="n">cast</span><span class="p">(</span><span class="n">SendMessageException</span><span class="p">,</span> <span class="n">e</span><span class="p">))</span>
+            <span class="k">return</span> <span class="k">await</span> <span class="n">action</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="n">cast</span><span class="p">(</span><span class="n">SendMessageException</span><span class="p">,</span> <span class="n">e</span><span class="p">))</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="k">await</span> <span class="n">action</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
+            <span class="k">return</span> <span class="k">await</span> <span class="n">action</span><span class="o">.</span><span class="n">result</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
 
     <span class="nd">@app_ctx_manager</span>
     <span class="k">async</span> <span class="k">def</span> <span class="nf">sendNudge</span><span class="p">(</span>
@@ -2418,8 +2415,8 @@
     message: <a href="message/chain.html#MessageChain">ariadne.message.chain.MessageChain</a>,
     *,
     quote: Union[bool, int, <a href="message/element.html#Source">ariadne.message.element.Source</a>] = False,
-    action: <a href="typing.html#SendMessageAction">ariadne.typing.SendMessageAction</a>[~T] = Ellipsis
-) -&gt; ~T</span>:
+    action: <a href="typing.html#SendMessageAction">ariadne.typing.SendMessageAction</a>[~T, ~R] = Ellipsis
+) -&gt; Union[~T, ~R]</span>:
     </div>
 
                 <details>
@@ -2431,8 +2428,8 @@
         <span class="n">message</span><span class="p">:</span> <span class="n">MessageChain</span><span class="p">,</span>
         <span class="o">*</span><span class="p">,</span>
         <span class="n">quote</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">bool</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="n">Source</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-        <span class="n">action</span><span class="p">:</span> <span class="n">SendMessageAction</span><span class="p">[</span><span class="s2">&quot;T&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="o">...</span><span class="p">,</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;T&quot;</span><span class="p">:</span>
+        <span class="n">action</span><span class="p">:</span> <span class="n">SendMessageAction</span><span class="p">[</span><span class="s2">&quot;T&quot;</span><span class="p">,</span> <span class="s2">&quot;R&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="o">...</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="s2">&quot;T&quot;</span><span class="p">,</span> <span class="s2">&quot;R&quot;</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        依据传入的 `target` 自动发送消息.</span>
 <span class="sd">        请注意发送给群成员时会自动作为临时消息发送.</span>
@@ -2446,8 +2443,7 @@
 <span class="sd">            未传入使用默认 action</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            T: 默认实现为 Optional[BotMessage] (None 代表失败了)</span>
-<span class="sd">            BotMessage: 即当前会话账号所发出消息的元数据, 内包含有一 `messageId` 属性, 可用于回复.</span>
+<span class="sd">            T, R: 默认实现为 BotMessage</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">action</span> <span class="o">=</span> <span class="n">action</span> <span class="k">if</span> <span class="n">action</span> <span class="ow">is</span> <span class="ow">not</span> <span class="o">...</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_action</span>
         <span class="n">data</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;message&quot;</span><span class="p">:</span> <span class="n">message</span><span class="p">}</span>
@@ -2465,7 +2461,7 @@
             <span class="n">data</span><span class="p">[</span><span class="s2">&quot;target&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">target</span>
         <span class="n">send_data</span><span class="p">:</span> <span class="n">SendMessageDict</span> <span class="o">=</span> <span class="n">SendMessageDict</span><span class="p">(</span><span class="o">**</span><span class="n">data</span><span class="p">)</span>
         <span class="c1"># send message</span>
-        <span class="n">data</span> <span class="o">=</span> <span class="k">await</span> <span class="n">action</span><span class="p">(</span><span class="n">send_data</span><span class="p">)</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="k">await</span> <span class="n">action</span><span class="o">.</span><span class="n">param</span><span class="p">(</span><span class="n">send_data</span><span class="p">)</span>
 
         <span class="k">try</span><span class="p">:</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;target&quot;</span><span class="p">],</span> <span class="n">Friend</span><span class="p">):</span>
@@ -2478,9 +2474,9 @@
                 <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unable to send message with </span><span class="si">{</span><span class="n">target</span><span class="si">}</span><span class="s2"> as target.&quot;</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
             <span class="n">e</span><span class="o">.</span><span class="n">send_data</span> <span class="o">=</span> <span class="n">send_data</span>
-            <span class="k">return</span> <span class="k">await</span> <span class="n">action</span><span class="p">(</span><span class="n">cast</span><span class="p">(</span><span class="n">SendMessageException</span><span class="p">,</span> <span class="n">e</span><span class="p">))</span>
+            <span class="k">return</span> <span class="k">await</span> <span class="n">action</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="n">cast</span><span class="p">(</span><span class="n">SendMessageException</span><span class="p">,</span> <span class="n">e</span><span class="p">))</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="k">await</span> <span class="n">action</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
+            <span class="k">return</span> <span class="k">await</span> <span class="n">action</span><span class="o">.</span><span class="n">result</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
 </pre></div>
 
         </details>
@@ -2502,8 +2498,7 @@
 <h6 id="returns">Returns</h6>
 
 <blockquote>
-  <p>T: 默认实现为 Optional[BotMessage] (None 代表失败了)
-  BotMessage: 即当前会话账号所发出消息的元数据, 内包含有一 <code>messageId</code> 属性, 可用于回复.</p>
+  <p>T, R: 默认实现为 BotMessage</p>
 </blockquote>
 </div>
 
@@ -5602,7 +5597,6 @@
         <span class="o">*</span><span class="p">,</span>
         <span class="n">loop</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">AbstractEventLoop</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">broadcast</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Broadcast</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">default_action</span><span class="p">:</span> <span class="n">SendMessageAction</span> <span class="o">=</span> <span class="n">strict</span><span class="p">,</span>
         <span class="n">max_retry</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
         <span class="n">chat_log_config</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ChatLogConfig</span><span class="p">,</span> <span class="n">Literal</span><span class="p">[</span><span class="kc">False</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">use_loguru_traceback</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
@@ -5617,7 +5611,6 @@
 <span class="sd">            connect_info (Union[Adapter, MiraiSession]) 提供与 `mirai-api-http` 交互的信息.</span>
 <span class="sd">            loop (AbstractEventLoop, optional): 事件循环.</span>
 <span class="sd">            broadcast (Broadcast, optional): 被指定的, 外置的事件系统, 即 `Broadcast Control` 实例.</span>
-<span class="sd">            default_action (SendMessageAction, optional): sendMessage 方法的默认 action, 未配置则为 strict.</span>
 <span class="sd">            chat_log_config (ChatLogConfig or Literal[False]): 聊天日志的配置, 请移步 `ChatLogConfig` 查看使用方法.</span>
 <span class="sd">            设置为 False 则会完全禁用聊天日志.</span>
 <span class="sd">            use_loguru_traceback (bool): 是否注入 loguru 以获得对 traceback.print_exception() 与 sys.excepthook 的完全控制.</span>
@@ -5661,7 +5654,9 @@
         <span class="n">chat_log_enabled</span> <span class="o">=</span> <span class="n">chat_log_config</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">False</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">chat_log_cfg</span><span class="p">:</span> <span class="n">ChatLogConfig</span> <span class="o">=</span> <span class="n">chat_log_config</span> <span class="ow">or</span> <span class="n">ChatLogConfig</span><span class="p">(</span><span class="n">enabled</span><span class="o">=</span><span class="n">chat_log_enabled</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">default_action</span> <span class="o">=</span> <span class="n">default_action</span>
+        <span class="kn">from</span> <span class="nn">.util.send</span> <span class="kn">import</span> <span class="n">Strict</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">default_action</span> <span class="o">=</span> <span class="n">Strict</span>
 
         <span class="k">if</span> <span class="n">use_bypass_listener</span><span class="p">:</span>
             <span class="n">inject_bypass_listener</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">broadcast</span><span class="p">)</span>
@@ -5917,7 +5912,6 @@
     *,
     loop: Optional[asyncio.events.AbstractEventLoop] = None,
     broadcast: Optional[graia.broadcast.Broadcast] = None,
-    default_action: <a href="typing.html#SendMessageAction">ariadne.typing.SendMessageAction</a> = &lt;function strict&gt;,
     max_retry: int = -1,
     chat_log_config: Union[<a href="model.html#ChatLogConfig">ariadne.model.ChatLogConfig</a>, Literal[False], NoneType] = None,
     use_loguru_traceback: Optional[bool] = True,
@@ -5935,7 +5929,6 @@
         <span class="o">*</span><span class="p">,</span>
         <span class="n">loop</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">AbstractEventLoop</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">broadcast</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Broadcast</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">default_action</span><span class="p">:</span> <span class="n">SendMessageAction</span> <span class="o">=</span> <span class="n">strict</span><span class="p">,</span>
         <span class="n">max_retry</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
         <span class="n">chat_log_config</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ChatLogConfig</span><span class="p">,</span> <span class="n">Literal</span><span class="p">[</span><span class="kc">False</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">use_loguru_traceback</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
@@ -5950,7 +5943,6 @@
 <span class="sd">            connect_info (Union[Adapter, MiraiSession]) 提供与 `mirai-api-http` 交互的信息.</span>
 <span class="sd">            loop (AbstractEventLoop, optional): 事件循环.</span>
 <span class="sd">            broadcast (Broadcast, optional): 被指定的, 外置的事件系统, 即 `Broadcast Control` 实例.</span>
-<span class="sd">            default_action (SendMessageAction, optional): sendMessage 方法的默认 action, 未配置则为 strict.</span>
 <span class="sd">            chat_log_config (ChatLogConfig or Literal[False]): 聊天日志的配置, 请移步 `ChatLogConfig` 查看使用方法.</span>
 <span class="sd">            设置为 False 则会完全禁用聊天日志.</span>
 <span class="sd">            use_loguru_traceback (bool): 是否注入 loguru 以获得对 traceback.print_exception() 与 sys.excepthook 的完全控制.</span>
@@ -5994,7 +5986,9 @@
         <span class="n">chat_log_enabled</span> <span class="o">=</span> <span class="n">chat_log_config</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">False</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">chat_log_cfg</span><span class="p">:</span> <span class="n">ChatLogConfig</span> <span class="o">=</span> <span class="n">chat_log_config</span> <span class="ow">or</span> <span class="n">ChatLogConfig</span><span class="p">(</span><span class="n">enabled</span><span class="o">=</span><span class="n">chat_log_enabled</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">default_action</span> <span class="o">=</span> <span class="n">default_action</span>
+        <span class="kn">from</span> <span class="nn">.util.send</span> <span class="kn">import</span> <span class="n">Strict</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">default_action</span> <span class="o">=</span> <span class="n">Strict</span>
 
         <span class="k">if</span> <span class="n">use_bypass_listener</span><span class="p">:</span>
             <span class="n">inject_bypass_listener</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">broadcast</span><span class="p">)</span>
@@ -6012,7 +6006,6 @@
 <li>connect_info (Union[Adapter, MiraiSession]) 提供与 <code>mirai-api-http</code> 交互的信息.</li>
 <li><strong>loop (AbstractEventLoop, optional):</strong>  事件循环.</li>
 <li><strong>broadcast (Broadcast, optional):</strong>  被指定的, 外置的事件系统, 即 <code>Broadcast Control</code> 实例.</li>
-<li><strong>default_action (SendMessageAction, optional):</strong>  sendMessage 方法的默认 action, 未配置则为 strict.</li>
 <li><strong>chat_log_config (ChatLogConfig or Literal[False]):</strong>  聊天日志的配置, 请移步 <code>ChatLogConfig</code> 查看使用方法.</li>
 <li>设置为 False 则会完全禁用聊天日志.</li>
 <li><strong>use_loguru_traceback (bool):</strong>  是否注入 loguru 以获得对 traceback.print_exception() 与 sys.excepthook 的完全控制.</li>

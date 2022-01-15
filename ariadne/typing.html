@@ -51,6 +51,15 @@
                         <li>
                                 <a class="function" href="#SendMessageAction.__init__">SendMessageAction</a>
                         </li>
+                        <li>
+                                <a class="function" href="#SendMessageAction.param">param</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#SendMessageAction.result">result</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#SendMessageAction.exception">exception</a>
+                        </li>
                 </ul>
 
             </li>
@@ -91,7 +100,6 @@
     <span class="n">TypedDict</span><span class="p">,</span>
     <span class="n">TypeVar</span><span class="p">,</span>
     <span class="n">Union</span><span class="p">,</span>
-    <span class="n">overload</span><span class="p">,</span>
 <span class="p">)</span>
 
 <span class="kn">from</span> <span class="nn">typing_extensions</span> <span class="kn">import</span> <span class="n">ParamSpec</span>
@@ -146,16 +154,44 @@
     <span class="n">SendMessageException</span> <span class="o">=</span> <span class="ne">Exception</span>
 
 
-<span class="k">class</span> <span class="nc">SendMessageAction</span><span class="p">(</span><span class="n">Generic</span><span class="p">[</span><span class="n">T</span><span class="p">]):</span>
+<span class="k">class</span> <span class="nc">SendMessageAction</span><span class="p">(</span><span class="n">Generic</span><span class="p">[</span><span class="n">T</span><span class="p">,</span> <span class="n">R</span><span class="p">]):</span>
     <span class="sd">&quot;&quot;&quot;表示 SendMessage 的 action&quot;&quot;&quot;</span>
 
-    <span class="nd">@overload</span>
-    <span class="k">async</span> <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">:</span> <span class="n">SendMessageDict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SendMessageDict</span><span class="p">:</span>
-        <span class="o">...</span>
+    <span class="nd">@staticmethod</span>
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">param</span><span class="p">(</span><span class="n">item</span><span class="p">:</span> <span class="n">SendMessageDict</span><span class="p">,</span> <span class="o">/</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SendMessageDict</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;传入 SendMessageDict 作为参数, 传出 SendMessageDict 作为结果</span>
 
-    <span class="nd">@overload</span>
-    <span class="k">async</span> <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="s2">&quot;BotMessage&quot;</span><span class="p">,</span> <span class="n">SendMessageException</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">T</span><span class="p">:</span>
-        <span class="o">...</span>
+<span class="sd">        Args:</span>
+<span class="sd">            item (SendMessageDict): 调用参数</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            SendMessageDict: 修改后的调用参数</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">item</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">result</span><span class="p">(</span><span class="n">item</span><span class="p">:</span> <span class="s2">&quot;BotMessage&quot;</span><span class="p">,</span> <span class="o">/</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">R</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;处理返回结果</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            item (BotMessage): SendMessage 成功时的结果</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            R: 要实际由 SendMessage 返回的数据</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">item</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">exception</span><span class="p">(</span><span class="n">item</span><span class="p">:</span> <span class="n">SendMessageException</span><span class="p">,</span> <span class="o">/</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">T</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;发生异常时进行处理，可以选择不返回而是直接引发异常</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            item (SendMessageException): 发生的异常</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            T: 将作为 sendMessage 的返回值</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="n">item</span>
 </pre></div>
 
         </details>
@@ -250,21 +286,49 @@
 
         
         <span class="def">class</span>
-        <span class="name">SendMessageAction</span><wbr>(<span class="base">typing.Generic[~T]</span>):
+        <span class="name">SendMessageAction</span><wbr>(<span class="base">typing.Generic[~T, ~R]</span>):
     </div>
 
                 <details>
             <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">SendMessageAction</span><span class="p">(</span><span class="n">Generic</span><span class="p">[</span><span class="n">T</span><span class="p">]):</span>
+            <div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">SendMessageAction</span><span class="p">(</span><span class="n">Generic</span><span class="p">[</span><span class="n">T</span><span class="p">,</span> <span class="n">R</span><span class="p">]):</span>
     <span class="sd">&quot;&quot;&quot;表示 SendMessage 的 action&quot;&quot;&quot;</span>
 
-    <span class="nd">@overload</span>
-    <span class="k">async</span> <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">:</span> <span class="n">SendMessageDict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SendMessageDict</span><span class="p">:</span>
-        <span class="o">...</span>
+    <span class="nd">@staticmethod</span>
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">param</span><span class="p">(</span><span class="n">item</span><span class="p">:</span> <span class="n">SendMessageDict</span><span class="p">,</span> <span class="o">/</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SendMessageDict</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;传入 SendMessageDict 作为参数, 传出 SendMessageDict 作为结果</span>
 
-    <span class="nd">@overload</span>
-    <span class="k">async</span> <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="s2">&quot;BotMessage&quot;</span><span class="p">,</span> <span class="n">SendMessageException</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">T</span><span class="p">:</span>
-        <span class="o">...</span>
+<span class="sd">        Args:</span>
+<span class="sd">            item (SendMessageDict): 调用参数</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            SendMessageDict: 修改后的调用参数</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">item</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">result</span><span class="p">(</span><span class="n">item</span><span class="p">:</span> <span class="s2">&quot;BotMessage&quot;</span><span class="p">,</span> <span class="o">/</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">R</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;处理返回结果</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            item (BotMessage): SendMessage 成功时的结果</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            R: 要实际由 SendMessage 返回的数据</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">item</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">exception</span><span class="p">(</span><span class="n">item</span><span class="p">:</span> <span class="n">SendMessageException</span><span class="p">,</span> <span class="o">/</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">T</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;发生异常时进行处理，可以选择不返回而是直接引发异常</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            item (SendMessageException): 发生的异常</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            T: 将作为 sendMessage 的返回值</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="n">item</span>
 </pre></div>
 
         </details>
@@ -282,6 +346,138 @@
 
         
     
+
+                            </div>
+                            <div id="SendMessageAction.param" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#SendMessageAction.param">#&nbsp;&nbsp</a>
+
+                <div class="decorator">@staticmethod</div>
+
+            <span class="def">async def</span>
+            <span class="name">param</span><span class="signature">(
+    item: <a href="#SendMessageDict">ariadne.typing.SendMessageDict</a>,
+    /
+) -&gt; <a href="#SendMessageDict">ariadne.typing.SendMessageDict</a></span>:
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span>    <span class="nd">@staticmethod</span>
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">param</span><span class="p">(</span><span class="n">item</span><span class="p">:</span> <span class="n">SendMessageDict</span><span class="p">,</span> <span class="o">/</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SendMessageDict</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;传入 SendMessageDict 作为参数, 传出 SendMessageDict 作为结果</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            item (SendMessageDict): 调用参数</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            SendMessageDict: 修改后的调用参数</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">item</span>
+</pre></div>
+
+        </details>
+
+            <div class="docstring"><p>传入 SendMessageDict 作为参数, 传出 SendMessageDict 作为结果</p>
+
+<h6 id="args">Args</h6>
+
+<ul>
+<li><strong>item (SendMessageDict):</strong>  调用参数</li>
+</ul>
+
+<h6 id="returns">Returns</h6>
+
+<blockquote>
+  <p>SendMessageDict: 修改后的调用参数</p>
+</blockquote>
+</div>
+
+
+                            </div>
+                            <div id="SendMessageAction.result" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#SendMessageAction.result">#&nbsp;&nbsp</a>
+
+                <div class="decorator">@staticmethod</div>
+
+            <span class="def">async def</span>
+            <span class="name">result</span><span class="signature">(item: <a href="model.html#BotMessage">ariadne.model.BotMessage</a>, /) -&gt; ~R</span>:
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span>    <span class="nd">@staticmethod</span>
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">result</span><span class="p">(</span><span class="n">item</span><span class="p">:</span> <span class="s2">&quot;BotMessage&quot;</span><span class="p">,</span> <span class="o">/</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">R</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;处理返回结果</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            item (BotMessage): SendMessage 成功时的结果</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            R: 要实际由 SendMessage 返回的数据</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">item</span>
+</pre></div>
+
+        </details>
+
+            <div class="docstring"><p>处理返回结果</p>
+
+<h6 id="args">Args</h6>
+
+<ul>
+<li><strong>item (BotMessage):</strong>  SendMessage 成功时的结果</li>
+</ul>
+
+<h6 id="returns">Returns</h6>
+
+<blockquote>
+  <p>R: 要实际由 SendMessage 返回的数据</p>
+</blockquote>
+</div>
+
+
+                            </div>
+                            <div id="SendMessageAction.exception" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#SendMessageAction.exception">#&nbsp;&nbsp</a>
+
+                <div class="decorator">@staticmethod</div>
+
+            <span class="def">async def</span>
+            <span class="name">exception</span><span class="signature">(item: Exception, /) -&gt; ~T</span>:
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span>    <span class="nd">@staticmethod</span>
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">exception</span><span class="p">(</span><span class="n">item</span><span class="p">:</span> <span class="n">SendMessageException</span><span class="p">,</span> <span class="o">/</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">T</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;发生异常时进行处理，可以选择不返回而是直接引发异常</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            item (SendMessageException): 发生的异常</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            T: 将作为 sendMessage 的返回值</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="n">item</span>
+</pre></div>
+
+        </details>
+
+            <div class="docstring"><p>发生异常时进行处理，可以选择不返回而是直接引发异常</p>
+
+<h6 id="args">Args</h6>
+
+<ul>
+<li><strong>item (SendMessageException):</strong>  发生的异常</li>
+</ul>
+
+<h6 id="returns">Returns</h6>
+
+<blockquote>
+  <p>T: 将作为 sendMessage 的返回值</p>
+</blockquote>
+</div>
+
 
                             </div>
                 </section>

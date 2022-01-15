@@ -31,16 +31,49 @@
                     <h2>API Documentation</h2>
                         <ul class="memberlist">
             <li>
-                    <a class="function" href="#bypass">bypass</a>
+                    <a class="class" href="#Bypass">Bypass</a>
+                            <ul class="memberlist">
+                        <li>
+                                <a class="function" href="#Bypass.__init__">Bypass</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#Bypass.exception">exception</a>
+                        </li>
+                </ul>
+
             </li>
             <li>
-                    <a class="function" href="#strict">strict</a>
+                    <a class="class" href="#Strict">Strict</a>
+                            <ul class="memberlist">
+                        <li>
+                                <a class="function" href="#Strict.__init__">Strict</a>
+                        </li>
+                </ul>
+
             </li>
             <li>
-                    <a class="function" href="#ignore">ignore</a>
+                    <a class="class" href="#Ignore">Ignore</a>
+                            <ul class="memberlist">
+                        <li>
+                                <a class="function" href="#Ignore.__init__">Ignore</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#Ignore.exception">exception</a>
+                        </li>
+                </ul>
+
             </li>
             <li>
-                    <a class="function" href="#safe">safe</a>
+                    <a class="class" href="#Safe">Safe</a>
+                            <ul class="memberlist">
+                        <li>
+                                <a class="function" href="#Safe.__init__">Safe</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#Safe.exception">exception</a>
+                        </li>
+                </ul>
+
             </li>
     </ul>
 
@@ -66,139 +99,124 @@
                         <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span><span class="sd">&quot;&quot;&quot;本模块包含许多用于 Ariadne.SendMessage 的 action 函数&quot;&quot;&quot;</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">NoReturn</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">overload</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">TypeVar</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">overload</span>
 
 <span class="kn">from</span> <span class="nn">graia.ariadne.model</span> <span class="kn">import</span> <span class="n">BotMessage</span>
 
-<span class="kn">from</span> <span class="nn">..typing</span> <span class="kn">import</span> <span class="n">SendMessageDict</span><span class="p">,</span> <span class="n">SendMessageException</span><span class="p">,</span> <span class="n">T</span>
+<span class="kn">from</span> <span class="nn">..typing</span> <span class="kn">import</span> <span class="n">SendMessageAction</span><span class="p">,</span> <span class="n">SendMessageException</span>
+
+<span class="n">Exc_T</span> <span class="o">=</span> <span class="n">TypeVar</span><span class="p">(</span><span class="s2">&quot;Exc_T&quot;</span><span class="p">,</span> <span class="n">bound</span><span class="o">=</span><span class="n">SendMessageException</span><span class="p">)</span>
 
 
 <span class="c1"># ANCHOR: bypass</span>
-<span class="k">async</span> <span class="k">def</span> <span class="nf">bypass</span><span class="p">(</span><span class="n">item</span><span class="p">:</span> <span class="n">T</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">T</span><span class="p">:</span>
+<span class="k">class</span> <span class="nc">Bypass</span><span class="p">(</span><span class="n">SendMessageAction</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    透传错误的 SendMessage action (有 Exception 时直接返回它而不抛出)</span>
 
 <span class="sd">    注意, 请小心 traceback 重生.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">item</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">exception</span><span class="p">(</span><span class="n">item</span><span class="p">:</span> <span class="n">Exc_T</span><span class="p">,</span> <span class="o">/</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Exc_T</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">item</span>
 
 
 <span class="c1"># ANCHOR: strict</span>
-<span class="nd">@overload</span>
-<span class="k">async</span> <span class="k">def</span> <span class="nf">strict</span><span class="p">(</span><span class="n">item</span><span class="p">:</span> <span class="n">SendMessageDict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SendMessageDict</span><span class="p">:</span>
-    <span class="o">...</span>
-
-
-<span class="nd">@overload</span>
-<span class="k">async</span> <span class="k">def</span> <span class="nf">strict</span><span class="p">(</span><span class="n">item</span><span class="p">:</span> <span class="n">SendMessageException</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">NoReturn</span><span class="p">:</span>
-    <span class="o">...</span>
-
-
-<span class="nd">@overload</span>
-<span class="k">async</span> <span class="k">def</span> <span class="nf">strict</span><span class="p">(</span><span class="n">item</span><span class="p">:</span> <span class="n">BotMessage</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BotMessage</span><span class="p">:</span>
-    <span class="o">...</span>
-
-
-<span class="k">async</span> <span class="k">def</span> <span class="nf">strict</span><span class="p">(</span><span class="n">item</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">SendMessageDict</span><span class="p">,</span> <span class="n">SendMessageException</span><span class="p">,</span> <span class="n">BotMessage</span><span class="p">]):</span>
+<span class="k">class</span> <span class="nc">Strict</span><span class="p">(</span><span class="n">SendMessageAction</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;严格的 SendMessage action (有错误时 raise)&quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">SendMessageException</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="n">item</span>
-    <span class="k">return</span> <span class="n">item</span>
+
+    <span class="o">...</span>
 
 
 <span class="c1"># ANCHOR: ignore</span>
-<span class="nd">@overload</span>
-<span class="k">async</span> <span class="k">def</span> <span class="nf">ignore</span><span class="p">(</span><span class="n">item</span><span class="p">:</span> <span class="n">SendMessageDict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SendMessageDict</span><span class="p">:</span>
-    <span class="o">...</span>
-
-
-<span class="nd">@overload</span>
-<span class="k">async</span> <span class="k">def</span> <span class="nf">ignore</span><span class="p">(</span><span class="n">item</span><span class="p">:</span> <span class="n">SendMessageException</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-    <span class="o">...</span>
-
-
-<span class="nd">@overload</span>
-<span class="k">async</span> <span class="k">def</span> <span class="nf">ignore</span><span class="p">(</span><span class="n">item</span><span class="p">:</span> <span class="n">BotMessage</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BotMessage</span><span class="p">:</span>
-    <span class="o">...</span>
-
-
-<span class="k">async</span> <span class="k">def</span> <span class="nf">ignore</span><span class="p">(</span><span class="n">item</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">SendMessageDict</span><span class="p">,</span> <span class="n">SendMessageException</span><span class="p">,</span> <span class="n">BotMessage</span><span class="p">]):</span>
+<span class="k">class</span> <span class="nc">Ignore</span><span class="p">(</span><span class="n">SendMessageAction</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;忽略错误的 SendMessage action (发生 Exception 时 返回 None)&quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">item</span> <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="ne">Exception</span><span class="p">)</span> <span class="k">else</span> <span class="kc">None</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">exception</span><span class="p">(</span><span class="n">_</span><span class="p">:</span> <span class="n">Exc_T</span><span class="p">,</span> <span class="o">/</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Exc_T</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span>
 
 
 <span class="c1"># ANCHOR: safe</span>
-<span class="nd">@overload</span>
-<span class="k">async</span> <span class="k">def</span> <span class="nf">safe</span><span class="p">(</span><span class="n">item</span><span class="p">:</span> <span class="n">SendMessageDict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SendMessageDict</span><span class="p">:</span>
-    <span class="o">...</span>
 
 
-<span class="nd">@overload</span>
-<span class="k">async</span> <span class="k">def</span> <span class="nf">safe</span><span class="p">(</span><span class="n">item</span><span class="p">:</span> <span class="n">SendMessageException</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-    <span class="o">...</span>
-
-
-<span class="nd">@overload</span>
-<span class="k">async</span> <span class="k">def</span> <span class="nf">safe</span><span class="p">(</span><span class="n">item</span><span class="p">:</span> <span class="n">BotMessage</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BotMessage</span><span class="p">:</span>
-    <span class="o">...</span>
-
-
-<span class="k">async</span> <span class="k">def</span> <span class="nf">safe</span><span class="p">(</span><span class="n">item</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">SendMessageDict</span><span class="p">,</span> <span class="n">SendMessageException</span><span class="p">,</span> <span class="n">BotMessage</span><span class="p">]):</span>
+<span class="k">class</span> <span class="nc">Safe</span><span class="p">(</span><span class="n">SendMessageAction</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    安全发送的 SendMessage action</span>
 
-<span class="sd">    行为: 发送失败时按顺序替换元素为其asDisplay: AtAll, At, Poke, Forward, MultimediaElement</span>
-<span class="sd">    若最后还是失败 (AccountMuted 等), 则会引发原始异常</span>
+<span class="sd">    行为:</span>
+<span class="sd">    在第一次尝试失败后先移除 quote,</span>
+<span class="sd">    之后每次失败时按顺序替换元素为其asDisplay: AtAll, At, Poke, Forward, MultimediaElement</span>
+<span class="sd">    若最后还是失败 (AccountMuted 等), 则会引发原始异常 (通过传入 ignore 决定)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="kn">from</span> <span class="nn">..context</span> <span class="kn">import</span> <span class="n">ariadne_ctx</span>
-    <span class="kn">from</span> <span class="nn">..message.chain</span> <span class="kn">import</span> <span class="n">MessageChain</span>
-    <span class="kn">from</span> <span class="nn">..message.element</span> <span class="kn">import</span> <span class="n">At</span><span class="p">,</span> <span class="n">AtAll</span><span class="p">,</span> <span class="n">Forward</span><span class="p">,</span> <span class="n">MultimediaElement</span><span class="p">,</span> <span class="n">Plain</span><span class="p">,</span> <span class="n">Poke</span>
 
-    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="ne">Exception</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">item</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ignore</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ignore</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">ignore</span>
 
-    <span class="n">chain</span><span class="p">:</span> <span class="n">MessageChain</span> <span class="o">=</span> <span class="n">item</span><span class="o">.</span><span class="n">send_data</span><span class="p">[</span><span class="s2">&quot;message&quot;</span><span class="p">]</span>
-    <span class="n">ariadne</span> <span class="o">=</span> <span class="n">ariadne_ctx</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+    <span class="nd">@overload</span>
+    <span class="nd">@staticmethod</span>
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">exception</span><span class="p">(</span><span class="n">item</span><span class="p">:</span> <span class="n">Exc_T</span><span class="p">,</span> <span class="o">/</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BotMessage</span><span class="p">:</span>
+        <span class="o">...</span>
 
-    <span class="k">def</span> <span class="nf">convert</span><span class="p">(</span><span class="n">msg_chain</span><span class="p">:</span> <span class="n">MessageChain</span><span class="p">,</span> <span class="nb">type</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">for</span> <span class="n">ind</span><span class="p">,</span> <span class="n">elem</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">msg_chain</span><span class="o">.</span><span class="n">__root__</span><span class="p">[:]):</span>
-            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">elem</span><span class="p">,</span> <span class="nb">type</span><span class="p">):</span>
-                <span class="n">msg_chain</span><span class="o">.</span><span class="n">__root__</span><span class="p">[</span><span class="n">ind</span><span class="p">]</span> <span class="o">=</span> <span class="n">Plain</span><span class="p">(</span><span class="n">elem</span><span class="o">.</span><span class="n">asDisplay</span><span class="p">())</span>
+    <span class="nd">@overload</span>
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">exception</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">:</span> <span class="n">Exc_T</span><span class="p">,</span> <span class="o">/</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BotMessage</span><span class="p">:</span>
+        <span class="o">...</span>
 
-    <span class="n">item</span><span class="o">.</span><span class="n">send_data</span><span class="p">[</span><span class="s2">&quot;quote&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
-    <span class="n">val</span> <span class="o">=</span> <span class="k">await</span> <span class="n">ariadne</span><span class="o">.</span><span class="n">sendMessage</span><span class="p">(</span><span class="o">**</span><span class="n">item</span><span class="o">.</span><span class="n">send_data</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="n">ignore</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">val</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">val</span>
+    <span class="nd">@staticmethod</span>
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">_handle</span><span class="p">(</span><span class="n">item</span><span class="p">:</span> <span class="n">Exc_T</span><span class="p">,</span> <span class="n">ignore</span><span class="p">:</span> <span class="nb">bool</span><span class="p">):</span>
+        <span class="kn">from</span> <span class="nn">..context</span> <span class="kn">import</span> <span class="n">ariadne_ctx</span>
+        <span class="kn">from</span> <span class="nn">..message.chain</span> <span class="kn">import</span> <span class="n">MessageChain</span>
+        <span class="kn">from</span> <span class="nn">..message.element</span> <span class="kn">import</span> <span class="n">At</span><span class="p">,</span> <span class="n">AtAll</span><span class="p">,</span> <span class="n">Forward</span><span class="p">,</span> <span class="n">MultimediaElement</span><span class="p">,</span> <span class="n">Plain</span><span class="p">,</span> <span class="n">Poke</span>
 
-    <span class="k">for</span> <span class="nb">type</span> <span class="ow">in</span> <span class="p">[</span><span class="n">AtAll</span><span class="p">,</span> <span class="n">At</span><span class="p">,</span> <span class="n">Poke</span><span class="p">,</span> <span class="n">Forward</span><span class="p">,</span> <span class="n">MultimediaElement</span><span class="p">]:</span>
-        <span class="n">convert</span><span class="p">(</span><span class="n">chain</span><span class="p">,</span> <span class="nb">type</span><span class="p">)</span>
-        <span class="n">val</span> <span class="o">=</span> <span class="k">await</span> <span class="n">ariadne</span><span class="o">.</span><span class="n">sendMessage</span><span class="p">(</span><span class="o">**</span><span class="n">item</span><span class="o">.</span><span class="n">send_data</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="n">ignore</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">val</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">val</span>
+        <span class="n">chain</span><span class="p">:</span> <span class="n">MessageChain</span> <span class="o">=</span> <span class="n">item</span><span class="o">.</span><span class="n">send_data</span><span class="p">[</span><span class="s2">&quot;message&quot;</span><span class="p">]</span>
+        <span class="n">ariadne</span> <span class="o">=</span> <span class="n">ariadne_ctx</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
 
-    <span class="k">raise</span> <span class="n">item</span>
+        <span class="k">def</span> <span class="nf">convert</span><span class="p">(</span><span class="n">msg_chain</span><span class="p">:</span> <span class="n">MessageChain</span><span class="p">,</span> <span class="nb">type</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">ind</span><span class="p">,</span> <span class="n">elem</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">msg_chain</span><span class="o">.</span><span class="n">__root__</span><span class="p">[:]):</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">elem</span><span class="p">,</span> <span class="nb">type</span><span class="p">):</span>
+                    <span class="n">msg_chain</span><span class="o">.</span><span class="n">__root__</span><span class="p">[</span><span class="n">ind</span><span class="p">]</span> <span class="o">=</span> <span class="n">Plain</span><span class="p">(</span><span class="n">elem</span><span class="o">.</span><span class="n">asDisplay</span><span class="p">())</span>
+
+        <span class="k">for</span> <span class="nb">type</span> <span class="ow">in</span> <span class="p">[</span><span class="n">AtAll</span><span class="p">,</span> <span class="n">At</span><span class="p">,</span> <span class="n">Poke</span><span class="p">,</span> <span class="n">Forward</span><span class="p">,</span> <span class="n">MultimediaElement</span><span class="p">]:</span>
+            <span class="n">convert</span><span class="p">(</span><span class="n">chain</span><span class="p">,</span> <span class="nb">type</span><span class="p">)</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="k">await</span> <span class="n">ariadne</span><span class="o">.</span><span class="n">sendMessage</span><span class="p">(</span><span class="o">**</span><span class="n">item</span><span class="o">.</span><span class="n">send_data</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="n">Ignore</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">val</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">val</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">ignore</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">item</span>
+
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">exception</span><span class="p">(</span>  <span class="c1"># pylint: disable=arguments-differ</span>
+        <span class="n">s</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="s2">&quot;Safe&quot;</span><span class="p">,</span> <span class="n">Exc_T</span><span class="p">],</span> <span class="n">i</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Exc_T</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">Safe</span><span class="p">):</span>
+            <span class="k">return</span> <span class="k">await</span> <span class="n">Safe</span><span class="o">.</span><span class="n">_handle</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">s</span><span class="o">.</span><span class="n">ignore</span><span class="p">)</span>
+        <span class="k">return</span> <span class="k">await</span> <span class="n">Safe</span><span class="o">.</span><span class="n">_handle</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
 </pre></div>
 
         </details>
 
             </section>
-                <section id="bypass">
-                            <div class="attr function"><a class="headerlink" href="#bypass">#&nbsp;&nbsp</a>
+                <section id="Bypass">
+                                <div class="attr class">
+        <a class="headerlink" href="#Bypass">#&nbsp;&nbsp</a>
 
         
-            <span class="def">async def</span>
-            <span class="name">bypass</span><span class="signature">(item: ~T) -&gt; ~T</span>:
+        <span class="def">class</span>
+        <span class="name">Bypass</span><wbr>(<span class="base">typing.Generic[~T, ~R]</span>):
     </div>
 
                 <details>
             <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span><span class="k">async</span> <span class="k">def</span> <span class="nf">bypass</span><span class="p">(</span><span class="n">item</span><span class="p">:</span> <span class="n">T</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">T</span><span class="p">:</span>
+            <div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">Bypass</span><span class="p">(</span><span class="n">SendMessageAction</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    透传错误的 SendMessage action (有 Exception 时直接返回它而不抛出)</span>
 
 <span class="sd">    注意, 请小心 traceback 重生.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">item</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">exception</span><span class="p">(</span><span class="n">item</span><span class="p">:</span> <span class="n">Exc_T</span><span class="p">,</span> <span class="o">/</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Exc_T</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">item</span>
 </pre></div>
 
         </details>
@@ -209,24 +227,78 @@
 </div>
 
 
-                </section>
-                <section id="strict">
-                            <div class="attr function"><a class="headerlink" href="#strict">#&nbsp;&nbsp</a>
+                            <div id="Bypass.__init__" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#Bypass.__init__">#&nbsp;&nbsp</a>
 
         
+            <span class="name">Bypass</span><span class="signature">()</span>
+    </div>
+
+        
+    
+
+                            </div>
+                            <div id="Bypass.exception" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#Bypass.exception">#&nbsp;&nbsp</a>
+
+                <div class="decorator">@staticmethod</div>
+
             <span class="def">async def</span>
-            <span class="name">strict</span><span class="signature">(
-    item: Union[<a href="../../ariadne.html#SendMessageDict">ariadne.SendMessageDict</a>, Exception, graia.ariadne.model.BotMessage]
-)</span>:
+            <span class="name">exception</span><span class="signature">(item: ~Exc_T, /) -&gt; ~Exc_T</span>:
     </div>
 
                 <details>
             <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span><span class="k">async</span> <span class="k">def</span> <span class="nf">strict</span><span class="p">(</span><span class="n">item</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">SendMessageDict</span><span class="p">,</span> <span class="n">SendMessageException</span><span class="p">,</span> <span class="n">BotMessage</span><span class="p">]):</span>
+            <div class="codehilite"><pre><span></span>    <span class="nd">@staticmethod</span>
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">exception</span><span class="p">(</span><span class="n">item</span><span class="p">:</span> <span class="n">Exc_T</span><span class="p">,</span> <span class="o">/</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Exc_T</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">item</span>
+</pre></div>
+
+        </details>
+
+            <div class="docstring"><p>发生异常时进行处理，可以选择不返回而是直接引发异常</p>
+
+<h6 id="args">Args</h6>
+
+<ul>
+<li><strong>item (SendMessageException):</strong>  发生的异常</li>
+</ul>
+
+<h6 id="returns">Returns</h6>
+
+<blockquote>
+  <p>T: 将作为 sendMessage 的返回值</p>
+</blockquote>
+</div>
+
+
+                            </div>
+                            <div class="inherited">
+                                <h5>Inherited Members</h5>
+                                <dl>
+                                    <div><dt><a href="../typing.html#SendMessageAction">ariadne.typing.SendMessageAction</a></dt>
+                                <dd id="Bypass.param" class="function"><a href="../typing.html#SendMessageAction.param">param</a></dd>
+                <dd id="Bypass.result" class="function"><a href="../typing.html#SendMessageAction.result">result</a></dd>
+
+            </div>
+                                </dl>
+                            </div>
+                </section>
+                <section id="Strict">
+                                <div class="attr class">
+        <a class="headerlink" href="#Strict">#&nbsp;&nbsp</a>
+
+        
+        <span class="def">class</span>
+        <span class="name">Strict</span><wbr>(<span class="base">typing.Generic[~T, ~R]</span>):
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">Strict</span><span class="p">(</span><span class="n">SendMessageAction</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;严格的 SendMessage action (有错误时 raise)&quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">SendMessageException</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="n">item</span>
-    <span class="k">return</span> <span class="n">item</span>
+
+    <span class="o">...</span>
 </pre></div>
 
         </details>
@@ -235,22 +307,46 @@
 </div>
 
 
-                </section>
-                <section id="ignore">
-                            <div class="attr function"><a class="headerlink" href="#ignore">#&nbsp;&nbsp</a>
+                            <div id="Strict.__init__" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#Strict.__init__">#&nbsp;&nbsp</a>
 
         
-            <span class="def">async def</span>
-            <span class="name">ignore</span><span class="signature">(
-    item: Union[<a href="../../ariadne.html#SendMessageDict">ariadne.SendMessageDict</a>, Exception, graia.ariadne.model.BotMessage]
-)</span>:
+            <span class="name">Strict</span><span class="signature">()</span>
+    </div>
+
+        
+    
+
+                            </div>
+                            <div class="inherited">
+                                <h5>Inherited Members</h5>
+                                <dl>
+                                    <div><dt><a href="../typing.html#SendMessageAction">ariadne.typing.SendMessageAction</a></dt>
+                                <dd id="Strict.param" class="function"><a href="../typing.html#SendMessageAction.param">param</a></dd>
+                <dd id="Strict.result" class="function"><a href="../typing.html#SendMessageAction.result">result</a></dd>
+                <dd id="Strict.exception" class="function"><a href="../typing.html#SendMessageAction.exception">exception</a></dd>
+
+            </div>
+                                </dl>
+                            </div>
+                </section>
+                <section id="Ignore">
+                                <div class="attr class">
+        <a class="headerlink" href="#Ignore">#&nbsp;&nbsp</a>
+
+        
+        <span class="def">class</span>
+        <span class="name">Ignore</span><wbr>(<span class="base">typing.Generic[~T, ~R]</span>):
     </div>
 
                 <details>
             <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span><span class="k">async</span> <span class="k">def</span> <span class="nf">ignore</span><span class="p">(</span><span class="n">item</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">SendMessageDict</span><span class="p">,</span> <span class="n">SendMessageException</span><span class="p">,</span> <span class="n">BotMessage</span><span class="p">]):</span>
+            <div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">Ignore</span><span class="p">(</span><span class="n">SendMessageAction</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;忽略错误的 SendMessage action (发生 Exception 时 返回 None)&quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">item</span> <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="ne">Exception</span><span class="p">)</span> <span class="k">else</span> <span class="kc">None</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">exception</span><span class="p">(</span><span class="n">_</span><span class="p">:</span> <span class="n">Exc_T</span><span class="p">,</span> <span class="o">/</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Exc_T</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span>
 </pre></div>
 
         </details>
@@ -259,64 +355,203 @@
 </div>
 
 
-                </section>
-                <section id="safe">
-                            <div class="attr function"><a class="headerlink" href="#safe">#&nbsp;&nbsp</a>
+                            <div id="Ignore.__init__" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#Ignore.__init__">#&nbsp;&nbsp</a>
 
         
+            <span class="name">Ignore</span><span class="signature">()</span>
+    </div>
+
+        
+    
+
+                            </div>
+                            <div id="Ignore.exception" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#Ignore.exception">#&nbsp;&nbsp</a>
+
+                <div class="decorator">@staticmethod</div>
+
             <span class="def">async def</span>
-            <span class="name">safe</span><span class="signature">(
-    item: Union[<a href="../../ariadne.html#SendMessageDict">ariadne.SendMessageDict</a>, Exception, graia.ariadne.model.BotMessage]
-)</span>:
+            <span class="name">exception</span><span class="signature">(_: ~Exc_T, /) -&gt; ~Exc_T</span>:
     </div>
 
                 <details>
             <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span><span class="k">async</span> <span class="k">def</span> <span class="nf">safe</span><span class="p">(</span><span class="n">item</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">SendMessageDict</span><span class="p">,</span> <span class="n">SendMessageException</span><span class="p">,</span> <span class="n">BotMessage</span><span class="p">]):</span>
+            <div class="codehilite"><pre><span></span>    <span class="nd">@staticmethod</span>
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">exception</span><span class="p">(</span><span class="n">_</span><span class="p">:</span> <span class="n">Exc_T</span><span class="p">,</span> <span class="o">/</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Exc_T</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span>
+</pre></div>
+
+        </details>
+
+            <div class="docstring"><p>发生异常时进行处理，可以选择不返回而是直接引发异常</p>
+
+<h6 id="args">Args</h6>
+
+<ul>
+<li><strong>item (SendMessageException):</strong>  发生的异常</li>
+</ul>
+
+<h6 id="returns">Returns</h6>
+
+<blockquote>
+  <p>T: 将作为 sendMessage 的返回值</p>
+</blockquote>
+</div>
+
+
+                            </div>
+                            <div class="inherited">
+                                <h5>Inherited Members</h5>
+                                <dl>
+                                    <div><dt><a href="../typing.html#SendMessageAction">ariadne.typing.SendMessageAction</a></dt>
+                                <dd id="Ignore.param" class="function"><a href="../typing.html#SendMessageAction.param">param</a></dd>
+                <dd id="Ignore.result" class="function"><a href="../typing.html#SendMessageAction.result">result</a></dd>
+
+            </div>
+                                </dl>
+                            </div>
+                </section>
+                <section id="Safe">
+                                <div class="attr class">
+        <a class="headerlink" href="#Safe">#&nbsp;&nbsp</a>
+
+        
+        <span class="def">class</span>
+        <span class="name">Safe</span><wbr>(<span class="base">typing.Generic[~T, ~R]</span>):
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">Safe</span><span class="p">(</span><span class="n">SendMessageAction</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    安全发送的 SendMessage action</span>
 
-<span class="sd">    行为: 发送失败时按顺序替换元素为其asDisplay: AtAll, At, Poke, Forward, MultimediaElement</span>
-<span class="sd">    若最后还是失败 (AccountMuted 等), 则会引发原始异常</span>
+<span class="sd">    行为:</span>
+<span class="sd">    在第一次尝试失败后先移除 quote,</span>
+<span class="sd">    之后每次失败时按顺序替换元素为其asDisplay: AtAll, At, Poke, Forward, MultimediaElement</span>
+<span class="sd">    若最后还是失败 (AccountMuted 等), 则会引发原始异常 (通过传入 ignore 决定)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="kn">from</span> <span class="nn">..context</span> <span class="kn">import</span> <span class="n">ariadne_ctx</span>
-    <span class="kn">from</span> <span class="nn">..message.chain</span> <span class="kn">import</span> <span class="n">MessageChain</span>
-    <span class="kn">from</span> <span class="nn">..message.element</span> <span class="kn">import</span> <span class="n">At</span><span class="p">,</span> <span class="n">AtAll</span><span class="p">,</span> <span class="n">Forward</span><span class="p">,</span> <span class="n">MultimediaElement</span><span class="p">,</span> <span class="n">Plain</span><span class="p">,</span> <span class="n">Poke</span>
 
-    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="ne">Exception</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">item</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ignore</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ignore</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">ignore</span>
 
-    <span class="n">chain</span><span class="p">:</span> <span class="n">MessageChain</span> <span class="o">=</span> <span class="n">item</span><span class="o">.</span><span class="n">send_data</span><span class="p">[</span><span class="s2">&quot;message&quot;</span><span class="p">]</span>
-    <span class="n">ariadne</span> <span class="o">=</span> <span class="n">ariadne_ctx</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+    <span class="nd">@overload</span>
+    <span class="nd">@staticmethod</span>
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">exception</span><span class="p">(</span><span class="n">item</span><span class="p">:</span> <span class="n">Exc_T</span><span class="p">,</span> <span class="o">/</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BotMessage</span><span class="p">:</span>
+        <span class="o">...</span>
 
-    <span class="k">def</span> <span class="nf">convert</span><span class="p">(</span><span class="n">msg_chain</span><span class="p">:</span> <span class="n">MessageChain</span><span class="p">,</span> <span class="nb">type</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">for</span> <span class="n">ind</span><span class="p">,</span> <span class="n">elem</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">msg_chain</span><span class="o">.</span><span class="n">__root__</span><span class="p">[:]):</span>
-            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">elem</span><span class="p">,</span> <span class="nb">type</span><span class="p">):</span>
-                <span class="n">msg_chain</span><span class="o">.</span><span class="n">__root__</span><span class="p">[</span><span class="n">ind</span><span class="p">]</span> <span class="o">=</span> <span class="n">Plain</span><span class="p">(</span><span class="n">elem</span><span class="o">.</span><span class="n">asDisplay</span><span class="p">())</span>
+    <span class="nd">@overload</span>
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">exception</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">:</span> <span class="n">Exc_T</span><span class="p">,</span> <span class="o">/</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BotMessage</span><span class="p">:</span>
+        <span class="o">...</span>
 
-    <span class="n">item</span><span class="o">.</span><span class="n">send_data</span><span class="p">[</span><span class="s2">&quot;quote&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
-    <span class="n">val</span> <span class="o">=</span> <span class="k">await</span> <span class="n">ariadne</span><span class="o">.</span><span class="n">sendMessage</span><span class="p">(</span><span class="o">**</span><span class="n">item</span><span class="o">.</span><span class="n">send_data</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="n">ignore</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">val</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">val</span>
+    <span class="nd">@staticmethod</span>
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">_handle</span><span class="p">(</span><span class="n">item</span><span class="p">:</span> <span class="n">Exc_T</span><span class="p">,</span> <span class="n">ignore</span><span class="p">:</span> <span class="nb">bool</span><span class="p">):</span>
+        <span class="kn">from</span> <span class="nn">..context</span> <span class="kn">import</span> <span class="n">ariadne_ctx</span>
+        <span class="kn">from</span> <span class="nn">..message.chain</span> <span class="kn">import</span> <span class="n">MessageChain</span>
+        <span class="kn">from</span> <span class="nn">..message.element</span> <span class="kn">import</span> <span class="n">At</span><span class="p">,</span> <span class="n">AtAll</span><span class="p">,</span> <span class="n">Forward</span><span class="p">,</span> <span class="n">MultimediaElement</span><span class="p">,</span> <span class="n">Plain</span><span class="p">,</span> <span class="n">Poke</span>
 
-    <span class="k">for</span> <span class="nb">type</span> <span class="ow">in</span> <span class="p">[</span><span class="n">AtAll</span><span class="p">,</span> <span class="n">At</span><span class="p">,</span> <span class="n">Poke</span><span class="p">,</span> <span class="n">Forward</span><span class="p">,</span> <span class="n">MultimediaElement</span><span class="p">]:</span>
-        <span class="n">convert</span><span class="p">(</span><span class="n">chain</span><span class="p">,</span> <span class="nb">type</span><span class="p">)</span>
-        <span class="n">val</span> <span class="o">=</span> <span class="k">await</span> <span class="n">ariadne</span><span class="o">.</span><span class="n">sendMessage</span><span class="p">(</span><span class="o">**</span><span class="n">item</span><span class="o">.</span><span class="n">send_data</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="n">ignore</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">val</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">val</span>
+        <span class="n">chain</span><span class="p">:</span> <span class="n">MessageChain</span> <span class="o">=</span> <span class="n">item</span><span class="o">.</span><span class="n">send_data</span><span class="p">[</span><span class="s2">&quot;message&quot;</span><span class="p">]</span>
+        <span class="n">ariadne</span> <span class="o">=</span> <span class="n">ariadne_ctx</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
 
-    <span class="k">raise</span> <span class="n">item</span>
+        <span class="k">def</span> <span class="nf">convert</span><span class="p">(</span><span class="n">msg_chain</span><span class="p">:</span> <span class="n">MessageChain</span><span class="p">,</span> <span class="nb">type</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">ind</span><span class="p">,</span> <span class="n">elem</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">msg_chain</span><span class="o">.</span><span class="n">__root__</span><span class="p">[:]):</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">elem</span><span class="p">,</span> <span class="nb">type</span><span class="p">):</span>
+                    <span class="n">msg_chain</span><span class="o">.</span><span class="n">__root__</span><span class="p">[</span><span class="n">ind</span><span class="p">]</span> <span class="o">=</span> <span class="n">Plain</span><span class="p">(</span><span class="n">elem</span><span class="o">.</span><span class="n">asDisplay</span><span class="p">())</span>
+
+        <span class="k">for</span> <span class="nb">type</span> <span class="ow">in</span> <span class="p">[</span><span class="n">AtAll</span><span class="p">,</span> <span class="n">At</span><span class="p">,</span> <span class="n">Poke</span><span class="p">,</span> <span class="n">Forward</span><span class="p">,</span> <span class="n">MultimediaElement</span><span class="p">]:</span>
+            <span class="n">convert</span><span class="p">(</span><span class="n">chain</span><span class="p">,</span> <span class="nb">type</span><span class="p">)</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="k">await</span> <span class="n">ariadne</span><span class="o">.</span><span class="n">sendMessage</span><span class="p">(</span><span class="o">**</span><span class="n">item</span><span class="o">.</span><span class="n">send_data</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="n">Ignore</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">val</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">val</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">ignore</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">item</span>
+
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">exception</span><span class="p">(</span>  <span class="c1"># pylint: disable=arguments-differ</span>
+        <span class="n">s</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="s2">&quot;Safe&quot;</span><span class="p">,</span> <span class="n">Exc_T</span><span class="p">],</span> <span class="n">i</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Exc_T</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">Safe</span><span class="p">):</span>
+            <span class="k">return</span> <span class="k">await</span> <span class="n">Safe</span><span class="o">.</span><span class="n">_handle</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">s</span><span class="o">.</span><span class="n">ignore</span><span class="p">)</span>
+        <span class="k">return</span> <span class="k">await</span> <span class="n">Safe</span><span class="o">.</span><span class="n">_handle</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
 </pre></div>
 
         </details>
 
             <div class="docstring"><p>安全发送的 SendMessage action</p>
 
-<p>行为: 发送失败时按顺序替换元素为其asDisplay: AtAll, At, Poke, Forward, MultimediaElement
-若最后还是失败 (AccountMuted 等), 则会引发原始异常</p>
+<p>行为:
+在第一次尝试失败后先移除 quote,
+之后每次失败时按顺序替换元素为其asDisplay: AtAll, At, Poke, Forward, MultimediaElement
+若最后还是失败 (AccountMuted 等), 则会引发原始异常 (通过传入 ignore 决定)</p>
 </div>
 
 
+                            <div id="Safe.__init__" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#Safe.__init__">#&nbsp;&nbsp</a>
+
+        
+            <span class="name">Safe</span><span class="signature">(ignore: bool = False)</span>
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ignore</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ignore</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">ignore</span>
+</pre></div>
+
+        </details>
+
+    
+
+                            </div>
+                            <div id="Safe.exception" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#Safe.exception">#&nbsp;&nbsp</a>
+
+        
+            <span class="def">async def</span>
+            <span class="name">exception</span><span class="signature">(s: Union[<a href="#Safe">ariadne.util.send.Safe</a>, ~Exc_T], i: Optional[~Exc_T] = None)</span>:
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span>    <span class="k">async</span> <span class="k">def</span> <span class="nf">exception</span><span class="p">(</span>  <span class="c1"># pylint: disable=arguments-differ</span>
+        <span class="n">s</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="s2">&quot;Safe&quot;</span><span class="p">,</span> <span class="n">Exc_T</span><span class="p">],</span> <span class="n">i</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Exc_T</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">Safe</span><span class="p">):</span>
+            <span class="k">return</span> <span class="k">await</span> <span class="n">Safe</span><span class="o">.</span><span class="n">_handle</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">s</span><span class="o">.</span><span class="n">ignore</span><span class="p">)</span>
+        <span class="k">return</span> <span class="k">await</span> <span class="n">Safe</span><span class="o">.</span><span class="n">_handle</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+</pre></div>
+
+        </details>
+
+            <div class="docstring"><p>发生异常时进行处理，可以选择不返回而是直接引发异常</p>
+
+<h6 id="args">Args</h6>
+
+<ul>
+<li><strong>item (SendMessageException):</strong>  发生的异常</li>
+</ul>
+
+<h6 id="returns">Returns</h6>
+
+<blockquote>
+  <p>T: 将作为 sendMessage 的返回值</p>
+</blockquote>
+</div>
+
+
+                            </div>
+                            <div class="inherited">
+                                <h5>Inherited Members</h5>
+                                <dl>
+                                    <div><dt><a href="../typing.html#SendMessageAction">ariadne.typing.SendMessageAction</a></dt>
+                                <dd id="Safe.param" class="function"><a href="../typing.html#SendMessageAction.param">param</a></dd>
+                <dd id="Safe.result" class="function"><a href="../typing.html#SendMessageAction.result">result</a></dd>
+
+            </div>
+                                </dl>
+                            </div>
                 </section>
     </main>
 <script>
