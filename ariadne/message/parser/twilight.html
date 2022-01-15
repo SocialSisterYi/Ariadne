@@ -1149,8 +1149,14 @@
             <span class="k">return</span> <span class="n">sparkle</span>
         <span class="k">if</span> <span class="nb">issubclass</span><span class="p">(</span><span class="n">interface</span><span class="o">.</span><span class="n">annotation</span><span class="p">,</span> <span class="n">Twilight</span><span class="p">):</span>
             <span class="k">return</span> <span class="bp">self</span>
-        <span class="k">if</span> <span class="nb">issubclass</span><span class="p">(</span><span class="n">interface</span><span class="o">.</span><span class="n">annotation</span><span class="p">,</span> <span class="n">Match</span><span class="p">):</span>
-            <span class="k">return</span> <span class="n">sparkle</span><span class="o">.</span><span class="n">get_match</span><span class="p">(</span><span class="n">interface</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">match</span> <span class="o">=</span> <span class="n">sparkle</span><span class="o">.</span><span class="n">get_match</span><span class="p">(</span><span class="n">interface</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">issubclass</span><span class="p">(</span><span class="n">interface</span><span class="o">.</span><span class="n">annotation</span><span class="p">,</span> <span class="n">Match</span><span class="p">):</span>
+                <span class="k">return</span> <span class="n">match</span>
+            <span class="k">if</span> <span class="nb">issubclass</span><span class="p">(</span><span class="n">interface</span><span class="o">.</span><span class="n">annotation</span><span class="p">,</span> <span class="nb">type</span><span class="p">(</span><span class="n">match</span><span class="o">.</span><span class="n">result</span><span class="p">)):</span>
+                <span class="k">return</span> <span class="n">match</span><span class="o">.</span><span class="n">result</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="k">pass</span>
 </pre></div>
 
         </details>
@@ -3480,8 +3486,14 @@
             <span class="k">return</span> <span class="n">sparkle</span>
         <span class="k">if</span> <span class="nb">issubclass</span><span class="p">(</span><span class="n">interface</span><span class="o">.</span><span class="n">annotation</span><span class="p">,</span> <span class="n">Twilight</span><span class="p">):</span>
             <span class="k">return</span> <span class="bp">self</span>
-        <span class="k">if</span> <span class="nb">issubclass</span><span class="p">(</span><span class="n">interface</span><span class="o">.</span><span class="n">annotation</span><span class="p">,</span> <span class="n">Match</span><span class="p">):</span>
-            <span class="k">return</span> <span class="n">sparkle</span><span class="o">.</span><span class="n">get_match</span><span class="p">(</span><span class="n">interface</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">match</span> <span class="o">=</span> <span class="n">sparkle</span><span class="o">.</span><span class="n">get_match</span><span class="p">(</span><span class="n">interface</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">issubclass</span><span class="p">(</span><span class="n">interface</span><span class="o">.</span><span class="n">annotation</span><span class="p">,</span> <span class="n">Match</span><span class="p">):</span>
+                <span class="k">return</span> <span class="n">match</span>
+            <span class="k">if</span> <span class="nb">issubclass</span><span class="p">(</span><span class="n">interface</span><span class="o">.</span><span class="n">annotation</span><span class="p">,</span> <span class="nb">type</span><span class="p">(</span><span class="n">match</span><span class="o">.</span><span class="n">result</span><span class="p">)):</span>
+                <span class="k">return</span> <span class="n">match</span><span class="o">.</span><span class="n">result</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="k">pass</span>
 </pre></div>
 
         </details>
@@ -3702,8 +3714,14 @@
             <span class="k">return</span> <span class="n">sparkle</span>
         <span class="k">if</span> <span class="nb">issubclass</span><span class="p">(</span><span class="n">interface</span><span class="o">.</span><span class="n">annotation</span><span class="p">,</span> <span class="n">Twilight</span><span class="p">):</span>
             <span class="k">return</span> <span class="bp">self</span>
-        <span class="k">if</span> <span class="nb">issubclass</span><span class="p">(</span><span class="n">interface</span><span class="o">.</span><span class="n">annotation</span><span class="p">,</span> <span class="n">Match</span><span class="p">):</span>
-            <span class="k">return</span> <span class="n">sparkle</span><span class="o">.</span><span class="n">get_match</span><span class="p">(</span><span class="n">interface</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">match</span> <span class="o">=</span> <span class="n">sparkle</span><span class="o">.</span><span class="n">get_match</span><span class="p">(</span><span class="n">interface</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">issubclass</span><span class="p">(</span><span class="n">interface</span><span class="o">.</span><span class="n">annotation</span><span class="p">,</span> <span class="n">Match</span><span class="p">):</span>
+                <span class="k">return</span> <span class="n">match</span>
+            <span class="k">if</span> <span class="nb">issubclass</span><span class="p">(</span><span class="n">interface</span><span class="o">.</span><span class="n">annotation</span><span class="p">,</span> <span class="nb">type</span><span class="p">(</span><span class="n">match</span><span class="o">.</span><span class="n">result</span><span class="p">)):</span>
+                <span class="k">return</span> <span class="n">match</span><span class="o">.</span><span class="n">result</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="k">pass</span>
 </pre></div>
 
         </details>
