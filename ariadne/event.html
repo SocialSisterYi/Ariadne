@@ -41,6 +41,9 @@
                     <a class="class" href="#MiraiEvent">MiraiEvent</a>
                             <ul class="memberlist">
                         <li>
+                                <a class="variable" href="#MiraiEvent.type">type</a>
+                        </li>
+                        <li>
                                 <a class="function" href="#MiraiEvent.validate_event_type">validate_event_type</a>
                         </li>
                         <li>
@@ -85,6 +88,7 @@
     <span class="sd">&quot;&quot;&quot;Ariadne 的事件基类&quot;&quot;&quot;</span>
 
     <span class="nb">type</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="sd">&quot;&quot;&quot;事件类型&quot;&quot;&quot;</span>
 
     <span class="nd">@validator</span><span class="p">(</span><span class="s2">&quot;type&quot;</span><span class="p">,</span> <span class="n">allow_reuse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">validate_event_type</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">v</span><span class="p">):</span>
@@ -116,6 +120,7 @@
     <span class="sd">&quot;&quot;&quot;Ariadne 的事件基类&quot;&quot;&quot;</span>
 
     <span class="nb">type</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="sd">&quot;&quot;&quot;事件类型&quot;&quot;&quot;</span>
 
     <span class="nd">@validator</span><span class="p">(</span><span class="s2">&quot;type&quot;</span><span class="p">,</span> <span class="n">allow_reuse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">validate_event_type</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">v</span><span class="p">):</span>
@@ -135,6 +140,17 @@
 </div>
 
 
+                            <div id="MiraiEvent.type" class="classattr">
+                                            <div class="attr variable"><a class="headerlink" href="#MiraiEvent.type">#&nbsp;&nbsp</a>
+
+        <span class="name">type</span><span class="annotation">: str</span>
+    </div>
+
+            <div class="docstring"><p>事件类型</p>
+</div>
+
+
+                            </div>
                             <div id="MiraiEvent.validate_event_type" class="classattr">
                                         <div class="attr function"><a class="headerlink" href="#MiraiEvent.validate_event_type">#&nbsp;&nbsp</a>
 
