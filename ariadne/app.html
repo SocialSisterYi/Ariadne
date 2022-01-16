@@ -265,6 +265,7 @@
 <span class="kn">import</span> <span class="nn">asyncio</span>
 <span class="kn">import</span> <span class="nn">importlib.metadata</span>
 <span class="kn">import</span> <span class="nn">inspect</span>
+<span class="kn">import</span> <span class="nn">sys</span>
 <span class="kn">import</span> <span class="nn">time</span>
 <span class="kn">from</span> <span class="nn">asyncio.events</span> <span class="kn">import</span> <span class="n">AbstractEventLoop</span>
 <span class="kn">from</span> <span class="nn">asyncio.tasks</span> <span class="kn">import</span> <span class="n">Task</span>
@@ -1587,6 +1588,7 @@
                     <span class="p">),</span>
                 <span class="p">):</span>
                     <span class="k">with</span> <span class="n">enter_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+                        <span class="n">sys</span><span class="o">.</span><span class="n">audit</span><span class="p">(</span><span class="s2">&quot;AriadnePostRemoteEvent&quot;</span><span class="p">,</span> <span class="n">event</span><span class="p">)</span>
                         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">event</span><span class="p">,</span> <span class="n">FriendEvent</span><span class="p">):</span>
                             <span class="k">with</span> <span class="n">enter_message_send_context</span><span class="p">(</span><span class="n">UploadMethod</span><span class="o">.</span><span class="n">Friend</span><span class="p">):</span>
                                 <span class="bp">self</span><span class="o">.</span><span class="n">broadcast</span><span class="o">.</span><span class="n">postEvent</span><span class="p">(</span><span class="n">event</span><span class="p">)</span>
@@ -5720,6 +5722,7 @@
                     <span class="p">),</span>
                 <span class="p">):</span>
                     <span class="k">with</span> <span class="n">enter_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+                        <span class="n">sys</span><span class="o">.</span><span class="n">audit</span><span class="p">(</span><span class="s2">&quot;AriadnePostRemoteEvent&quot;</span><span class="p">,</span> <span class="n">event</span><span class="p">)</span>
                         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">event</span><span class="p">,</span> <span class="n">FriendEvent</span><span class="p">):</span>
                             <span class="k">with</span> <span class="n">enter_message_send_context</span><span class="p">(</span><span class="n">UploadMethod</span><span class="o">.</span><span class="n">Friend</span><span class="p">):</span>
                                 <span class="bp">self</span><span class="o">.</span><span class="n">broadcast</span><span class="o">.</span><span class="n">postEvent</span><span class="p">(</span><span class="n">event</span><span class="p">)</span>
@@ -6115,6 +6118,7 @@
                     <span class="p">),</span>
                 <span class="p">):</span>
                     <span class="k">with</span> <span class="n">enter_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+                        <span class="n">sys</span><span class="o">.</span><span class="n">audit</span><span class="p">(</span><span class="s2">&quot;AriadnePostRemoteEvent&quot;</span><span class="p">,</span> <span class="n">event</span><span class="p">)</span>
                         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">event</span><span class="p">,</span> <span class="n">FriendEvent</span><span class="p">):</span>
                             <span class="k">with</span> <span class="n">enter_message_send_context</span><span class="p">(</span><span class="n">UploadMethod</span><span class="o">.</span><span class="n">Friend</span><span class="p">):</span>
                                 <span class="bp">self</span><span class="o">.</span><span class="n">broadcast</span><span class="o">.</span><span class="n">postEvent</span><span class="p">(</span><span class="n">event</span><span class="p">)</span>
