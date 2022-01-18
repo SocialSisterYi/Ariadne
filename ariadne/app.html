@@ -345,7 +345,7 @@
 <span class="k">class</span> <span class="nc">MessageMixin</span><span class="p">(</span><span class="n">AriadneMixin</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;用于发送, 撤回, 获取消息的 Mixin 类.&quot;&quot;&quot;</span>
 
-    <span class="n">default_action</span><span class="p">:</span> <span class="n">SendMessageAction</span>
+    <span class="n">default_send_action</span><span class="p">:</span> <span class="n">SendMessageAction</span>
 
     <span class="nd">@app_ctx_manager</span>
     <span class="k">async</span> <span class="k">def</span> <span class="nf">getMessageFromId</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">messageId</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">MessageEvent</span><span class="p">:</span>
@@ -521,7 +521,7 @@
 <span class="sd">        Returns:</span>
 <span class="sd">            T, R: 默认实现为 BotMessage</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">action</span> <span class="o">=</span> <span class="n">action</span> <span class="k">if</span> <span class="n">action</span> <span class="ow">is</span> <span class="ow">not</span> <span class="o">...</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_action</span>
+        <span class="n">action</span> <span class="o">=</span> <span class="n">action</span> <span class="k">if</span> <span class="n">action</span> <span class="ow">is</span> <span class="ow">not</span> <span class="o">...</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_send_action</span>
         <span class="n">data</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;message&quot;</span><span class="p">:</span> <span class="n">message</span><span class="p">}</span>
         <span class="c1"># quote</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">quote</span><span class="p">,</span> <span class="nb">bool</span><span class="p">)</span> <span class="ow">and</span> <span class="n">quote</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">MessageEvent</span><span class="p">):</span>
@@ -1524,7 +1524,7 @@
 
         <span class="kn">from</span> <span class="nn">.util.send</span> <span class="kn">import</span> <span class="n">Strict</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">default_action</span> <span class="o">=</span> <span class="n">Strict</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">default_send_action</span> <span class="o">=</span> <span class="n">Strict</span>
 
         <span class="k">if</span> <span class="n">use_bypass_listener</span><span class="p">:</span>
             <span class="n">inject_bypass_listener</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">broadcast</span><span class="p">)</span>
@@ -1570,6 +1570,7 @@
 <span class="sd">        Args:</span>
 <span class="sd">            retry_interval (float, optional): Adapter 重连间隔 (s). 默认 5.0.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="kn">from</span> <span class="nn">.event.message</span> <span class="kn">import</span> <span class="n">MessageEvent</span>
         <span class="kn">from</span> <span class="nn">.event.mirai</span> <span class="kn">import</span> <span class="n">FriendEvent</span><span class="p">,</span> <span class="n">GroupEvent</span>
 
         <span class="n">retry_cnt</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>
@@ -1589,6 +1590,9 @@
                 <span class="p">):</span>
                     <span class="k">with</span> <span class="n">enter_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
                         <span class="n">sys</span><span class="o">.</span><span class="n">audit</span><span class="p">(</span><span class="s2">&quot;AriadnePostRemoteEvent&quot;</span><span class="p">,</span> <span class="n">event</span><span class="p">)</span>
+                        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">event</span><span class="p">,</span> <span class="n">MessageEvent</span><span class="p">):</span>
+                            <span class="k">if</span> <span class="n">event</span><span class="o">.</span><span class="n">messageChain</span><span class="o">.</span><span class="n">onlyContains</span><span class="p">(</span><span class="n">Source</span><span class="p">):</span>  <span class="c1"># Contains unsupported type</span>
+                                <span class="n">event</span><span class="o">.</span><span class="n">messageChain</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;&lt;! 不支持的消息类型 !&gt;&quot;</span><span class="p">)</span>
                         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">event</span><span class="p">,</span> <span class="n">FriendEvent</span><span class="p">):</span>
                             <span class="k">with</span> <span class="n">enter_message_send_context</span><span class="p">(</span><span class="n">UploadMethod</span><span class="o">.</span><span class="n">Friend</span><span class="p">):</span>
                                 <span class="bp">self</span><span class="o">.</span><span class="n">broadcast</span><span class="o">.</span><span class="n">postEvent</span><span class="p">(</span><span class="n">event</span><span class="p">)</span>
@@ -1825,7 +1829,7 @@
             <div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">MessageMixin</span><span class="p">(</span><span class="n">AriadneMixin</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;用于发送, 撤回, 获取消息的 Mixin 类.&quot;&quot;&quot;</span>
 
-    <span class="n">default_action</span><span class="p">:</span> <span class="n">SendMessageAction</span>
+    <span class="n">default_send_action</span><span class="p">:</span> <span class="n">SendMessageAction</span>
 
     <span class="nd">@app_ctx_manager</span>
     <span class="k">async</span> <span class="k">def</span> <span class="nf">getMessageFromId</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">messageId</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">MessageEvent</span><span class="p">:</span>
@@ -2001,7 +2005,7 @@
 <span class="sd">        Returns:</span>
 <span class="sd">            T, R: 默认实现为 BotMessage</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">action</span> <span class="o">=</span> <span class="n">action</span> <span class="k">if</span> <span class="n">action</span> <span class="ow">is</span> <span class="ow">not</span> <span class="o">...</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_action</span>
+        <span class="n">action</span> <span class="o">=</span> <span class="n">action</span> <span class="k">if</span> <span class="n">action</span> <span class="ow">is</span> <span class="ow">not</span> <span class="o">...</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_send_action</span>
         <span class="n">data</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;message&quot;</span><span class="p">:</span> <span class="n">message</span><span class="p">}</span>
         <span class="c1"># quote</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">quote</span><span class="p">,</span> <span class="nb">bool</span><span class="p">)</span> <span class="ow">and</span> <span class="n">quote</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">MessageEvent</span><span class="p">):</span>
@@ -2447,7 +2451,7 @@
 <span class="sd">        Returns:</span>
 <span class="sd">            T, R: 默认实现为 BotMessage</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">action</span> <span class="o">=</span> <span class="n">action</span> <span class="k">if</span> <span class="n">action</span> <span class="ow">is</span> <span class="ow">not</span> <span class="o">...</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_action</span>
+        <span class="n">action</span> <span class="o">=</span> <span class="n">action</span> <span class="k">if</span> <span class="n">action</span> <span class="ow">is</span> <span class="ow">not</span> <span class="o">...</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_send_action</span>
         <span class="n">data</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;message&quot;</span><span class="p">:</span> <span class="n">message</span><span class="p">}</span>
         <span class="c1"># quote</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">quote</span><span class="p">,</span> <span class="nb">bool</span><span class="p">)</span> <span class="ow">and</span> <span class="n">quote</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">MessageEvent</span><span class="p">):</span>
@@ -5658,7 +5662,7 @@
 
         <span class="kn">from</span> <span class="nn">.util.send</span> <span class="kn">import</span> <span class="n">Strict</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">default_action</span> <span class="o">=</span> <span class="n">Strict</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">default_send_action</span> <span class="o">=</span> <span class="n">Strict</span>
 
         <span class="k">if</span> <span class="n">use_bypass_listener</span><span class="p">:</span>
             <span class="n">inject_bypass_listener</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">broadcast</span><span class="p">)</span>
@@ -5704,6 +5708,7 @@
 <span class="sd">        Args:</span>
 <span class="sd">            retry_interval (float, optional): Adapter 重连间隔 (s). 默认 5.0.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="kn">from</span> <span class="nn">.event.message</span> <span class="kn">import</span> <span class="n">MessageEvent</span>
         <span class="kn">from</span> <span class="nn">.event.mirai</span> <span class="kn">import</span> <span class="n">FriendEvent</span><span class="p">,</span> <span class="n">GroupEvent</span>
 
         <span class="n">retry_cnt</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>
@@ -5723,6 +5728,9 @@
                 <span class="p">):</span>
                     <span class="k">with</span> <span class="n">enter_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
                         <span class="n">sys</span><span class="o">.</span><span class="n">audit</span><span class="p">(</span><span class="s2">&quot;AriadnePostRemoteEvent&quot;</span><span class="p">,</span> <span class="n">event</span><span class="p">)</span>
+                        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">event</span><span class="p">,</span> <span class="n">MessageEvent</span><span class="p">):</span>
+                            <span class="k">if</span> <span class="n">event</span><span class="o">.</span><span class="n">messageChain</span><span class="o">.</span><span class="n">onlyContains</span><span class="p">(</span><span class="n">Source</span><span class="p">):</span>  <span class="c1"># Contains unsupported type</span>
+                                <span class="n">event</span><span class="o">.</span><span class="n">messageChain</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;&lt;! 不支持的消息类型 !&gt;&quot;</span><span class="p">)</span>
                         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">event</span><span class="p">,</span> <span class="n">FriendEvent</span><span class="p">):</span>
                             <span class="k">with</span> <span class="n">enter_message_send_context</span><span class="p">(</span><span class="n">UploadMethod</span><span class="o">.</span><span class="n">Friend</span><span class="p">):</span>
                                 <span class="bp">self</span><span class="o">.</span><span class="n">broadcast</span><span class="o">.</span><span class="n">postEvent</span><span class="p">(</span><span class="n">event</span><span class="p">)</span>
@@ -5991,7 +5999,7 @@
 
         <span class="kn">from</span> <span class="nn">.util.send</span> <span class="kn">import</span> <span class="n">Strict</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">default_action</span> <span class="o">=</span> <span class="n">Strict</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">default_send_action</span> <span class="o">=</span> <span class="n">Strict</span>
 
         <span class="k">if</span> <span class="n">use_bypass_listener</span><span class="p">:</span>
             <span class="n">inject_bypass_listener</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">broadcast</span><span class="p">)</span>
@@ -6100,6 +6108,7 @@
 <span class="sd">        Args:</span>
 <span class="sd">            retry_interval (float, optional): Adapter 重连间隔 (s). 默认 5.0.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="kn">from</span> <span class="nn">.event.message</span> <span class="kn">import</span> <span class="n">MessageEvent</span>
         <span class="kn">from</span> <span class="nn">.event.mirai</span> <span class="kn">import</span> <span class="n">FriendEvent</span><span class="p">,</span> <span class="n">GroupEvent</span>
 
         <span class="n">retry_cnt</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>
@@ -6119,6 +6128,9 @@
                 <span class="p">):</span>
                     <span class="k">with</span> <span class="n">enter_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
                         <span class="n">sys</span><span class="o">.</span><span class="n">audit</span><span class="p">(</span><span class="s2">&quot;AriadnePostRemoteEvent&quot;</span><span class="p">,</span> <span class="n">event</span><span class="p">)</span>
+                        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">event</span><span class="p">,</span> <span class="n">MessageEvent</span><span class="p">):</span>
+                            <span class="k">if</span> <span class="n">event</span><span class="o">.</span><span class="n">messageChain</span><span class="o">.</span><span class="n">onlyContains</span><span class="p">(</span><span class="n">Source</span><span class="p">):</span>  <span class="c1"># Contains unsupported type</span>
+                                <span class="n">event</span><span class="o">.</span><span class="n">messageChain</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;&lt;! 不支持的消息类型 !&gt;&quot;</span><span class="p">)</span>
                         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">event</span><span class="p">,</span> <span class="n">FriendEvent</span><span class="p">):</span>
                             <span class="k">with</span> <span class="n">enter_message_send_context</span><span class="p">(</span><span class="n">UploadMethod</span><span class="o">.</span><span class="n">Friend</span><span class="p">):</span>
                                 <span class="bp">self</span><span class="o">.</span><span class="n">broadcast</span><span class="o">.</span><span class="n">postEvent</span><span class="p">(</span><span class="n">event</span><span class="p">)</span>

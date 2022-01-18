@@ -141,6 +141,9 @@
                         <li>
                                 <a class="variable" href="#Friend.remark">remark</a>
                         </li>
+                        <li>
+                                <a class="function" href="#Friend.getProfile">getProfile</a>
+                        </li>
                 </ul>
 
             </li>
@@ -186,6 +189,12 @@
                         <li>
                                 <a class="variable" href="#Group.accountPerm">accountPerm</a>
                         </li>
+                        <li>
+                                <a class="function" href="#Group.getConfig">getConfig</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#Group.modifyConfig">modifyConfig</a>
+                        </li>
                 </ul>
 
             </li>
@@ -215,6 +224,18 @@
                         </li>
                         <li>
                                 <a class="variable" href="#Member.group">group</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#Member.getProfile">getProfile</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#Member.getInfo">getInfo</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#Member.modifyInfo">modifyInfo</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#Member.modifyAdmin">modifyAdmin</a>
                         </li>
                 </ul>
 
@@ -689,6 +710,16 @@
     <span class="k">def</span> <span class="fm">__int__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span>
 
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">getProfile</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;Profile&quot;</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;获取该好友的 Profile</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Profile: 该好友的 Profile 对象</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="kn">from</span> <span class="nn">.context</span> <span class="kn">import</span> <span class="n">ariadne_ctx</span>
+
+        <span class="k">return</span> <span class="k">await</span> <span class="n">ariadne_ctx</span><span class="o">.</span><span class="n">get</span><span class="p">()</span><span class="o">.</span><span class="n">getFriendProfile</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
 
 <span class="k">class</span> <span class="nc">Stranger</span><span class="p">(</span><span class="n">AriadneBaseModel</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;描述 Tencent QQ 中的陌生人.&quot;&quot;&quot;</span>
@@ -729,6 +760,26 @@
     <span class="k">def</span> <span class="fm">__int__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span>
 
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">getConfig</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;GroupConfig&quot;</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;获取该群组的 Config</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Config: 该群组的设置对象.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="kn">from</span> <span class="nn">.context</span> <span class="kn">import</span> <span class="n">ariadne_ctx</span>
+
+        <span class="k">return</span> <span class="k">await</span> <span class="n">ariadne_ctx</span><span class="o">.</span><span class="n">get</span><span class="p">()</span><span class="o">.</span><span class="n">getGroupConfig</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">modifyConfig</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">:</span> <span class="s2">&quot;GroupConfig&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;修改该群组的 Config</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            config (GroupConfig): 经过修改后的群设置对象.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="kn">from</span> <span class="nn">.context</span> <span class="kn">import</span> <span class="n">ariadne_ctx</span>
+
+        <span class="k">return</span> <span class="k">await</span> <span class="n">ariadne_ctx</span><span class="o">.</span><span class="n">get</span><span class="p">()</span><span class="o">.</span><span class="n">modifyGroupConfig</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">)</span>
+
 
 <span class="k">class</span> <span class="nc">Member</span><span class="p">(</span><span class="n">AriadneBaseModel</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;描述用户在群组中所具备的有关状态, 包括所在群组, 群中昵称, 所具备的权限, 唯一ID.&quot;&quot;&quot;</span>
@@ -759,6 +810,54 @@
 
     <span class="k">def</span> <span class="fm">__int__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span>
+
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">getProfile</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;Profile&quot;</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;获取该群成员的 Profile</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Profile: 该群成员的 Profile 对象</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="kn">from</span> <span class="nn">.context</span> <span class="kn">import</span> <span class="n">ariadne_ctx</span>
+
+        <span class="k">return</span> <span class="k">await</span> <span class="n">ariadne_ctx</span><span class="o">.</span><span class="n">get</span><span class="p">()</span><span class="o">.</span><span class="n">getMemberProfile</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">getInfo</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;MemberInfo&quot;</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;获取该成员的可修改状态</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            MemberInfo: 群组成员的可修改状态</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="kn">from</span> <span class="nn">.context</span> <span class="kn">import</span> <span class="n">ariadne_ctx</span>
+
+        <span class="k">return</span> <span class="k">await</span> <span class="n">ariadne_ctx</span><span class="o">.</span><span class="n">get</span><span class="p">()</span><span class="o">.</span><span class="n">getMemberInfo</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">modifyInfo</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">info</span><span class="p">:</span> <span class="s2">&quot;MemberInfo&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        修改群组成员的可修改状态; 需要具有相应权限(管理员/群主).</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            info (MemberInfo): 已修改的指定群组成员的可修改状态</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            None: 没有返回.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="kn">from</span> <span class="nn">.context</span> <span class="kn">import</span> <span class="n">ariadne_ctx</span>
+
+        <span class="k">return</span> <span class="k">await</span> <span class="n">ariadne_ctx</span><span class="o">.</span><span class="n">get</span><span class="p">()</span><span class="o">.</span><span class="n">modifyMemberInfo</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">info</span><span class="p">)</span>
+
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">modifyAdmin</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">assign</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        修改一位群组成员管理员权限; 需要有相应权限(群主)</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            assign (bool): 是否设置群成员为管理员.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            None: 没有返回.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="kn">from</span> <span class="nn">.context</span> <span class="kn">import</span> <span class="n">ariadne_ctx</span>
+
+        <span class="k">return</span> <span class="k">await</span> <span class="n">ariadne_ctx</span><span class="o">.</span><span class="n">get</span><span class="p">()</span><span class="o">.</span><span class="n">modifyMemberAdmin</span><span class="p">(</span><span class="n">assign</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span>
 
 
 <span class="k">class</span> <span class="nc">GroupConfig</span><span class="p">(</span><span class="n">AriadneBaseModel</span><span class="p">):</span>
@@ -1245,7 +1344,7 @@ implement default like this::</p>
                             <div id="AriadneBaseModel.Config.json_encoders" class="classattr">
                                             <div class="attr variable"><a class="headerlink" href="#AriadneBaseModel.Config.json_encoders">#&nbsp;&nbsp</a>
 
-        <span class="name">json_encoders</span><span class="default_value"> = {&lt;class &#39;datetime.datetime&#39;&gt;: &lt;function datetime_encoder at 0x7f9ddc4231f0&gt;}</span>
+        <span class="name">json_encoders</span><span class="default_value"> = {&lt;class &#39;datetime.datetime&#39;&gt;: &lt;function datetime_encoder at 0x7fbf108865e0&gt;}</span>
     </div>
 
     
@@ -1870,6 +1969,16 @@ implement default like this::</p>
 
     <span class="k">def</span> <span class="fm">__int__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span>
+
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">getProfile</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;Profile&quot;</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;获取该好友的 Profile</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Profile: 该好友的 Profile 对象</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="kn">from</span> <span class="nn">.context</span> <span class="kn">import</span> <span class="n">ariadne_ctx</span>
+
+        <span class="k">return</span> <span class="k">await</span> <span class="n">ariadne_ctx</span><span class="o">.</span><span class="n">get</span><span class="p">()</span><span class="o">.</span><span class="n">getFriendProfile</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
 </pre></div>
 
         </details>
@@ -1907,6 +2016,40 @@ implement default like this::</p>
     </div>
 
             <div class="docstring"><p>自行设置的代称</p>
+</div>
+
+
+                            </div>
+                            <div id="Friend.getProfile" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#Friend.getProfile">#&nbsp;&nbsp</a>
+
+        
+            <span class="def">async def</span>
+            <span class="name">getProfile</span><span class="signature">(self) -&gt; <a href="#Profile">ariadne.model.Profile</a></span>:
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span>    <span class="k">async</span> <span class="k">def</span> <span class="nf">getProfile</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;Profile&quot;</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;获取该好友的 Profile</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Profile: 该好友的 Profile 对象</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="kn">from</span> <span class="nn">.context</span> <span class="kn">import</span> <span class="n">ariadne_ctx</span>
+
+        <span class="k">return</span> <span class="k">await</span> <span class="n">ariadne_ctx</span><span class="o">.</span><span class="n">get</span><span class="p">()</span><span class="o">.</span><span class="n">getFriendProfile</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+</pre></div>
+
+        </details>
+
+            <div class="docstring"><p>获取该好友的 Profile</p>
+
+<h6 id="returns">Returns</h6>
+
+<blockquote>
+  <p>Profile: 该好友的 Profile 对象</p>
+</blockquote>
 </div>
 
 
@@ -2167,6 +2310,26 @@ implement default like this::</p>
 
     <span class="k">def</span> <span class="fm">__int__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span>
+
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">getConfig</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;GroupConfig&quot;</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;获取该群组的 Config</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Config: 该群组的设置对象.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="kn">from</span> <span class="nn">.context</span> <span class="kn">import</span> <span class="n">ariadne_ctx</span>
+
+        <span class="k">return</span> <span class="k">await</span> <span class="n">ariadne_ctx</span><span class="o">.</span><span class="n">get</span><span class="p">()</span><span class="o">.</span><span class="n">getGroupConfig</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">modifyConfig</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">:</span> <span class="s2">&quot;GroupConfig&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;修改该群组的 Config</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            config (GroupConfig): 经过修改后的群设置对象.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="kn">from</span> <span class="nn">.context</span> <span class="kn">import</span> <span class="n">ariadne_ctx</span>
+
+        <span class="k">return</span> <span class="k">await</span> <span class="n">ariadne_ctx</span><span class="o">.</span><span class="n">get</span><span class="p">()</span><span class="o">.</span><span class="n">modifyGroupConfig</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">)</span>
 </pre></div>
 
         </details>
@@ -2204,6 +2367,74 @@ implement default like this::</p>
     </div>
 
             <div class="docstring"><p>你在群中的权限</p>
+</div>
+
+
+                            </div>
+                            <div id="Group.getConfig" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#Group.getConfig">#&nbsp;&nbsp</a>
+
+        
+            <span class="def">async def</span>
+            <span class="name">getConfig</span><span class="signature">(self) -&gt; <a href="#GroupConfig">ariadne.model.GroupConfig</a></span>:
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span>    <span class="k">async</span> <span class="k">def</span> <span class="nf">getConfig</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;GroupConfig&quot;</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;获取该群组的 Config</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Config: 该群组的设置对象.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="kn">from</span> <span class="nn">.context</span> <span class="kn">import</span> <span class="n">ariadne_ctx</span>
+
+        <span class="k">return</span> <span class="k">await</span> <span class="n">ariadne_ctx</span><span class="o">.</span><span class="n">get</span><span class="p">()</span><span class="o">.</span><span class="n">getGroupConfig</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+</pre></div>
+
+        </details>
+
+            <div class="docstring"><p>获取该群组的 Config</p>
+
+<h6 id="returns">Returns</h6>
+
+<blockquote>
+  <p>Config: 该群组的设置对象.</p>
+</blockquote>
+</div>
+
+
+                            </div>
+                            <div id="Group.modifyConfig" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#Group.modifyConfig">#&nbsp;&nbsp</a>
+
+        
+            <span class="def">async def</span>
+            <span class="name">modifyConfig</span><span class="signature">(self, config: <a href="#GroupConfig">ariadne.model.GroupConfig</a>) -&gt; None</span>:
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span>    <span class="k">async</span> <span class="k">def</span> <span class="nf">modifyConfig</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">:</span> <span class="s2">&quot;GroupConfig&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;修改该群组的 Config</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            config (GroupConfig): 经过修改后的群设置对象.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="kn">from</span> <span class="nn">.context</span> <span class="kn">import</span> <span class="n">ariadne_ctx</span>
+
+        <span class="k">return</span> <span class="k">await</span> <span class="n">ariadne_ctx</span><span class="o">.</span><span class="n">get</span><span class="p">()</span><span class="o">.</span><span class="n">modifyGroupConfig</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">)</span>
+</pre></div>
+
+        </details>
+
+            <div class="docstring"><p>修改该群组的 Config</p>
+
+<h6 id="args">Args</h6>
+
+<ul>
+<li><strong>config (GroupConfig):</strong>  经过修改后的群设置对象.</li>
+</ul>
 </div>
 
 
@@ -2274,6 +2505,54 @@ implement default like this::</p>
 
     <span class="k">def</span> <span class="fm">__int__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span>
+
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">getProfile</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;Profile&quot;</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;获取该群成员的 Profile</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Profile: 该群成员的 Profile 对象</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="kn">from</span> <span class="nn">.context</span> <span class="kn">import</span> <span class="n">ariadne_ctx</span>
+
+        <span class="k">return</span> <span class="k">await</span> <span class="n">ariadne_ctx</span><span class="o">.</span><span class="n">get</span><span class="p">()</span><span class="o">.</span><span class="n">getMemberProfile</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">getInfo</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;MemberInfo&quot;</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;获取该成员的可修改状态</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            MemberInfo: 群组成员的可修改状态</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="kn">from</span> <span class="nn">.context</span> <span class="kn">import</span> <span class="n">ariadne_ctx</span>
+
+        <span class="k">return</span> <span class="k">await</span> <span class="n">ariadne_ctx</span><span class="o">.</span><span class="n">get</span><span class="p">()</span><span class="o">.</span><span class="n">getMemberInfo</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">modifyInfo</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">info</span><span class="p">:</span> <span class="s2">&quot;MemberInfo&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        修改群组成员的可修改状态; 需要具有相应权限(管理员/群主).</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            info (MemberInfo): 已修改的指定群组成员的可修改状态</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            None: 没有返回.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="kn">from</span> <span class="nn">.context</span> <span class="kn">import</span> <span class="n">ariadne_ctx</span>
+
+        <span class="k">return</span> <span class="k">await</span> <span class="n">ariadne_ctx</span><span class="o">.</span><span class="n">get</span><span class="p">()</span><span class="o">.</span><span class="n">modifyMemberInfo</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">info</span><span class="p">)</span>
+
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">modifyAdmin</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">assign</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        修改一位群组成员管理员权限; 需要有相应权限(群主)</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            assign (bool): 是否设置群成员为管理员.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            None: 没有返回.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="kn">from</span> <span class="nn">.context</span> <span class="kn">import</span> <span class="n">ariadne_ctx</span>
+
+        <span class="k">return</span> <span class="k">await</span> <span class="n">ariadne_ctx</span><span class="o">.</span><span class="n">get</span><span class="p">()</span><span class="o">.</span><span class="n">modifyMemberAdmin</span><span class="p">(</span><span class="n">assign</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span>
 </pre></div>
 
         </details>
@@ -2366,6 +2645,162 @@ implement default like this::</p>
     </div>
 
             <div class="docstring"><p>所在群组</p>
+</div>
+
+
+                            </div>
+                            <div id="Member.getProfile" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#Member.getProfile">#&nbsp;&nbsp</a>
+
+        
+            <span class="def">async def</span>
+            <span class="name">getProfile</span><span class="signature">(self) -&gt; <a href="#Profile">ariadne.model.Profile</a></span>:
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span>    <span class="k">async</span> <span class="k">def</span> <span class="nf">getProfile</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;Profile&quot;</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;获取该群成员的 Profile</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Profile: 该群成员的 Profile 对象</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="kn">from</span> <span class="nn">.context</span> <span class="kn">import</span> <span class="n">ariadne_ctx</span>
+
+        <span class="k">return</span> <span class="k">await</span> <span class="n">ariadne_ctx</span><span class="o">.</span><span class="n">get</span><span class="p">()</span><span class="o">.</span><span class="n">getMemberProfile</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+</pre></div>
+
+        </details>
+
+            <div class="docstring"><p>获取该群成员的 Profile</p>
+
+<h6 id="returns">Returns</h6>
+
+<blockquote>
+  <p>Profile: 该群成员的 Profile 对象</p>
+</blockquote>
+</div>
+
+
+                            </div>
+                            <div id="Member.getInfo" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#Member.getInfo">#&nbsp;&nbsp</a>
+
+        
+            <span class="def">async def</span>
+            <span class="name">getInfo</span><span class="signature">(self) -&gt; <a href="#MemberInfo">ariadne.model.MemberInfo</a></span>:
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span>    <span class="k">async</span> <span class="k">def</span> <span class="nf">getInfo</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;MemberInfo&quot;</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;获取该成员的可修改状态</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            MemberInfo: 群组成员的可修改状态</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="kn">from</span> <span class="nn">.context</span> <span class="kn">import</span> <span class="n">ariadne_ctx</span>
+
+        <span class="k">return</span> <span class="k">await</span> <span class="n">ariadne_ctx</span><span class="o">.</span><span class="n">get</span><span class="p">()</span><span class="o">.</span><span class="n">getMemberInfo</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+</pre></div>
+
+        </details>
+
+            <div class="docstring"><p>获取该成员的可修改状态</p>
+
+<h6 id="returns">Returns</h6>
+
+<blockquote>
+  <p>MemberInfo: 群组成员的可修改状态</p>
+</blockquote>
+</div>
+
+
+                            </div>
+                            <div id="Member.modifyInfo" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#Member.modifyInfo">#&nbsp;&nbsp</a>
+
+        
+            <span class="def">async def</span>
+            <span class="name">modifyInfo</span><span class="signature">(self, info: <a href="#MemberInfo">ariadne.model.MemberInfo</a>) -&gt; None</span>:
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span>    <span class="k">async</span> <span class="k">def</span> <span class="nf">modifyInfo</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">info</span><span class="p">:</span> <span class="s2">&quot;MemberInfo&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        修改群组成员的可修改状态; 需要具有相应权限(管理员/群主).</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            info (MemberInfo): 已修改的指定群组成员的可修改状态</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            None: 没有返回.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="kn">from</span> <span class="nn">.context</span> <span class="kn">import</span> <span class="n">ariadne_ctx</span>
+
+        <span class="k">return</span> <span class="k">await</span> <span class="n">ariadne_ctx</span><span class="o">.</span><span class="n">get</span><span class="p">()</span><span class="o">.</span><span class="n">modifyMemberInfo</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">info</span><span class="p">)</span>
+</pre></div>
+
+        </details>
+
+            <div class="docstring"><p>修改群组成员的可修改状态; 需要具有相应权限(管理员/群主).</p>
+
+<h6 id="args">Args</h6>
+
+<ul>
+<li><strong>info (MemberInfo):</strong>  已修改的指定群组成员的可修改状态</li>
+</ul>
+
+<h6 id="returns">Returns</h6>
+
+<blockquote>
+  <p>None: 没有返回.</p>
+</blockquote>
+</div>
+
+
+                            </div>
+                            <div id="Member.modifyAdmin" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#Member.modifyAdmin">#&nbsp;&nbsp</a>
+
+        
+            <span class="def">async def</span>
+            <span class="name">modifyAdmin</span><span class="signature">(self, assign: bool) -&gt; None</span>:
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span>    <span class="k">async</span> <span class="k">def</span> <span class="nf">modifyAdmin</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">assign</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        修改一位群组成员管理员权限; 需要有相应权限(群主)</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            assign (bool): 是否设置群成员为管理员.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            None: 没有返回.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="kn">from</span> <span class="nn">.context</span> <span class="kn">import</span> <span class="n">ariadne_ctx</span>
+
+        <span class="k">return</span> <span class="k">await</span> <span class="n">ariadne_ctx</span><span class="o">.</span><span class="n">get</span><span class="p">()</span><span class="o">.</span><span class="n">modifyMemberAdmin</span><span class="p">(</span><span class="n">assign</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span>
+</pre></div>
+
+        </details>
+
+            <div class="docstring"><p>修改一位群组成员管理员权限; 需要有相应权限(群主)</p>
+
+<h6 id="args">Args</h6>
+
+<ul>
+<li><strong>assign (bool):</strong>  是否设置群成员为管理员.</li>
+</ul>
+
+<h6 id="returns">Returns</h6>
+
+<blockquote>
+  <p>None: 没有返回.</p>
+</blockquote>
 </div>
 
 
