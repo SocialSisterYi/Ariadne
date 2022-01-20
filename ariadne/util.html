@@ -75,6 +75,18 @@
                     <a class="function" href="#resolve_dispatchers_mixin">resolve_dispatchers_mixin</a>
             </li>
             <li>
+                    <a class="class" href="#ConstantDispatcher">ConstantDispatcher</a>
+                            <ul class="memberlist">
+                        <li>
+                                <a class="function" href="#ConstantDispatcher.__init__">ConstantDispatcher</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#ConstantDispatcher.catch">catch</a>
+                        </li>
+                </ul>
+
+            </li>
+            <li>
                     <a class="class" href="#Dummy">Dummy</a>
                             <ul class="memberlist">
                         <li>
@@ -133,9 +145,11 @@
 
 <span class="kn">from</span> <span class="nn">graia.broadcast</span> <span class="kn">import</span> <span class="n">Broadcast</span>
 <span class="kn">from</span> <span class="nn">graia.broadcast.entities.decorator</span> <span class="kn">import</span> <span class="n">Decorator</span>
+<span class="kn">from</span> <span class="nn">graia.broadcast.entities.dispatcher</span> <span class="kn">import</span> <span class="n">BaseDispatcher</span>
 <span class="kn">from</span> <span class="nn">graia.broadcast.entities.event</span> <span class="kn">import</span> <span class="n">Dispatchable</span>
 <span class="kn">from</span> <span class="nn">graia.broadcast.entities.listener</span> <span class="kn">import</span> <span class="n">Listener</span>
 <span class="kn">from</span> <span class="nn">graia.broadcast.entities.namespace</span> <span class="kn">import</span> <span class="n">Namespace</span>
+<span class="kn">from</span> <span class="nn">graia.broadcast.interfaces.dispatcher</span> <span class="kn">import</span> <span class="n">DispatcherInterface</span>
 <span class="kn">from</span> <span class="nn">graia.broadcast.typing</span> <span class="kn">import</span> <span class="n">T_Dispatcher</span>
 <span class="kn">from</span> <span class="nn">graia.broadcast.utilles</span> <span class="kn">import</span> <span class="n">dispatcher_mixin_handler</span>
 <span class="kn">from</span> <span class="nn">loguru</span> <span class="kn">import</span> <span class="n">logger</span>
@@ -393,6 +407,17 @@
     <span class="k">for</span> <span class="n">dispatcher</span> <span class="ow">in</span> <span class="n">dispatchers</span><span class="p">:</span>
         <span class="n">result</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">dispatcher_mixin_handler</span><span class="p">(</span><span class="n">dispatcher</span><span class="p">))</span>
     <span class="k">return</span> <span class="n">result</span>
+
+
+<span class="k">class</span> <span class="nc">ConstantDispatcher</span><span class="p">(</span><span class="n">BaseDispatcher</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;分发常量给指定名称的参数&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">data</span>
+
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">catch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">interface</span><span class="p">:</span> <span class="n">DispatcherInterface</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">interface</span><span class="o">.</span><span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">interface</span><span class="o">.</span><span class="n">name</span><span class="p">]</span>
 
 
 <span class="k">class</span> <span class="nc">Dummy</span><span class="p">:</span>
@@ -928,8 +953,8 @@
         
             <span class="def">def</span>
             <span class="name">resolve_dispatchers_mixin</span><span class="signature">(
-    dispatchers: List[Union[Type[ForwardRef(&#39;BaseDispatcher&#39;)], ForwardRef(&#39;BaseDispatcher&#39;), Callable[[ForwardRef(&#39;DispatcherInterface&#39;)], Any]]]
-) -&gt; List[Union[Type[ForwardRef(&#39;BaseDispatcher&#39;)], ForwardRef(&#39;BaseDispatcher&#39;), Callable[[ForwardRef(&#39;DispatcherInterface&#39;)], Any]]]</span>:
+    dispatchers: List[Union[Type[graia.broadcast.entities.dispatcher.BaseDispatcher], graia.broadcast.entities.dispatcher.BaseDispatcher, Callable[[graia.broadcast.interfaces.dispatcher.DispatcherInterface], Any]]]
+) -&gt; List[Union[Type[graia.broadcast.entities.dispatcher.BaseDispatcher], graia.broadcast.entities.dispatcher.BaseDispatcher, Callable[[graia.broadcast.interfaces.dispatcher.DispatcherInterface], Any]]]</span>:
     </div>
 
                 <details>
@@ -967,6 +992,101 @@
 </div>
 
 
+                </section>
+                <section id="ConstantDispatcher">
+                                <div class="attr class">
+        <a class="headerlink" href="#ConstantDispatcher">#&nbsp;&nbsp</a>
+
+        
+        <span class="def">class</span>
+        <span class="name">ConstantDispatcher</span><wbr>(<span class="base">graia.broadcast.entities.dispatcher.BaseDispatcher</span>):
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">ConstantDispatcher</span><span class="p">(</span><span class="n">BaseDispatcher</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;分发常量给指定名称的参数&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">data</span>
+
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">catch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">interface</span><span class="p">:</span> <span class="n">DispatcherInterface</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">interface</span><span class="o">.</span><span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">interface</span><span class="o">.</span><span class="n">name</span><span class="p">]</span>
+</pre></div>
+
+        </details>
+
+            <div class="docstring"><p>分发常量给指定名称的参数</p>
+</div>
+
+
+                            <div id="ConstantDispatcher.__init__" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#ConstantDispatcher.__init__">#&nbsp;&nbsp</a>
+
+        
+            <span class="name">ConstantDispatcher</span><span class="signature">(data: Dict[str, Any])</span>
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">data</span>
+</pre></div>
+
+        </details>
+
+    
+
+                            </div>
+                            <div id="ConstantDispatcher.catch" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#ConstantDispatcher.catch">#&nbsp;&nbsp</a>
+
+        
+            <span class="def">async def</span>
+            <span class="name">catch</span><span class="signature">(
+    self,
+    interface: graia.broadcast.interfaces.dispatcher.DispatcherInterface
+)</span>:
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span>    <span class="k">async</span> <span class="k">def</span> <span class="nf">catch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">interface</span><span class="p">:</span> <span class="n">DispatcherInterface</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">interface</span><span class="o">.</span><span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">interface</span><span class="o">.</span><span class="n">name</span><span class="p">]</span>
+</pre></div>
+
+        </details>
+
+            <div class="docstring"><p>该方法可以是 <code>staticmethod</code>, <code>classmethod</code> 亦或是普通的方法/函数.
+唯一的要求是 <code>Dispatcher.catch</code> 获取到的必须为一可调用异步 Callable.</p>
+
+<h6 id="args">Args</h6>
+
+<ul>
+<li><strong>interface (DispatcherInterface):</strong>  <code>Dispatcher</code> 服务的主要对象, 可以从其中获取以下信息:
+<ul>
+<li>当前解析中的参数的信息;</li>
+<li>当前执行的信息, 比如正在处理的事件, <code>Listener</code>/<code>ExecTarget</code> etc.;</li>
+</ul></li>
+</ul>
+</div>
+
+
+                            </div>
+                            <div class="inherited">
+                                <h5>Inherited Members</h5>
+                                <dl>
+                                    <div><dt>graia.broadcast.entities.dispatcher.BaseDispatcher</dt>
+                                <dd id="ConstantDispatcher.mixin" class="variable">mixin</dd>
+                <dd id="ConstantDispatcher.beforeExecution" class="variable">beforeExecution</dd>
+                <dd id="ConstantDispatcher.afterDispatch" class="variable">afterDispatch</dd>
+                <dd id="ConstantDispatcher.afterExecution" class="variable">afterExecution</dd>
+
+            </div>
+                                </dl>
+                            </div>
                 </section>
                 <section id="Dummy">
                                 <div class="attr class">

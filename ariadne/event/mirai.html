@@ -817,7 +817,6 @@
     <span class="nb">type</span> <span class="o">=</span> <span class="s2">&quot;BotMuteEvent&quot;</span>
     <span class="n">durationSeconds</span><span class="p">:</span> <span class="nb">int</span>
     <span class="n">operator</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Member</span><span class="p">]</span>
-    <span class="n">group</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Group</span><span class="p">]</span>
 
     <span class="k">class</span> <span class="nc">Dispatcher</span><span class="p">(</span><span class="n">BaseDispatcher</span><span class="p">):</span>  <span class="c1"># pylint: disable=missing-class-docstring</span>
         <span class="n">mixin</span> <span class="o">=</span> <span class="p">[</span><span class="n">ContextDispatcher</span><span class="p">]</span>
@@ -827,7 +826,7 @@
             <span class="k">if</span> <span class="n">interface</span><span class="o">.</span><span class="n">annotation</span> <span class="ow">is</span> <span class="n">Member</span><span class="p">:</span>
                 <span class="k">return</span> <span class="n">interface</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">operator</span>
             <span class="k">if</span> <span class="n">interface</span><span class="o">.</span><span class="n">annotation</span> <span class="ow">is</span> <span class="n">Group</span><span class="p">:</span>
-                <span class="k">return</span> <span class="n">interface</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">group</span>
+                <span class="k">return</span> <span class="n">interface</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">operator</span><span class="o">.</span><span class="n">group</span>
 
 
 <span class="k">class</span> <span class="nc">BotUnmuteEvent</span><span class="p">(</span><span class="n">GroupEvent</span><span class="p">,</span> <span class="n">BotEvent</span><span class="p">):</span>
@@ -843,7 +842,6 @@
 
     <span class="nb">type</span> <span class="o">=</span> <span class="s2">&quot;BotUnmuteEvent&quot;</span>
     <span class="n">operator</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Member</span><span class="p">]</span>
-    <span class="n">group</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Group</span><span class="p">]</span>
 
     <span class="k">class</span> <span class="nc">Dispatcher</span><span class="p">(</span><span class="n">BaseDispatcher</span><span class="p">):</span>  <span class="c1"># pylint: disable=missing-class-docstring</span>
         <span class="n">mixin</span> <span class="o">=</span> <span class="p">[</span><span class="n">ContextDispatcher</span><span class="p">]</span>
@@ -853,7 +851,7 @@
             <span class="k">if</span> <span class="n">interface</span><span class="o">.</span><span class="n">annotation</span> <span class="ow">is</span> <span class="n">Member</span><span class="p">:</span>
                 <span class="k">return</span> <span class="n">interface</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">operator</span>
             <span class="k">if</span> <span class="n">interface</span><span class="o">.</span><span class="n">annotation</span> <span class="ow">is</span> <span class="n">Group</span><span class="p">:</span>
-                <span class="k">return</span> <span class="n">interface</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">group</span>
+                <span class="k">return</span> <span class="n">interface</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">operator</span><span class="o">.</span><span class="n">group</span>
 
 
 <span class="k">class</span> <span class="nc">BotJoinGroupEvent</span><span class="p">(</span><span class="n">GroupEvent</span><span class="p">,</span> <span class="n">BotEvent</span><span class="p">):</span>
@@ -1222,6 +1220,7 @@
                     <span class="k">return</span> <span class="n">interface</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">member</span>
                 <span class="k">if</span> <span class="n">interface</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;operator&quot;</span><span class="p">:</span>
                     <span class="k">return</span> <span class="n">interface</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">operator</span>
+                <span class="k">return</span> <span class="n">interface</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">member</span>
             <span class="k">elif</span> <span class="n">interface</span><span class="o">.</span><span class="n">annotation</span> <span class="ow">is</span> <span class="n">Group</span><span class="p">:</span>
                 <span class="k">return</span> <span class="n">interface</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">member</span><span class="o">.</span><span class="n">group</span>
 
@@ -1281,6 +1280,7 @@
                     <span class="k">return</span> <span class="n">interface</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">member</span>
                 <span class="k">if</span> <span class="n">interface</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;operator&quot;</span><span class="p">:</span>
                     <span class="k">return</span> <span class="n">interface</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">operator</span>
+                <span class="k">return</span> <span class="n">interface</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">member</span>
             <span class="k">elif</span> <span class="n">interface</span><span class="o">.</span><span class="n">annotation</span> <span class="ow">is</span> <span class="n">Group</span><span class="p">:</span>
                 <span class="k">return</span> <span class="n">interface</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">member</span><span class="o">.</span><span class="n">group</span>
 
@@ -1352,6 +1352,8 @@
 <span class="sd">        Member (annotation):</span>
 <span class="sd">          - `&quot;target&quot;` (default, const, str): 被禁言的成员</span>
 <span class="sd">          - `&quot;operator&quot;` (default, const, str, return:optional): 该操作的执行者, 也可能是应用实例所辖账号.</span>
+
+<span class="sd">          默认返回 `target`.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="nb">type</span> <span class="o">=</span> <span class="s2">&quot;MemberMuteEvent&quot;</span>
@@ -1369,6 +1371,7 @@
                     <span class="k">return</span> <span class="n">interface</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">member</span>
                 <span class="k">if</span> <span class="n">interface</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;operator&quot;</span><span class="p">:</span>
                     <span class="k">return</span> <span class="n">interface</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">operator</span>
+                <span class="k">return</span> <span class="n">interface</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">member</span>
             <span class="k">elif</span> <span class="n">interface</span><span class="o">.</span><span class="n">annotation</span> <span class="ow">is</span> <span class="n">Group</span><span class="p">:</span>
                 <span class="k">return</span> <span class="n">interface</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">member</span><span class="o">.</span><span class="n">group</span>
 
@@ -1384,6 +1387,8 @@
 <span class="sd">        Member (annotation):</span>
 <span class="sd">          - `&quot;target&quot;` (default, const, str): 被禁言的成员</span>
 <span class="sd">          - `&quot;operator&quot;` (default, const, str, return:optional): 该操作的执行者, 可能是管理员或是群主, 也可能是应用实例所辖账号.</span>
+
+<span class="sd">          默认返回 `target`.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="nb">type</span> <span class="o">=</span> <span class="s2">&quot;MemberUnmuteEvent&quot;</span>
@@ -1400,6 +1405,7 @@
                     <span class="k">return</span> <span class="n">interface</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">member</span>
                 <span class="k">if</span> <span class="n">interface</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;operator&quot;</span><span class="p">:</span>
                     <span class="k">return</span> <span class="n">interface</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">operator</span>
+                <span class="k">return</span> <span class="n">interface</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">member</span>
             <span class="k">elif</span> <span class="n">interface</span><span class="o">.</span><span class="n">annotation</span> <span class="ow">is</span> <span class="n">Group</span><span class="p">:</span>
                 <span class="k">return</span> <span class="n">interface</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">member</span><span class="o">.</span><span class="n">group</span>
 
@@ -2485,7 +2491,6 @@
     <span class="nb">type</span> <span class="o">=</span> <span class="s2">&quot;BotMuteEvent&quot;</span>
     <span class="n">durationSeconds</span><span class="p">:</span> <span class="nb">int</span>
     <span class="n">operator</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Member</span><span class="p">]</span>
-    <span class="n">group</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Group</span><span class="p">]</span>
 
     <span class="k">class</span> <span class="nc">Dispatcher</span><span class="p">(</span><span class="n">BaseDispatcher</span><span class="p">):</span>  <span class="c1"># pylint: disable=missing-class-docstring</span>
         <span class="n">mixin</span> <span class="o">=</span> <span class="p">[</span><span class="n">ContextDispatcher</span><span class="p">]</span>
@@ -2495,7 +2500,7 @@
             <span class="k">if</span> <span class="n">interface</span><span class="o">.</span><span class="n">annotation</span> <span class="ow">is</span> <span class="n">Member</span><span class="p">:</span>
                 <span class="k">return</span> <span class="n">interface</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">operator</span>
             <span class="k">if</span> <span class="n">interface</span><span class="o">.</span><span class="n">annotation</span> <span class="ow">is</span> <span class="n">Group</span><span class="p">:</span>
-                <span class="k">return</span> <span class="n">interface</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">group</span>
+                <span class="k">return</span> <span class="n">interface</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">operator</span><span class="o">.</span><span class="n">group</span>
 </pre></div>
 
         </details>
@@ -2561,7 +2566,7 @@
             <span class="k">if</span> <span class="n">interface</span><span class="o">.</span><span class="n">annotation</span> <span class="ow">is</span> <span class="n">Member</span><span class="p">:</span>
                 <span class="k">return</span> <span class="n">interface</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">operator</span>
             <span class="k">if</span> <span class="n">interface</span><span class="o">.</span><span class="n">annotation</span> <span class="ow">is</span> <span class="n">Group</span><span class="p">:</span>
-                <span class="k">return</span> <span class="n">interface</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">group</span>
+                <span class="k">return</span> <span class="n">interface</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">operator</span><span class="o">.</span><span class="n">group</span>
 </pre></div>
 
         </details>
@@ -2612,7 +2617,7 @@
             <span class="k">if</span> <span class="n">interface</span><span class="o">.</span><span class="n">annotation</span> <span class="ow">is</span> <span class="n">Member</span><span class="p">:</span>
                 <span class="k">return</span> <span class="n">interface</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">operator</span>
             <span class="k">if</span> <span class="n">interface</span><span class="o">.</span><span class="n">annotation</span> <span class="ow">is</span> <span class="n">Group</span><span class="p">:</span>
-                <span class="k">return</span> <span class="n">interface</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">group</span>
+                <span class="k">return</span> <span class="n">interface</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">operator</span><span class="o">.</span><span class="n">group</span>
 </pre></div>
 
         </details>
@@ -2669,7 +2674,6 @@
 
     <span class="nb">type</span> <span class="o">=</span> <span class="s2">&quot;BotUnmuteEvent&quot;</span>
     <span class="n">operator</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Member</span><span class="p">]</span>
-    <span class="n">group</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Group</span><span class="p">]</span>
 
     <span class="k">class</span> <span class="nc">Dispatcher</span><span class="p">(</span><span class="n">BaseDispatcher</span><span class="p">):</span>  <span class="c1"># pylint: disable=missing-class-docstring</span>
         <span class="n">mixin</span> <span class="o">=</span> <span class="p">[</span><span class="n">ContextDispatcher</span><span class="p">]</span>
@@ -2679,7 +2683,7 @@
             <span class="k">if</span> <span class="n">interface</span><span class="o">.</span><span class="n">annotation</span> <span class="ow">is</span> <span class="n">Member</span><span class="p">:</span>
                 <span class="k">return</span> <span class="n">interface</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">operator</span>
             <span class="k">if</span> <span class="n">interface</span><span class="o">.</span><span class="n">annotation</span> <span class="ow">is</span> <span class="n">Group</span><span class="p">:</span>
-                <span class="k">return</span> <span class="n">interface</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">group</span>
+                <span class="k">return</span> <span class="n">interface</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">operator</span><span class="o">.</span><span class="n">group</span>
 </pre></div>
 
         </details>
@@ -2745,7 +2749,7 @@
             <span class="k">if</span> <span class="n">interface</span><span class="o">.</span><span class="n">annotation</span> <span class="ow">is</span> <span class="n">Member</span><span class="p">:</span>
                 <span class="k">return</span> <span class="n">interface</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">operator</span>
             <span class="k">if</span> <span class="n">interface</span><span class="o">.</span><span class="n">annotation</span> <span class="ow">is</span> <span class="n">Group</span><span class="p">:</span>
-                <span class="k">return</span> <span class="n">interface</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">group</span>
+                <span class="k">return</span> <span class="n">interface</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">operator</span><span class="o">.</span><span class="n">group</span>
 </pre></div>
 
         </details>
@@ -2796,7 +2800,7 @@
             <span class="k">if</span> <span class="n">interface</span><span class="o">.</span><span class="n">annotation</span> <span class="ow">is</span> <span class="n">Member</span><span class="p">:</span>
                 <span class="k">return</span> <span class="n">interface</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">operator</span>
             <span class="k">if</span> <span class="n">interface</span><span class="o">.</span><span class="n">annotation</span> <span class="ow">is</span> <span class="n">Group</span><span class="p">:</span>
-                <span class="k">return</span> <span class="n">interface</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">group</span>
+                <span class="k">return</span> <span class="n">interface</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">operator</span><span class="o">.</span><span class="n">group</span>
 </pre></div>
 
         </details>
@@ -5097,6 +5101,7 @@
                     <span class="k">return</span> <span class="n">interface</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">member</span>
                 <span class="k">if</span> <span class="n">interface</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;operator&quot;</span><span class="p">:</span>
                     <span class="k">return</span> <span class="n">interface</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">operator</span>
+                <span class="k">return</span> <span class="n">interface</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">member</span>
             <span class="k">elif</span> <span class="n">interface</span><span class="o">.</span><span class="n">annotation</span> <span class="ow">is</span> <span class="n">Group</span><span class="p">:</span>
                 <span class="k">return</span> <span class="n">interface</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">member</span><span class="o">.</span><span class="n">group</span>
 </pre></div>
@@ -5168,6 +5173,7 @@
                     <span class="k">return</span> <span class="n">interface</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">member</span>
                 <span class="k">if</span> <span class="n">interface</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;operator&quot;</span><span class="p">:</span>
                     <span class="k">return</span> <span class="n">interface</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">operator</span>
+                <span class="k">return</span> <span class="n">interface</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">member</span>
             <span class="k">elif</span> <span class="n">interface</span><span class="o">.</span><span class="n">annotation</span> <span class="ow">is</span> <span class="n">Group</span><span class="p">:</span>
                 <span class="k">return</span> <span class="n">interface</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">member</span><span class="o">.</span><span class="n">group</span>
 </pre></div>
@@ -5222,6 +5228,7 @@
                     <span class="k">return</span> <span class="n">interface</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">member</span>
                 <span class="k">if</span> <span class="n">interface</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;operator&quot;</span><span class="p">:</span>
                     <span class="k">return</span> <span class="n">interface</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">operator</span>
+                <span class="k">return</span> <span class="n">interface</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">member</span>
             <span class="k">elif</span> <span class="n">interface</span><span class="o">.</span><span class="n">annotation</span> <span class="ow">is</span> <span class="n">Group</span><span class="p">:</span>
                 <span class="k">return</span> <span class="n">interface</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">member</span><span class="o">.</span><span class="n">group</span>
 </pre></div>
@@ -5480,6 +5487,7 @@
                     <span class="k">return</span> <span class="n">interface</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">member</span>
                 <span class="k">if</span> <span class="n">interface</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;operator&quot;</span><span class="p">:</span>
                     <span class="k">return</span> <span class="n">interface</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">operator</span>
+                <span class="k">return</span> <span class="n">interface</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">member</span>
             <span class="k">elif</span> <span class="n">interface</span><span class="o">.</span><span class="n">annotation</span> <span class="ow">is</span> <span class="n">Group</span><span class="p">:</span>
                 <span class="k">return</span> <span class="n">interface</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">member</span><span class="o">.</span><span class="n">group</span>
 </pre></div>
@@ -5552,6 +5560,7 @@
                     <span class="k">return</span> <span class="n">interface</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">member</span>
                 <span class="k">if</span> <span class="n">interface</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;operator&quot;</span><span class="p">:</span>
                     <span class="k">return</span> <span class="n">interface</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">operator</span>
+                <span class="k">return</span> <span class="n">interface</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">member</span>
             <span class="k">elif</span> <span class="n">interface</span><span class="o">.</span><span class="n">annotation</span> <span class="ow">is</span> <span class="n">Group</span><span class="p">:</span>
                 <span class="k">return</span> <span class="n">interface</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">member</span><span class="o">.</span><span class="n">group</span>
 </pre></div>
@@ -5606,6 +5615,7 @@
                     <span class="k">return</span> <span class="n">interface</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">member</span>
                 <span class="k">if</span> <span class="n">interface</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;operator&quot;</span><span class="p">:</span>
                     <span class="k">return</span> <span class="n">interface</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">operator</span>
+                <span class="k">return</span> <span class="n">interface</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">member</span>
             <span class="k">elif</span> <span class="n">interface</span><span class="o">.</span><span class="n">annotation</span> <span class="ow">is</span> <span class="n">Group</span><span class="p">:</span>
                 <span class="k">return</span> <span class="n">interface</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">member</span><span class="o">.</span><span class="n">group</span>
 </pre></div>
@@ -6038,6 +6048,8 @@
 <span class="sd">        Member (annotation):</span>
 <span class="sd">          - `&quot;target&quot;` (default, const, str): 被禁言的成员</span>
 <span class="sd">          - `&quot;operator&quot;` (default, const, str, return:optional): 该操作的执行者, 也可能是应用实例所辖账号.</span>
+
+<span class="sd">          默认返回 `target`.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="nb">type</span> <span class="o">=</span> <span class="s2">&quot;MemberMuteEvent&quot;</span>
@@ -6055,6 +6067,7 @@
                     <span class="k">return</span> <span class="n">interface</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">member</span>
                 <span class="k">if</span> <span class="n">interface</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;operator&quot;</span><span class="p">:</span>
                     <span class="k">return</span> <span class="n">interface</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">operator</span>
+                <span class="k">return</span> <span class="n">interface</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">member</span>
             <span class="k">elif</span> <span class="n">interface</span><span class="o">.</span><span class="n">annotation</span> <span class="ow">is</span> <span class="n">Group</span><span class="p">:</span>
                 <span class="k">return</span> <span class="n">interface</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">member</span><span class="o">.</span><span class="n">group</span>
 </pre></div>
@@ -6071,6 +6084,9 @@
     Member (annotation):
       - <code>"target"</code> (default, const, str): 被禁言的成员
       - <code>"operator"</code> (default, const, str, return:optional): 该操作的执行者, 也可能是应用实例所辖账号.</p>
+
+<pre><code>  默认返回 `target`.
+</code></pre>
 </div>
 
 
@@ -6126,6 +6142,7 @@
                     <span class="k">return</span> <span class="n">interface</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">member</span>
                 <span class="k">if</span> <span class="n">interface</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;operator&quot;</span><span class="p">:</span>
                     <span class="k">return</span> <span class="n">interface</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">operator</span>
+                <span class="k">return</span> <span class="n">interface</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">member</span>
             <span class="k">elif</span> <span class="n">interface</span><span class="o">.</span><span class="n">annotation</span> <span class="ow">is</span> <span class="n">Group</span><span class="p">:</span>
                 <span class="k">return</span> <span class="n">interface</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">member</span><span class="o">.</span><span class="n">group</span>
 </pre></div>
@@ -6180,6 +6197,7 @@
                     <span class="k">return</span> <span class="n">interface</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">member</span>
                 <span class="k">if</span> <span class="n">interface</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;operator&quot;</span><span class="p">:</span>
                     <span class="k">return</span> <span class="n">interface</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">operator</span>
+                <span class="k">return</span> <span class="n">interface</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">member</span>
             <span class="k">elif</span> <span class="n">interface</span><span class="o">.</span><span class="n">annotation</span> <span class="ow">is</span> <span class="n">Group</span><span class="p">:</span>
                 <span class="k">return</span> <span class="n">interface</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">member</span><span class="o">.</span><span class="n">group</span>
 </pre></div>
@@ -6236,6 +6254,8 @@
 <span class="sd">        Member (annotation):</span>
 <span class="sd">          - `&quot;target&quot;` (default, const, str): 被禁言的成员</span>
 <span class="sd">          - `&quot;operator&quot;` (default, const, str, return:optional): 该操作的执行者, 可能是管理员或是群主, 也可能是应用实例所辖账号.</span>
+
+<span class="sd">          默认返回 `target`.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="nb">type</span> <span class="o">=</span> <span class="s2">&quot;MemberUnmuteEvent&quot;</span>
@@ -6252,6 +6272,7 @@
                     <span class="k">return</span> <span class="n">interface</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">member</span>
                 <span class="k">if</span> <span class="n">interface</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;operator&quot;</span><span class="p">:</span>
                     <span class="k">return</span> <span class="n">interface</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">operator</span>
+                <span class="k">return</span> <span class="n">interface</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">member</span>
             <span class="k">elif</span> <span class="n">interface</span><span class="o">.</span><span class="n">annotation</span> <span class="ow">is</span> <span class="n">Group</span><span class="p">:</span>
                 <span class="k">return</span> <span class="n">interface</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">member</span><span class="o">.</span><span class="n">group</span>
 </pre></div>
@@ -6268,6 +6289,9 @@
     Member (annotation):
       - <code>"target"</code> (default, const, str): 被禁言的成员
       - <code>"operator"</code> (default, const, str, return:optional): 该操作的执行者, 可能是管理员或是群主, 也可能是应用实例所辖账号.</p>
+
+<pre><code>  默认返回 `target`.
+</code></pre>
 </div>
 
 
@@ -6323,6 +6347,7 @@
                     <span class="k">return</span> <span class="n">interface</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">member</span>
                 <span class="k">if</span> <span class="n">interface</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;operator&quot;</span><span class="p">:</span>
                     <span class="k">return</span> <span class="n">interface</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">operator</span>
+                <span class="k">return</span> <span class="n">interface</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">member</span>
             <span class="k">elif</span> <span class="n">interface</span><span class="o">.</span><span class="n">annotation</span> <span class="ow">is</span> <span class="n">Group</span><span class="p">:</span>
                 <span class="k">return</span> <span class="n">interface</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">member</span><span class="o">.</span><span class="n">group</span>
 </pre></div>
@@ -6377,6 +6402,7 @@
                     <span class="k">return</span> <span class="n">interface</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">member</span>
                 <span class="k">if</span> <span class="n">interface</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;operator&quot;</span><span class="p">:</span>
                     <span class="k">return</span> <span class="n">interface</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">operator</span>
+                <span class="k">return</span> <span class="n">interface</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">member</span>
             <span class="k">elif</span> <span class="n">interface</span><span class="o">.</span><span class="n">annotation</span> <span class="ow">is</span> <span class="n">Group</span><span class="p">:</span>
                 <span class="k">return</span> <span class="n">interface</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">member</span><span class="o">.</span><span class="n">group</span>
 </pre></div>
