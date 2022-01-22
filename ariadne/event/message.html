@@ -221,7 +221,7 @@
         <span class="n">mixin</span> <span class="o">=</span> <span class="p">[</span><span class="n">MessageChainDispatcher</span><span class="p">,</span> <span class="n">ContextDispatcher</span><span class="p">,</span> <span class="n">SourceDispatcher</span><span class="p">]</span>
 
         <span class="nd">@staticmethod</span>
-        <span class="k">async</span> <span class="k">def</span> <span class="nf">catch</span><span class="p">(</span><span class="n">interface</span><span class="p">:</span> <span class="n">DispatcherInterface</span><span class="p">):</span>
+        <span class="k">async</span> <span class="k">def</span> <span class="nf">catch</span><span class="p">(</span><span class="o">*</span><span class="n">_</span><span class="p">):</span>
             <span class="k">pass</span>
 
 
@@ -236,9 +236,10 @@
         <span class="n">mixin</span> <span class="o">=</span> <span class="p">[</span><span class="n">MessageChainDispatcher</span><span class="p">,</span> <span class="n">ContextDispatcher</span><span class="p">,</span> <span class="n">SourceDispatcher</span><span class="p">]</span>
 
         <span class="nd">@staticmethod</span>
-        <span class="k">async</span> <span class="k">def</span> <span class="nf">catch</span><span class="p">(</span><span class="n">interface</span><span class="p">:</span> <span class="n">DispatcherInterface</span><span class="p">[</span><span class="s2">&quot;FriendMessage&quot;</span><span class="p">]):</span>
-            <span class="k">if</span> <span class="n">interface</span><span class="o">.</span><span class="n">annotation</span> <span class="ow">is</span> <span class="n">Friend</span><span class="p">:</span>
-                <span class="k">return</span> <span class="n">interface</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">sender</span>
+        <span class="k">async</span> <span class="k">def</span> <span class="nf">catch</span><span class="p">(</span><span class="n">interface</span><span class="p">:</span> <span class="n">DispatcherInterface</span><span class="p">):</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">interface</span><span class="o">.</span><span class="n">event</span><span class="p">,</span> <span class="n">FriendMessage</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">interface</span><span class="o">.</span><span class="n">annotation</span> <span class="ow">is</span> <span class="n">Friend</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="n">interface</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">sender</span>
 
 
 <span class="k">class</span> <span class="nc">GroupMessage</span><span class="p">(</span><span class="n">MessageEvent</span><span class="p">,</span> <span class="n">GroupEvent</span><span class="p">):</span>
@@ -252,11 +253,12 @@
         <span class="n">mixin</span> <span class="o">=</span> <span class="p">[</span><span class="n">MessageChainDispatcher</span><span class="p">,</span> <span class="n">ContextDispatcher</span><span class="p">,</span> <span class="n">SourceDispatcher</span><span class="p">]</span>
 
         <span class="nd">@staticmethod</span>
-        <span class="k">async</span> <span class="k">def</span> <span class="nf">catch</span><span class="p">(</span><span class="n">interface</span><span class="p">:</span> <span class="n">DispatcherInterface</span><span class="p">[</span><span class="s2">&quot;GroupMessage&quot;</span><span class="p">]):</span>
-            <span class="k">if</span> <span class="n">interface</span><span class="o">.</span><span class="n">annotation</span> <span class="ow">is</span> <span class="n">Group</span><span class="p">:</span>
-                <span class="k">return</span> <span class="n">interface</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">sender</span><span class="o">.</span><span class="n">group</span>
-            <span class="k">if</span> <span class="n">interface</span><span class="o">.</span><span class="n">annotation</span> <span class="ow">is</span> <span class="n">Member</span><span class="p">:</span>
-                <span class="k">return</span> <span class="n">interface</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">sender</span>
+        <span class="k">async</span> <span class="k">def</span> <span class="nf">catch</span><span class="p">(</span><span class="n">interface</span><span class="p">:</span> <span class="n">DispatcherInterface</span><span class="p">):</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">interface</span><span class="o">.</span><span class="n">event</span><span class="p">,</span> <span class="n">GroupMessage</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">interface</span><span class="o">.</span><span class="n">annotation</span> <span class="ow">is</span> <span class="n">Group</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="n">interface</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">sender</span><span class="o">.</span><span class="n">group</span>
+                <span class="k">if</span> <span class="n">interface</span><span class="o">.</span><span class="n">annotation</span> <span class="ow">is</span> <span class="n">Member</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="n">interface</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">sender</span>
 
 
 <span class="k">class</span> <span class="nc">TempMessage</span><span class="p">(</span><span class="n">MessageEvent</span><span class="p">):</span>
@@ -266,16 +268,17 @@
     <span class="n">messageChain</span><span class="p">:</span> <span class="n">MessageChain</span>
     <span class="n">sender</span><span class="p">:</span> <span class="n">Member</span>
 
-    <span class="k">class</span> <span class="nc">Dispatcher</span><span class="p">(</span><span class="n">BaseDispatcher</span><span class="p">):</span>  <span class="c1"># pylint: disable-next=missing-class-docstring</span>
+    <span class="k">class</span> <span class="nc">Dispatcher</span><span class="p">(</span><span class="n">BaseDispatcher</span><span class="p">):</span>  <span class="c1"># pylint: disable=missing-class-docstring</span>
 
         <span class="n">mixin</span> <span class="o">=</span> <span class="p">[</span><span class="n">MessageChainDispatcher</span><span class="p">,</span> <span class="n">ContextDispatcher</span><span class="p">,</span> <span class="n">SourceDispatcher</span><span class="p">]</span>
 
         <span class="nd">@staticmethod</span>
-        <span class="k">async</span> <span class="k">def</span> <span class="nf">catch</span><span class="p">(</span><span class="n">interface</span><span class="p">:</span> <span class="n">DispatcherInterface</span><span class="p">[</span><span class="s2">&quot;TempMessage&quot;</span><span class="p">]):</span>
-            <span class="k">if</span> <span class="n">interface</span><span class="o">.</span><span class="n">annotation</span> <span class="ow">is</span> <span class="n">Group</span><span class="p">:</span>
-                <span class="k">return</span> <span class="n">interface</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">sender</span><span class="o">.</span><span class="n">group</span>
-            <span class="k">if</span> <span class="n">interface</span><span class="o">.</span><span class="n">annotation</span> <span class="ow">is</span> <span class="n">Member</span><span class="p">:</span>
-                <span class="k">return</span> <span class="n">interface</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">sender</span>
+        <span class="k">async</span> <span class="k">def</span> <span class="nf">catch</span><span class="p">(</span><span class="n">interface</span><span class="p">:</span> <span class="n">DispatcherInterface</span><span class="p">):</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">interface</span><span class="o">.</span><span class="n">event</span><span class="p">,</span> <span class="n">TempMessage</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">interface</span><span class="o">.</span><span class="n">annotation</span> <span class="ow">is</span> <span class="n">Group</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="n">interface</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">sender</span><span class="o">.</span><span class="n">group</span>
+                <span class="k">if</span> <span class="n">interface</span><span class="o">.</span><span class="n">annotation</span> <span class="ow">is</span> <span class="n">Member</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="n">interface</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">sender</span>
 
 
 <span class="k">class</span> <span class="nc">OtherClientMessage</span><span class="p">(</span><span class="n">MessageEvent</span><span class="p">):</span>
@@ -285,14 +288,15 @@
     <span class="n">messageChain</span><span class="p">:</span> <span class="n">MessageChain</span>
     <span class="n">sender</span><span class="p">:</span> <span class="n">Client</span>
 
-    <span class="k">class</span> <span class="nc">Dispatcher</span><span class="p">(</span><span class="n">BaseDispatcher</span><span class="p">):</span>  <span class="c1"># pylint: disable-next=missing-class-docstring</span>
+    <span class="k">class</span> <span class="nc">Dispatcher</span><span class="p">(</span><span class="n">BaseDispatcher</span><span class="p">):</span>  <span class="c1"># pylint: disable=missing-class-docstring</span>
 
         <span class="n">mixin</span> <span class="o">=</span> <span class="p">[</span><span class="n">MessageChainDispatcher</span><span class="p">,</span> <span class="n">ContextDispatcher</span><span class="p">,</span> <span class="n">SourceDispatcher</span><span class="p">]</span>
 
         <span class="nd">@staticmethod</span>
-        <span class="k">async</span> <span class="k">def</span> <span class="nf">catch</span><span class="p">(</span><span class="n">interface</span><span class="p">:</span> <span class="n">DispatcherInterface</span><span class="p">[</span><span class="s2">&quot;OtherClientMessage&quot;</span><span class="p">]):</span>
-            <span class="k">if</span> <span class="n">interface</span><span class="o">.</span><span class="n">annotation</span> <span class="ow">is</span> <span class="n">Client</span><span class="p">:</span>
-                <span class="k">return</span> <span class="n">interface</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">sender</span>
+        <span class="k">async</span> <span class="k">def</span> <span class="nf">catch</span><span class="p">(</span><span class="n">interface</span><span class="p">:</span> <span class="n">DispatcherInterface</span><span class="p">):</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">interface</span><span class="o">.</span><span class="n">event</span><span class="p">,</span> <span class="n">OtherClientMessage</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">interface</span><span class="o">.</span><span class="n">annotation</span> <span class="ow">is</span> <span class="n">Client</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="n">interface</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">sender</span>
 
 
 <span class="k">class</span> <span class="nc">StrangerMessage</span><span class="p">(</span><span class="n">MessageEvent</span><span class="p">):</span>
@@ -302,14 +306,15 @@
     <span class="n">messageChain</span><span class="p">:</span> <span class="n">MessageChain</span>
     <span class="n">sender</span><span class="p">:</span> <span class="n">Stranger</span>
 
-    <span class="k">class</span> <span class="nc">Dispatcher</span><span class="p">(</span><span class="n">BaseDispatcher</span><span class="p">):</span>  <span class="c1"># pylint: disable-next=missing-class-docstring</span>
+    <span class="k">class</span> <span class="nc">Dispatcher</span><span class="p">(</span><span class="n">BaseDispatcher</span><span class="p">):</span>  <span class="c1"># pylint: disable=missing-class-docstring</span>
 
         <span class="n">mixin</span> <span class="o">=</span> <span class="p">[</span><span class="n">MessageChainDispatcher</span><span class="p">,</span> <span class="n">ContextDispatcher</span><span class="p">,</span> <span class="n">SourceDispatcher</span><span class="p">]</span>
 
         <span class="nd">@staticmethod</span>
-        <span class="k">async</span> <span class="k">def</span> <span class="nf">catch</span><span class="p">(</span><span class="n">interface</span><span class="p">:</span> <span class="n">DispatcherInterface</span><span class="p">[</span><span class="s2">&quot;StrangerMessage&quot;</span><span class="p">]):</span>
-            <span class="k">if</span> <span class="n">interface</span><span class="o">.</span><span class="n">annotation</span> <span class="ow">is</span> <span class="n">Friend</span><span class="p">:</span>
-                <span class="k">return</span> <span class="n">interface</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">sender</span>
+        <span class="k">async</span> <span class="k">def</span> <span class="nf">catch</span><span class="p">(</span><span class="n">interface</span><span class="p">:</span> <span class="n">DispatcherInterface</span><span class="p">):</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">interface</span><span class="o">.</span><span class="n">event</span><span class="p">,</span> <span class="n">StrangerMessage</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">interface</span><span class="o">.</span><span class="n">annotation</span> <span class="ow">is</span> <span class="n">Friend</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="n">interface</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">sender</span>
 </pre></div>
 
         </details>
@@ -337,7 +342,7 @@
         <span class="n">mixin</span> <span class="o">=</span> <span class="p">[</span><span class="n">MessageChainDispatcher</span><span class="p">,</span> <span class="n">ContextDispatcher</span><span class="p">,</span> <span class="n">SourceDispatcher</span><span class="p">]</span>
 
         <span class="nd">@staticmethod</span>
-        <span class="k">async</span> <span class="k">def</span> <span class="nf">catch</span><span class="p">(</span><span class="n">interface</span><span class="p">:</span> <span class="n">DispatcherInterface</span><span class="p">):</span>
+        <span class="k">async</span> <span class="k">def</span> <span class="nf">catch</span><span class="p">(</span><span class="o">*</span><span class="n">_</span><span class="p">):</span>
             <span class="k">pass</span>
 </pre></div>
 
@@ -403,7 +408,7 @@
         <span class="n">mixin</span> <span class="o">=</span> <span class="p">[</span><span class="n">MessageChainDispatcher</span><span class="p">,</span> <span class="n">ContextDispatcher</span><span class="p">,</span> <span class="n">SourceDispatcher</span><span class="p">]</span>
 
         <span class="nd">@staticmethod</span>
-        <span class="k">async</span> <span class="k">def</span> <span class="nf">catch</span><span class="p">(</span><span class="n">interface</span><span class="p">:</span> <span class="n">DispatcherInterface</span><span class="p">):</span>
+        <span class="k">async</span> <span class="k">def</span> <span class="nf">catch</span><span class="p">(</span><span class="o">*</span><span class="n">_</span><span class="p">):</span>
             <span class="k">pass</span>
 </pre></div>
 
@@ -443,13 +448,13 @@
                 <div class="decorator">@staticmethod</div>
 
             <span class="def">async def</span>
-            <span class="name">catch</span><span class="signature">(interface: graia.broadcast.interfaces.dispatcher.DispatcherInterface)</span>:
+            <span class="name">catch</span><span class="signature">(*_)</span>:
     </div>
 
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span>        <span class="nd">@staticmethod</span>
-        <span class="k">async</span> <span class="k">def</span> <span class="nf">catch</span><span class="p">(</span><span class="n">interface</span><span class="p">:</span> <span class="n">DispatcherInterface</span><span class="p">):</span>
+        <span class="k">async</span> <span class="k">def</span> <span class="nf">catch</span><span class="p">(</span><span class="o">*</span><span class="n">_</span><span class="p">):</span>
             <span class="k">pass</span>
 </pre></div>
 
@@ -505,9 +510,10 @@
         <span class="n">mixin</span> <span class="o">=</span> <span class="p">[</span><span class="n">MessageChainDispatcher</span><span class="p">,</span> <span class="n">ContextDispatcher</span><span class="p">,</span> <span class="n">SourceDispatcher</span><span class="p">]</span>
 
         <span class="nd">@staticmethod</span>
-        <span class="k">async</span> <span class="k">def</span> <span class="nf">catch</span><span class="p">(</span><span class="n">interface</span><span class="p">:</span> <span class="n">DispatcherInterface</span><span class="p">[</span><span class="s2">&quot;FriendMessage&quot;</span><span class="p">]):</span>
-            <span class="k">if</span> <span class="n">interface</span><span class="o">.</span><span class="n">annotation</span> <span class="ow">is</span> <span class="n">Friend</span><span class="p">:</span>
-                <span class="k">return</span> <span class="n">interface</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">sender</span>
+        <span class="k">async</span> <span class="k">def</span> <span class="nf">catch</span><span class="p">(</span><span class="n">interface</span><span class="p">:</span> <span class="n">DispatcherInterface</span><span class="p">):</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">interface</span><span class="o">.</span><span class="n">event</span><span class="p">,</span> <span class="n">FriendMessage</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">interface</span><span class="o">.</span><span class="n">annotation</span> <span class="ow">is</span> <span class="n">Friend</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="n">interface</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">sender</span>
 </pre></div>
 
         </details>
@@ -572,9 +578,10 @@
         <span class="n">mixin</span> <span class="o">=</span> <span class="p">[</span><span class="n">MessageChainDispatcher</span><span class="p">,</span> <span class="n">ContextDispatcher</span><span class="p">,</span> <span class="n">SourceDispatcher</span><span class="p">]</span>
 
         <span class="nd">@staticmethod</span>
-        <span class="k">async</span> <span class="k">def</span> <span class="nf">catch</span><span class="p">(</span><span class="n">interface</span><span class="p">:</span> <span class="n">DispatcherInterface</span><span class="p">[</span><span class="s2">&quot;FriendMessage&quot;</span><span class="p">]):</span>
-            <span class="k">if</span> <span class="n">interface</span><span class="o">.</span><span class="n">annotation</span> <span class="ow">is</span> <span class="n">Friend</span><span class="p">:</span>
-                <span class="k">return</span> <span class="n">interface</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">sender</span>
+        <span class="k">async</span> <span class="k">def</span> <span class="nf">catch</span><span class="p">(</span><span class="n">interface</span><span class="p">:</span> <span class="n">DispatcherInterface</span><span class="p">):</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">interface</span><span class="o">.</span><span class="n">event</span><span class="p">,</span> <span class="n">FriendMessage</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">interface</span><span class="o">.</span><span class="n">annotation</span> <span class="ow">is</span> <span class="n">Friend</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="n">interface</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">sender</span>
 </pre></div>
 
         </details>
@@ -613,17 +620,16 @@
                 <div class="decorator">@staticmethod</div>
 
             <span class="def">async def</span>
-            <span class="name">catch</span><span class="signature">(
-    interface: graia.broadcast.interfaces.dispatcher.DispatcherInterface[<a href="#FriendMessage">ariadne.event.message.FriendMessage</a>]
-)</span>:
+            <span class="name">catch</span><span class="signature">(interface: graia.broadcast.interfaces.dispatcher.DispatcherInterface)</span>:
     </div>
 
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span>        <span class="nd">@staticmethod</span>
-        <span class="k">async</span> <span class="k">def</span> <span class="nf">catch</span><span class="p">(</span><span class="n">interface</span><span class="p">:</span> <span class="n">DispatcherInterface</span><span class="p">[</span><span class="s2">&quot;FriendMessage&quot;</span><span class="p">]):</span>
-            <span class="k">if</span> <span class="n">interface</span><span class="o">.</span><span class="n">annotation</span> <span class="ow">is</span> <span class="n">Friend</span><span class="p">:</span>
-                <span class="k">return</span> <span class="n">interface</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">sender</span>
+        <span class="k">async</span> <span class="k">def</span> <span class="nf">catch</span><span class="p">(</span><span class="n">interface</span><span class="p">:</span> <span class="n">DispatcherInterface</span><span class="p">):</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">interface</span><span class="o">.</span><span class="n">event</span><span class="p">,</span> <span class="n">FriendMessage</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">interface</span><span class="o">.</span><span class="n">annotation</span> <span class="ow">is</span> <span class="n">Friend</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="n">interface</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">sender</span>
 </pre></div>
 
         </details>
@@ -678,11 +684,12 @@
         <span class="n">mixin</span> <span class="o">=</span> <span class="p">[</span><span class="n">MessageChainDispatcher</span><span class="p">,</span> <span class="n">ContextDispatcher</span><span class="p">,</span> <span class="n">SourceDispatcher</span><span class="p">]</span>
 
         <span class="nd">@staticmethod</span>
-        <span class="k">async</span> <span class="k">def</span> <span class="nf">catch</span><span class="p">(</span><span class="n">interface</span><span class="p">:</span> <span class="n">DispatcherInterface</span><span class="p">[</span><span class="s2">&quot;GroupMessage&quot;</span><span class="p">]):</span>
-            <span class="k">if</span> <span class="n">interface</span><span class="o">.</span><span class="n">annotation</span> <span class="ow">is</span> <span class="n">Group</span><span class="p">:</span>
-                <span class="k">return</span> <span class="n">interface</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">sender</span><span class="o">.</span><span class="n">group</span>
-            <span class="k">if</span> <span class="n">interface</span><span class="o">.</span><span class="n">annotation</span> <span class="ow">is</span> <span class="n">Member</span><span class="p">:</span>
-                <span class="k">return</span> <span class="n">interface</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">sender</span>
+        <span class="k">async</span> <span class="k">def</span> <span class="nf">catch</span><span class="p">(</span><span class="n">interface</span><span class="p">:</span> <span class="n">DispatcherInterface</span><span class="p">):</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">interface</span><span class="o">.</span><span class="n">event</span><span class="p">,</span> <span class="n">GroupMessage</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">interface</span><span class="o">.</span><span class="n">annotation</span> <span class="ow">is</span> <span class="n">Group</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="n">interface</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">sender</span><span class="o">.</span><span class="n">group</span>
+                <span class="k">if</span> <span class="n">interface</span><span class="o">.</span><span class="n">annotation</span> <span class="ow">is</span> <span class="n">Member</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="n">interface</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">sender</span>
 </pre></div>
 
         </details>
@@ -747,11 +754,12 @@
         <span class="n">mixin</span> <span class="o">=</span> <span class="p">[</span><span class="n">MessageChainDispatcher</span><span class="p">,</span> <span class="n">ContextDispatcher</span><span class="p">,</span> <span class="n">SourceDispatcher</span><span class="p">]</span>
 
         <span class="nd">@staticmethod</span>
-        <span class="k">async</span> <span class="k">def</span> <span class="nf">catch</span><span class="p">(</span><span class="n">interface</span><span class="p">:</span> <span class="n">DispatcherInterface</span><span class="p">[</span><span class="s2">&quot;GroupMessage&quot;</span><span class="p">]):</span>
-            <span class="k">if</span> <span class="n">interface</span><span class="o">.</span><span class="n">annotation</span> <span class="ow">is</span> <span class="n">Group</span><span class="p">:</span>
-                <span class="k">return</span> <span class="n">interface</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">sender</span><span class="o">.</span><span class="n">group</span>
-            <span class="k">if</span> <span class="n">interface</span><span class="o">.</span><span class="n">annotation</span> <span class="ow">is</span> <span class="n">Member</span><span class="p">:</span>
-                <span class="k">return</span> <span class="n">interface</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">sender</span>
+        <span class="k">async</span> <span class="k">def</span> <span class="nf">catch</span><span class="p">(</span><span class="n">interface</span><span class="p">:</span> <span class="n">DispatcherInterface</span><span class="p">):</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">interface</span><span class="o">.</span><span class="n">event</span><span class="p">,</span> <span class="n">GroupMessage</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">interface</span><span class="o">.</span><span class="n">annotation</span> <span class="ow">is</span> <span class="n">Group</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="n">interface</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">sender</span><span class="o">.</span><span class="n">group</span>
+                <span class="k">if</span> <span class="n">interface</span><span class="o">.</span><span class="n">annotation</span> <span class="ow">is</span> <span class="n">Member</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="n">interface</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">sender</span>
 </pre></div>
 
         </details>
@@ -790,19 +798,18 @@
                 <div class="decorator">@staticmethod</div>
 
             <span class="def">async def</span>
-            <span class="name">catch</span><span class="signature">(
-    interface: graia.broadcast.interfaces.dispatcher.DispatcherInterface[<a href="#GroupMessage">ariadne.event.message.GroupMessage</a>]
-)</span>:
+            <span class="name">catch</span><span class="signature">(interface: graia.broadcast.interfaces.dispatcher.DispatcherInterface)</span>:
     </div>
 
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span>        <span class="nd">@staticmethod</span>
-        <span class="k">async</span> <span class="k">def</span> <span class="nf">catch</span><span class="p">(</span><span class="n">interface</span><span class="p">:</span> <span class="n">DispatcherInterface</span><span class="p">[</span><span class="s2">&quot;GroupMessage&quot;</span><span class="p">]):</span>
-            <span class="k">if</span> <span class="n">interface</span><span class="o">.</span><span class="n">annotation</span> <span class="ow">is</span> <span class="n">Group</span><span class="p">:</span>
-                <span class="k">return</span> <span class="n">interface</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">sender</span><span class="o">.</span><span class="n">group</span>
-            <span class="k">if</span> <span class="n">interface</span><span class="o">.</span><span class="n">annotation</span> <span class="ow">is</span> <span class="n">Member</span><span class="p">:</span>
-                <span class="k">return</span> <span class="n">interface</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">sender</span>
+        <span class="k">async</span> <span class="k">def</span> <span class="nf">catch</span><span class="p">(</span><span class="n">interface</span><span class="p">:</span> <span class="n">DispatcherInterface</span><span class="p">):</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">interface</span><span class="o">.</span><span class="n">event</span><span class="p">,</span> <span class="n">GroupMessage</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">interface</span><span class="o">.</span><span class="n">annotation</span> <span class="ow">is</span> <span class="n">Group</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="n">interface</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">sender</span><span class="o">.</span><span class="n">group</span>
+                <span class="k">if</span> <span class="n">interface</span><span class="o">.</span><span class="n">annotation</span> <span class="ow">is</span> <span class="n">Member</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="n">interface</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">sender</span>
 </pre></div>
 
         </details>
@@ -853,16 +860,17 @@
     <span class="n">messageChain</span><span class="p">:</span> <span class="n">MessageChain</span>
     <span class="n">sender</span><span class="p">:</span> <span class="n">Member</span>
 
-    <span class="k">class</span> <span class="nc">Dispatcher</span><span class="p">(</span><span class="n">BaseDispatcher</span><span class="p">):</span>  <span class="c1"># pylint: disable-next=missing-class-docstring</span>
+    <span class="k">class</span> <span class="nc">Dispatcher</span><span class="p">(</span><span class="n">BaseDispatcher</span><span class="p">):</span>  <span class="c1"># pylint: disable=missing-class-docstring</span>
 
         <span class="n">mixin</span> <span class="o">=</span> <span class="p">[</span><span class="n">MessageChainDispatcher</span><span class="p">,</span> <span class="n">ContextDispatcher</span><span class="p">,</span> <span class="n">SourceDispatcher</span><span class="p">]</span>
 
         <span class="nd">@staticmethod</span>
-        <span class="k">async</span> <span class="k">def</span> <span class="nf">catch</span><span class="p">(</span><span class="n">interface</span><span class="p">:</span> <span class="n">DispatcherInterface</span><span class="p">[</span><span class="s2">&quot;TempMessage&quot;</span><span class="p">]):</span>
-            <span class="k">if</span> <span class="n">interface</span><span class="o">.</span><span class="n">annotation</span> <span class="ow">is</span> <span class="n">Group</span><span class="p">:</span>
-                <span class="k">return</span> <span class="n">interface</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">sender</span><span class="o">.</span><span class="n">group</span>
-            <span class="k">if</span> <span class="n">interface</span><span class="o">.</span><span class="n">annotation</span> <span class="ow">is</span> <span class="n">Member</span><span class="p">:</span>
-                <span class="k">return</span> <span class="n">interface</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">sender</span>
+        <span class="k">async</span> <span class="k">def</span> <span class="nf">catch</span><span class="p">(</span><span class="n">interface</span><span class="p">:</span> <span class="n">DispatcherInterface</span><span class="p">):</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">interface</span><span class="o">.</span><span class="n">event</span><span class="p">,</span> <span class="n">TempMessage</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">interface</span><span class="o">.</span><span class="n">annotation</span> <span class="ow">is</span> <span class="n">Group</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="n">interface</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">sender</span><span class="o">.</span><span class="n">group</span>
+                <span class="k">if</span> <span class="n">interface</span><span class="o">.</span><span class="n">annotation</span> <span class="ow">is</span> <span class="n">Member</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="n">interface</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">sender</span>
 </pre></div>
 
         </details>
@@ -923,16 +931,17 @@
 
                 <details>
             <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span>    <span class="k">class</span> <span class="nc">Dispatcher</span><span class="p">(</span><span class="n">BaseDispatcher</span><span class="p">):</span>  <span class="c1"># pylint: disable-next=missing-class-docstring</span>
+            <div class="codehilite"><pre><span></span>    <span class="k">class</span> <span class="nc">Dispatcher</span><span class="p">(</span><span class="n">BaseDispatcher</span><span class="p">):</span>  <span class="c1"># pylint: disable=missing-class-docstring</span>
 
         <span class="n">mixin</span> <span class="o">=</span> <span class="p">[</span><span class="n">MessageChainDispatcher</span><span class="p">,</span> <span class="n">ContextDispatcher</span><span class="p">,</span> <span class="n">SourceDispatcher</span><span class="p">]</span>
 
         <span class="nd">@staticmethod</span>
-        <span class="k">async</span> <span class="k">def</span> <span class="nf">catch</span><span class="p">(</span><span class="n">interface</span><span class="p">:</span> <span class="n">DispatcherInterface</span><span class="p">[</span><span class="s2">&quot;TempMessage&quot;</span><span class="p">]):</span>
-            <span class="k">if</span> <span class="n">interface</span><span class="o">.</span><span class="n">annotation</span> <span class="ow">is</span> <span class="n">Group</span><span class="p">:</span>
-                <span class="k">return</span> <span class="n">interface</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">sender</span><span class="o">.</span><span class="n">group</span>
-            <span class="k">if</span> <span class="n">interface</span><span class="o">.</span><span class="n">annotation</span> <span class="ow">is</span> <span class="n">Member</span><span class="p">:</span>
-                <span class="k">return</span> <span class="n">interface</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">sender</span>
+        <span class="k">async</span> <span class="k">def</span> <span class="nf">catch</span><span class="p">(</span><span class="n">interface</span><span class="p">:</span> <span class="n">DispatcherInterface</span><span class="p">):</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">interface</span><span class="o">.</span><span class="n">event</span><span class="p">,</span> <span class="n">TempMessage</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">interface</span><span class="o">.</span><span class="n">annotation</span> <span class="ow">is</span> <span class="n">Group</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="n">interface</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">sender</span><span class="o">.</span><span class="n">group</span>
+                <span class="k">if</span> <span class="n">interface</span><span class="o">.</span><span class="n">annotation</span> <span class="ow">is</span> <span class="n">Member</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="n">interface</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">sender</span>
 </pre></div>
 
         </details>
@@ -971,19 +980,18 @@
                 <div class="decorator">@staticmethod</div>
 
             <span class="def">async def</span>
-            <span class="name">catch</span><span class="signature">(
-    interface: graia.broadcast.interfaces.dispatcher.DispatcherInterface[<a href="#TempMessage">ariadne.event.message.TempMessage</a>]
-)</span>:
+            <span class="name">catch</span><span class="signature">(interface: graia.broadcast.interfaces.dispatcher.DispatcherInterface)</span>:
     </div>
 
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span>        <span class="nd">@staticmethod</span>
-        <span class="k">async</span> <span class="k">def</span> <span class="nf">catch</span><span class="p">(</span><span class="n">interface</span><span class="p">:</span> <span class="n">DispatcherInterface</span><span class="p">[</span><span class="s2">&quot;TempMessage&quot;</span><span class="p">]):</span>
-            <span class="k">if</span> <span class="n">interface</span><span class="o">.</span><span class="n">annotation</span> <span class="ow">is</span> <span class="n">Group</span><span class="p">:</span>
-                <span class="k">return</span> <span class="n">interface</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">sender</span><span class="o">.</span><span class="n">group</span>
-            <span class="k">if</span> <span class="n">interface</span><span class="o">.</span><span class="n">annotation</span> <span class="ow">is</span> <span class="n">Member</span><span class="p">:</span>
-                <span class="k">return</span> <span class="n">interface</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">sender</span>
+        <span class="k">async</span> <span class="k">def</span> <span class="nf">catch</span><span class="p">(</span><span class="n">interface</span><span class="p">:</span> <span class="n">DispatcherInterface</span><span class="p">):</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">interface</span><span class="o">.</span><span class="n">event</span><span class="p">,</span> <span class="n">TempMessage</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">interface</span><span class="o">.</span><span class="n">annotation</span> <span class="ow">is</span> <span class="n">Group</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="n">interface</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">sender</span><span class="o">.</span><span class="n">group</span>
+                <span class="k">if</span> <span class="n">interface</span><span class="o">.</span><span class="n">annotation</span> <span class="ow">is</span> <span class="n">Member</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="n">interface</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">sender</span>
 </pre></div>
 
         </details>
@@ -1034,14 +1042,15 @@
     <span class="n">messageChain</span><span class="p">:</span> <span class="n">MessageChain</span>
     <span class="n">sender</span><span class="p">:</span> <span class="n">Client</span>
 
-    <span class="k">class</span> <span class="nc">Dispatcher</span><span class="p">(</span><span class="n">BaseDispatcher</span><span class="p">):</span>  <span class="c1"># pylint: disable-next=missing-class-docstring</span>
+    <span class="k">class</span> <span class="nc">Dispatcher</span><span class="p">(</span><span class="n">BaseDispatcher</span><span class="p">):</span>  <span class="c1"># pylint: disable=missing-class-docstring</span>
 
         <span class="n">mixin</span> <span class="o">=</span> <span class="p">[</span><span class="n">MessageChainDispatcher</span><span class="p">,</span> <span class="n">ContextDispatcher</span><span class="p">,</span> <span class="n">SourceDispatcher</span><span class="p">]</span>
 
         <span class="nd">@staticmethod</span>
-        <span class="k">async</span> <span class="k">def</span> <span class="nf">catch</span><span class="p">(</span><span class="n">interface</span><span class="p">:</span> <span class="n">DispatcherInterface</span><span class="p">[</span><span class="s2">&quot;OtherClientMessage&quot;</span><span class="p">]):</span>
-            <span class="k">if</span> <span class="n">interface</span><span class="o">.</span><span class="n">annotation</span> <span class="ow">is</span> <span class="n">Client</span><span class="p">:</span>
-                <span class="k">return</span> <span class="n">interface</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">sender</span>
+        <span class="k">async</span> <span class="k">def</span> <span class="nf">catch</span><span class="p">(</span><span class="n">interface</span><span class="p">:</span> <span class="n">DispatcherInterface</span><span class="p">):</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">interface</span><span class="o">.</span><span class="n">event</span><span class="p">,</span> <span class="n">OtherClientMessage</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">interface</span><span class="o">.</span><span class="n">annotation</span> <span class="ow">is</span> <span class="n">Client</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="n">interface</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">sender</span>
 </pre></div>
 
         </details>
@@ -1102,14 +1111,15 @@
 
                 <details>
             <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span>    <span class="k">class</span> <span class="nc">Dispatcher</span><span class="p">(</span><span class="n">BaseDispatcher</span><span class="p">):</span>  <span class="c1"># pylint: disable-next=missing-class-docstring</span>
+            <div class="codehilite"><pre><span></span>    <span class="k">class</span> <span class="nc">Dispatcher</span><span class="p">(</span><span class="n">BaseDispatcher</span><span class="p">):</span>  <span class="c1"># pylint: disable=missing-class-docstring</span>
 
         <span class="n">mixin</span> <span class="o">=</span> <span class="p">[</span><span class="n">MessageChainDispatcher</span><span class="p">,</span> <span class="n">ContextDispatcher</span><span class="p">,</span> <span class="n">SourceDispatcher</span><span class="p">]</span>
 
         <span class="nd">@staticmethod</span>
-        <span class="k">async</span> <span class="k">def</span> <span class="nf">catch</span><span class="p">(</span><span class="n">interface</span><span class="p">:</span> <span class="n">DispatcherInterface</span><span class="p">[</span><span class="s2">&quot;OtherClientMessage&quot;</span><span class="p">]):</span>
-            <span class="k">if</span> <span class="n">interface</span><span class="o">.</span><span class="n">annotation</span> <span class="ow">is</span> <span class="n">Client</span><span class="p">:</span>
-                <span class="k">return</span> <span class="n">interface</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">sender</span>
+        <span class="k">async</span> <span class="k">def</span> <span class="nf">catch</span><span class="p">(</span><span class="n">interface</span><span class="p">:</span> <span class="n">DispatcherInterface</span><span class="p">):</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">interface</span><span class="o">.</span><span class="n">event</span><span class="p">,</span> <span class="n">OtherClientMessage</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">interface</span><span class="o">.</span><span class="n">annotation</span> <span class="ow">is</span> <span class="n">Client</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="n">interface</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">sender</span>
 </pre></div>
 
         </details>
@@ -1148,17 +1158,16 @@
                 <div class="decorator">@staticmethod</div>
 
             <span class="def">async def</span>
-            <span class="name">catch</span><span class="signature">(
-    interface: graia.broadcast.interfaces.dispatcher.DispatcherInterface[<a href="#OtherClientMessage">ariadne.event.message.OtherClientMessage</a>]
-)</span>:
+            <span class="name">catch</span><span class="signature">(interface: graia.broadcast.interfaces.dispatcher.DispatcherInterface)</span>:
     </div>
 
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span>        <span class="nd">@staticmethod</span>
-        <span class="k">async</span> <span class="k">def</span> <span class="nf">catch</span><span class="p">(</span><span class="n">interface</span><span class="p">:</span> <span class="n">DispatcherInterface</span><span class="p">[</span><span class="s2">&quot;OtherClientMessage&quot;</span><span class="p">]):</span>
-            <span class="k">if</span> <span class="n">interface</span><span class="o">.</span><span class="n">annotation</span> <span class="ow">is</span> <span class="n">Client</span><span class="p">:</span>
-                <span class="k">return</span> <span class="n">interface</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">sender</span>
+        <span class="k">async</span> <span class="k">def</span> <span class="nf">catch</span><span class="p">(</span><span class="n">interface</span><span class="p">:</span> <span class="n">DispatcherInterface</span><span class="p">):</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">interface</span><span class="o">.</span><span class="n">event</span><span class="p">,</span> <span class="n">OtherClientMessage</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">interface</span><span class="o">.</span><span class="n">annotation</span> <span class="ow">is</span> <span class="n">Client</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="n">interface</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">sender</span>
 </pre></div>
 
         </details>
@@ -1209,14 +1218,15 @@
     <span class="n">messageChain</span><span class="p">:</span> <span class="n">MessageChain</span>
     <span class="n">sender</span><span class="p">:</span> <span class="n">Stranger</span>
 
-    <span class="k">class</span> <span class="nc">Dispatcher</span><span class="p">(</span><span class="n">BaseDispatcher</span><span class="p">):</span>  <span class="c1"># pylint: disable-next=missing-class-docstring</span>
+    <span class="k">class</span> <span class="nc">Dispatcher</span><span class="p">(</span><span class="n">BaseDispatcher</span><span class="p">):</span>  <span class="c1"># pylint: disable=missing-class-docstring</span>
 
         <span class="n">mixin</span> <span class="o">=</span> <span class="p">[</span><span class="n">MessageChainDispatcher</span><span class="p">,</span> <span class="n">ContextDispatcher</span><span class="p">,</span> <span class="n">SourceDispatcher</span><span class="p">]</span>
 
         <span class="nd">@staticmethod</span>
-        <span class="k">async</span> <span class="k">def</span> <span class="nf">catch</span><span class="p">(</span><span class="n">interface</span><span class="p">:</span> <span class="n">DispatcherInterface</span><span class="p">[</span><span class="s2">&quot;StrangerMessage&quot;</span><span class="p">]):</span>
-            <span class="k">if</span> <span class="n">interface</span><span class="o">.</span><span class="n">annotation</span> <span class="ow">is</span> <span class="n">Friend</span><span class="p">:</span>
-                <span class="k">return</span> <span class="n">interface</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">sender</span>
+        <span class="k">async</span> <span class="k">def</span> <span class="nf">catch</span><span class="p">(</span><span class="n">interface</span><span class="p">:</span> <span class="n">DispatcherInterface</span><span class="p">):</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">interface</span><span class="o">.</span><span class="n">event</span><span class="p">,</span> <span class="n">StrangerMessage</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">interface</span><span class="o">.</span><span class="n">annotation</span> <span class="ow">is</span> <span class="n">Friend</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="n">interface</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">sender</span>
 </pre></div>
 
         </details>
@@ -1277,14 +1287,15 @@
 
                 <details>
             <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span>    <span class="k">class</span> <span class="nc">Dispatcher</span><span class="p">(</span><span class="n">BaseDispatcher</span><span class="p">):</span>  <span class="c1"># pylint: disable-next=missing-class-docstring</span>
+            <div class="codehilite"><pre><span></span>    <span class="k">class</span> <span class="nc">Dispatcher</span><span class="p">(</span><span class="n">BaseDispatcher</span><span class="p">):</span>  <span class="c1"># pylint: disable=missing-class-docstring</span>
 
         <span class="n">mixin</span> <span class="o">=</span> <span class="p">[</span><span class="n">MessageChainDispatcher</span><span class="p">,</span> <span class="n">ContextDispatcher</span><span class="p">,</span> <span class="n">SourceDispatcher</span><span class="p">]</span>
 
         <span class="nd">@staticmethod</span>
-        <span class="k">async</span> <span class="k">def</span> <span class="nf">catch</span><span class="p">(</span><span class="n">interface</span><span class="p">:</span> <span class="n">DispatcherInterface</span><span class="p">[</span><span class="s2">&quot;StrangerMessage&quot;</span><span class="p">]):</span>
-            <span class="k">if</span> <span class="n">interface</span><span class="o">.</span><span class="n">annotation</span> <span class="ow">is</span> <span class="n">Friend</span><span class="p">:</span>
-                <span class="k">return</span> <span class="n">interface</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">sender</span>
+        <span class="k">async</span> <span class="k">def</span> <span class="nf">catch</span><span class="p">(</span><span class="n">interface</span><span class="p">:</span> <span class="n">DispatcherInterface</span><span class="p">):</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">interface</span><span class="o">.</span><span class="n">event</span><span class="p">,</span> <span class="n">StrangerMessage</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">interface</span><span class="o">.</span><span class="n">annotation</span> <span class="ow">is</span> <span class="n">Friend</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="n">interface</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">sender</span>
 </pre></div>
 
         </details>
@@ -1323,17 +1334,16 @@
                 <div class="decorator">@staticmethod</div>
 
             <span class="def">async def</span>
-            <span class="name">catch</span><span class="signature">(
-    interface: graia.broadcast.interfaces.dispatcher.DispatcherInterface[<a href="#StrangerMessage">ariadne.event.message.StrangerMessage</a>]
-)</span>:
+            <span class="name">catch</span><span class="signature">(interface: graia.broadcast.interfaces.dispatcher.DispatcherInterface)</span>:
     </div>
 
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span>        <span class="nd">@staticmethod</span>
-        <span class="k">async</span> <span class="k">def</span> <span class="nf">catch</span><span class="p">(</span><span class="n">interface</span><span class="p">:</span> <span class="n">DispatcherInterface</span><span class="p">[</span><span class="s2">&quot;StrangerMessage&quot;</span><span class="p">]):</span>
-            <span class="k">if</span> <span class="n">interface</span><span class="o">.</span><span class="n">annotation</span> <span class="ow">is</span> <span class="n">Friend</span><span class="p">:</span>
-                <span class="k">return</span> <span class="n">interface</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">sender</span>
+        <span class="k">async</span> <span class="k">def</span> <span class="nf">catch</span><span class="p">(</span><span class="n">interface</span><span class="p">:</span> <span class="n">DispatcherInterface</span><span class="p">):</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">interface</span><span class="o">.</span><span class="n">event</span><span class="p">,</span> <span class="n">StrangerMessage</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">interface</span><span class="o">.</span><span class="n">annotation</span> <span class="ow">is</span> <span class="n">Friend</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="n">interface</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">sender</span>
 </pre></div>
 
         </details>
