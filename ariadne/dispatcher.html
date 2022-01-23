@@ -90,6 +90,18 @@
                 </ul>
 
             </li>
+            <li>
+                    <a class="class" href="#SenderDispatcher">SenderDispatcher</a>
+                            <ul class="memberlist">
+                        <li>
+                                <a class="function" href="#SenderDispatcher.__init__">SenderDispatcher</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#SenderDispatcher.catch">catch</a>
+                        </li>
+                </ul>
+
+            </li>
     </ul>
 
 
@@ -209,6 +221,22 @@
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">interface</span><span class="o">.</span><span class="n">event</span><span class="p">,</span> <span class="n">MessageEvent</span><span class="p">):</span>
             <span class="k">if</span> <span class="n">interface</span><span class="o">.</span><span class="n">annotation</span> <span class="ow">is</span> <span class="n">Source</span><span class="p">:</span>
                 <span class="k">return</span> <span class="n">interface</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">messageChain</span><span class="o">.</span><span class="n">getFirst</span><span class="p">(</span><span class="n">Source</span><span class="p">)</span>
+
+
+<span class="k">class</span> <span class="nc">SenderDispatcher</span><span class="p">(</span><span class="n">BaseDispatcher</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    从 MessageEvent 提取 sender 的 Dispatcher.</span>
+<span class="sd">    支持实现了 __instancecheck__ 的注释, 如 Union, Optional (since Python3.10)</span>
+<span class="sd">    和被 typing.runtime_checkable 标记为运行时协议的 Protocol.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">catch</span><span class="p">(</span><span class="n">interface</span><span class="p">:</span> <span class="n">DispatcherInterface</span><span class="p">):</span>
+        <span class="kn">from</span> <span class="nn">.event.message</span> <span class="kn">import</span> <span class="n">MessageEvent</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">interface</span><span class="o">.</span><span class="n">event</span><span class="p">,</span> <span class="n">MessageEvent</span><span class="p">):</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">interface</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">sender</span><span class="p">,</span> <span class="n">interface</span><span class="o">.</span><span class="n">annotation</span><span class="p">):</span>
+                <span class="k">return</span> <span class="n">interface</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">sender</span>
 </pre></div>
 
         </details>
@@ -710,6 +738,103 @@
                 <dd id="SourceDispatcher.beforeExecution" class="variable">beforeExecution</dd>
                 <dd id="SourceDispatcher.afterDispatch" class="variable">afterDispatch</dd>
                 <dd id="SourceDispatcher.afterExecution" class="variable">afterExecution</dd>
+
+            </div>
+                                </dl>
+                            </div>
+                </section>
+                <section id="SenderDispatcher">
+                                <div class="attr class">
+        <a class="headerlink" href="#SenderDispatcher">#&nbsp;&nbsp</a>
+
+        
+        <span class="def">class</span>
+        <span class="name">SenderDispatcher</span><wbr>(<span class="base">graia.broadcast.entities.dispatcher.BaseDispatcher</span>):
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">SenderDispatcher</span><span class="p">(</span><span class="n">BaseDispatcher</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    从 MessageEvent 提取 sender 的 Dispatcher.</span>
+<span class="sd">    支持实现了 __instancecheck__ 的注释, 如 Union, Optional (since Python3.10)</span>
+<span class="sd">    和被 typing.runtime_checkable 标记为运行时协议的 Protocol.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">catch</span><span class="p">(</span><span class="n">interface</span><span class="p">:</span> <span class="n">DispatcherInterface</span><span class="p">):</span>
+        <span class="kn">from</span> <span class="nn">.event.message</span> <span class="kn">import</span> <span class="n">MessageEvent</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">interface</span><span class="o">.</span><span class="n">event</span><span class="p">,</span> <span class="n">MessageEvent</span><span class="p">):</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">interface</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">sender</span><span class="p">,</span> <span class="n">interface</span><span class="o">.</span><span class="n">annotation</span><span class="p">):</span>
+                <span class="k">return</span> <span class="n">interface</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">sender</span>
+</pre></div>
+
+        </details>
+
+            <div class="docstring"><p>从 MessageEvent 提取 sender 的 Dispatcher.
+支持实现了 __instancecheck__ 的注释, 如 Union, Optional (since Python3.10)
+和被 typing.runtime_checkable 标记为运行时协议的 Protocol.</p>
+</div>
+
+
+                            <div id="SenderDispatcher.__init__" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#SenderDispatcher.__init__">#&nbsp;&nbsp</a>
+
+        
+            <span class="name">SenderDispatcher</span><span class="signature">()</span>
+    </div>
+
+        
+    
+
+                            </div>
+                            <div id="SenderDispatcher.catch" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#SenderDispatcher.catch">#&nbsp;&nbsp</a>
+
+                <div class="decorator">@staticmethod</div>
+
+            <span class="def">async def</span>
+            <span class="name">catch</span><span class="signature">(interface: graia.broadcast.interfaces.dispatcher.DispatcherInterface)</span>:
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span>    <span class="nd">@staticmethod</span>
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">catch</span><span class="p">(</span><span class="n">interface</span><span class="p">:</span> <span class="n">DispatcherInterface</span><span class="p">):</span>
+        <span class="kn">from</span> <span class="nn">.event.message</span> <span class="kn">import</span> <span class="n">MessageEvent</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">interface</span><span class="o">.</span><span class="n">event</span><span class="p">,</span> <span class="n">MessageEvent</span><span class="p">):</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">interface</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">sender</span><span class="p">,</span> <span class="n">interface</span><span class="o">.</span><span class="n">annotation</span><span class="p">):</span>
+                <span class="k">return</span> <span class="n">interface</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">sender</span>
+</pre></div>
+
+        </details>
+
+            <div class="docstring"><p>该方法可以是 <code>staticmethod</code>, <code>classmethod</code> 亦或是普通的方法/函数.
+唯一的要求是 <code>Dispatcher.catch</code> 获取到的必须为一可调用异步 Callable.</p>
+
+<h6 id="args">Args</h6>
+
+<ul>
+<li><strong>interface (DispatcherInterface):</strong>  <code>Dispatcher</code> 服务的主要对象, 可以从其中获取以下信息:
+<ul>
+<li>当前解析中的参数的信息;</li>
+<li>当前执行的信息, 比如正在处理的事件, <code>Listener</code>/<code>ExecTarget</code> etc.;</li>
+</ul></li>
+</ul>
+</div>
+
+
+                            </div>
+                            <div class="inherited">
+                                <h5>Inherited Members</h5>
+                                <dl>
+                                    <div><dt>graia.broadcast.entities.dispatcher.BaseDispatcher</dt>
+                                <dd id="SenderDispatcher.mixin" class="variable">mixin</dd>
+                <dd id="SenderDispatcher.beforeExecution" class="variable">beforeExecution</dd>
+                <dd id="SenderDispatcher.afterDispatch" class="variable">afterDispatch</dd>
+                <dd id="SenderDispatcher.afterExecution" class="variable">afterExecution</dd>
 
             </div>
                                 </dl>
