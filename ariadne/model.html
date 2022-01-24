@@ -468,6 +468,7 @@
 <span class="kn">from</span> <span class="nn">enum</span> <span class="kn">import</span> <span class="n">Enum</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span>
 
+<span class="kn">from</span> <span class="nn">importlib_metadata</span> <span class="kn">import</span> <span class="n">functools</span>
 <span class="kn">from</span> <span class="nn">loguru</span> <span class="kn">import</span> <span class="n">logger</span>
 <span class="kn">from</span> <span class="nn">pydantic</span> <span class="kn">import</span> <span class="n">BaseModel</span><span class="p">,</span> <span class="n">Field</span><span class="p">,</span> <span class="n">validator</span>
 <span class="kn">from</span> <span class="nn">pydantic.main</span> <span class="kn">import</span> <span class="n">BaseConfig</span><span class="p">,</span> <span class="n">Extra</span>
@@ -737,12 +738,20 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span>
 
 
-<span class="k">class</span> <span class="nc">MemberPerm</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
+<span class="nd">@functools</span><span class="o">.</span><span class="n">total_ordering</span>
+<span class="k">class</span> <span class="nc">MemberPerm</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;描述群成员在群组中所具备的权限&quot;&quot;&quot;</span>
 
     <span class="n">Member</span> <span class="o">=</span> <span class="s2">&quot;MEMBER&quot;</span>  <span class="c1"># 普通成员</span>
     <span class="n">Administrator</span> <span class="o">=</span> <span class="s2">&quot;ADMINISTRATOR&quot;</span>  <span class="c1"># 管理员</span>
     <span class="n">Owner</span> <span class="o">=</span> <span class="s2">&quot;OWNER&quot;</span>  <span class="c1"># 群主</span>
+
+    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">value</span>
+
+    <span class="k">def</span> <span class="fm">__lt__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="s2">&quot;MemberPerm&quot;</span><span class="p">):</span>
+        <span class="n">lv_map</span> <span class="o">=</span> <span class="p">{</span><span class="n">MemberPerm</span><span class="o">.</span><span class="n">Member</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="n">MemberPerm</span><span class="o">.</span><span class="n">Administrator</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="n">MemberPerm</span><span class="o">.</span><span class="n">Owner</span><span class="p">:</span> <span class="mi">3</span><span class="p">}</span>
+        <span class="k">return</span> <span class="n">lv_map</span><span class="p">[</span><span class="bp">self</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">lv_map</span><span class="p">[</span><span class="n">other</span><span class="p">]</span>
 
 
 <span class="k">class</span> <span class="nc">Group</span><span class="p">(</span><span class="n">AriadneBaseModel</span><span class="p">):</span>
@@ -1344,7 +1353,7 @@ implement default like this::</p>
                             <div id="AriadneBaseModel.Config.json_encoders" class="classattr">
                                             <div class="attr variable"><a class="headerlink" href="#AriadneBaseModel.Config.json_encoders">#&nbsp;&nbsp</a>
 
-        <span class="name">json_encoders</span><span class="default_value"> = {&lt;class &#39;datetime.datetime&#39;&gt;: &lt;function datetime_encoder at 0x7fc015a2dc10&gt;}</span>
+        <span class="name">json_encoders</span><span class="default_value"> = {&lt;class &#39;datetime.datetime&#39;&gt;: &lt;function datetime_encoder at 0x7fc07a6f5430&gt;}</span>
     </div>
 
     
@@ -2176,19 +2185,28 @@ implement default like this::</p>
                                 <div class="attr class">
         <a class="headerlink" href="#MemberPerm">#&nbsp;&nbsp</a>
 
-        
+                <div class="decorator">@functools.total_ordering</div>
+
         <span class="def">class</span>
-        <span class="name">MemberPerm</span><wbr>(<span class="base">builtins.str</span>, <span class="base">enum.Enum</span>):
+        <span class="name">MemberPerm</span><wbr>(<span class="base">enum.Enum</span>):
     </div>
 
                 <details>
             <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">MemberPerm</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
+            <div class="codehilite"><pre><span></span><span class="nd">@functools</span><span class="o">.</span><span class="n">total_ordering</span>
+<span class="k">class</span> <span class="nc">MemberPerm</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;描述群成员在群组中所具备的权限&quot;&quot;&quot;</span>
 
     <span class="n">Member</span> <span class="o">=</span> <span class="s2">&quot;MEMBER&quot;</span>  <span class="c1"># 普通成员</span>
     <span class="n">Administrator</span> <span class="o">=</span> <span class="s2">&quot;ADMINISTRATOR&quot;</span>  <span class="c1"># 管理员</span>
     <span class="n">Owner</span> <span class="o">=</span> <span class="s2">&quot;OWNER&quot;</span>  <span class="c1"># 群主</span>
+
+    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">value</span>
+
+    <span class="k">def</span> <span class="fm">__lt__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="s2">&quot;MemberPerm&quot;</span><span class="p">):</span>
+        <span class="n">lv_map</span> <span class="o">=</span> <span class="p">{</span><span class="n">MemberPerm</span><span class="o">.</span><span class="n">Member</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="n">MemberPerm</span><span class="o">.</span><span class="n">Administrator</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="n">MemberPerm</span><span class="o">.</span><span class="n">Owner</span><span class="p">:</span> <span class="mi">3</span><span class="p">}</span>
+        <span class="k">return</span> <span class="n">lv_map</span><span class="p">[</span><span class="bp">self</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">lv_map</span><span class="p">[</span><span class="n">other</span><span class="p">]</span>
 </pre></div>
 
         </details>
@@ -2230,56 +2248,6 @@ implement default like this::</p>
                                     <div><dt>enum.Enum</dt>
                                 <dd id="MemberPerm.name" class="variable">name</dd>
                 <dd id="MemberPerm.value" class="variable">value</dd>
-
-            </div>
-            <div><dt>builtins.str</dt>
-                                <dd id="MemberPerm.encode" class="function">encode</dd>
-                <dd id="MemberPerm.replace" class="function">replace</dd>
-                <dd id="MemberPerm.split" class="function">split</dd>
-                <dd id="MemberPerm.rsplit" class="function">rsplit</dd>
-                <dd id="MemberPerm.join" class="function">join</dd>
-                <dd id="MemberPerm.capitalize" class="function">capitalize</dd>
-                <dd id="MemberPerm.casefold" class="function">casefold</dd>
-                <dd id="MemberPerm.title" class="function">title</dd>
-                <dd id="MemberPerm.center" class="function">center</dd>
-                <dd id="MemberPerm.count" class="function">count</dd>
-                <dd id="MemberPerm.expandtabs" class="function">expandtabs</dd>
-                <dd id="MemberPerm.find" class="function">find</dd>
-                <dd id="MemberPerm.partition" class="function">partition</dd>
-                <dd id="MemberPerm.index" class="function">index</dd>
-                <dd id="MemberPerm.ljust" class="function">ljust</dd>
-                <dd id="MemberPerm.lower" class="function">lower</dd>
-                <dd id="MemberPerm.lstrip" class="function">lstrip</dd>
-                <dd id="MemberPerm.rfind" class="function">rfind</dd>
-                <dd id="MemberPerm.rindex" class="function">rindex</dd>
-                <dd id="MemberPerm.rjust" class="function">rjust</dd>
-                <dd id="MemberPerm.rstrip" class="function">rstrip</dd>
-                <dd id="MemberPerm.rpartition" class="function">rpartition</dd>
-                <dd id="MemberPerm.splitlines" class="function">splitlines</dd>
-                <dd id="MemberPerm.strip" class="function">strip</dd>
-                <dd id="MemberPerm.swapcase" class="function">swapcase</dd>
-                <dd id="MemberPerm.translate" class="function">translate</dd>
-                <dd id="MemberPerm.upper" class="function">upper</dd>
-                <dd id="MemberPerm.startswith" class="function">startswith</dd>
-                <dd id="MemberPerm.endswith" class="function">endswith</dd>
-                <dd id="MemberPerm.removeprefix" class="function">removeprefix</dd>
-                <dd id="MemberPerm.removesuffix" class="function">removesuffix</dd>
-                <dd id="MemberPerm.isascii" class="function">isascii</dd>
-                <dd id="MemberPerm.islower" class="function">islower</dd>
-                <dd id="MemberPerm.isupper" class="function">isupper</dd>
-                <dd id="MemberPerm.istitle" class="function">istitle</dd>
-                <dd id="MemberPerm.isspace" class="function">isspace</dd>
-                <dd id="MemberPerm.isdecimal" class="function">isdecimal</dd>
-                <dd id="MemberPerm.isdigit" class="function">isdigit</dd>
-                <dd id="MemberPerm.isnumeric" class="function">isnumeric</dd>
-                <dd id="MemberPerm.isalpha" class="function">isalpha</dd>
-                <dd id="MemberPerm.isalnum" class="function">isalnum</dd>
-                <dd id="MemberPerm.isidentifier" class="function">isidentifier</dd>
-                <dd id="MemberPerm.isprintable" class="function">isprintable</dd>
-                <dd id="MemberPerm.zfill" class="function">zfill</dd>
-                <dd id="MemberPerm.format" class="function">format</dd>
-                <dd id="MemberPerm.format_map" class="function">format_map</dd>
-                <dd id="MemberPerm.maketrans" class="function">maketrans</dd>
 
             </div>
                                 </dl>

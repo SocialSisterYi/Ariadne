@@ -63,6 +63,12 @@
                     <a class="function" href="#wrap_bracket">wrap_bracket</a>
             </li>
             <li>
+                    <a class="function" href="#const_call">const_call</a>
+            </li>
+            <li>
+                    <a class="function" href="#eval_ctx">eval_ctx</a>
+            </li>
+            <li>
                     <a class="function" href="#await_predicate">await_predicate</a>
             </li>
             <li>
@@ -124,6 +130,7 @@
 <span class="c1"># Utility Layout</span>
 <span class="kn">import</span> <span class="nn">asyncio</span>
 <span class="kn">import</span> <span class="nn">functools</span>
+<span class="kn">import</span> <span class="nn">inspect</span>
 <span class="kn">import</span> <span class="nn">sys</span>
 <span class="kn">import</span> <span class="nn">traceback</span>
 <span class="kn">import</span> <span class="nn">warnings</span>
@@ -138,6 +145,7 @@
     <span class="n">Dict</span><span class="p">,</span>
     <span class="n">Generator</span><span class="p">,</span>
     <span class="n">List</span><span class="p">,</span>
+    <span class="n">Tuple</span><span class="p">,</span>
     <span class="n">Type</span><span class="p">,</span>
     <span class="n">TypeVar</span><span class="p">,</span>
     <span class="n">Union</span><span class="p">,</span>
@@ -166,7 +174,7 @@
     <span class="n">UnknownTarget</span><span class="p">,</span>
     <span class="n">UnVerifiedSession</span><span class="p">,</span>
 <span class="p">)</span>
-<span class="kn">from</span> <span class="nn">..typing</span> <span class="kn">import</span> <span class="n">P</span><span class="p">,</span> <span class="n">R</span><span class="p">,</span> <span class="n">T</span>
+<span class="kn">from</span> <span class="nn">..typing</span> <span class="kn">import</span> <span class="n">DictStrAny</span><span class="p">,</span> <span class="n">P</span><span class="p">,</span> <span class="n">R</span><span class="p">,</span> <span class="n">T</span>
 
 <span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
     <span class="kn">from</span> <span class="nn">..app</span> <span class="kn">import</span> <span class="n">Ariadne</span>
@@ -328,6 +336,31 @@
     <span class="k">return</span> <span class="n">string</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;[&quot;</span><span class="p">,</span> <span class="s2">&quot;</span><span class="se">\\</span><span class="s2">u005b&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;]&quot;</span><span class="p">,</span> <span class="s2">&quot;</span><span class="se">\\</span><span class="s2">u005d&quot;</span><span class="p">)</span>
 
 
+<span class="k">def</span> <span class="nf">const_call</span><span class="p">(</span><span class="n">val</span><span class="p">:</span> <span class="n">T</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">[[],</span> <span class="n">T</span><span class="p">]:</span>
+    <span class="sd">&quot;&quot;&quot;生成一个返回常量的 Callable</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        val (T): 常量</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Callable[[], T]: 返回的函数</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="k">lambda</span><span class="p">:</span> <span class="n">val</span>
+
+
+<span class="k">def</span> <span class="nf">eval_ctx</span><span class="p">(</span><span class="n">layer</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">DictStrAny</span><span class="p">,</span> <span class="n">DictStrAny</span><span class="p">]:</span>
+    <span class="sd">&quot;&quot;&quot;返回用于 eval 的 globals 与 locals 字典.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        layer (int, optional): 从调用者向外的 Frame 数. 默认为 0.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Tuple[DictStrAny, DictStrAny]: (globals, locals) 字典</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">frame</span> <span class="o">=</span> <span class="n">inspect</span><span class="o">.</span><span class="n">stack</span><span class="p">()[</span><span class="n">layer</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">frame</span>  <span class="c1"># add the current frame</span>
+    <span class="k">return</span> <span class="n">frame</span><span class="o">.</span><span class="n">f_globals</span><span class="p">,</span> <span class="n">frame</span><span class="o">.</span><span class="n">f_locals</span>
+
+
 <span class="n">T_Callable</span> <span class="o">=</span> <span class="n">TypeVar</span><span class="p">(</span><span class="s2">&quot;T_Callable&quot;</span><span class="p">,</span> <span class="n">bound</span><span class="o">=</span><span class="n">Callable</span><span class="p">)</span>
 
 
@@ -336,7 +369,7 @@
 
 <span class="sd">    Args:</span>
 <span class="sd">        predicate (Callable[[], bool]): 回调函数</span>
-<span class="sd">        interval (float, optional): 每次等待时长 (s). Defaults to 0.01.</span>
+<span class="sd">        interval (float, optional): 每次等待时长 (s). 默认 0.01s.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">while</span> <span class="ow">not</span> <span class="n">predicate</span><span class="p">():</span>
         <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="n">interval</span><span class="p">)</span>
@@ -350,9 +383,9 @@
     <span class="sd">&quot;&quot;&quot;在满足 predicate 时返回 getter_coro() 的值</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        getter_coro (Callable[[], Coroutine[None, None, T]]): 要循环返回协程函数.</span>
+<span class="sd">        getter_coro (Callable[[], Coroutine[None, None, T]]): 要循环返回的协程函数.</span>
 <span class="sd">        predicate (Callable[[], bool]): 条件回调函数.</span>
-<span class="sd">        await_length (float, optional): 等待目前协程的时长. Defaults to 0.2.</span>
+<span class="sd">        await_length (float, optional): 等待目前协程的时长. 默认 0.2s.</span>
 
 <span class="sd">    Yields:</span>
 <span class="sd">        T: getter_coro 的返回值</span>
@@ -794,6 +827,89 @@
 
 
                 </section>
+                <section id="const_call">
+                            <div class="attr function"><a class="headerlink" href="#const_call">#&nbsp;&nbsp</a>
+
+        
+            <span class="def">def</span>
+            <span class="name">const_call</span><span class="signature">(val: ~T) -&gt; Callable[[], ~T]</span>:
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span><span class="k">def</span> <span class="nf">const_call</span><span class="p">(</span><span class="n">val</span><span class="p">:</span> <span class="n">T</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">[[],</span> <span class="n">T</span><span class="p">]:</span>
+    <span class="sd">&quot;&quot;&quot;生成一个返回常量的 Callable</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        val (T): 常量</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Callable[[], T]: 返回的函数</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="k">lambda</span><span class="p">:</span> <span class="n">val</span>
+</pre></div>
+
+        </details>
+
+            <div class="docstring"><p>生成一个返回常量的 Callable</p>
+
+<h6 id="args">Args</h6>
+
+<ul>
+<li><strong>val (T):</strong>  常量</li>
+</ul>
+
+<h6 id="returns">Returns</h6>
+
+<blockquote>
+  <p>Callable[[], T]: 返回的函数</p>
+</blockquote>
+</div>
+
+
+                </section>
+                <section id="eval_ctx">
+                            <div class="attr function"><a class="headerlink" href="#eval_ctx">#&nbsp;&nbsp</a>
+
+        
+            <span class="def">def</span>
+            <span class="name">eval_ctx</span><span class="signature">(layer: int = 0) -&gt; Tuple[Dict[str, Any], Dict[str, Any]]</span>:
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span><span class="k">def</span> <span class="nf">eval_ctx</span><span class="p">(</span><span class="n">layer</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">DictStrAny</span><span class="p">,</span> <span class="n">DictStrAny</span><span class="p">]:</span>
+    <span class="sd">&quot;&quot;&quot;返回用于 eval 的 globals 与 locals 字典.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        layer (int, optional): 从调用者向外的 Frame 数. 默认为 0.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Tuple[DictStrAny, DictStrAny]: (globals, locals) 字典</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">frame</span> <span class="o">=</span> <span class="n">inspect</span><span class="o">.</span><span class="n">stack</span><span class="p">()[</span><span class="n">layer</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">frame</span>  <span class="c1"># add the current frame</span>
+    <span class="k">return</span> <span class="n">frame</span><span class="o">.</span><span class="n">f_globals</span><span class="p">,</span> <span class="n">frame</span><span class="o">.</span><span class="n">f_locals</span>
+</pre></div>
+
+        </details>
+
+            <div class="docstring"><p>返回用于 eval 的 globals 与 locals 字典.</p>
+
+<h6 id="args">Args</h6>
+
+<ul>
+<li><strong>layer (int, optional):</strong>  从调用者向外的 Frame 数. 默认为 0.</li>
+</ul>
+
+<h6 id="returns">Returns</h6>
+
+<blockquote>
+  <p>Tuple[DictStrAny, DictStrAny]: (globals, locals) 字典</p>
+</blockquote>
+</div>
+
+
+                </section>
                 <section id="await_predicate">
                             <div class="attr function"><a class="headerlink" href="#await_predicate">#&nbsp;&nbsp</a>
 
@@ -809,7 +925,7 @@
 
 <span class="sd">    Args:</span>
 <span class="sd">        predicate (Callable[[], bool]): 回调函数</span>
-<span class="sd">        interval (float, optional): 每次等待时长 (s). Defaults to 0.01.</span>
+<span class="sd">        interval (float, optional): 每次等待时长 (s). 默认 0.01s.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">while</span> <span class="ow">not</span> <span class="n">predicate</span><span class="p">():</span>
         <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="n">interval</span><span class="p">)</span>
@@ -823,7 +939,7 @@
 
 <ul>
 <li><strong>predicate (Callable[[], bool]):</strong>  回调函数</li>
-<li><strong>interval (float, optional):</strong>  每次等待时长 (s). Defaults to 0.01.</li>
+<li><strong>interval (float, optional):</strong>  每次等待时长 (s). 默认 0.01s.</li>
 </ul>
 </div>
 
@@ -851,9 +967,9 @@
     <span class="sd">&quot;&quot;&quot;在满足 predicate 时返回 getter_coro() 的值</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        getter_coro (Callable[[], Coroutine[None, None, T]]): 要循环返回协程函数.</span>
+<span class="sd">        getter_coro (Callable[[], Coroutine[None, None, T]]): 要循环返回的协程函数.</span>
 <span class="sd">        predicate (Callable[[], bool]): 条件回调函数.</span>
-<span class="sd">        await_length (float, optional): 等待目前协程的时长. Defaults to 0.2.</span>
+<span class="sd">        await_length (float, optional): 等待目前协程的时长. 默认 0.2s.</span>
 
 <span class="sd">    Yields:</span>
 <span class="sd">        T: getter_coro 的返回值</span>
@@ -879,9 +995,9 @@
 <h6 id="args">Args</h6>
 
 <ul>
-<li><strong>getter_coro (Callable[[], Coroutine[None, None, T]]):</strong>  要循环返回协程函数.</li>
+<li><strong>getter_coro (Callable[[], Coroutine[None, None, T]]):</strong>  要循环返回的协程函数.</li>
 <li><strong>predicate (Callable[[], bool]):</strong>  条件回调函数.</li>
-<li><strong>await_length (float, optional):</strong>  等待目前协程的时长. Defaults to 0.2.</li>
+<li><strong>await_length (float, optional):</strong>  等待目前协程的时长. 默认 0.2s.</li>
 </ul>
 
 <h6 id="yields">Yields</h6>
