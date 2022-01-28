@@ -228,7 +228,7 @@
                         <span class="sa">r</span><span class="s2">&quot;(?P&lt;default&gt;=.+)?&quot;</span><span class="p">,</span>
                         <span class="n">piece</span><span class="p">,</span>
                     <span class="p">)</span>
-                    <span class="k">if</span> <span class="n">match</span> <span class="ow">and</span> <span class="p">(</span><span class="s2">&quot;:&quot;</span> <span class="ow">in</span> <span class="n">piece</span> <span class="ow">or</span> <span class="s2">&quot;=&quot;</span> <span class="ow">in</span> <span class="n">piece</span><span class="p">):</span>
+                    <span class="k">if</span> <span class="n">match</span> <span class="ow">and</span> <span class="nb">any</span><span class="p">(</span><span class="n">s</span> <span class="ow">in</span> <span class="n">piece</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="s2">&quot;.:=&quot;</span><span class="p">):</span>
                         <span class="n">token</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>  <span class="c1"># type: List[str]</span>
                             <span class="p">(</span>
                                 <span class="n">CommandToken</span><span class="o">.</span><span class="n">ANNOTATED</span><span class="p">,</span>
@@ -619,7 +619,7 @@
                         <span class="sa">r</span><span class="s2">&quot;(?P&lt;default&gt;=.+)?&quot;</span><span class="p">,</span>
                         <span class="n">piece</span><span class="p">,</span>
                     <span class="p">)</span>
-                    <span class="k">if</span> <span class="n">match</span> <span class="ow">and</span> <span class="p">(</span><span class="s2">&quot;:&quot;</span> <span class="ow">in</span> <span class="n">piece</span> <span class="ow">or</span> <span class="s2">&quot;=&quot;</span> <span class="ow">in</span> <span class="n">piece</span><span class="p">):</span>
+                    <span class="k">if</span> <span class="n">match</span> <span class="ow">and</span> <span class="nb">any</span><span class="p">(</span><span class="n">s</span> <span class="ow">in</span> <span class="n">piece</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="s2">&quot;.:=&quot;</span><span class="p">):</span>
                         <span class="n">token</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>  <span class="c1"># type: List[str]</span>
                             <span class="p">(</span>
                                 <span class="n">CommandToken</span><span class="o">.</span><span class="n">ANNOTATED</span><span class="p">,</span>
