@@ -586,7 +586,7 @@
         <span class="p">)</span>
 
     <span class="nd">@app_ctx_manager</span>
-    <span class="k">async</span> <span class="k">def</span> <span class="nf">recallMessage</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">target</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Source</span><span class="p">,</span> <span class="n">BotMessage</span><span class="p">,</span> <span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">recallMessage</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">target</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">MessageChain</span><span class="p">,</span> <span class="n">Source</span><span class="p">,</span> <span class="n">BotMessage</span><span class="p">,</span> <span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;撤回特定的消息; 撤回自己的消息需要在发出后 2 分钟内才能成功撤回; 如果在群组内, 需要撤回他人的消息则需要管理员/群主权限.</span>
 
 <span class="sd">        Args:</span>
@@ -596,11 +596,13 @@
 <span class="sd">        Returns:</span>
 <span class="sd">            None: 没有返回.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">BotMessage</span><span class="p">):</span>
             <span class="n">target</span> <span class="o">=</span> <span class="n">target</span><span class="o">.</span><span class="n">messageId</span>
         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">Source</span><span class="p">):</span>
             <span class="n">target</span> <span class="o">=</span> <span class="n">target</span><span class="o">.</span><span class="n">id</span>
-
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">MessageChain</span><span class="p">):</span>
+            <span class="n">target</span> <span class="o">=</span> <span class="n">target</span><span class="o">.</span><span class="n">getFirst</span><span class="p">(</span><span class="n">Source</span><span class="p">)</span><span class="o">.</span><span class="n">id</span>
         <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">adapter</span><span class="o">.</span><span class="n">call_api</span><span class="p">(</span>
             <span class="s2">&quot;recall&quot;</span><span class="p">,</span>
             <span class="n">CallMethod</span><span class="o">.</span><span class="n">POST</span><span class="p">,</span>
@@ -2070,7 +2072,7 @@
         <span class="p">)</span>
 
     <span class="nd">@app_ctx_manager</span>
-    <span class="k">async</span> <span class="k">def</span> <span class="nf">recallMessage</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">target</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Source</span><span class="p">,</span> <span class="n">BotMessage</span><span class="p">,</span> <span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">recallMessage</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">target</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">MessageChain</span><span class="p">,</span> <span class="n">Source</span><span class="p">,</span> <span class="n">BotMessage</span><span class="p">,</span> <span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;撤回特定的消息; 撤回自己的消息需要在发出后 2 分钟内才能成功撤回; 如果在群组内, 需要撤回他人的消息则需要管理员/群主权限.</span>
 
 <span class="sd">        Args:</span>
@@ -2080,11 +2082,13 @@
 <span class="sd">        Returns:</span>
 <span class="sd">            None: 没有返回.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">BotMessage</span><span class="p">):</span>
             <span class="n">target</span> <span class="o">=</span> <span class="n">target</span><span class="o">.</span><span class="n">messageId</span>
         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">Source</span><span class="p">):</span>
             <span class="n">target</span> <span class="o">=</span> <span class="n">target</span><span class="o">.</span><span class="n">id</span>
-
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">MessageChain</span><span class="p">):</span>
+            <span class="n">target</span> <span class="o">=</span> <span class="n">target</span><span class="o">.</span><span class="n">getFirst</span><span class="p">(</span><span class="n">Source</span><span class="p">)</span><span class="o">.</span><span class="n">id</span>
         <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">adapter</span><span class="o">.</span><span class="n">call_api</span><span class="p">(</span>
             <span class="s2">&quot;recall&quot;</span><span class="p">,</span>
             <span class="n">CallMethod</span><span class="o">.</span><span class="n">POST</span><span class="p">,</span>
@@ -2585,14 +2589,14 @@
             <span class="def">async def</span>
             <span class="name">recallMessage</span><span class="signature">(
     self,
-    target: Union[<a href="message/element.html#Source">ariadne.message.element.Source</a>, <a href="model.html#BotMessage">ariadne.model.BotMessage</a>, int]
+    target: Union[<a href="message/chain.html#MessageChain">ariadne.message.chain.MessageChain</a>, <a href="message/element.html#Source">ariadne.message.element.Source</a>, <a href="model.html#BotMessage">ariadne.model.BotMessage</a>, int]
 ) -&gt; None</span>:
     </div>
 
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span>    <span class="nd">@app_ctx_manager</span>
-    <span class="k">async</span> <span class="k">def</span> <span class="nf">recallMessage</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">target</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Source</span><span class="p">,</span> <span class="n">BotMessage</span><span class="p">,</span> <span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">recallMessage</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">target</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">MessageChain</span><span class="p">,</span> <span class="n">Source</span><span class="p">,</span> <span class="n">BotMessage</span><span class="p">,</span> <span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;撤回特定的消息; 撤回自己的消息需要在发出后 2 分钟内才能成功撤回; 如果在群组内, 需要撤回他人的消息则需要管理员/群主权限.</span>
 
 <span class="sd">        Args:</span>
@@ -2602,11 +2606,13 @@
 <span class="sd">        Returns:</span>
 <span class="sd">            None: 没有返回.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">BotMessage</span><span class="p">):</span>
             <span class="n">target</span> <span class="o">=</span> <span class="n">target</span><span class="o">.</span><span class="n">messageId</span>
         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">Source</span><span class="p">):</span>
             <span class="n">target</span> <span class="o">=</span> <span class="n">target</span><span class="o">.</span><span class="n">id</span>
-
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">MessageChain</span><span class="p">):</span>
+            <span class="n">target</span> <span class="o">=</span> <span class="n">target</span><span class="o">.</span><span class="n">getFirst</span><span class="p">(</span><span class="n">Source</span><span class="p">)</span><span class="o">.</span><span class="n">id</span>
         <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">adapter</span><span class="o">.</span><span class="n">call_api</span><span class="p">(</span>
             <span class="s2">&quot;recall&quot;</span><span class="p">,</span>
             <span class="n">CallMethod</span><span class="o">.</span><span class="n">POST</span><span class="p">,</span>
