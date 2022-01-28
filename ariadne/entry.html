@@ -58,49 +58,50 @@
 
 <span class="c1"># no error</span>
 
-<span class="kn">from</span> <span class="nn">..adapter</span> <span class="kn">import</span> <span class="n">CombinedAdapter</span><span class="p">,</span> <span class="n">DefaultAdapter</span><span class="p">,</span> <span class="n">HttpAdapter</span><span class="p">,</span> <span class="n">WebsocketAdapter</span>
-<span class="kn">from</span> <span class="nn">..app</span> <span class="kn">import</span> <span class="n">Ariadne</span>
-<span class="kn">from</span> <span class="nn">..context</span> <span class="kn">import</span> <span class="p">(</span>
-    <span class="n">adapter_ctx</span><span class="p">,</span>
-    <span class="n">ariadne_ctx</span><span class="p">,</span>
-    <span class="n">broadcast_ctx</span><span class="p">,</span>
-    <span class="n">event_ctx</span><span class="p">,</span>
-    <span class="n">event_loop_ctx</span><span class="p">,</span>
-    <span class="n">upload_method_ctx</span><span class="p">,</span>
-<span class="p">)</span>
-<span class="kn">from</span> <span class="nn">..dispatcher</span> <span class="kn">import</span> <span class="n">ContextDispatcher</span><span class="p">,</span> <span class="n">MessageChainDispatcher</span><span class="p">,</span> <span class="n">SourceDispatcher</span>
-<span class="kn">from</span> <span class="nn">..exception</span> <span class="kn">import</span> <span class="p">(</span>
-    <span class="n">AccountMuted</span><span class="p">,</span>
-    <span class="n">AccountNotFound</span><span class="p">,</span>
-    <span class="n">InvalidArgument</span><span class="p">,</span>
-    <span class="n">InvalidEventTypeDefinition</span><span class="p">,</span>
-    <span class="n">InvalidSession</span><span class="p">,</span>
-    <span class="n">InvalidVerifyKey</span><span class="p">,</span>
-    <span class="n">MessageTooLong</span><span class="p">,</span>
-    <span class="n">UnknownError</span><span class="p">,</span>
-    <span class="n">UnknownTarget</span><span class="p">,</span>
-    <span class="n">UnVerifiedSession</span><span class="p">,</span>
-<span class="p">)</span>
-<span class="kn">from</span> <span class="nn">..model</span> <span class="kn">import</span> <span class="p">(</span>
-    <span class="n">BotMessage</span><span class="p">,</span>
-    <span class="n">CallMethod</span><span class="p">,</span>
-    <span class="n">ChatLogConfig</span><span class="p">,</span>
-    <span class="n">Client</span><span class="p">,</span>
-    <span class="n">DownloadInfo</span><span class="p">,</span>
-    <span class="n">FileInfo</span><span class="p">,</span>
-    <span class="n">Friend</span><span class="p">,</span>
-    <span class="n">Group</span><span class="p">,</span>
-    <span class="n">GroupConfig</span><span class="p">,</span>
-    <span class="n">Member</span><span class="p">,</span>
-    <span class="n">MemberInfo</span><span class="p">,</span>
-    <span class="n">MemberPerm</span><span class="p">,</span>
-    <span class="n">MiraiSession</span><span class="p">,</span>
-    <span class="n">Profile</span><span class="p">,</span>
-    <span class="n">Stranger</span><span class="p">,</span>
-    <span class="n">UploadMethod</span><span class="p">,</span>
-<span class="p">)</span>
-<span class="kn">from</span> <span class="nn">..util</span> <span class="kn">import</span> <span class="n">cpu_bound</span><span class="p">,</span> <span class="n">io_bound</span>
-<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">event</span><span class="p">,</span> <span class="n">message</span>
+<span class="kn">from</span> <span class="nn">..adapter</span> <span class="kn">import</span> <span class="n">CombinedAdapter</span> <span class="k">as</span> <span class="n">CombinedAdapter</span>
+<span class="kn">from</span> <span class="nn">..adapter</span> <span class="kn">import</span> <span class="n">DefaultAdapter</span> <span class="k">as</span> <span class="n">DefaultAdapter</span>
+<span class="kn">from</span> <span class="nn">..adapter</span> <span class="kn">import</span> <span class="n">HttpAdapter</span> <span class="k">as</span> <span class="n">HttpAdapter</span>
+<span class="kn">from</span> <span class="nn">..adapter</span> <span class="kn">import</span> <span class="n">WebsocketAdapter</span> <span class="k">as</span> <span class="n">WebsocketAdapter</span>
+<span class="kn">from</span> <span class="nn">..app</span> <span class="kn">import</span> <span class="n">Ariadne</span> <span class="k">as</span> <span class="n">Ariadne</span>
+<span class="kn">from</span> <span class="nn">..context</span> <span class="kn">import</span> <span class="n">adapter_ctx</span> <span class="k">as</span> <span class="n">adapter_ctx</span>
+<span class="kn">from</span> <span class="nn">..context</span> <span class="kn">import</span> <span class="n">ariadne_ctx</span> <span class="k">as</span> <span class="n">ariadne_ctx</span>
+<span class="kn">from</span> <span class="nn">..context</span> <span class="kn">import</span> <span class="n">broadcast_ctx</span> <span class="k">as</span> <span class="n">broadcast_ctx</span>
+<span class="kn">from</span> <span class="nn">..context</span> <span class="kn">import</span> <span class="n">event_ctx</span> <span class="k">as</span> <span class="n">event_ctx</span>
+<span class="kn">from</span> <span class="nn">..context</span> <span class="kn">import</span> <span class="n">event_loop_ctx</span> <span class="k">as</span> <span class="n">event_loop_ctx</span>
+<span class="kn">from</span> <span class="nn">..context</span> <span class="kn">import</span> <span class="n">upload_method_ctx</span> <span class="k">as</span> <span class="n">upload_method_ctx</span>
+<span class="kn">from</span> <span class="nn">..dispatcher</span> <span class="kn">import</span> <span class="n">ContextDispatcher</span> <span class="k">as</span> <span class="n">ContextDispatcher</span>
+<span class="kn">from</span> <span class="nn">..dispatcher</span> <span class="kn">import</span> <span class="n">MessageChainDispatcher</span> <span class="k">as</span> <span class="n">MessageChainDispatcher</span>
+<span class="kn">from</span> <span class="nn">..dispatcher</span> <span class="kn">import</span> <span class="n">SourceDispatcher</span> <span class="k">as</span> <span class="n">SourceDispatcher</span>
+<span class="kn">from</span> <span class="nn">..exception</span> <span class="kn">import</span> <span class="n">AccountMuted</span> <span class="k">as</span> <span class="n">AccountMuted</span>
+<span class="kn">from</span> <span class="nn">..exception</span> <span class="kn">import</span> <span class="n">AccountNotFound</span> <span class="k">as</span> <span class="n">AccountNotFound</span>
+<span class="kn">from</span> <span class="nn">..exception</span> <span class="kn">import</span> <span class="n">InvalidArgument</span> <span class="k">as</span> <span class="n">InvalidArgument</span>
+<span class="kn">from</span> <span class="nn">..exception</span> <span class="kn">import</span> <span class="n">InvalidEventTypeDefinition</span> <span class="k">as</span> <span class="n">InvalidEventTypeDefinition</span>
+<span class="kn">from</span> <span class="nn">..exception</span> <span class="kn">import</span> <span class="n">InvalidSession</span> <span class="k">as</span> <span class="n">InvalidSession</span>
+<span class="kn">from</span> <span class="nn">..exception</span> <span class="kn">import</span> <span class="n">InvalidVerifyKey</span> <span class="k">as</span> <span class="n">InvalidVerifyKey</span>
+<span class="kn">from</span> <span class="nn">..exception</span> <span class="kn">import</span> <span class="n">MessageTooLong</span> <span class="k">as</span> <span class="n">MessageTooLong</span>
+<span class="kn">from</span> <span class="nn">..exception</span> <span class="kn">import</span> <span class="n">UnknownError</span> <span class="k">as</span> <span class="n">UnknownError</span>
+<span class="kn">from</span> <span class="nn">..exception</span> <span class="kn">import</span> <span class="n">UnknownTarget</span> <span class="k">as</span> <span class="n">UnknownTarget</span>
+<span class="kn">from</span> <span class="nn">..exception</span> <span class="kn">import</span> <span class="n">UnVerifiedSession</span> <span class="k">as</span> <span class="n">UnVerifiedSession</span>
+<span class="kn">from</span> <span class="nn">..model</span> <span class="kn">import</span> <span class="n">BotMessage</span> <span class="k">as</span> <span class="n">BotMessage</span>
+<span class="kn">from</span> <span class="nn">..model</span> <span class="kn">import</span> <span class="n">CallMethod</span> <span class="k">as</span> <span class="n">CallMethod</span>
+<span class="kn">from</span> <span class="nn">..model</span> <span class="kn">import</span> <span class="n">ChatLogConfig</span> <span class="k">as</span> <span class="n">ChatLogConfig</span>
+<span class="kn">from</span> <span class="nn">..model</span> <span class="kn">import</span> <span class="n">Client</span> <span class="k">as</span> <span class="n">Client</span>
+<span class="kn">from</span> <span class="nn">..model</span> <span class="kn">import</span> <span class="n">DownloadInfo</span> <span class="k">as</span> <span class="n">DownloadInfo</span>
+<span class="kn">from</span> <span class="nn">..model</span> <span class="kn">import</span> <span class="n">FileInfo</span> <span class="k">as</span> <span class="n">FileInfo</span>
+<span class="kn">from</span> <span class="nn">..model</span> <span class="kn">import</span> <span class="n">Friend</span> <span class="k">as</span> <span class="n">Friend</span>
+<span class="kn">from</span> <span class="nn">..model</span> <span class="kn">import</span> <span class="n">Group</span> <span class="k">as</span> <span class="n">Group</span>
+<span class="kn">from</span> <span class="nn">..model</span> <span class="kn">import</span> <span class="n">GroupConfig</span> <span class="k">as</span> <span class="n">GroupConfig</span>
+<span class="kn">from</span> <span class="nn">..model</span> <span class="kn">import</span> <span class="n">Member</span> <span class="k">as</span> <span class="n">Member</span>
+<span class="kn">from</span> <span class="nn">..model</span> <span class="kn">import</span> <span class="n">MemberInfo</span> <span class="k">as</span> <span class="n">MemberInfo</span>
+<span class="kn">from</span> <span class="nn">..model</span> <span class="kn">import</span> <span class="n">MemberPerm</span> <span class="k">as</span> <span class="n">MemberPerm</span>
+<span class="kn">from</span> <span class="nn">..model</span> <span class="kn">import</span> <span class="n">MiraiSession</span> <span class="k">as</span> <span class="n">MiraiSession</span>
+<span class="kn">from</span> <span class="nn">..model</span> <span class="kn">import</span> <span class="n">Profile</span> <span class="k">as</span> <span class="n">Profile</span>
+<span class="kn">from</span> <span class="nn">..model</span> <span class="kn">import</span> <span class="n">Stranger</span> <span class="k">as</span> <span class="n">Stranger</span>
+<span class="kn">from</span> <span class="nn">..model</span> <span class="kn">import</span> <span class="n">UploadMethod</span> <span class="k">as</span> <span class="n">UploadMethod</span>
+<span class="kn">from</span> <span class="nn">..util</span> <span class="kn">import</span> <span class="n">cpu_bound</span> <span class="k">as</span> <span class="n">cpu_bound</span>
+<span class="kn">from</span> <span class="nn">..util</span> <span class="kn">import</span> <span class="n">io_bound</span> <span class="k">as</span> <span class="n">io_bound</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">event</span> <span class="k">as</span> <span class="n">event</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">message</span> <span class="k">as</span> <span class="n">message</span>
 </pre></div>
 
         </details>

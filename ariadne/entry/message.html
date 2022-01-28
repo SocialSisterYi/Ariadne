@@ -53,55 +53,55 @@
 
 <span class="c1"># no error</span>
 
-<span class="kn">from</span> <span class="nn">..message.chain</span> <span class="kn">import</span> <span class="n">MessageChain</span>
-<span class="kn">from</span> <span class="nn">..message.commander</span> <span class="kn">import</span> <span class="n">Arg</span><span class="p">,</span> <span class="n">Commander</span><span class="p">,</span> <span class="n">Slot</span>
-<span class="kn">from</span> <span class="nn">..message.component</span> <span class="kn">import</span> <span class="n">Component</span>
-<span class="kn">from</span> <span class="nn">..message.element</span> <span class="kn">import</span> <span class="p">(</span>
-    <span class="n">App</span><span class="p">,</span>
-    <span class="n">At</span><span class="p">,</span>
-    <span class="n">AtAll</span><span class="p">,</span>
-    <span class="n">Dice</span><span class="p">,</span>
-    <span class="n">Element</span><span class="p">,</span>
-    <span class="n">Face</span><span class="p">,</span>
-    <span class="n">File</span><span class="p">,</span>
-    <span class="n">FlashImage</span><span class="p">,</span>
-    <span class="n">Forward</span><span class="p">,</span>
-    <span class="n">ForwardNode</span><span class="p">,</span>
-    <span class="n">Image</span><span class="p">,</span>
-    <span class="n">ImageType</span><span class="p">,</span>
-    <span class="n">MultimediaElement</span><span class="p">,</span>
-    <span class="n">MusicShare</span><span class="p">,</span>
-    <span class="n">NotSendableElement</span><span class="p">,</span>
-    <span class="n">Plain</span><span class="p">,</span>
-    <span class="n">Poke</span><span class="p">,</span>
-    <span class="n">PokeMethods</span><span class="p">,</span>
-    <span class="n">Quote</span><span class="p">,</span>
-    <span class="n">Source</span><span class="p">,</span>
-    <span class="n">Voice</span><span class="p">,</span>
-<span class="p">)</span>
-<span class="kn">from</span> <span class="nn">..message.formatter</span> <span class="kn">import</span> <span class="n">Formatter</span>
-<span class="kn">from</span> <span class="nn">..message.parser.base</span> <span class="kn">import</span> <span class="n">DetectPrefix</span><span class="p">,</span> <span class="n">DetectSuffix</span>
-<span class="kn">from</span> <span class="nn">..message.parser.literature</span> <span class="kn">import</span> <span class="p">(</span>
-    <span class="n">BoxParameter</span><span class="p">,</span>
-    <span class="n">Literature</span><span class="p">,</span>
-    <span class="n">ParamPattern</span><span class="p">,</span>
-    <span class="n">SwitchParameter</span><span class="p">,</span>
-<span class="p">)</span>
-<span class="kn">from</span> <span class="nn">..message.parser.twilight</span> <span class="kn">import</span> <span class="p">(</span>
-    <span class="n">FORCE</span><span class="p">,</span>
-    <span class="n">NOSPACE</span><span class="p">,</span>
-    <span class="n">PRESERVE</span><span class="p">,</span>
-    <span class="n">ArgumentMatch</span><span class="p">,</span>
-    <span class="n">ElementMatch</span><span class="p">,</span>
-    <span class="n">FullMatch</span><span class="p">,</span>
-    <span class="n">Match</span><span class="p">,</span>
-    <span class="n">RegexMatch</span><span class="p">,</span>
-    <span class="n">Sparkle</span><span class="p">,</span>
-    <span class="n">Twilight</span><span class="p">,</span>
-    <span class="n">UnionMatch</span><span class="p">,</span>
-    <span class="n">WildcardMatch</span><span class="p">,</span>
-<span class="p">)</span>
-<span class="kn">from</span> <span class="nn">..util.send</span> <span class="kn">import</span> <span class="n">Bypass</span><span class="p">,</span> <span class="n">Ignore</span><span class="p">,</span> <span class="n">Safe</span><span class="p">,</span> <span class="n">Strict</span>
+<span class="kn">from</span> <span class="nn">..message.chain</span> <span class="kn">import</span> <span class="n">MessageChain</span> <span class="k">as</span> <span class="n">MessageChain</span>
+<span class="kn">from</span> <span class="nn">..message.commander</span> <span class="kn">import</span> <span class="n">Arg</span> <span class="k">as</span> <span class="n">Arg</span>
+<span class="kn">from</span> <span class="nn">..message.commander</span> <span class="kn">import</span> <span class="n">Commander</span> <span class="k">as</span> <span class="n">Commander</span>
+<span class="kn">from</span> <span class="nn">..message.commander</span> <span class="kn">import</span> <span class="n">Slot</span> <span class="k">as</span> <span class="n">Slot</span>
+<span class="kn">from</span> <span class="nn">..message.component</span> <span class="kn">import</span> <span class="n">Component</span> <span class="k">as</span> <span class="n">Component</span>
+<span class="kn">from</span> <span class="nn">..message.element</span> <span class="kn">import</span> <span class="n">App</span> <span class="k">as</span> <span class="n">App</span>
+<span class="kn">from</span> <span class="nn">..message.element</span> <span class="kn">import</span> <span class="n">At</span> <span class="k">as</span> <span class="n">At</span>
+<span class="kn">from</span> <span class="nn">..message.element</span> <span class="kn">import</span> <span class="n">AtAll</span> <span class="k">as</span> <span class="n">AtAll</span>
+<span class="kn">from</span> <span class="nn">..message.element</span> <span class="kn">import</span> <span class="n">Dice</span> <span class="k">as</span> <span class="n">Dice</span>
+<span class="kn">from</span> <span class="nn">..message.element</span> <span class="kn">import</span> <span class="n">Element</span> <span class="k">as</span> <span class="n">Element</span>
+<span class="kn">from</span> <span class="nn">..message.element</span> <span class="kn">import</span> <span class="n">Face</span> <span class="k">as</span> <span class="n">Face</span>
+<span class="kn">from</span> <span class="nn">..message.element</span> <span class="kn">import</span> <span class="n">File</span> <span class="k">as</span> <span class="n">File</span>
+<span class="kn">from</span> <span class="nn">..message.element</span> <span class="kn">import</span> <span class="n">FlashImage</span> <span class="k">as</span> <span class="n">FlashImage</span>
+<span class="kn">from</span> <span class="nn">..message.element</span> <span class="kn">import</span> <span class="n">Forward</span> <span class="k">as</span> <span class="n">Forward</span>
+<span class="kn">from</span> <span class="nn">..message.element</span> <span class="kn">import</span> <span class="n">ForwardNode</span> <span class="k">as</span> <span class="n">ForwardNode</span>
+<span class="kn">from</span> <span class="nn">..message.element</span> <span class="kn">import</span> <span class="n">Image</span> <span class="k">as</span> <span class="n">Image</span>
+<span class="kn">from</span> <span class="nn">..message.element</span> <span class="kn">import</span> <span class="n">ImageType</span> <span class="k">as</span> <span class="n">ImageType</span>
+<span class="kn">from</span> <span class="nn">..message.element</span> <span class="kn">import</span> <span class="n">MultimediaElement</span> <span class="k">as</span> <span class="n">MultimediaElement</span>
+<span class="kn">from</span> <span class="nn">..message.element</span> <span class="kn">import</span> <span class="n">MusicShare</span> <span class="k">as</span> <span class="n">MusicShare</span>
+<span class="kn">from</span> <span class="nn">..message.element</span> <span class="kn">import</span> <span class="n">NotSendableElement</span> <span class="k">as</span> <span class="n">NotSendableElement</span>
+<span class="kn">from</span> <span class="nn">..message.element</span> <span class="kn">import</span> <span class="n">Plain</span> <span class="k">as</span> <span class="n">Plain</span>
+<span class="kn">from</span> <span class="nn">..message.element</span> <span class="kn">import</span> <span class="n">Poke</span> <span class="k">as</span> <span class="n">Poke</span>
+<span class="kn">from</span> <span class="nn">..message.element</span> <span class="kn">import</span> <span class="n">PokeMethods</span> <span class="k">as</span> <span class="n">PokeMethods</span>
+<span class="kn">from</span> <span class="nn">..message.element</span> <span class="kn">import</span> <span class="n">Quote</span> <span class="k">as</span> <span class="n">Quote</span>
+<span class="kn">from</span> <span class="nn">..message.element</span> <span class="kn">import</span> <span class="n">Source</span> <span class="k">as</span> <span class="n">Source</span>
+<span class="kn">from</span> <span class="nn">..message.element</span> <span class="kn">import</span> <span class="n">Voice</span> <span class="k">as</span> <span class="n">Voice</span>
+<span class="kn">from</span> <span class="nn">..message.formatter</span> <span class="kn">import</span> <span class="n">Formatter</span> <span class="k">as</span> <span class="n">Formatter</span>
+<span class="kn">from</span> <span class="nn">..message.parser.base</span> <span class="kn">import</span> <span class="n">DetectPrefix</span> <span class="k">as</span> <span class="n">DetectPrefix</span>
+<span class="kn">from</span> <span class="nn">..message.parser.base</span> <span class="kn">import</span> <span class="n">DetectSuffix</span> <span class="k">as</span> <span class="n">DetectSuffix</span>
+<span class="kn">from</span> <span class="nn">..message.parser.literature</span> <span class="kn">import</span> <span class="n">BoxParameter</span> <span class="k">as</span> <span class="n">BoxParameter</span>
+<span class="kn">from</span> <span class="nn">..message.parser.literature</span> <span class="kn">import</span> <span class="n">Literature</span> <span class="k">as</span> <span class="n">Literature</span>
+<span class="kn">from</span> <span class="nn">..message.parser.literature</span> <span class="kn">import</span> <span class="n">ParamPattern</span> <span class="k">as</span> <span class="n">ParamPattern</span>
+<span class="kn">from</span> <span class="nn">..message.parser.literature</span> <span class="kn">import</span> <span class="n">SwitchParameter</span> <span class="k">as</span> <span class="n">SwitchParameter</span>
+<span class="kn">from</span> <span class="nn">..message.parser.twilight</span> <span class="kn">import</span> <span class="n">FORCE</span> <span class="k">as</span> <span class="n">FORCE</span>
+<span class="kn">from</span> <span class="nn">..message.parser.twilight</span> <span class="kn">import</span> <span class="n">NOSPACE</span> <span class="k">as</span> <span class="n">NOSPACE</span>
+<span class="kn">from</span> <span class="nn">..message.parser.twilight</span> <span class="kn">import</span> <span class="n">PRESERVE</span> <span class="k">as</span> <span class="n">PRESERVE</span>
+<span class="kn">from</span> <span class="nn">..message.parser.twilight</span> <span class="kn">import</span> <span class="n">ArgumentMatch</span> <span class="k">as</span> <span class="n">ArgumentMatch</span>
+<span class="kn">from</span> <span class="nn">..message.parser.twilight</span> <span class="kn">import</span> <span class="n">ElementMatch</span> <span class="k">as</span> <span class="n">ElementMatch</span>
+<span class="kn">from</span> <span class="nn">..message.parser.twilight</span> <span class="kn">import</span> <span class="n">FullMatch</span> <span class="k">as</span> <span class="n">FullMatch</span>
+<span class="kn">from</span> <span class="nn">..message.parser.twilight</span> <span class="kn">import</span> <span class="n">Match</span> <span class="k">as</span> <span class="n">Match</span>
+<span class="kn">from</span> <span class="nn">..message.parser.twilight</span> <span class="kn">import</span> <span class="n">RegexMatch</span> <span class="k">as</span> <span class="n">RegexMatch</span>
+<span class="kn">from</span> <span class="nn">..message.parser.twilight</span> <span class="kn">import</span> <span class="n">Sparkle</span> <span class="k">as</span> <span class="n">Sparkle</span>
+<span class="kn">from</span> <span class="nn">..message.parser.twilight</span> <span class="kn">import</span> <span class="n">Twilight</span> <span class="k">as</span> <span class="n">Twilight</span>
+<span class="kn">from</span> <span class="nn">..message.parser.twilight</span> <span class="kn">import</span> <span class="n">UnionMatch</span> <span class="k">as</span> <span class="n">UnionMatch</span>
+<span class="kn">from</span> <span class="nn">..message.parser.twilight</span> <span class="kn">import</span> <span class="n">WildcardMatch</span> <span class="k">as</span> <span class="n">WildcardMatch</span>
+<span class="kn">from</span> <span class="nn">..util.send</span> <span class="kn">import</span> <span class="n">Bypass</span> <span class="k">as</span> <span class="n">Bypass</span>
+<span class="kn">from</span> <span class="nn">..util.send</span> <span class="kn">import</span> <span class="n">Ignore</span> <span class="k">as</span> <span class="n">Ignore</span>
+<span class="kn">from</span> <span class="nn">..util.send</span> <span class="kn">import</span> <span class="n">Safe</span> <span class="k">as</span> <span class="n">Safe</span>
+<span class="kn">from</span> <span class="nn">..util.send</span> <span class="kn">import</span> <span class="n">Strict</span> <span class="k">as</span> <span class="n">Strict</span>
 </pre></div>
 
         </details>

@@ -53,66 +53,81 @@
 
 <span class="c1"># no error</span>
 
-<span class="kn">from</span> <span class="nn">graia.ariadne.event</span> <span class="kn">import</span> <span class="n">MiraiEvent</span>
+<span class="kn">from</span> <span class="nn">graia.ariadne.event</span> <span class="kn">import</span> <span class="n">MiraiEvent</span> <span class="k">as</span> <span class="n">MiraiEvent</span>
+<span class="kn">from</span> <span class="nn">graia.ariadne.event.lifecycle</span> <span class="kn">import</span> <span class="n">AdapterLaunched</span> <span class="k">as</span> <span class="n">AdapterLaunched</span>
+<span class="kn">from</span> <span class="nn">graia.ariadne.event.lifecycle</span> <span class="kn">import</span> <span class="n">AdapterShutdowned</span> <span class="k">as</span> <span class="n">AdapterShutdowned</span>
+<span class="kn">from</span> <span class="nn">graia.ariadne.event.lifecycle</span> <span class="kn">import</span> <span class="n">ApplicationLaunched</span> <span class="k">as</span> <span class="n">ApplicationLaunched</span>
 <span class="kn">from</span> <span class="nn">graia.ariadne.event.lifecycle</span> <span class="kn">import</span> <span class="p">(</span>
-    <span class="n">AdapterLaunched</span><span class="p">,</span>
-    <span class="n">AdapterShutdowned</span><span class="p">,</span>
-    <span class="n">ApplicationLaunched</span><span class="p">,</span>
-    <span class="n">ApplicationLifecycleEvent</span><span class="p">,</span>
-    <span class="n">ApplicationShutdowned</span><span class="p">,</span>
+    <span class="n">ApplicationLifecycleEvent</span> <span class="k">as</span> <span class="n">ApplicationLifecycleEvent</span><span class="p">,</span>
 <span class="p">)</span>
-<span class="kn">from</span> <span class="nn">graia.ariadne.event.message</span> <span class="kn">import</span> <span class="p">(</span>
-    <span class="n">FriendMessage</span><span class="p">,</span>
-    <span class="n">GroupMessage</span><span class="p">,</span>
-    <span class="n">OtherClientMessage</span><span class="p">,</span>
-    <span class="n">StrangerMessage</span><span class="p">,</span>
-    <span class="n">TempMessage</span><span class="p">,</span>
+<span class="kn">from</span> <span class="nn">graia.ariadne.event.lifecycle</span> <span class="kn">import</span> <span class="n">ApplicationShutdowned</span> <span class="k">as</span> <span class="n">ApplicationShutdowned</span>
+<span class="kn">from</span> <span class="nn">graia.ariadne.event.message</span> <span class="kn">import</span> <span class="n">FriendMessage</span> <span class="k">as</span> <span class="n">FriendMessage</span>
+<span class="kn">from</span> <span class="nn">graia.ariadne.event.message</span> <span class="kn">import</span> <span class="n">GroupMessage</span> <span class="k">as</span> <span class="n">GroupMessage</span>
+<span class="kn">from</span> <span class="nn">graia.ariadne.event.message</span> <span class="kn">import</span> <span class="n">OtherClientMessage</span> <span class="k">as</span> <span class="n">OtherClientMessage</span>
+<span class="kn">from</span> <span class="nn">graia.ariadne.event.message</span> <span class="kn">import</span> <span class="n">StrangerMessage</span> <span class="k">as</span> <span class="n">StrangerMessage</span>
+<span class="kn">from</span> <span class="nn">graia.ariadne.event.message</span> <span class="kn">import</span> <span class="n">TempMessage</span> <span class="k">as</span> <span class="n">TempMessage</span>
+<span class="kn">from</span> <span class="nn">graia.ariadne.event.mirai</span> <span class="kn">import</span> <span class="n">BotEvent</span> <span class="k">as</span> <span class="n">BotEvent</span>
+<span class="kn">from</span> <span class="nn">graia.ariadne.event.mirai</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">BotGroupPermissionChangeEvent</span> <span class="k">as</span> <span class="n">BotGroupPermissionChangeEvent</span><span class="p">,</span>
 <span class="p">)</span>
 <span class="kn">from</span> <span class="nn">graia.ariadne.event.mirai</span> <span class="kn">import</span> <span class="p">(</span>
-    <span class="n">BotEvent</span><span class="p">,</span>
-    <span class="n">BotGroupPermissionChangeEvent</span><span class="p">,</span>
-    <span class="n">BotInvitedJoinGroupRequestEvent</span><span class="p">,</span>
-    <span class="n">BotJoinGroupEvent</span><span class="p">,</span>
-    <span class="n">BotLeaveEventActive</span><span class="p">,</span>
-    <span class="n">BotLeaveEventKick</span><span class="p">,</span>
-    <span class="n">BotMuteEvent</span><span class="p">,</span>
-    <span class="n">BotOfflineEventActive</span><span class="p">,</span>
-    <span class="n">BotOfflineEventDropped</span><span class="p">,</span>
-    <span class="n">BotOfflineEventForce</span><span class="p">,</span>
-    <span class="n">BotOnlineEvent</span><span class="p">,</span>
-    <span class="n">BotReloginEvent</span><span class="p">,</span>
-    <span class="n">BotUnmuteEvent</span><span class="p">,</span>
-    <span class="n">CommandExecutedEvent</span><span class="p">,</span>
-    <span class="n">FriendEvent</span><span class="p">,</span>
-    <span class="n">FriendInputStatusChangedEvent</span><span class="p">,</span>
-    <span class="n">FriendNickChangedEvent</span><span class="p">,</span>
-    <span class="n">FriendRecallEvent</span><span class="p">,</span>
-    <span class="n">GroupAllowAnonymousChatEvent</span><span class="p">,</span>
-    <span class="n">GroupAllowConfessTalkEvent</span><span class="p">,</span>
-    <span class="n">GroupAllowMemberInviteEvent</span><span class="p">,</span>
-    <span class="n">GroupEntranceAnnouncementChangeEvent</span><span class="p">,</span>
-    <span class="n">GroupEvent</span><span class="p">,</span>
-    <span class="n">GroupMuteAllEvent</span><span class="p">,</span>
-    <span class="n">GroupNameChangeEvent</span><span class="p">,</span>
-    <span class="n">GroupRecallEvent</span><span class="p">,</span>
-    <span class="n">MemberCardChangeEvent</span><span class="p">,</span>
-    <span class="n">MemberHonorChangeEvent</span><span class="p">,</span>
-    <span class="n">MemberJoinEvent</span><span class="p">,</span>
-    <span class="n">MemberJoinRequestEvent</span><span class="p">,</span>
-    <span class="n">MemberLeaveEventKick</span><span class="p">,</span>
-    <span class="n">MemberLeaveEventQuit</span><span class="p">,</span>
-    <span class="n">MemberMuteEvent</span><span class="p">,</span>
-    <span class="n">MemberPerm</span><span class="p">,</span>
-    <span class="n">MemberPermissionChangeEvent</span><span class="p">,</span>
-    <span class="n">MemberSpecialTitleChangeEvent</span><span class="p">,</span>
-    <span class="n">MemberUnmuteEvent</span><span class="p">,</span>
-    <span class="n">NewFriendRequestEvent</span><span class="p">,</span>
-    <span class="n">NudgeEvent</span><span class="p">,</span>
-    <span class="n">OtherClientOfflineEvent</span><span class="p">,</span>
-    <span class="n">OtherClientOnlineEvent</span><span class="p">,</span>
-    <span class="n">RequestEvent</span><span class="p">,</span>
+    <span class="n">BotInvitedJoinGroupRequestEvent</span> <span class="k">as</span> <span class="n">BotInvitedJoinGroupRequestEvent</span><span class="p">,</span>
 <span class="p">)</span>
-<span class="kn">from</span> <span class="nn">graia.ariadne.event.network</span> <span class="kn">import</span> <span class="n">InvalidRequest</span><span class="p">,</span> <span class="n">RemoteException</span>
+<span class="kn">from</span> <span class="nn">graia.ariadne.event.mirai</span> <span class="kn">import</span> <span class="n">BotJoinGroupEvent</span> <span class="k">as</span> <span class="n">BotJoinGroupEvent</span>
+<span class="kn">from</span> <span class="nn">graia.ariadne.event.mirai</span> <span class="kn">import</span> <span class="n">BotLeaveEventActive</span> <span class="k">as</span> <span class="n">BotLeaveEventActive</span>
+<span class="kn">from</span> <span class="nn">graia.ariadne.event.mirai</span> <span class="kn">import</span> <span class="n">BotLeaveEventKick</span> <span class="k">as</span> <span class="n">BotLeaveEventKick</span>
+<span class="kn">from</span> <span class="nn">graia.ariadne.event.mirai</span> <span class="kn">import</span> <span class="n">BotMuteEvent</span> <span class="k">as</span> <span class="n">BotMuteEvent</span>
+<span class="kn">from</span> <span class="nn">graia.ariadne.event.mirai</span> <span class="kn">import</span> <span class="n">BotOfflineEventActive</span> <span class="k">as</span> <span class="n">BotOfflineEventActive</span>
+<span class="kn">from</span> <span class="nn">graia.ariadne.event.mirai</span> <span class="kn">import</span> <span class="n">BotOfflineEventDropped</span> <span class="k">as</span> <span class="n">BotOfflineEventDropped</span>
+<span class="kn">from</span> <span class="nn">graia.ariadne.event.mirai</span> <span class="kn">import</span> <span class="n">BotOfflineEventForce</span> <span class="k">as</span> <span class="n">BotOfflineEventForce</span>
+<span class="kn">from</span> <span class="nn">graia.ariadne.event.mirai</span> <span class="kn">import</span> <span class="n">BotOnlineEvent</span> <span class="k">as</span> <span class="n">BotOnlineEvent</span>
+<span class="kn">from</span> <span class="nn">graia.ariadne.event.mirai</span> <span class="kn">import</span> <span class="n">BotReloginEvent</span> <span class="k">as</span> <span class="n">BotReloginEvent</span>
+<span class="kn">from</span> <span class="nn">graia.ariadne.event.mirai</span> <span class="kn">import</span> <span class="n">BotUnmuteEvent</span> <span class="k">as</span> <span class="n">BotUnmuteEvent</span>
+<span class="kn">from</span> <span class="nn">graia.ariadne.event.mirai</span> <span class="kn">import</span> <span class="n">CommandExecutedEvent</span> <span class="k">as</span> <span class="n">CommandExecutedEvent</span>
+<span class="kn">from</span> <span class="nn">graia.ariadne.event.mirai</span> <span class="kn">import</span> <span class="n">FriendEvent</span> <span class="k">as</span> <span class="n">FriendEvent</span>
+<span class="kn">from</span> <span class="nn">graia.ariadne.event.mirai</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">FriendInputStatusChangedEvent</span> <span class="k">as</span> <span class="n">FriendInputStatusChangedEvent</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">graia.ariadne.event.mirai</span> <span class="kn">import</span> <span class="n">FriendNickChangedEvent</span> <span class="k">as</span> <span class="n">FriendNickChangedEvent</span>
+<span class="kn">from</span> <span class="nn">graia.ariadne.event.mirai</span> <span class="kn">import</span> <span class="n">FriendRecallEvent</span> <span class="k">as</span> <span class="n">FriendRecallEvent</span>
+<span class="kn">from</span> <span class="nn">graia.ariadne.event.mirai</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">GroupAllowAnonymousChatEvent</span> <span class="k">as</span> <span class="n">GroupAllowAnonymousChatEvent</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">graia.ariadne.event.mirai</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">GroupAllowConfessTalkEvent</span> <span class="k">as</span> <span class="n">GroupAllowConfessTalkEvent</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">graia.ariadne.event.mirai</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">GroupAllowMemberInviteEvent</span> <span class="k">as</span> <span class="n">GroupAllowMemberInviteEvent</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">graia.ariadne.event.mirai</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">GroupEntranceAnnouncementChangeEvent</span> <span class="k">as</span> <span class="n">GroupEntranceAnnouncementChangeEvent</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">graia.ariadne.event.mirai</span> <span class="kn">import</span> <span class="n">GroupEvent</span> <span class="k">as</span> <span class="n">GroupEvent</span>
+<span class="kn">from</span> <span class="nn">graia.ariadne.event.mirai</span> <span class="kn">import</span> <span class="n">GroupMuteAllEvent</span> <span class="k">as</span> <span class="n">GroupMuteAllEvent</span>
+<span class="kn">from</span> <span class="nn">graia.ariadne.event.mirai</span> <span class="kn">import</span> <span class="n">GroupNameChangeEvent</span> <span class="k">as</span> <span class="n">GroupNameChangeEvent</span>
+<span class="kn">from</span> <span class="nn">graia.ariadne.event.mirai</span> <span class="kn">import</span> <span class="n">GroupRecallEvent</span> <span class="k">as</span> <span class="n">GroupRecallEvent</span>
+<span class="kn">from</span> <span class="nn">graia.ariadne.event.mirai</span> <span class="kn">import</span> <span class="n">MemberCardChangeEvent</span> <span class="k">as</span> <span class="n">MemberCardChangeEvent</span>
+<span class="kn">from</span> <span class="nn">graia.ariadne.event.mirai</span> <span class="kn">import</span> <span class="n">MemberHonorChangeEvent</span> <span class="k">as</span> <span class="n">MemberHonorChangeEvent</span>
+<span class="kn">from</span> <span class="nn">graia.ariadne.event.mirai</span> <span class="kn">import</span> <span class="n">MemberJoinEvent</span> <span class="k">as</span> <span class="n">MemberJoinEvent</span>
+<span class="kn">from</span> <span class="nn">graia.ariadne.event.mirai</span> <span class="kn">import</span> <span class="n">MemberJoinRequestEvent</span> <span class="k">as</span> <span class="n">MemberJoinRequestEvent</span>
+<span class="kn">from</span> <span class="nn">graia.ariadne.event.mirai</span> <span class="kn">import</span> <span class="n">MemberLeaveEventKick</span> <span class="k">as</span> <span class="n">MemberLeaveEventKick</span>
+<span class="kn">from</span> <span class="nn">graia.ariadne.event.mirai</span> <span class="kn">import</span> <span class="n">MemberLeaveEventQuit</span> <span class="k">as</span> <span class="n">MemberLeaveEventQuit</span>
+<span class="kn">from</span> <span class="nn">graia.ariadne.event.mirai</span> <span class="kn">import</span> <span class="n">MemberMuteEvent</span> <span class="k">as</span> <span class="n">MemberMuteEvent</span>
+<span class="kn">from</span> <span class="nn">graia.ariadne.event.mirai</span> <span class="kn">import</span> <span class="n">MemberPerm</span> <span class="k">as</span> <span class="n">MemberPerm</span>
+<span class="kn">from</span> <span class="nn">graia.ariadne.event.mirai</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">MemberPermissionChangeEvent</span> <span class="k">as</span> <span class="n">MemberPermissionChangeEvent</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">graia.ariadne.event.mirai</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">MemberSpecialTitleChangeEvent</span> <span class="k">as</span> <span class="n">MemberSpecialTitleChangeEvent</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">graia.ariadne.event.mirai</span> <span class="kn">import</span> <span class="n">MemberUnmuteEvent</span> <span class="k">as</span> <span class="n">MemberUnmuteEvent</span>
+<span class="kn">from</span> <span class="nn">graia.ariadne.event.mirai</span> <span class="kn">import</span> <span class="n">NewFriendRequestEvent</span> <span class="k">as</span> <span class="n">NewFriendRequestEvent</span>
+<span class="kn">from</span> <span class="nn">graia.ariadne.event.mirai</span> <span class="kn">import</span> <span class="n">NudgeEvent</span> <span class="k">as</span> <span class="n">NudgeEvent</span>
+<span class="kn">from</span> <span class="nn">graia.ariadne.event.mirai</span> <span class="kn">import</span> <span class="n">OtherClientOfflineEvent</span> <span class="k">as</span> <span class="n">OtherClientOfflineEvent</span>
+<span class="kn">from</span> <span class="nn">graia.ariadne.event.mirai</span> <span class="kn">import</span> <span class="n">OtherClientOnlineEvent</span> <span class="k">as</span> <span class="n">OtherClientOnlineEvent</span>
+<span class="kn">from</span> <span class="nn">graia.ariadne.event.mirai</span> <span class="kn">import</span> <span class="n">RequestEvent</span> <span class="k">as</span> <span class="n">RequestEvent</span>
+<span class="kn">from</span> <span class="nn">graia.ariadne.event.network</span> <span class="kn">import</span> <span class="n">InvalidRequest</span> <span class="k">as</span> <span class="n">InvalidRequest</span>
+<span class="kn">from</span> <span class="nn">graia.ariadne.event.network</span> <span class="kn">import</span> <span class="n">RemoteException</span> <span class="k">as</span> <span class="n">RemoteException</span>
 </pre></div>
 
         </details>
