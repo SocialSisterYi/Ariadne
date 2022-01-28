@@ -716,7 +716,6 @@
 <span class="kn">from</span> <span class="nn">..context</span> <span class="kn">import</span> <span class="n">adapter_ctx</span>
 <span class="kn">from</span> <span class="nn">..dispatcher</span> <span class="kn">import</span> <span class="n">ContextDispatcher</span>
 <span class="kn">from</span> <span class="nn">..exception</span> <span class="kn">import</span> <span class="n">InvalidSession</span>
-<span class="kn">from</span> <span class="nn">..message.element</span> <span class="kn">import</span> <span class="n">Element</span>
 <span class="kn">from</span> <span class="nn">..model</span> <span class="kn">import</span> <span class="n">CallMethod</span><span class="p">,</span> <span class="n">Client</span><span class="p">,</span> <span class="n">Friend</span><span class="p">,</span> <span class="n">Group</span><span class="p">,</span> <span class="n">Member</span><span class="p">,</span> <span class="n">MemberPerm</span>
 <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">MiraiEvent</span>
 
@@ -740,11 +739,11 @@
 
 
 <span class="k">class</span> <span class="nc">BotOnlineEvent</span><span class="p">(</span><span class="n">BotEvent</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;当该事件发生时, 应用实例所辖账号登录成功</span>
+    <span class="sd">&quot;&quot;&quot;Bot 账号登录成功</span>
 
 <span class="sd">    ** 注意: 当监听该事件或该类事件时, 请优先考虑使用原始事件类作为类型注解, 以此获得事件类实例, 便于获取更多的信息! **</span>
 
-<span class="sd">    Allowed Extra Parameters(提供的额外注解支持):</span>
+<span class="sd">    提供的额外注解支持:</span>
 <span class="sd">        Ariadne (annotation): 发布事件的应用实例</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -753,11 +752,11 @@
 
 
 <span class="k">class</span> <span class="nc">BotOfflineEventActive</span><span class="p">(</span><span class="n">BotEvent</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;当该事件发生时, 应用实例所辖账号主动离线</span>
+    <span class="sd">&quot;&quot;&quot;Bot 账号主动离线</span>
 
 <span class="sd">    ** 注意: 当监听该事件或该类事件时, 请优先考虑使用原始事件类作为类型注解, 以此获得事件类实例, 便于获取更多的信息! **</span>
 
-<span class="sd">    Allowed Extra Parameters(提供的额外注解支持):</span>
+<span class="sd">    提供的额外注解支持:</span>
 <span class="sd">        Ariadne (annotation): 发布事件的应用实例</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -766,11 +765,11 @@
 
 
 <span class="k">class</span> <span class="nc">BotOfflineEventForce</span><span class="p">(</span><span class="n">BotEvent</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;当该事件发生时, 应用实例所辖账号被迫离线</span>
+    <span class="sd">&quot;&quot;&quot;Bot 账号被迫离线</span>
 
 <span class="sd">    ** 注意: 当监听该事件或该类事件时, 请优先考虑使用原始事件类作为类型注解, 以此获得事件类实例, 便于获取更多的信息! **</span>
 
-<span class="sd">    Allowed Extra Parameters(提供的额外注解支持):</span>
+<span class="sd">    提供的额外注解支持:</span>
 <span class="sd">        Ariadne (annotation): 发布事件的应用实例</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -779,11 +778,11 @@
 
 
 <span class="k">class</span> <span class="nc">BotOfflineEventDropped</span><span class="p">(</span><span class="n">BotEvent</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;当该事件发生时, 应用实例所辖账号与服务器的连接被服务器主动断开, 或因网络原因离线</span>
+    <span class="sd">&quot;&quot;&quot;Bot 账号与服务器的连接被服务器主动断开, 或因网络原因离线</span>
 
 <span class="sd">    ** 注意: 当监听该事件或该类事件时, 请优先考虑使用原始事件类作为类型注解, 以此获得事件类实例, 便于获取更多的信息! **</span>
 
-<span class="sd">    Allowed Extra Parameters(提供的额外注解支持):</span>
+<span class="sd">    提供的额外注解支持:</span>
 <span class="sd">        Ariadne (annotation): 发布事件的应用实例</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -792,11 +791,11 @@
 
 
 <span class="k">class</span> <span class="nc">BotReloginEvent</span><span class="p">(</span><span class="n">BotEvent</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;当该事件发生时, 应用实例所辖账号正尝试重新登录</span>
+    <span class="sd">&quot;&quot;&quot;Bot 账号正尝试重新登录</span>
 
 <span class="sd">    ** 注意: 当监听该事件或该类事件时, 请优先考虑使用原始事件类作为类型注解, 以此获得事件类实例, 便于获取更多的信息! **</span>
 
-<span class="sd">    Allowed Extra Parameters(提供的额外注解支持):</span>
+<span class="sd">    提供的额外注解支持:</span>
 <span class="sd">        Ariadne (annotation): 发布事件的应用实例</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -805,11 +804,11 @@
 
 
 <span class="k">class</span> <span class="nc">FriendInputStatusChangedEvent</span><span class="p">(</span><span class="n">FriendEvent</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;当该事件发生时, 应用实例所辖账号的某一好友输入状态改变.</span>
+    <span class="sd">&quot;&quot;&quot;Bot 账号的某一好友输入状态改变.</span>
 
 <span class="sd">    ** 注意: 当监听该事件或该类事件时, 请优先考虑使用原始事件类作为类型注解, 以此获得事件类实例, 便于获取更多的信息! **</span>
 
-<span class="sd">    Allowed Extra Parameters(提供的额外注解支持):</span>
+<span class="sd">    提供的额外注解支持:</span>
 <span class="sd">        Ariadne (annotation): 发布事件的应用实例</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -828,11 +827,11 @@
 
 
 <span class="k">class</span> <span class="nc">FriendNickChangedEvent</span><span class="p">(</span><span class="n">FriendEvent</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;当该事件发生时, 应用实例所辖账号的某一好友更改了昵称.</span>
+    <span class="sd">&quot;&quot;&quot;Bot 账号的某一好友更改了昵称.</span>
 
 <span class="sd">    ** 注意: 当监听该事件或该类事件时, 请优先考虑使用原始事件类作为类型注解, 以此获得事件类实例, 便于获取更多的信息! **</span>
 
-<span class="sd">    Allowed Extra Parameters(提供的额外注解支持):</span>
+<span class="sd">    提供的额外注解支持:</span>
 <span class="sd">        Ariadne (annotation): 发布事件的应用实例</span>
 <span class="sd">        Friend (annotation): 更改名称的好友</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -853,11 +852,11 @@
 
 
 <span class="k">class</span> <span class="nc">BotGroupPermissionChangeEvent</span><span class="p">(</span><span class="n">GroupEvent</span><span class="p">,</span> <span class="n">BotEvent</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;当该事件发生时, 应用实例所辖账号在一特定群组内所具有的权限发生变化</span>
+    <span class="sd">&quot;&quot;&quot;Bot 账号在一特定群组内所具有的权限发生变化</span>
 
 <span class="sd">    ** 注意: 当监听该事件或该类事件时, 请优先考虑使用原始事件类作为类型注解, 以此获得事件类实例, 便于获取更多的信息! **</span>
 
-<span class="sd">    Allowed Extra Parameters(提供的额外注解支持):</span>
+<span class="sd">    提供的额外注解支持:</span>
 <span class="sd">        Ariadne (annotation): 发布事件的应用实例</span>
 <span class="sd">        Group (annotation): 发生该事件的群组</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -878,14 +877,14 @@
 
 
 <span class="k">class</span> <span class="nc">BotMuteEvent</span><span class="p">(</span><span class="n">GroupEvent</span><span class="p">,</span> <span class="n">BotEvent</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;当该事件发生时, 应用实例所辖账号在一特定群组内被管理员/群主禁言</span>
+    <span class="sd">&quot;&quot;&quot;Bot 账号在一特定群组内被管理员/群主禁言</span>
 
 <span class="sd">    ** 注意: 当监听该事件或该类事件时, 请优先考虑使用原始事件类作为类型注解, 以此获得事件类实例, 便于获取更多的信息! **</span>
 
-<span class="sd">    Allowed Extra Parameters(提供的额外注解支持):</span>
+<span class="sd">    提供的额外注解支持:</span>
 <span class="sd">        Ariadne (annotation): 发布事件的应用实例</span>
-<span class="sd">        Member (annotation, optional = None): 执行禁言操作的管理员/群主, 若为 None 则为应用实例所辖账号操作</span>
-<span class="sd">        Group (annotation, optional = None): 发生该事件的群组</span>
+<span class="sd">        Member (annotation, optional = None): 执行禁言操作的管理员/群主, 若为 None 则为 Bot 账号操作</span>
+<span class="sd">        Group (annotation): 发生该事件的群组</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="nb">type</span> <span class="o">=</span> <span class="s2">&quot;BotMuteEvent&quot;</span>
@@ -905,14 +904,14 @@
 
 
 <span class="k">class</span> <span class="nc">BotUnmuteEvent</span><span class="p">(</span><span class="n">GroupEvent</span><span class="p">,</span> <span class="n">BotEvent</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;当该事件发生时, 应用实例所辖账号在一特定群组内被管理员/群主解除禁言</span>
+    <span class="sd">&quot;&quot;&quot;Bot 账号在一特定群组内被管理员/群主解除禁言</span>
 
 <span class="sd">    ** 注意: 当监听该事件或该类事件时, 请优先考虑使用原始事件类作为类型注解, 以此获得事件类实例, 便于获取更多的信息! **</span>
 
-<span class="sd">    Allowed Extra Parameters(提供的额外注解支持):</span>
+<span class="sd">    提供的额外注解支持:</span>
 <span class="sd">        Ariadne (annotation): 发布事件的应用实例</span>
-<span class="sd">        Member (annotation, optional = None): 执行解除禁言操作的管理员/群主, 若为 None 则为应用实例所辖账号操作</span>
-<span class="sd">        Group (annotation, optional = None): 发生该事件的群组</span>
+<span class="sd">        Member (annotation, optional = None): 执行解除禁言操作的管理员/群主, 若为 None 则为 Bot 账号操作</span>
+<span class="sd">        Group (annotation): 发生该事件的群组</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="nb">type</span> <span class="o">=</span> <span class="s2">&quot;BotUnmuteEvent&quot;</span>
@@ -931,13 +930,13 @@
 
 
 <span class="k">class</span> <span class="nc">BotJoinGroupEvent</span><span class="p">(</span><span class="n">GroupEvent</span><span class="p">,</span> <span class="n">BotEvent</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;当该事件发生时, 应用实例所辖账号加入指定群组</span>
+    <span class="sd">&quot;&quot;&quot;Bot 账号加入指定群组</span>
 
 <span class="sd">    ** 注意: 当监听该事件或该类事件时, 请优先考虑使用原始事件类作为类型注解, 以此获得事件类实例, 便于获取更多的信息! **</span>
 
-<span class="sd">    Allowed Extra Parameters(提供的额外注解支持):</span>
+<span class="sd">    提供的额外注解支持:</span>
 <span class="sd">        Ariadne (annotation): 发布事件的应用实例</span>
-<span class="sd">        Group (annotation, optional = None): 发生该事件的群组</span>
+<span class="sd">        Group (annotation): 发生该事件的群组</span>
 <span class="sd">        Member / Optional[Member] (annotation, optional = None): 邀请者, 可以为 None</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -958,13 +957,13 @@
 
 
 <span class="k">class</span> <span class="nc">BotLeaveEventActive</span><span class="p">(</span><span class="n">GroupEvent</span><span class="p">,</span> <span class="n">BotEvent</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;当该事件发生时, 应用实例所辖账号主动退出了某群组.</span>
+    <span class="sd">&quot;&quot;&quot;Bot 账号主动退出了某群组.</span>
 
 <span class="sd">    ** 注意: 当监听该事件或该类事件时, 请优先考虑使用原始事件类作为类型注解, 以此获得事件类实例, 便于获取更多的信息! **</span>
 
-<span class="sd">    Allowed Extra Parameters(提供的额外注解支持):</span>
+<span class="sd">    提供的额外注解支持:</span>
 <span class="sd">        Ariadne (annotation): 发布事件的应用实例</span>
-<span class="sd">        Group (annotation, optional = None): 发生该事件的群组</span>
+<span class="sd">        Group (annotation): 发生该事件的群组</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="nb">type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;BotLeaveEventActive&quot;</span>
@@ -981,13 +980,13 @@
 
 
 <span class="k">class</span> <span class="nc">BotLeaveEventKick</span><span class="p">(</span><span class="n">GroupEvent</span><span class="p">,</span> <span class="n">BotEvent</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;当该事件发生时, 应用实例所辖账号被某群组的管理员/群主从该群组中删除.</span>
+    <span class="sd">&quot;&quot;&quot;Bot 账号被某群组的管理员/群主从该群组中删除.</span>
 
 <span class="sd">    ** 注意: 当监听该事件或该类事件时, 请优先考虑使用原始事件类作为类型注解, 以此获得事件类实例, 便于获取更多的信息! **</span>
 
-<span class="sd">    Allowed Extra Parameters(提供的额外注解支持):</span>
+<span class="sd">    提供的额外注解支持:</span>
 <span class="sd">        Ariadne (annotation): 发布事件的应用实例</span>
-<span class="sd">        Group (annotation, optional = None): 发生该事件的群组</span>
+<span class="sd">        Group (annotation): 发生该事件的群组</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="nb">type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;BotLeaveEventKick&quot;</span>
@@ -1004,13 +1003,13 @@
 
 
 <span class="k">class</span> <span class="nc">GroupRecallEvent</span><span class="p">(</span><span class="n">GroupEvent</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;当该事件发生时, 有群成员在指定群组撤回了一条消息, 注意, 这里的群成员若具有管理员/群主权限, 则他们可以撤回其他普通群员的消息, 且不受发出时间限制.</span>
+    <span class="sd">&quot;&quot;&quot;有群成员在指定群组撤回了一条消息, 注意, 这里的群成员若具有管理员/群主权限, 则他们可以撤回其他普通群员的消息, 且不受发出时间限制.</span>
 
 <span class="sd">    ** 注意: 当监听该事件或该类事件时, 请优先考虑使用原始事件类作为类型注解, 以此获得事件类实例, 便于获取更多的信息! **</span>
 
-<span class="sd">    Allowed Extra Parameters(提供的额外注解支持):</span>
+<span class="sd">    提供的额外注解支持:</span>
 <span class="sd">        Ariadne (annotation): 发布事件的应用实例</span>
-<span class="sd">        Member (annotation, return:optional): 执行本操作的群成员, 若为 None 则为应用实例所辖账号操作</span>
+<span class="sd">        Member (annotation, optional): 执行本操作的群成员, 若为 None 则为 Bot 账号操作</span>
 <span class="sd">        Group (annotation): 发生该事件的群组</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -1034,11 +1033,11 @@
 
 
 <span class="k">class</span> <span class="nc">FriendRecallEvent</span><span class="p">(</span><span class="n">FriendEvent</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;当该事件发生时, 有一位与应用实例所辖账号为好友关系的用户撤回了一条消息</span>
+    <span class="sd">&quot;&quot;&quot;有一位与 Bot 账号为好友关系的用户撤回了一条消息</span>
 
 <span class="sd">    ** 注意: 当监听该事件或该类事件时, 请优先考虑使用原始事件类作为类型注解, 以此获得事件类实例, 便于获取更多的信息! **</span>
 
-<span class="sd">    Allowed Extra Parameters(提供的额外注解支持):</span>
+<span class="sd">    提供的额外注解支持:</span>
 <span class="sd">        Ariadne (annotation): 发布事件的应用实例</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -1050,11 +1049,11 @@
 
 
 <span class="k">class</span> <span class="nc">NudgeEvent</span><span class="p">(</span><span class="n">MiraiEvent</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;当该事件发生时, 应用实例所辖账号被某个账号在相应上下文区域进行 &quot;戳一戳&quot;(Nudge) 的行为.</span>
+    <span class="sd">&quot;&quot;&quot;Bot 账号被某个账号在相应上下文区域进行 &quot;戳一戳&quot;(Nudge) 的行为.</span>
 
 <span class="sd">    ** 注意: 当监听该事件时, 请使用原始事件类作为类型注解, 以此获得事件类实例, 并执行相关操作. **</span>
 
-<span class="sd">    Allowed Extra Parameters(提供的额外注解支持):</span>
+<span class="sd">    提供的额外注解支持:</span>
 <span class="sd">        Ariadne (annotation): 发布事件的应用实例</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -1081,11 +1080,11 @@
 
 
 <span class="k">class</span> <span class="nc">GroupNameChangeEvent</span><span class="p">(</span><span class="n">GroupEvent</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;该事件发生时, 有一群组被修改了群名称</span>
+    <span class="sd">&quot;&quot;&quot;有一群组被修改了群名称</span>
 
 <span class="sd">    ** 注意: 当监听该事件或该类事件时, 请优先考虑使用原始事件类作为类型注解, 以此获得事件类实例, 便于获取更多的信息! **</span>
 
-<span class="sd">    Allowed Extra Parameters(提供的额外注解支持):</span>
+<span class="sd">    提供的额外注解支持:</span>
 <span class="sd">        Ariadne (annotation): 发布事件的应用实例</span>
 <span class="sd">        Group (annotation): 被修改了群名称的群组</span>
 <span class="sd">        Member (annotation): 更改群名称的成员, 权限必定为管理员或是群主</span>
@@ -1110,14 +1109,14 @@
 
 
 <span class="k">class</span> <span class="nc">GroupEntranceAnnouncementChangeEvent</span><span class="p">(</span><span class="n">GroupEvent</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;该事件发生时, 有一群组被修改了入群公告</span>
+    <span class="sd">&quot;&quot;&quot;有一群组被修改了入群公告</span>
 
 <span class="sd">    ** 注意: 当监听该事件或该类事件时, 请优先考虑使用原始事件类作为类型注解, 以此获得事件类实例, 便于获取更多的信息! **</span>
 
-<span class="sd">    Allowed Extra Parameters(提供的额外注解支持):</span>
+<span class="sd">    提供的额外注解支持:</span>
 <span class="sd">        Ariadne (annotation): 发布事件的应用实例</span>
 <span class="sd">        Group (annotation): 被修改了入群公告的群组</span>
-<span class="sd">        Member (annotation, return:optional): 作出此操作的管理员/群主, 若为 None 则为应用实例所辖账号操作</span>
+<span class="sd">        Member (annotation, optional = None): 作出此操作的管理员/群主, 若为 None 则为 Bot 账号操作</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="nb">type</span> <span class="o">=</span> <span class="s2">&quot;GroupEntranceAnnouncementChangeEvent&quot;</span>
@@ -1139,14 +1138,14 @@
 
 
 <span class="k">class</span> <span class="nc">GroupMuteAllEvent</span><span class="p">(</span><span class="n">GroupEvent</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;该事件发生时, 有一群组开启了全体禁言</span>
+    <span class="sd">&quot;&quot;&quot;有一群组开启了全体禁言</span>
 
 <span class="sd">    ** 注意: 当监听该事件或该类事件时, 请优先考虑使用原始事件类作为类型注解, 以此获得事件类实例, 便于获取更多的信息! **</span>
 
-<span class="sd">    Allowed Extra Parameters(提供的额外注解支持):</span>
+<span class="sd">    提供的额外注解支持:</span>
 <span class="sd">        Ariadne (annotation): 发布事件的应用实例</span>
 <span class="sd">        Group (annotation): 开启了全体禁言的群组</span>
-<span class="sd">        Member (annotation, return:optional): 作出此操作的管理员/群主, 若为 None 则为应用实例所辖账号操作</span>
+<span class="sd">        Member (annotation, optional = None): 作出此操作的管理员/群主, 若为 None 则为 Bot 账号操作</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="nb">type</span> <span class="o">=</span> <span class="s2">&quot;GroupMuteAllEvent&quot;</span>
@@ -1168,14 +1167,14 @@
 
 
 <span class="k">class</span> <span class="nc">GroupAllowAnonymousChatEvent</span><span class="p">(</span><span class="n">GroupEvent</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;该事件发生时, 有一群组修改了有关匿名聊天的相关设定</span>
+    <span class="sd">&quot;&quot;&quot;有一群组修改了有关匿名聊天的相关设定</span>
 
 <span class="sd">    ** 注意: 当监听该事件或该类事件时, 请优先考虑使用原始事件类作为类型注解, 以此获得事件类实例, 便于获取更多的信息! **</span>
 
-<span class="sd">    Allowed Extra Parameters(提供的额外注解支持):</span>
+<span class="sd">    提供的额外注解支持:</span>
 <span class="sd">        Ariadne (annotation): 发布事件的应用实例</span>
 <span class="sd">        Group (annotation): 修改了相关设定的群组</span>
-<span class="sd">        Member (annotation, return:optional): 作出此操作的管理员/群主, 若为 None 则为应用实例所辖账号操作</span>
+<span class="sd">        Member (annotation, optional = None): 作出此操作的管理员/群主, 若为 None 则为 Bot 账号操作</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="nb">type</span> <span class="o">=</span> <span class="s2">&quot;GroupAllowAnonymousChatEvent&quot;</span>
@@ -1197,14 +1196,14 @@
 
 
 <span class="k">class</span> <span class="nc">GroupAllowConfessTalkEvent</span><span class="p">(</span><span class="n">GroupEvent</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;该事件发生时, 有一群组修改了有关坦白说的相关设定</span>
+    <span class="sd">&quot;&quot;&quot;有一群组修改了有关坦白说的相关设定</span>
 
 <span class="sd">    ** 注意: 当监听该事件或该类事件时, 请优先考虑使用原始事件类作为类型注解, 以此获得事件类实例, 便于获取更多的信息! **</span>
 
-<span class="sd">    Allowed Extra Parameters(提供的额外注解支持):</span>
+<span class="sd">    提供的额外注解支持:</span>
 <span class="sd">        Ariadne (annotation): 发布事件的应用实例</span>
 <span class="sd">        Group (annotation): 修改了相关设定的群组</span>
-<span class="sd">        Member (annotation, return:optional): 作出此操作的管理员/群主, 若为 None 则为应用实例所辖账号操作</span>
+<span class="sd">        Member (annotation, optional = None): 作出此操作的管理员/群主, 若为 None 则为 Bot 账号操作</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="nb">type</span> <span class="o">=</span> <span class="s2">&quot;GroupAllowConfessTalkEvent&quot;</span>
@@ -1226,14 +1225,14 @@
 
 
 <span class="k">class</span> <span class="nc">GroupAllowMemberInviteEvent</span><span class="p">(</span><span class="n">GroupEvent</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;该事件发生时, 有一群组修改了有关是否允许已有成员邀请其他用户加入群组的相关设定</span>
+    <span class="sd">&quot;&quot;&quot;有一群组修改了有关是否允许已有成员邀请其他用户加入群组的相关设定</span>
 
 <span class="sd">    ** 注意: 当监听该事件或该类事件时, 请优先考虑使用原始事件类作为类型注解, 以此获得事件类实例, 便于获取更多的信息! **</span>
 
-<span class="sd">    Allowed Extra Parameters(提供的额外注解支持):</span>
+<span class="sd">    提供的额外注解支持:</span>
 <span class="sd">        Ariadne (annotation): 发布事件的应用实例</span>
 <span class="sd">        Group (annotation): 修改了相关设定的群组</span>
-<span class="sd">        Member (annotation, return:optional): 作出此操作的管理员/群主, 若为 None 则为应用实例所辖账号操作</span>
+<span class="sd">        Member (annotation, optional = None): 作出此操作的管理员/群主, 若为 None 则为 Bot 账号操作</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="nb">type</span> <span class="o">=</span> <span class="s2">&quot;GroupAllowMemberInviteEvent&quot;</span>
@@ -1255,11 +1254,11 @@
 
 
 <span class="k">class</span> <span class="nc">MemberJoinEvent</span><span class="p">(</span><span class="n">GroupEvent</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;该事件发生时, 有一新成员加入了一特定群组</span>
+    <span class="sd">&quot;&quot;&quot;有一新成员加入了一特定群组</span>
 
 <span class="sd">    ** 注意: 当监听该事件或该类事件时, 请优先考虑使用原始事件类作为类型注解, 以此获得事件类实例, 便于获取更多的信息! **</span>
 
-<span class="sd">    Allowed Extra Parameters(提供的额外注解支持):</span>
+<span class="sd">    提供的额外注解支持:</span>
 <span class="sd">        Ariadne (annotation): 发布事件的应用实例</span>
 <span class="sd">        Group (annotation): 该用户加入的群组</span>
 <span class="sd">        Member (annotation): 关于该用户的成员实例</span>
@@ -1284,16 +1283,16 @@
 
 
 <span class="k">class</span> <span class="nc">MemberLeaveEventKick</span><span class="p">(</span><span class="n">GroupEvent</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;该事件发生时, 有一群组成员被管理员/群主从群组中删除, 当 `operator` 为 `None` 时, 执行者为应用实例所辖账号.</span>
+    <span class="sd">&quot;&quot;&quot;有一群组成员被管理员/群主从群组中删除, 当 `operator` 为 `None` 时, 执行者为 Bot 账号.</span>
 
 <span class="sd">    ** 注意: 当监听该事件或该类事件时, 请优先考虑使用原始事件类作为类型注解, 以此获得事件类实例, 便于获取更多的信息! **</span>
 
-<span class="sd">    Allowed Extra Parameters(提供的额外注解支持):</span>
+<span class="sd">    提供的额外注解支持:</span>
 <span class="sd">        Ariadne (annotation): 发布事件的应用实例</span>
 <span class="sd">        Group (annotation): 指定的群组</span>
 <span class="sd">        Member (annotation):</span>
 <span class="sd">          - `&quot;target&quot;` (default, const, str): 被从群组删除的成员</span>
-<span class="sd">          - `&quot;operator&quot;` (default, const, str, return:optional): 执行了该操作的管理员/群主, 也可能是应用实例所辖账号.</span>
+<span class="sd">          - `&quot;operator&quot;` (default, const, str, optional = None): 执行了该操作的管理员/群主, 也可能是 Bot 账号.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="nb">type</span> <span class="o">=</span> <span class="s2">&quot;MemberLeaveEventKick&quot;</span>
@@ -1315,11 +1314,11 @@
 
 
 <span class="k">class</span> <span class="nc">MemberLeaveEventQuit</span><span class="p">(</span><span class="n">GroupEvent</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;该事件发生时, 有一群组成员主动退出群组.</span>
+    <span class="sd">&quot;&quot;&quot;有一群组成员主动退出群组.</span>
 
 <span class="sd">    ** 注意: 当监听该事件或该类事件时, 请优先考虑使用原始事件类作为类型注解, 以此获得事件类实例, 便于获取更多的信息! **</span>
 
-<span class="sd">    Allowed Extra Parameters(提供的额外注解支持):</span>
+<span class="sd">    提供的额外注解支持:</span>
 <span class="sd">        Ariadne (annotation): 发布事件的应用实例</span>
 <span class="sd">        Group (annotation): 发生本事件的群组, 通常的, 在本事件发生后本群组成员数量少于之前</span>
 <span class="sd">        Member (annotation): 主动退出群组的成员</span>
@@ -1341,17 +1340,17 @@
 
 
 <span class="k">class</span> <span class="nc">MemberCardChangeEvent</span><span class="p">(</span><span class="n">GroupEvent</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;该事件发生时, 有一群组成员的群名片被更改, 执行者可能是管理员/群主, 该成员自己, 也可能是应用实例所辖账号(这时, `operator` 为 `None`).</span>
+    <span class="sd">&quot;&quot;&quot;有一群组成员的群名片被更改, 执行者可能是管理员/群主, 该成员自己, 也可能是 Bot 账号(这时, `operator` 为 `None`).</span>
 
 <span class="sd">    ** 注意: 当监听该事件或该类事件时, 请优先考虑使用原始事件类作为类型注解, 以此获得事件类实例, 便于获取更多的信息! **</span>
 
-<span class="sd">    Allowed Extra Parameters(提供的额外注解支持):</span>
+<span class="sd">    提供的额外注解支持:</span>
 <span class="sd">        Ariadne (annotation): 发布事件的应用实例</span>
 <span class="sd">        Group (annotation): 发生该事件的群组</span>
 <span class="sd">        Member (annotation):</span>
 <span class="sd">          - `&quot;target&quot;` (default, const, str): 被更改群名片的成员</span>
 <span class="sd">          - `&quot;operator&quot;` (default, const, Optional[str]): 该操作的执行者, 可能是管理员/群主, 该成员自己,</span>
-<span class="sd">          也可能是应用实例所辖账号(这时, `operator` 为 `None`).</span>
+<span class="sd">          也可能是 Bot 账号(这时, `operator` 为 `None`).</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="nb">type</span> <span class="o">=</span> <span class="s2">&quot;MemberCardChangeEvent&quot;</span>
@@ -1375,11 +1374,11 @@
 
 
 <span class="k">class</span> <span class="nc">MemberSpecialTitleChangeEvent</span><span class="p">(</span><span class="n">GroupEvent</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;该事件发生时, 有一群组成员的群头衔被更改, 执行者只可能是群组的群主.</span>
+    <span class="sd">&quot;&quot;&quot;有一群组成员的群头衔被更改, 执行者只可能是群组的群主.</span>
 
 <span class="sd">    ** 注意: 当监听该事件或该类事件时, 请优先考虑使用原始事件类作为类型注解, 以此获得事件类实例, 便于获取更多的信息! **</span>
 
-<span class="sd">    Allowed Extra Parameters(提供的额外注解支持):</span>
+<span class="sd">    提供的额外注解支持:</span>
 <span class="sd">        Ariadne (annotation): 发布事件的应用实例</span>
 <span class="sd">        Group (annotation): 发生该事件的群组</span>
 <span class="sd">        Member (annotation): 被更改群头衔的群组成员</span>
@@ -1403,11 +1402,11 @@
 
 
 <span class="k">class</span> <span class="nc">MemberPermissionChangeEvent</span><span class="p">(</span><span class="n">GroupEvent</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;该事件发生时, 有一群组成员的权限被更改/调整, 执行者只可能是群组的群主.</span>
+    <span class="sd">&quot;&quot;&quot;有一群组成员的权限被更改/调整, 执行者只可能是群组的群主.</span>
 
 <span class="sd">    ** 注意: 当监听该事件或该类事件时, 请优先考虑使用原始事件类作为类型注解, 以此获得事件类实例, 便于获取更多的信息! **</span>
 
-<span class="sd">    Allowed Extra Parameters(提供的额外注解支持):</span>
+<span class="sd">    提供的额外注解支持:</span>
 <span class="sd">        Ariadne (annotation): 发布事件的应用实例</span>
 <span class="sd">        Group (annotation): 发生该事件的群组</span>
 <span class="sd">        Member (annotation): 被调整权限的群组成员</span>
@@ -1431,16 +1430,16 @@
 
 
 <span class="k">class</span> <span class="nc">MemberMuteEvent</span><span class="p">(</span><span class="n">GroupEvent</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;该事件发生时, 有一群组成员被管理员/群组禁言, 当 `operator` 为 `None` 时为应用实例所辖账号操作.</span>
+    <span class="sd">&quot;&quot;&quot;有一群组成员被管理员/群组禁言, 当 `operator` 为 `None` 时为 Bot 账号操作.</span>
 
 <span class="sd">    ** 注意: 当监听该事件或该类事件时, 请优先考虑使用原始事件类作为类型注解, 以此获得事件类实例, 便于获取更多的信息! **</span>
 
-<span class="sd">    Allowed Extra Parameters(提供的额外注解支持):</span>
+<span class="sd">    提供的额外注解支持:</span>
 <span class="sd">        Ariadne (annotation): 发布事件的应用实例</span>
 <span class="sd">        Group (annotation): 发生该事件的群组</span>
 <span class="sd">        Member (annotation):</span>
 <span class="sd">          - `&quot;target&quot;` (default, const, str): 被禁言的成员</span>
-<span class="sd">          - `&quot;operator&quot;` (default, const, str, return:optional): 该操作的执行者, 也可能是应用实例所辖账号.</span>
+<span class="sd">          - `&quot;operator&quot;` (default, const, str, optional = None): 该操作的执行者, 也可能是 Bot 账号.</span>
 
 <span class="sd">          默认返回 `target`.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -1465,16 +1464,16 @@
 
 
 <span class="k">class</span> <span class="nc">MemberUnmuteEvent</span><span class="p">(</span><span class="n">GroupEvent</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;该事件发生时, 有一群组成员被管理员/群组解除禁言, 当 `operator` 为 `None` 时为应用实例所辖账号操作.</span>
+    <span class="sd">&quot;&quot;&quot;有一群组成员被管理员/群组解除禁言, 当 `operator` 为 `None` 时为 Bot 账号操作.</span>
 
 <span class="sd">    ** 注意: 当监听该事件或该类事件时, 请优先考虑使用原始事件类作为类型注解, 以此获得事件类实例, 便于获取更多的信息! **</span>
 
-<span class="sd">    Allowed Extra Parameters(提供的额外注解支持):</span>
+<span class="sd">    提供的额外注解支持:</span>
 <span class="sd">        Ariadne (annotation): 发布事件的应用实例</span>
 <span class="sd">        Group (annotation): 发生该事件的群组</span>
 <span class="sd">        Member (annotation):</span>
 <span class="sd">          - `&quot;target&quot;` (default, const, str): 被禁言的成员</span>
-<span class="sd">          - `&quot;operator&quot;` (default, const, str, return:optional): 该操作的执行者, 可能是管理员或是群主, 也可能是应用实例所辖账号.</span>
+<span class="sd">          - `&quot;operator&quot;` (default, const, str, optional = None): 该操作的执行者, 可能是管理员或是群主, 也可能是 Bot 账号.</span>
 
 <span class="sd">          默认返回 `target`.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -1498,11 +1497,11 @@
 
 
 <span class="k">class</span> <span class="nc">MemberHonorChangeEvent</span><span class="p">(</span><span class="n">GroupEvent</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;该事件发生时, 有一群组成员获得/失去了某个荣誉.</span>
+    <span class="sd">&quot;&quot;&quot;有一群组成员获得/失去了某个荣誉.</span>
 
 <span class="sd">    ** 注意: 当监听该事件或该类事件时, 请优先考虑使用原始事件类作为类型注解, 以此获得事件类实例, 便于获取更多的信息! **</span>
 
-<span class="sd">    Allowed Extra Parameters(提供的额外注解支持):</span>
+<span class="sd">    提供的额外注解支持:</span>
 <span class="sd">        Ariadne (annotation): 发布事件的应用实例</span>
 <span class="sd">        Group (annotation): 发生该事件的群组</span>
 <span class="sd">        Member (annotation): 获得/失去荣誉的成员</span>
@@ -1560,14 +1559,14 @@
 
 
 <span class="k">class</span> <span class="nc">NewFriendRequestEvent</span><span class="p">(</span><span class="n">RequestEvent</span><span class="p">,</span> <span class="n">FriendEvent</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;当该事件发生时, 有一用户向机器人提起好友请求.</span>
+    <span class="sd">&quot;&quot;&quot;有一用户向机器人提起好友请求.</span>
 
 <span class="sd">    ** 注意: 当监听该事件时, 请使用原始事件类作为类型注解, 以此获得事件类实例, 并执行相关操作. **</span>
 
-<span class="sd">    Allowed Extra Parameters(提供的额外注解支持):</span>
+<span class="sd">    提供的额外注解支持:</span>
 <span class="sd">        Ariadne (annotation): 发布事件的应用实例</span>
 
-<span class="sd">    Addon Introduction:</span>
+<span class="sd">    事件拓展支持:</span>
 <span class="sd">        该事件的处理需要你获取原始事件实例.</span>
 
 <span class="sd">        1. 读取该事件的基础信息:</span>
@@ -1633,14 +1632,14 @@
 
 
 <span class="k">class</span> <span class="nc">MemberJoinRequestEvent</span><span class="p">(</span><span class="n">RequestEvent</span><span class="p">,</span> <span class="n">GroupEvent</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;当该事件发生时, 有一用户向机器人作为管理员/群主的群组申请加入群组.</span>
+    <span class="sd">&quot;&quot;&quot;有一用户向机器人作为管理员/群主的群组申请加入群组.</span>
 
 <span class="sd">    ** 注意: 当监听该事件时, 请使用原始事件类作为类型注解, 以此获得事件类实例, 并执行相关操作. **</span>
 
-<span class="sd">    Allowed Extra Parameters(提供的额外注解支持):</span>
+<span class="sd">    提供的额外注解支持:</span>
 <span class="sd">        Ariadne (annotation): 发布事件的应用实例</span>
 
-<span class="sd">    Addon Introduction:</span>
+<span class="sd">    事件拓展支持:</span>
 <span class="sd">        该事件的处理需要你获取原始事件实例.</span>
 
 <span class="sd">        1. 读取该事件的基础信息:</span>
@@ -1745,21 +1744,21 @@
 
 
 <span class="k">class</span> <span class="nc">BotInvitedJoinGroupRequestEvent</span><span class="p">(</span><span class="n">RequestEvent</span><span class="p">,</span> <span class="n">BotEvent</span><span class="p">,</span> <span class="n">GroupEvent</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;当该事件发生时, 应用实例所辖账号接受到来自某个账号的邀请加入某个群组的请求.</span>
+    <span class="sd">&quot;&quot;&quot;Bot 账号接受到来自某个账号的邀请加入某个群组的请求.</span>
 
 <span class="sd">    ** 注意: 当监听该事件时, 请使用原始事件类作为类型注解, 以此获得事件类实例, 并执行相关操作. **</span>
 
-<span class="sd">    Allowed Extra Parameters(提供的额外注解支持):</span>
+<span class="sd">    提供的额外注解支持:</span>
 <span class="sd">        Ariadne (annotation): 发布事件的应用实例</span>
 
-<span class="sd">    Addon Introduction:</span>
+<span class="sd">    事件拓展支持:</span>
 <span class="sd">        该事件的处理需要你获取原始事件实例.</span>
 
 <span class="sd">        1. 读取该事件的基础信息:</span>
 
 <span class="sd">            ``` python</span>
 <span class="sd">            event.supplicant: int # 邀请所辖账号加入群组的用户的 ID</span>
-<span class="sd">            event.groupId: Optional[int] # 对方邀请所辖账号加入的群组的 ID</span>
+<span class="sd">            event.groupId: int # 对方邀请所辖账号加入的群组的 ID</span>
 <span class="sd">            event.groupName: str # 对方邀请所辖账号加入的群组的名称</span>
 <span class="sd">            event.nickname: str # 对方的昵称</span>
 <span class="sd">            event.message: str # 对方发起请求时填写的描述</span>
@@ -1772,7 +1771,7 @@
     <span class="nb">type</span> <span class="o">=</span> <span class="s2">&quot;BotInvitedJoinGroupRequestEvent&quot;</span>
     <span class="n">requestId</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="o">...</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;eventId&quot;</span><span class="p">)</span>
     <span class="n">supplicant</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="o">...</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;fromId&quot;</span><span class="p">)</span>  <span class="c1"># 即请求方 QQ</span>
-    <span class="n">groupId</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="o">...</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;groupId&quot;</span><span class="p">)</span>
+    <span class="n">groupId</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="o">...</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;groupId&quot;</span><span class="p">)</span>
     <span class="n">groupName</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="o">...</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;groupName&quot;</span><span class="p">)</span>
     <span class="n">nickname</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="o">...</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;nick&quot;</span><span class="p">)</span>
     <span class="n">message</span><span class="p">:</span> <span class="nb">str</span>
@@ -1809,11 +1808,11 @@
 
 
 <span class="k">class</span> <span class="nc">OtherClientOnlineEvent</span><span class="p">(</span><span class="n">MiraiEvent</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;当该事件发生时, 应用实例所辖账号在其他客户端上线.</span>
+    <span class="sd">&quot;&quot;&quot;Bot 账号在其他客户端上线.</span>
 
 <span class="sd">    ** 注意: 当监听该事件时, 请使用原始事件类作为类型注解, 以此获得事件类实例, 并执行相关操作. **</span>
 
-<span class="sd">    Allowed Extra Parameters(提供的额外注解支持):</span>
+<span class="sd">    提供的额外注解支持:</span>
 <span class="sd">        Ariadne (annotation): 发布事件的应用实例</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -1823,11 +1822,11 @@
 
 
 <span class="k">class</span> <span class="nc">OtherClientOfflineEvent</span><span class="p">(</span><span class="n">MiraiEvent</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;当该事件发生时, 应用实例所辖账号在其他客户端下线.</span>
+    <span class="sd">&quot;&quot;&quot;Bot 账号在其他客户端下线.</span>
 
 <span class="sd">    ** 注意: 当监听该事件时, 请使用原始事件类作为类型注解, 以此获得事件类实例, 并执行相关操作. **</span>
 
-<span class="sd">    Allowed Extra Parameters(提供的额外注解支持):</span>
+<span class="sd">    提供的额外注解支持:</span>
 <span class="sd">        Ariadne (annotation): 发布事件的应用实例</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -1836,11 +1835,17 @@
 
 
 <span class="k">class</span> <span class="nc">CommandExecutedEvent</span><span class="p">(</span><span class="n">MiraiEvent</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;当该事件发生时, 有一条命令被执行</span>
+    <span class="sd">&quot;&quot;&quot;有一条命令被执行</span>
 
 <span class="sd">    ** 注意: 当监听该事件时, 请使用原始事件类作为类型注解, 以此获得事件类实例, 并执行相关操作. **</span>
 
-<span class="sd">    Allowed Extra Parameters(提供的额外注解支持):</span>
+<span class="sd">    - eventId (int): 事件标识，响应该事件时的标识</span>
+<span class="sd">    - name (str): 命令名称</span>
+<span class="sd">    - friend (Optional[Friend]): 发送命令的好友, 从控制台发送为 None</span>
+<span class="sd">    - member (Optional[Member]): 发送命令的群成员, 从控制台发送为 None</span>
+<span class="sd">    - args (List[str]): 指令的参数, 以消息类型传递</span>
+
+<span class="sd">    提供的额外注解支持:</span>
 <span class="sd">        Ariadne (annotation): 发布事件的应用实例</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -1848,7 +1853,7 @@
     <span class="n">name</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">friend</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Friend</span><span class="p">]</span>
     <span class="n">member</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Member</span><span class="p">]</span>
-    <span class="n">args</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Element</span><span class="p">]</span>
+    <span class="n">args</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
 </pre></div>
 
         </details>
@@ -2031,11 +2036,11 @@
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">BotOnlineEvent</span><span class="p">(</span><span class="n">BotEvent</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;当该事件发生时, 应用实例所辖账号登录成功</span>
+    <span class="sd">&quot;&quot;&quot;Bot 账号登录成功</span>
 
 <span class="sd">    ** 注意: 当监听该事件或该类事件时, 请优先考虑使用原始事件类作为类型注解, 以此获得事件类实例, 便于获取更多的信息! **</span>
 
-<span class="sd">    Allowed Extra Parameters(提供的额外注解支持):</span>
+<span class="sd">    提供的额外注解支持:</span>
 <span class="sd">        Ariadne (annotation): 发布事件的应用实例</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -2045,11 +2050,11 @@
 
         </details>
 
-            <div class="docstring"><p>当该事件发生时, 应用实例所辖账号登录成功</p>
+            <div class="docstring"><p>Bot 账号登录成功</p>
 
 <p><em>* 注意: 当监听该事件或该类事件时, 请优先考虑使用原始事件类作为类型注解, 以此获得事件类实例, 便于获取更多的信息! *</em></p>
 
-<p>Allowed Extra Parameters(提供的额外注解支持):
+<p>提供的额外注解支持:
     Ariadne (annotation): 发布事件的应用实例</p>
 </div>
 
@@ -2098,11 +2103,11 @@
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">BotOfflineEventActive</span><span class="p">(</span><span class="n">BotEvent</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;当该事件发生时, 应用实例所辖账号主动离线</span>
+    <span class="sd">&quot;&quot;&quot;Bot 账号主动离线</span>
 
 <span class="sd">    ** 注意: 当监听该事件或该类事件时, 请优先考虑使用原始事件类作为类型注解, 以此获得事件类实例, 便于获取更多的信息! **</span>
 
-<span class="sd">    Allowed Extra Parameters(提供的额外注解支持):</span>
+<span class="sd">    提供的额外注解支持:</span>
 <span class="sd">        Ariadne (annotation): 发布事件的应用实例</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -2112,11 +2117,11 @@
 
         </details>
 
-            <div class="docstring"><p>当该事件发生时, 应用实例所辖账号主动离线</p>
+            <div class="docstring"><p>Bot 账号主动离线</p>
 
 <p><em>* 注意: 当监听该事件或该类事件时, 请优先考虑使用原始事件类作为类型注解, 以此获得事件类实例, 便于获取更多的信息! *</em></p>
 
-<p>Allowed Extra Parameters(提供的额外注解支持):
+<p>提供的额外注解支持:
     Ariadne (annotation): 发布事件的应用实例</p>
 </div>
 
@@ -2165,11 +2170,11 @@
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">BotOfflineEventForce</span><span class="p">(</span><span class="n">BotEvent</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;当该事件发生时, 应用实例所辖账号被迫离线</span>
+    <span class="sd">&quot;&quot;&quot;Bot 账号被迫离线</span>
 
 <span class="sd">    ** 注意: 当监听该事件或该类事件时, 请优先考虑使用原始事件类作为类型注解, 以此获得事件类实例, 便于获取更多的信息! **</span>
 
-<span class="sd">    Allowed Extra Parameters(提供的额外注解支持):</span>
+<span class="sd">    提供的额外注解支持:</span>
 <span class="sd">        Ariadne (annotation): 发布事件的应用实例</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -2179,11 +2184,11 @@
 
         </details>
 
-            <div class="docstring"><p>当该事件发生时, 应用实例所辖账号被迫离线</p>
+            <div class="docstring"><p>Bot 账号被迫离线</p>
 
 <p><em>* 注意: 当监听该事件或该类事件时, 请优先考虑使用原始事件类作为类型注解, 以此获得事件类实例, 便于获取更多的信息! *</em></p>
 
-<p>Allowed Extra Parameters(提供的额外注解支持):
+<p>提供的额外注解支持:
     Ariadne (annotation): 发布事件的应用实例</p>
 </div>
 
@@ -2232,11 +2237,11 @@
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">BotOfflineEventDropped</span><span class="p">(</span><span class="n">BotEvent</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;当该事件发生时, 应用实例所辖账号与服务器的连接被服务器主动断开, 或因网络原因离线</span>
+    <span class="sd">&quot;&quot;&quot;Bot 账号与服务器的连接被服务器主动断开, 或因网络原因离线</span>
 
 <span class="sd">    ** 注意: 当监听该事件或该类事件时, 请优先考虑使用原始事件类作为类型注解, 以此获得事件类实例, 便于获取更多的信息! **</span>
 
-<span class="sd">    Allowed Extra Parameters(提供的额外注解支持):</span>
+<span class="sd">    提供的额外注解支持:</span>
 <span class="sd">        Ariadne (annotation): 发布事件的应用实例</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -2246,11 +2251,11 @@
 
         </details>
 
-            <div class="docstring"><p>当该事件发生时, 应用实例所辖账号与服务器的连接被服务器主动断开, 或因网络原因离线</p>
+            <div class="docstring"><p>Bot 账号与服务器的连接被服务器主动断开, 或因网络原因离线</p>
 
 <p><em>* 注意: 当监听该事件或该类事件时, 请优先考虑使用原始事件类作为类型注解, 以此获得事件类实例, 便于获取更多的信息! *</em></p>
 
-<p>Allowed Extra Parameters(提供的额外注解支持):
+<p>提供的额外注解支持:
     Ariadne (annotation): 发布事件的应用实例</p>
 </div>
 
@@ -2299,11 +2304,11 @@
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">BotReloginEvent</span><span class="p">(</span><span class="n">BotEvent</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;当该事件发生时, 应用实例所辖账号正尝试重新登录</span>
+    <span class="sd">&quot;&quot;&quot;Bot 账号正尝试重新登录</span>
 
 <span class="sd">    ** 注意: 当监听该事件或该类事件时, 请优先考虑使用原始事件类作为类型注解, 以此获得事件类实例, 便于获取更多的信息! **</span>
 
-<span class="sd">    Allowed Extra Parameters(提供的额外注解支持):</span>
+<span class="sd">    提供的额外注解支持:</span>
 <span class="sd">        Ariadne (annotation): 发布事件的应用实例</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -2313,11 +2318,11 @@
 
         </details>
 
-            <div class="docstring"><p>当该事件发生时, 应用实例所辖账号正尝试重新登录</p>
+            <div class="docstring"><p>Bot 账号正尝试重新登录</p>
 
 <p><em>* 注意: 当监听该事件或该类事件时, 请优先考虑使用原始事件类作为类型注解, 以此获得事件类实例, 便于获取更多的信息! *</em></p>
 
-<p>Allowed Extra Parameters(提供的额外注解支持):
+<p>提供的额外注解支持:
     Ariadne (annotation): 发布事件的应用实例</p>
 </div>
 
@@ -2366,11 +2371,11 @@
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">FriendInputStatusChangedEvent</span><span class="p">(</span><span class="n">FriendEvent</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;当该事件发生时, 应用实例所辖账号的某一好友输入状态改变.</span>
+    <span class="sd">&quot;&quot;&quot;Bot 账号的某一好友输入状态改变.</span>
 
 <span class="sd">    ** 注意: 当监听该事件或该类事件时, 请优先考虑使用原始事件类作为类型注解, 以此获得事件类实例, 便于获取更多的信息! **</span>
 
-<span class="sd">    Allowed Extra Parameters(提供的额外注解支持):</span>
+<span class="sd">    提供的额外注解支持:</span>
 <span class="sd">        Ariadne (annotation): 发布事件的应用实例</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -2390,11 +2395,11 @@
 
         </details>
 
-            <div class="docstring"><p>当该事件发生时, 应用实例所辖账号的某一好友输入状态改变.</p>
+            <div class="docstring"><p>Bot 账号的某一好友输入状态改变.</p>
 
 <p><em>* 注意: 当监听该事件或该类事件时, 请优先考虑使用原始事件类作为类型注解, 以此获得事件类实例, 便于获取更多的信息! *</em></p>
 
-<p>Allowed Extra Parameters(提供的额外注解支持):
+<p>提供的额外注解支持:
     Ariadne (annotation): 发布事件的应用实例</p>
 </div>
 
@@ -2541,11 +2546,11 @@
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">FriendNickChangedEvent</span><span class="p">(</span><span class="n">FriendEvent</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;当该事件发生时, 应用实例所辖账号的某一好友更改了昵称.</span>
+    <span class="sd">&quot;&quot;&quot;Bot 账号的某一好友更改了昵称.</span>
 
 <span class="sd">    ** 注意: 当监听该事件或该类事件时, 请优先考虑使用原始事件类作为类型注解, 以此获得事件类实例, 便于获取更多的信息! **</span>
 
-<span class="sd">    Allowed Extra Parameters(提供的额外注解支持):</span>
+<span class="sd">    提供的额外注解支持:</span>
 <span class="sd">        Ariadne (annotation): 发布事件的应用实例</span>
 <span class="sd">        Friend (annotation): 更改名称的好友</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -2567,11 +2572,11 @@
 
         </details>
 
-            <div class="docstring"><p>当该事件发生时, 应用实例所辖账号的某一好友更改了昵称.</p>
+            <div class="docstring"><p>Bot 账号的某一好友更改了昵称.</p>
 
 <p><em>* 注意: 当监听该事件或该类事件时, 请优先考虑使用原始事件类作为类型注解, 以此获得事件类实例, 便于获取更多的信息! *</em></p>
 
-<p>Allowed Extra Parameters(提供的额外注解支持):
+<p>提供的额外注解支持:
     Ariadne (annotation): 发布事件的应用实例
     Friend (annotation): 更改名称的好友</p>
 </div>
@@ -2719,11 +2724,11 @@
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">BotGroupPermissionChangeEvent</span><span class="p">(</span><span class="n">GroupEvent</span><span class="p">,</span> <span class="n">BotEvent</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;当该事件发生时, 应用实例所辖账号在一特定群组内所具有的权限发生变化</span>
+    <span class="sd">&quot;&quot;&quot;Bot 账号在一特定群组内所具有的权限发生变化</span>
 
 <span class="sd">    ** 注意: 当监听该事件或该类事件时, 请优先考虑使用原始事件类作为类型注解, 以此获得事件类实例, 便于获取更多的信息! **</span>
 
-<span class="sd">    Allowed Extra Parameters(提供的额外注解支持):</span>
+<span class="sd">    提供的额外注解支持:</span>
 <span class="sd">        Ariadne (annotation): 发布事件的应用实例</span>
 <span class="sd">        Group (annotation): 发生该事件的群组</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -2745,11 +2750,11 @@
 
         </details>
 
-            <div class="docstring"><p>当该事件发生时, 应用实例所辖账号在一特定群组内所具有的权限发生变化</p>
+            <div class="docstring"><p>Bot 账号在一特定群组内所具有的权限发生变化</p>
 
 <p><em>* 注意: 当监听该事件或该类事件时, 请优先考虑使用原始事件类作为类型注解, 以此获得事件类实例, 便于获取更多的信息! *</em></p>
 
-<p>Allowed Extra Parameters(提供的额外注解支持):
+<p>提供的额外注解支持:
     Ariadne (annotation): 发布事件的应用实例
     Group (annotation): 发生该事件的群组</p>
 </div>
@@ -2897,14 +2902,14 @@
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">BotMuteEvent</span><span class="p">(</span><span class="n">GroupEvent</span><span class="p">,</span> <span class="n">BotEvent</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;当该事件发生时, 应用实例所辖账号在一特定群组内被管理员/群主禁言</span>
+    <span class="sd">&quot;&quot;&quot;Bot 账号在一特定群组内被管理员/群主禁言</span>
 
 <span class="sd">    ** 注意: 当监听该事件或该类事件时, 请优先考虑使用原始事件类作为类型注解, 以此获得事件类实例, 便于获取更多的信息! **</span>
 
-<span class="sd">    Allowed Extra Parameters(提供的额外注解支持):</span>
+<span class="sd">    提供的额外注解支持:</span>
 <span class="sd">        Ariadne (annotation): 发布事件的应用实例</span>
-<span class="sd">        Member (annotation, optional = None): 执行禁言操作的管理员/群主, 若为 None 则为应用实例所辖账号操作</span>
-<span class="sd">        Group (annotation, optional = None): 发生该事件的群组</span>
+<span class="sd">        Member (annotation, optional = None): 执行禁言操作的管理员/群主, 若为 None 则为 Bot 账号操作</span>
+<span class="sd">        Group (annotation): 发生该事件的群组</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="nb">type</span> <span class="o">=</span> <span class="s2">&quot;BotMuteEvent&quot;</span>
@@ -2925,14 +2930,14 @@
 
         </details>
 
-            <div class="docstring"><p>当该事件发生时, 应用实例所辖账号在一特定群组内被管理员/群主禁言</p>
+            <div class="docstring"><p>Bot 账号在一特定群组内被管理员/群主禁言</p>
 
 <p><em>* 注意: 当监听该事件或该类事件时, 请优先考虑使用原始事件类作为类型注解, 以此获得事件类实例, 便于获取更多的信息! *</em></p>
 
-<p>Allowed Extra Parameters(提供的额外注解支持):
+<p>提供的额外注解支持:
     Ariadne (annotation): 发布事件的应用实例
-    Member (annotation, optional = None): 执行禁言操作的管理员/群主, 若为 None 则为应用实例所辖账号操作
-    Group (annotation, optional = None): 发生该事件的群组</p>
+    Member (annotation, optional = None): 执行禁言操作的管理员/群主, 若为 None 则为 Bot 账号操作
+    Group (annotation): 发生该事件的群组</p>
 </div>
 
 
@@ -3082,14 +3087,14 @@
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">BotUnmuteEvent</span><span class="p">(</span><span class="n">GroupEvent</span><span class="p">,</span> <span class="n">BotEvent</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;当该事件发生时, 应用实例所辖账号在一特定群组内被管理员/群主解除禁言</span>
+    <span class="sd">&quot;&quot;&quot;Bot 账号在一特定群组内被管理员/群主解除禁言</span>
 
 <span class="sd">    ** 注意: 当监听该事件或该类事件时, 请优先考虑使用原始事件类作为类型注解, 以此获得事件类实例, 便于获取更多的信息! **</span>
 
-<span class="sd">    Allowed Extra Parameters(提供的额外注解支持):</span>
+<span class="sd">    提供的额外注解支持:</span>
 <span class="sd">        Ariadne (annotation): 发布事件的应用实例</span>
-<span class="sd">        Member (annotation, optional = None): 执行解除禁言操作的管理员/群主, 若为 None 则为应用实例所辖账号操作</span>
-<span class="sd">        Group (annotation, optional = None): 发生该事件的群组</span>
+<span class="sd">        Member (annotation, optional = None): 执行解除禁言操作的管理员/群主, 若为 None 则为 Bot 账号操作</span>
+<span class="sd">        Group (annotation): 发生该事件的群组</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="nb">type</span> <span class="o">=</span> <span class="s2">&quot;BotUnmuteEvent&quot;</span>
@@ -3109,14 +3114,14 @@
 
         </details>
 
-            <div class="docstring"><p>当该事件发生时, 应用实例所辖账号在一特定群组内被管理员/群主解除禁言</p>
+            <div class="docstring"><p>Bot 账号在一特定群组内被管理员/群主解除禁言</p>
 
 <p><em>* 注意: 当监听该事件或该类事件时, 请优先考虑使用原始事件类作为类型注解, 以此获得事件类实例, 便于获取更多的信息! *</em></p>
 
-<p>Allowed Extra Parameters(提供的额外注解支持):
+<p>提供的额外注解支持:
     Ariadne (annotation): 发布事件的应用实例
-    Member (annotation, optional = None): 执行解除禁言操作的管理员/群主, 若为 None 则为应用实例所辖账号操作
-    Group (annotation, optional = None): 发生该事件的群组</p>
+    Member (annotation, optional = None): 执行解除禁言操作的管理员/群主, 若为 None 则为 Bot 账号操作
+    Group (annotation): 发生该事件的群组</p>
 </div>
 
 
@@ -3266,13 +3271,13 @@
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">BotJoinGroupEvent</span><span class="p">(</span><span class="n">GroupEvent</span><span class="p">,</span> <span class="n">BotEvent</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;当该事件发生时, 应用实例所辖账号加入指定群组</span>
+    <span class="sd">&quot;&quot;&quot;Bot 账号加入指定群组</span>
 
 <span class="sd">    ** 注意: 当监听该事件或该类事件时, 请优先考虑使用原始事件类作为类型注解, 以此获得事件类实例, 便于获取更多的信息! **</span>
 
-<span class="sd">    Allowed Extra Parameters(提供的额外注解支持):</span>
+<span class="sd">    提供的额外注解支持:</span>
 <span class="sd">        Ariadne (annotation): 发布事件的应用实例</span>
-<span class="sd">        Group (annotation, optional = None): 发生该事件的群组</span>
+<span class="sd">        Group (annotation): 发生该事件的群组</span>
 <span class="sd">        Member / Optional[Member] (annotation, optional = None): 邀请者, 可以为 None</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -3294,13 +3299,13 @@
 
         </details>
 
-            <div class="docstring"><p>当该事件发生时, 应用实例所辖账号加入指定群组</p>
+            <div class="docstring"><p>Bot 账号加入指定群组</p>
 
 <p><em>* 注意: 当监听该事件或该类事件时, 请优先考虑使用原始事件类作为类型注解, 以此获得事件类实例, 便于获取更多的信息! *</em></p>
 
-<p>Allowed Extra Parameters(提供的额外注解支持):
+<p>提供的额外注解支持:
     Ariadne (annotation): 发布事件的应用实例
-    Group (annotation, optional = None): 发生该事件的群组
+    Group (annotation): 发生该事件的群组
     Member / Optional[Member] (annotation, optional = None): 邀请者, 可以为 None</p>
 </div>
 
@@ -3451,13 +3456,13 @@
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">BotLeaveEventActive</span><span class="p">(</span><span class="n">GroupEvent</span><span class="p">,</span> <span class="n">BotEvent</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;当该事件发生时, 应用实例所辖账号主动退出了某群组.</span>
+    <span class="sd">&quot;&quot;&quot;Bot 账号主动退出了某群组.</span>
 
 <span class="sd">    ** 注意: 当监听该事件或该类事件时, 请优先考虑使用原始事件类作为类型注解, 以此获得事件类实例, 便于获取更多的信息! **</span>
 
-<span class="sd">    Allowed Extra Parameters(提供的额外注解支持):</span>
+<span class="sd">    提供的额外注解支持:</span>
 <span class="sd">        Ariadne (annotation): 发布事件的应用实例</span>
-<span class="sd">        Group (annotation, optional = None): 发生该事件的群组</span>
+<span class="sd">        Group (annotation): 发生该事件的群组</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="nb">type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;BotLeaveEventActive&quot;</span>
@@ -3475,13 +3480,13 @@
 
         </details>
 
-            <div class="docstring"><p>当该事件发生时, 应用实例所辖账号主动退出了某群组.</p>
+            <div class="docstring"><p>Bot 账号主动退出了某群组.</p>
 
 <p><em>* 注意: 当监听该事件或该类事件时, 请优先考虑使用原始事件类作为类型注解, 以此获得事件类实例, 便于获取更多的信息! *</em></p>
 
-<p>Allowed Extra Parameters(提供的额外注解支持):
+<p>提供的额外注解支持:
     Ariadne (annotation): 发布事件的应用实例
-    Group (annotation, optional = None): 发生该事件的群组</p>
+    Group (annotation): 发生该事件的群组</p>
 </div>
 
 
@@ -3637,13 +3642,13 @@
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">BotLeaveEventKick</span><span class="p">(</span><span class="n">GroupEvent</span><span class="p">,</span> <span class="n">BotEvent</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;当该事件发生时, 应用实例所辖账号被某群组的管理员/群主从该群组中删除.</span>
+    <span class="sd">&quot;&quot;&quot;Bot 账号被某群组的管理员/群主从该群组中删除.</span>
 
 <span class="sd">    ** 注意: 当监听该事件或该类事件时, 请优先考虑使用原始事件类作为类型注解, 以此获得事件类实例, 便于获取更多的信息! **</span>
 
-<span class="sd">    Allowed Extra Parameters(提供的额外注解支持):</span>
+<span class="sd">    提供的额外注解支持:</span>
 <span class="sd">        Ariadne (annotation): 发布事件的应用实例</span>
-<span class="sd">        Group (annotation, optional = None): 发生该事件的群组</span>
+<span class="sd">        Group (annotation): 发生该事件的群组</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="nb">type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;BotLeaveEventKick&quot;</span>
@@ -3661,13 +3666,13 @@
 
         </details>
 
-            <div class="docstring"><p>当该事件发生时, 应用实例所辖账号被某群组的管理员/群主从该群组中删除.</p>
+            <div class="docstring"><p>Bot 账号被某群组的管理员/群主从该群组中删除.</p>
 
 <p><em>* 注意: 当监听该事件或该类事件时, 请优先考虑使用原始事件类作为类型注解, 以此获得事件类实例, 便于获取更多的信息! *</em></p>
 
-<p>Allowed Extra Parameters(提供的额外注解支持):
+<p>提供的额外注解支持:
     Ariadne (annotation): 发布事件的应用实例
-    Group (annotation, optional = None): 发生该事件的群组</p>
+    Group (annotation): 发生该事件的群组</p>
 </div>
 
 
@@ -3823,13 +3828,13 @@
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">GroupRecallEvent</span><span class="p">(</span><span class="n">GroupEvent</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;当该事件发生时, 有群成员在指定群组撤回了一条消息, 注意, 这里的群成员若具有管理员/群主权限, 则他们可以撤回其他普通群员的消息, 且不受发出时间限制.</span>
+    <span class="sd">&quot;&quot;&quot;有群成员在指定群组撤回了一条消息, 注意, 这里的群成员若具有管理员/群主权限, 则他们可以撤回其他普通群员的消息, 且不受发出时间限制.</span>
 
 <span class="sd">    ** 注意: 当监听该事件或该类事件时, 请优先考虑使用原始事件类作为类型注解, 以此获得事件类实例, 便于获取更多的信息! **</span>
 
-<span class="sd">    Allowed Extra Parameters(提供的额外注解支持):</span>
+<span class="sd">    提供的额外注解支持:</span>
 <span class="sd">        Ariadne (annotation): 发布事件的应用实例</span>
-<span class="sd">        Member (annotation, return:optional): 执行本操作的群成员, 若为 None 则为应用实例所辖账号操作</span>
+<span class="sd">        Member (annotation, optional): 执行本操作的群成员, 若为 None 则为 Bot 账号操作</span>
 <span class="sd">        Group (annotation): 发生该事件的群组</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -3854,13 +3859,13 @@
 
         </details>
 
-            <div class="docstring"><p>当该事件发生时, 有群成员在指定群组撤回了一条消息, 注意, 这里的群成员若具有管理员/群主权限, 则他们可以撤回其他普通群员的消息, 且不受发出时间限制.</p>
+            <div class="docstring"><p>有群成员在指定群组撤回了一条消息, 注意, 这里的群成员若具有管理员/群主权限, 则他们可以撤回其他普通群员的消息, 且不受发出时间限制.</p>
 
 <p><em>* 注意: 当监听该事件或该类事件时, 请优先考虑使用原始事件类作为类型注解, 以此获得事件类实例, 便于获取更多的信息! *</em></p>
 
-<p>Allowed Extra Parameters(提供的额外注解支持):
+<p>提供的额外注解支持:
     Ariadne (annotation): 发布事件的应用实例
-    Member (annotation, return:optional): 执行本操作的群成员, 若为 None 则为应用实例所辖账号操作
+    Member (annotation, optional): 执行本操作的群成员, 若为 None 则为 Bot 账号操作
     Group (annotation): 发生该事件的群组</p>
 </div>
 
@@ -4011,11 +4016,11 @@
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">FriendRecallEvent</span><span class="p">(</span><span class="n">FriendEvent</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;当该事件发生时, 有一位与应用实例所辖账号为好友关系的用户撤回了一条消息</span>
+    <span class="sd">&quot;&quot;&quot;有一位与 Bot 账号为好友关系的用户撤回了一条消息</span>
 
 <span class="sd">    ** 注意: 当监听该事件或该类事件时, 请优先考虑使用原始事件类作为类型注解, 以此获得事件类实例, 便于获取更多的信息! **</span>
 
-<span class="sd">    Allowed Extra Parameters(提供的额外注解支持):</span>
+<span class="sd">    提供的额外注解支持:</span>
 <span class="sd">        Ariadne (annotation): 发布事件的应用实例</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -4028,11 +4033,11 @@
 
         </details>
 
-            <div class="docstring"><p>当该事件发生时, 有一位与应用实例所辖账号为好友关系的用户撤回了一条消息</p>
+            <div class="docstring"><p>有一位与 Bot 账号为好友关系的用户撤回了一条消息</p>
 
 <p><em>* 注意: 当监听该事件或该类事件时, 请优先考虑使用原始事件类作为类型注解, 以此获得事件类实例, 便于获取更多的信息! *</em></p>
 
-<p>Allowed Extra Parameters(提供的额外注解支持):
+<p>提供的额外注解支持:
     Ariadne (annotation): 发布事件的应用实例</p>
 </div>
 
@@ -4081,11 +4086,11 @@
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">NudgeEvent</span><span class="p">(</span><span class="n">MiraiEvent</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;当该事件发生时, 应用实例所辖账号被某个账号在相应上下文区域进行 &quot;戳一戳&quot;(Nudge) 的行为.</span>
+    <span class="sd">&quot;&quot;&quot;Bot 账号被某个账号在相应上下文区域进行 &quot;戳一戳&quot;(Nudge) 的行为.</span>
 
 <span class="sd">    ** 注意: 当监听该事件时, 请使用原始事件类作为类型注解, 以此获得事件类实例, 并执行相关操作. **</span>
 
-<span class="sd">    Allowed Extra Parameters(提供的额外注解支持):</span>
+<span class="sd">    提供的额外注解支持:</span>
 <span class="sd">        Ariadne (annotation): 发布事件的应用实例</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -4113,11 +4118,11 @@
 
         </details>
 
-            <div class="docstring"><p>当该事件发生时, 应用实例所辖账号被某个账号在相应上下文区域进行 "戳一戳"(Nudge) 的行为.</p>
+            <div class="docstring"><p>Bot 账号被某个账号在相应上下文区域进行 "戳一戳"(Nudge) 的行为.</p>
 
 <p><em>* 注意: 当监听该事件时, 请使用原始事件类作为类型注解, 以此获得事件类实例, 并执行相关操作. *</em></p>
 
-<p>Allowed Extra Parameters(提供的额外注解支持):
+<p>提供的额外注解支持:
     Ariadne (annotation): 发布事件的应用实例</p>
 </div>
 
@@ -4202,11 +4207,11 @@
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">GroupNameChangeEvent</span><span class="p">(</span><span class="n">GroupEvent</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;该事件发生时, 有一群组被修改了群名称</span>
+    <span class="sd">&quot;&quot;&quot;有一群组被修改了群名称</span>
 
 <span class="sd">    ** 注意: 当监听该事件或该类事件时, 请优先考虑使用原始事件类作为类型注解, 以此获得事件类实例, 便于获取更多的信息! **</span>
 
-<span class="sd">    Allowed Extra Parameters(提供的额外注解支持):</span>
+<span class="sd">    提供的额外注解支持:</span>
 <span class="sd">        Ariadne (annotation): 发布事件的应用实例</span>
 <span class="sd">        Group (annotation): 被修改了群名称的群组</span>
 <span class="sd">        Member (annotation): 更改群名称的成员, 权限必定为管理员或是群主</span>
@@ -4232,11 +4237,11 @@
 
         </details>
 
-            <div class="docstring"><p>该事件发生时, 有一群组被修改了群名称</p>
+            <div class="docstring"><p>有一群组被修改了群名称</p>
 
 <p><em>* 注意: 当监听该事件或该类事件时, 请优先考虑使用原始事件类作为类型注解, 以此获得事件类实例, 便于获取更多的信息! *</em></p>
 
-<p>Allowed Extra Parameters(提供的额外注解支持):
+<p>提供的额外注解支持:
     Ariadne (annotation): 发布事件的应用实例
     Group (annotation): 被修改了群名称的群组
     Member (annotation): 更改群名称的成员, 权限必定为管理员或是群主</p>
@@ -4389,14 +4394,14 @@
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">GroupEntranceAnnouncementChangeEvent</span><span class="p">(</span><span class="n">GroupEvent</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;该事件发生时, 有一群组被修改了入群公告</span>
+    <span class="sd">&quot;&quot;&quot;有一群组被修改了入群公告</span>
 
 <span class="sd">    ** 注意: 当监听该事件或该类事件时, 请优先考虑使用原始事件类作为类型注解, 以此获得事件类实例, 便于获取更多的信息! **</span>
 
-<span class="sd">    Allowed Extra Parameters(提供的额外注解支持):</span>
+<span class="sd">    提供的额外注解支持:</span>
 <span class="sd">        Ariadne (annotation): 发布事件的应用实例</span>
 <span class="sd">        Group (annotation): 被修改了入群公告的群组</span>
-<span class="sd">        Member (annotation, return:optional): 作出此操作的管理员/群主, 若为 None 则为应用实例所辖账号操作</span>
+<span class="sd">        Member (annotation, optional = None): 作出此操作的管理员/群主, 若为 None 则为 Bot 账号操作</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="nb">type</span> <span class="o">=</span> <span class="s2">&quot;GroupEntranceAnnouncementChangeEvent&quot;</span>
@@ -4419,14 +4424,14 @@
 
         </details>
 
-            <div class="docstring"><p>该事件发生时, 有一群组被修改了入群公告</p>
+            <div class="docstring"><p>有一群组被修改了入群公告</p>
 
 <p><em>* 注意: 当监听该事件或该类事件时, 请优先考虑使用原始事件类作为类型注解, 以此获得事件类实例, 便于获取更多的信息! *</em></p>
 
-<p>Allowed Extra Parameters(提供的额外注解支持):
+<p>提供的额外注解支持:
     Ariadne (annotation): 发布事件的应用实例
     Group (annotation): 被修改了入群公告的群组
-    Member (annotation, return:optional): 作出此操作的管理员/群主, 若为 None 则为应用实例所辖账号操作</p>
+    Member (annotation, optional = None): 作出此操作的管理员/群主, 若为 None 则为 Bot 账号操作</p>
 </div>
 
 
@@ -4576,14 +4581,14 @@
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">GroupMuteAllEvent</span><span class="p">(</span><span class="n">GroupEvent</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;该事件发生时, 有一群组开启了全体禁言</span>
+    <span class="sd">&quot;&quot;&quot;有一群组开启了全体禁言</span>
 
 <span class="sd">    ** 注意: 当监听该事件或该类事件时, 请优先考虑使用原始事件类作为类型注解, 以此获得事件类实例, 便于获取更多的信息! **</span>
 
-<span class="sd">    Allowed Extra Parameters(提供的额外注解支持):</span>
+<span class="sd">    提供的额外注解支持:</span>
 <span class="sd">        Ariadne (annotation): 发布事件的应用实例</span>
 <span class="sd">        Group (annotation): 开启了全体禁言的群组</span>
-<span class="sd">        Member (annotation, return:optional): 作出此操作的管理员/群主, 若为 None 则为应用实例所辖账号操作</span>
+<span class="sd">        Member (annotation, optional = None): 作出此操作的管理员/群主, 若为 None 则为 Bot 账号操作</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="nb">type</span> <span class="o">=</span> <span class="s2">&quot;GroupMuteAllEvent&quot;</span>
@@ -4606,14 +4611,14 @@
 
         </details>
 
-            <div class="docstring"><p>该事件发生时, 有一群组开启了全体禁言</p>
+            <div class="docstring"><p>有一群组开启了全体禁言</p>
 
 <p><em>* 注意: 当监听该事件或该类事件时, 请优先考虑使用原始事件类作为类型注解, 以此获得事件类实例, 便于获取更多的信息! *</em></p>
 
-<p>Allowed Extra Parameters(提供的额外注解支持):
+<p>提供的额外注解支持:
     Ariadne (annotation): 发布事件的应用实例
     Group (annotation): 开启了全体禁言的群组
-    Member (annotation, return:optional): 作出此操作的管理员/群主, 若为 None 则为应用实例所辖账号操作</p>
+    Member (annotation, optional = None): 作出此操作的管理员/群主, 若为 None 则为 Bot 账号操作</p>
 </div>
 
 
@@ -4763,14 +4768,14 @@
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">GroupAllowAnonymousChatEvent</span><span class="p">(</span><span class="n">GroupEvent</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;该事件发生时, 有一群组修改了有关匿名聊天的相关设定</span>
+    <span class="sd">&quot;&quot;&quot;有一群组修改了有关匿名聊天的相关设定</span>
 
 <span class="sd">    ** 注意: 当监听该事件或该类事件时, 请优先考虑使用原始事件类作为类型注解, 以此获得事件类实例, 便于获取更多的信息! **</span>
 
-<span class="sd">    Allowed Extra Parameters(提供的额外注解支持):</span>
+<span class="sd">    提供的额外注解支持:</span>
 <span class="sd">        Ariadne (annotation): 发布事件的应用实例</span>
 <span class="sd">        Group (annotation): 修改了相关设定的群组</span>
-<span class="sd">        Member (annotation, return:optional): 作出此操作的管理员/群主, 若为 None 则为应用实例所辖账号操作</span>
+<span class="sd">        Member (annotation, optional = None): 作出此操作的管理员/群主, 若为 None 则为 Bot 账号操作</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="nb">type</span> <span class="o">=</span> <span class="s2">&quot;GroupAllowAnonymousChatEvent&quot;</span>
@@ -4793,14 +4798,14 @@
 
         </details>
 
-            <div class="docstring"><p>该事件发生时, 有一群组修改了有关匿名聊天的相关设定</p>
+            <div class="docstring"><p>有一群组修改了有关匿名聊天的相关设定</p>
 
 <p><em>* 注意: 当监听该事件或该类事件时, 请优先考虑使用原始事件类作为类型注解, 以此获得事件类实例, 便于获取更多的信息! *</em></p>
 
-<p>Allowed Extra Parameters(提供的额外注解支持):
+<p>提供的额外注解支持:
     Ariadne (annotation): 发布事件的应用实例
     Group (annotation): 修改了相关设定的群组
-    Member (annotation, return:optional): 作出此操作的管理员/群主, 若为 None 则为应用实例所辖账号操作</p>
+    Member (annotation, optional = None): 作出此操作的管理员/群主, 若为 None 则为 Bot 账号操作</p>
 </div>
 
 
@@ -4950,14 +4955,14 @@
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">GroupAllowConfessTalkEvent</span><span class="p">(</span><span class="n">GroupEvent</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;该事件发生时, 有一群组修改了有关坦白说的相关设定</span>
+    <span class="sd">&quot;&quot;&quot;有一群组修改了有关坦白说的相关设定</span>
 
 <span class="sd">    ** 注意: 当监听该事件或该类事件时, 请优先考虑使用原始事件类作为类型注解, 以此获得事件类实例, 便于获取更多的信息! **</span>
 
-<span class="sd">    Allowed Extra Parameters(提供的额外注解支持):</span>
+<span class="sd">    提供的额外注解支持:</span>
 <span class="sd">        Ariadne (annotation): 发布事件的应用实例</span>
 <span class="sd">        Group (annotation): 修改了相关设定的群组</span>
-<span class="sd">        Member (annotation, return:optional): 作出此操作的管理员/群主, 若为 None 则为应用实例所辖账号操作</span>
+<span class="sd">        Member (annotation, optional = None): 作出此操作的管理员/群主, 若为 None 则为 Bot 账号操作</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="nb">type</span> <span class="o">=</span> <span class="s2">&quot;GroupAllowConfessTalkEvent&quot;</span>
@@ -4980,14 +4985,14 @@
 
         </details>
 
-            <div class="docstring"><p>该事件发生时, 有一群组修改了有关坦白说的相关设定</p>
+            <div class="docstring"><p>有一群组修改了有关坦白说的相关设定</p>
 
 <p><em>* 注意: 当监听该事件或该类事件时, 请优先考虑使用原始事件类作为类型注解, 以此获得事件类实例, 便于获取更多的信息! *</em></p>
 
-<p>Allowed Extra Parameters(提供的额外注解支持):
+<p>提供的额外注解支持:
     Ariadne (annotation): 发布事件的应用实例
     Group (annotation): 修改了相关设定的群组
-    Member (annotation, return:optional): 作出此操作的管理员/群主, 若为 None 则为应用实例所辖账号操作</p>
+    Member (annotation, optional = None): 作出此操作的管理员/群主, 若为 None 则为 Bot 账号操作</p>
 </div>
 
 
@@ -5137,14 +5142,14 @@
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">GroupAllowMemberInviteEvent</span><span class="p">(</span><span class="n">GroupEvent</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;该事件发生时, 有一群组修改了有关是否允许已有成员邀请其他用户加入群组的相关设定</span>
+    <span class="sd">&quot;&quot;&quot;有一群组修改了有关是否允许已有成员邀请其他用户加入群组的相关设定</span>
 
 <span class="sd">    ** 注意: 当监听该事件或该类事件时, 请优先考虑使用原始事件类作为类型注解, 以此获得事件类实例, 便于获取更多的信息! **</span>
 
-<span class="sd">    Allowed Extra Parameters(提供的额外注解支持):</span>
+<span class="sd">    提供的额外注解支持:</span>
 <span class="sd">        Ariadne (annotation): 发布事件的应用实例</span>
 <span class="sd">        Group (annotation): 修改了相关设定的群组</span>
-<span class="sd">        Member (annotation, return:optional): 作出此操作的管理员/群主, 若为 None 则为应用实例所辖账号操作</span>
+<span class="sd">        Member (annotation, optional = None): 作出此操作的管理员/群主, 若为 None 则为 Bot 账号操作</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="nb">type</span> <span class="o">=</span> <span class="s2">&quot;GroupAllowMemberInviteEvent&quot;</span>
@@ -5167,14 +5172,14 @@
 
         </details>
 
-            <div class="docstring"><p>该事件发生时, 有一群组修改了有关是否允许已有成员邀请其他用户加入群组的相关设定</p>
+            <div class="docstring"><p>有一群组修改了有关是否允许已有成员邀请其他用户加入群组的相关设定</p>
 
 <p><em>* 注意: 当监听该事件或该类事件时, 请优先考虑使用原始事件类作为类型注解, 以此获得事件类实例, 便于获取更多的信息! *</em></p>
 
-<p>Allowed Extra Parameters(提供的额外注解支持):
+<p>提供的额外注解支持:
     Ariadne (annotation): 发布事件的应用实例
     Group (annotation): 修改了相关设定的群组
-    Member (annotation, return:optional): 作出此操作的管理员/群主, 若为 None 则为应用实例所辖账号操作</p>
+    Member (annotation, optional = None): 作出此操作的管理员/群主, 若为 None 则为 Bot 账号操作</p>
 </div>
 
 
@@ -5324,11 +5329,11 @@
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">MemberJoinEvent</span><span class="p">(</span><span class="n">GroupEvent</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;该事件发生时, 有一新成员加入了一特定群组</span>
+    <span class="sd">&quot;&quot;&quot;有一新成员加入了一特定群组</span>
 
 <span class="sd">    ** 注意: 当监听该事件或该类事件时, 请优先考虑使用原始事件类作为类型注解, 以此获得事件类实例, 便于获取更多的信息! **</span>
 
-<span class="sd">    Allowed Extra Parameters(提供的额外注解支持):</span>
+<span class="sd">    提供的额外注解支持:</span>
 <span class="sd">        Ariadne (annotation): 发布事件的应用实例</span>
 <span class="sd">        Group (annotation): 该用户加入的群组</span>
 <span class="sd">        Member (annotation): 关于该用户的成员实例</span>
@@ -5354,11 +5359,11 @@
 
         </details>
 
-            <div class="docstring"><p>该事件发生时, 有一新成员加入了一特定群组</p>
+            <div class="docstring"><p>有一新成员加入了一特定群组</p>
 
 <p><em>* 注意: 当监听该事件或该类事件时, 请优先考虑使用原始事件类作为类型注解, 以此获得事件类实例, 便于获取更多的信息! *</em></p>
 
-<p>Allowed Extra Parameters(提供的额外注解支持):
+<p>提供的额外注解支持:
     Ariadne (annotation): 发布事件的应用实例
     Group (annotation): 该用户加入的群组
     Member (annotation): 关于该用户的成员实例</p>
@@ -5515,16 +5520,16 @@
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">MemberLeaveEventKick</span><span class="p">(</span><span class="n">GroupEvent</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;该事件发生时, 有一群组成员被管理员/群主从群组中删除, 当 `operator` 为 `None` 时, 执行者为应用实例所辖账号.</span>
+    <span class="sd">&quot;&quot;&quot;有一群组成员被管理员/群主从群组中删除, 当 `operator` 为 `None` 时, 执行者为 Bot 账号.</span>
 
 <span class="sd">    ** 注意: 当监听该事件或该类事件时, 请优先考虑使用原始事件类作为类型注解, 以此获得事件类实例, 便于获取更多的信息! **</span>
 
-<span class="sd">    Allowed Extra Parameters(提供的额外注解支持):</span>
+<span class="sd">    提供的额外注解支持:</span>
 <span class="sd">        Ariadne (annotation): 发布事件的应用实例</span>
 <span class="sd">        Group (annotation): 指定的群组</span>
 <span class="sd">        Member (annotation):</span>
 <span class="sd">          - `&quot;target&quot;` (default, const, str): 被从群组删除的成员</span>
-<span class="sd">          - `&quot;operator&quot;` (default, const, str, return:optional): 执行了该操作的管理员/群主, 也可能是应用实例所辖账号.</span>
+<span class="sd">          - `&quot;operator&quot;` (default, const, str, optional = None): 执行了该操作的管理员/群主, 也可能是 Bot 账号.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="nb">type</span> <span class="o">=</span> <span class="s2">&quot;MemberLeaveEventKick&quot;</span>
@@ -5547,16 +5552,16 @@
 
         </details>
 
-            <div class="docstring"><p>该事件发生时, 有一群组成员被管理员/群主从群组中删除, 当 <code>operator</code> 为 <code>None</code> 时, 执行者为应用实例所辖账号.</p>
+            <div class="docstring"><p>有一群组成员被管理员/群主从群组中删除, 当 <code>operator</code> 为 <code>None</code> 时, 执行者为 Bot 账号.</p>
 
 <p><em>* 注意: 当监听该事件或该类事件时, 请优先考虑使用原始事件类作为类型注解, 以此获得事件类实例, 便于获取更多的信息! *</em></p>
 
-<p>Allowed Extra Parameters(提供的额外注解支持):
+<p>提供的额外注解支持:
     Ariadne (annotation): 发布事件的应用实例
     Group (annotation): 指定的群组
     Member (annotation):
       - <code>"target"</code> (default, const, str): 被从群组删除的成员
-      - <code>"operator"</code> (default, const, str, return:optional): 执行了该操作的管理员/群主, 也可能是应用实例所辖账号.</p>
+      - <code>"operator"</code> (default, const, str, optional = None): 执行了该操作的管理员/群主, 也可能是 Bot 账号.</p>
 </div>
 
 
@@ -5710,11 +5715,11 @@
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">MemberLeaveEventQuit</span><span class="p">(</span><span class="n">GroupEvent</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;该事件发生时, 有一群组成员主动退出群组.</span>
+    <span class="sd">&quot;&quot;&quot;有一群组成员主动退出群组.</span>
 
 <span class="sd">    ** 注意: 当监听该事件或该类事件时, 请优先考虑使用原始事件类作为类型注解, 以此获得事件类实例, 便于获取更多的信息! **</span>
 
-<span class="sd">    Allowed Extra Parameters(提供的额外注解支持):</span>
+<span class="sd">    提供的额外注解支持:</span>
 <span class="sd">        Ariadne (annotation): 发布事件的应用实例</span>
 <span class="sd">        Group (annotation): 发生本事件的群组, 通常的, 在本事件发生后本群组成员数量少于之前</span>
 <span class="sd">        Member (annotation): 主动退出群组的成员</span>
@@ -5737,11 +5742,11 @@
 
         </details>
 
-            <div class="docstring"><p>该事件发生时, 有一群组成员主动退出群组.</p>
+            <div class="docstring"><p>有一群组成员主动退出群组.</p>
 
 <p><em>* 注意: 当监听该事件或该类事件时, 请优先考虑使用原始事件类作为类型注解, 以此获得事件类实例, 便于获取更多的信息! *</em></p>
 
-<p>Allowed Extra Parameters(提供的额外注解支持):
+<p>提供的额外注解支持:
     Ariadne (annotation): 发布事件的应用实例
     Group (annotation): 发生本事件的群组, 通常的, 在本事件发生后本群组成员数量少于之前
     Member (annotation): 主动退出群组的成员</p>
@@ -5894,17 +5899,17 @@
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">MemberCardChangeEvent</span><span class="p">(</span><span class="n">GroupEvent</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;该事件发生时, 有一群组成员的群名片被更改, 执行者可能是管理员/群主, 该成员自己, 也可能是应用实例所辖账号(这时, `operator` 为 `None`).</span>
+    <span class="sd">&quot;&quot;&quot;有一群组成员的群名片被更改, 执行者可能是管理员/群主, 该成员自己, 也可能是 Bot 账号(这时, `operator` 为 `None`).</span>
 
 <span class="sd">    ** 注意: 当监听该事件或该类事件时, 请优先考虑使用原始事件类作为类型注解, 以此获得事件类实例, 便于获取更多的信息! **</span>
 
-<span class="sd">    Allowed Extra Parameters(提供的额外注解支持):</span>
+<span class="sd">    提供的额外注解支持:</span>
 <span class="sd">        Ariadne (annotation): 发布事件的应用实例</span>
 <span class="sd">        Group (annotation): 发生该事件的群组</span>
 <span class="sd">        Member (annotation):</span>
 <span class="sd">          - `&quot;target&quot;` (default, const, str): 被更改群名片的成员</span>
 <span class="sd">          - `&quot;operator&quot;` (default, const, Optional[str]): 该操作的执行者, 可能是管理员/群主, 该成员自己,</span>
-<span class="sd">          也可能是应用实例所辖账号(这时, `operator` 为 `None`).</span>
+<span class="sd">          也可能是 Bot 账号(这时, `operator` 为 `None`).</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="nb">type</span> <span class="o">=</span> <span class="s2">&quot;MemberCardChangeEvent&quot;</span>
@@ -5929,17 +5934,17 @@
 
         </details>
 
-            <div class="docstring"><p>该事件发生时, 有一群组成员的群名片被更改, 执行者可能是管理员/群主, 该成员自己, 也可能是应用实例所辖账号(这时, <code>operator</code> 为 <code>None</code>).</p>
+            <div class="docstring"><p>有一群组成员的群名片被更改, 执行者可能是管理员/群主, 该成员自己, 也可能是 Bot 账号(这时, <code>operator</code> 为 <code>None</code>).</p>
 
 <p><em>* 注意: 当监听该事件或该类事件时, 请优先考虑使用原始事件类作为类型注解, 以此获得事件类实例, 便于获取更多的信息! *</em></p>
 
-<p>Allowed Extra Parameters(提供的额外注解支持):
+<p>提供的额外注解支持:
     Ariadne (annotation): 发布事件的应用实例
     Group (annotation): 发生该事件的群组
     Member (annotation):
       - <code>"target"</code> (default, const, str): 被更改群名片的成员
       - <code>"operator"</code> (default, const, Optional[str]): 该操作的执行者, 可能是管理员/群主, 该成员自己,
-      也可能是应用实例所辖账号(这时, <code>operator</code> 为 <code>None</code>).</p>
+      也可能是 Bot 账号(这时, <code>operator</code> 为 <code>None</code>).</p>
 </div>
 
 
@@ -6093,11 +6098,11 @@
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">MemberSpecialTitleChangeEvent</span><span class="p">(</span><span class="n">GroupEvent</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;该事件发生时, 有一群组成员的群头衔被更改, 执行者只可能是群组的群主.</span>
+    <span class="sd">&quot;&quot;&quot;有一群组成员的群头衔被更改, 执行者只可能是群组的群主.</span>
 
 <span class="sd">    ** 注意: 当监听该事件或该类事件时, 请优先考虑使用原始事件类作为类型注解, 以此获得事件类实例, 便于获取更多的信息! **</span>
 
-<span class="sd">    Allowed Extra Parameters(提供的额外注解支持):</span>
+<span class="sd">    提供的额外注解支持:</span>
 <span class="sd">        Ariadne (annotation): 发布事件的应用实例</span>
 <span class="sd">        Group (annotation): 发生该事件的群组</span>
 <span class="sd">        Member (annotation): 被更改群头衔的群组成员</span>
@@ -6122,11 +6127,11 @@
 
         </details>
 
-            <div class="docstring"><p>该事件发生时, 有一群组成员的群头衔被更改, 执行者只可能是群组的群主.</p>
+            <div class="docstring"><p>有一群组成员的群头衔被更改, 执行者只可能是群组的群主.</p>
 
 <p><em>* 注意: 当监听该事件或该类事件时, 请优先考虑使用原始事件类作为类型注解, 以此获得事件类实例, 便于获取更多的信息! *</em></p>
 
-<p>Allowed Extra Parameters(提供的额外注解支持):
+<p>提供的额外注解支持:
     Ariadne (annotation): 发布事件的应用实例
     Group (annotation): 发生该事件的群组
     Member (annotation): 被更改群头衔的群组成员</p>
@@ -6279,11 +6284,11 @@
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">MemberPermissionChangeEvent</span><span class="p">(</span><span class="n">GroupEvent</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;该事件发生时, 有一群组成员的权限被更改/调整, 执行者只可能是群组的群主.</span>
+    <span class="sd">&quot;&quot;&quot;有一群组成员的权限被更改/调整, 执行者只可能是群组的群主.</span>
 
 <span class="sd">    ** 注意: 当监听该事件或该类事件时, 请优先考虑使用原始事件类作为类型注解, 以此获得事件类实例, 便于获取更多的信息! **</span>
 
-<span class="sd">    Allowed Extra Parameters(提供的额外注解支持):</span>
+<span class="sd">    提供的额外注解支持:</span>
 <span class="sd">        Ariadne (annotation): 发布事件的应用实例</span>
 <span class="sd">        Group (annotation): 发生该事件的群组</span>
 <span class="sd">        Member (annotation): 被调整权限的群组成员</span>
@@ -6308,11 +6313,11 @@
 
         </details>
 
-            <div class="docstring"><p>该事件发生时, 有一群组成员的权限被更改/调整, 执行者只可能是群组的群主.</p>
+            <div class="docstring"><p>有一群组成员的权限被更改/调整, 执行者只可能是群组的群主.</p>
 
 <p><em>* 注意: 当监听该事件或该类事件时, 请优先考虑使用原始事件类作为类型注解, 以此获得事件类实例, 便于获取更多的信息! *</em></p>
 
-<p>Allowed Extra Parameters(提供的额外注解支持):
+<p>提供的额外注解支持:
     Ariadne (annotation): 发布事件的应用实例
     Group (annotation): 发生该事件的群组
     Member (annotation): 被调整权限的群组成员</p>
@@ -6465,16 +6470,16 @@
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">MemberMuteEvent</span><span class="p">(</span><span class="n">GroupEvent</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;该事件发生时, 有一群组成员被管理员/群组禁言, 当 `operator` 为 `None` 时为应用实例所辖账号操作.</span>
+    <span class="sd">&quot;&quot;&quot;有一群组成员被管理员/群组禁言, 当 `operator` 为 `None` 时为 Bot 账号操作.</span>
 
 <span class="sd">    ** 注意: 当监听该事件或该类事件时, 请优先考虑使用原始事件类作为类型注解, 以此获得事件类实例, 便于获取更多的信息! **</span>
 
-<span class="sd">    Allowed Extra Parameters(提供的额外注解支持):</span>
+<span class="sd">    提供的额外注解支持:</span>
 <span class="sd">        Ariadne (annotation): 发布事件的应用实例</span>
 <span class="sd">        Group (annotation): 发生该事件的群组</span>
 <span class="sd">        Member (annotation):</span>
 <span class="sd">          - `&quot;target&quot;` (default, const, str): 被禁言的成员</span>
-<span class="sd">          - `&quot;operator&quot;` (default, const, str, return:optional): 该操作的执行者, 也可能是应用实例所辖账号.</span>
+<span class="sd">          - `&quot;operator&quot;` (default, const, str, optional = None): 该操作的执行者, 也可能是 Bot 账号.</span>
 
 <span class="sd">          默认返回 `target`.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -6500,16 +6505,16 @@
 
         </details>
 
-            <div class="docstring"><p>该事件发生时, 有一群组成员被管理员/群组禁言, 当 <code>operator</code> 为 <code>None</code> 时为应用实例所辖账号操作.</p>
+            <div class="docstring"><p>有一群组成员被管理员/群组禁言, 当 <code>operator</code> 为 <code>None</code> 时为 Bot 账号操作.</p>
 
 <p><em>* 注意: 当监听该事件或该类事件时, 请优先考虑使用原始事件类作为类型注解, 以此获得事件类实例, 便于获取更多的信息! *</em></p>
 
-<p>Allowed Extra Parameters(提供的额外注解支持):
+<p>提供的额外注解支持:
     Ariadne (annotation): 发布事件的应用实例
     Group (annotation): 发生该事件的群组
     Member (annotation):
       - <code>"target"</code> (default, const, str): 被禁言的成员
-      - <code>"operator"</code> (default, const, str, return:optional): 该操作的执行者, 也可能是应用实例所辖账号.</p>
+      - <code>"operator"</code> (default, const, str, optional = None): 该操作的执行者, 也可能是 Bot 账号.</p>
 
 <pre><code>  默认返回 `target`.
 </code></pre>
@@ -6666,16 +6671,16 @@
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">MemberUnmuteEvent</span><span class="p">(</span><span class="n">GroupEvent</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;该事件发生时, 有一群组成员被管理员/群组解除禁言, 当 `operator` 为 `None` 时为应用实例所辖账号操作.</span>
+    <span class="sd">&quot;&quot;&quot;有一群组成员被管理员/群组解除禁言, 当 `operator` 为 `None` 时为 Bot 账号操作.</span>
 
 <span class="sd">    ** 注意: 当监听该事件或该类事件时, 请优先考虑使用原始事件类作为类型注解, 以此获得事件类实例, 便于获取更多的信息! **</span>
 
-<span class="sd">    Allowed Extra Parameters(提供的额外注解支持):</span>
+<span class="sd">    提供的额外注解支持:</span>
 <span class="sd">        Ariadne (annotation): 发布事件的应用实例</span>
 <span class="sd">        Group (annotation): 发生该事件的群组</span>
 <span class="sd">        Member (annotation):</span>
 <span class="sd">          - `&quot;target&quot;` (default, const, str): 被禁言的成员</span>
-<span class="sd">          - `&quot;operator&quot;` (default, const, str, return:optional): 该操作的执行者, 可能是管理员或是群主, 也可能是应用实例所辖账号.</span>
+<span class="sd">          - `&quot;operator&quot;` (default, const, str, optional = None): 该操作的执行者, 可能是管理员或是群主, 也可能是 Bot 账号.</span>
 
 <span class="sd">          默认返回 `target`.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -6700,16 +6705,16 @@
 
         </details>
 
-            <div class="docstring"><p>该事件发生时, 有一群组成员被管理员/群组解除禁言, 当 <code>operator</code> 为 <code>None</code> 时为应用实例所辖账号操作.</p>
+            <div class="docstring"><p>有一群组成员被管理员/群组解除禁言, 当 <code>operator</code> 为 <code>None</code> 时为 Bot 账号操作.</p>
 
 <p><em>* 注意: 当监听该事件或该类事件时, 请优先考虑使用原始事件类作为类型注解, 以此获得事件类实例, 便于获取更多的信息! *</em></p>
 
-<p>Allowed Extra Parameters(提供的额外注解支持):
+<p>提供的额外注解支持:
     Ariadne (annotation): 发布事件的应用实例
     Group (annotation): 发生该事件的群组
     Member (annotation):
       - <code>"target"</code> (default, const, str): 被禁言的成员
-      - <code>"operator"</code> (default, const, str, return:optional): 该操作的执行者, 可能是管理员或是群主, 也可能是应用实例所辖账号.</p>
+      - <code>"operator"</code> (default, const, str, optional = None): 该操作的执行者, 可能是管理员或是群主, 也可能是 Bot 账号.</p>
 
 <pre><code>  默认返回 `target`.
 </code></pre>
@@ -6866,11 +6871,11 @@
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">MemberHonorChangeEvent</span><span class="p">(</span><span class="n">GroupEvent</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;该事件发生时, 有一群组成员获得/失去了某个荣誉.</span>
+    <span class="sd">&quot;&quot;&quot;有一群组成员获得/失去了某个荣誉.</span>
 
 <span class="sd">    ** 注意: 当监听该事件或该类事件时, 请优先考虑使用原始事件类作为类型注解, 以此获得事件类实例, 便于获取更多的信息! **</span>
 
-<span class="sd">    Allowed Extra Parameters(提供的额外注解支持):</span>
+<span class="sd">    提供的额外注解支持:</span>
 <span class="sd">        Ariadne (annotation): 发布事件的应用实例</span>
 <span class="sd">        Group (annotation): 发生该事件的群组</span>
 <span class="sd">        Member (annotation): 获得/失去荣誉的成员</span>
@@ -6895,11 +6900,11 @@
 
         </details>
 
-            <div class="docstring"><p>该事件发生时, 有一群组成员获得/失去了某个荣誉.</p>
+            <div class="docstring"><p>有一群组成员获得/失去了某个荣誉.</p>
 
 <p><em>* 注意: 当监听该事件或该类事件时, 请优先考虑使用原始事件类作为类型注解, 以此获得事件类实例, 便于获取更多的信息! *</em></p>
 
-<p>Allowed Extra Parameters(提供的额外注解支持):
+<p>提供的额外注解支持:
     Ariadne (annotation): 发布事件的应用实例
     Group (annotation): 发生该事件的群组
     Member (annotation): 获得/失去荣誉的成员</p>
@@ -7145,14 +7150,14 @@
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">NewFriendRequestEvent</span><span class="p">(</span><span class="n">RequestEvent</span><span class="p">,</span> <span class="n">FriendEvent</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;当该事件发生时, 有一用户向机器人提起好友请求.</span>
+    <span class="sd">&quot;&quot;&quot;有一用户向机器人提起好友请求.</span>
 
 <span class="sd">    ** 注意: 当监听该事件时, 请使用原始事件类作为类型注解, 以此获得事件类实例, 并执行相关操作. **</span>
 
-<span class="sd">    Allowed Extra Parameters(提供的额外注解支持):</span>
+<span class="sd">    提供的额外注解支持:</span>
 <span class="sd">        Ariadne (annotation): 发布事件的应用实例</span>
 
-<span class="sd">    Addon Introduction:</span>
+<span class="sd">    事件拓展支持:</span>
 <span class="sd">        该事件的处理需要你获取原始事件实例.</span>
 
 <span class="sd">        1. 读取该事件的基础信息:</span>
@@ -7219,31 +7224,29 @@
 
         </details>
 
-            <div class="docstring"><p>当该事件发生时, 有一用户向机器人提起好友请求.</p>
+            <div class="docstring"><p>有一用户向机器人提起好友请求.</p>
 
 <p><em>* 注意: 当监听该事件时, 请使用原始事件类作为类型注解, 以此获得事件类实例, 并执行相关操作. *</em></p>
 
-<p>Allowed Extra Parameters(提供的额外注解支持):
+<p>提供的额外注解支持:
     Ariadne (annotation): 发布事件的应用实例</p>
 
-<h6 id="addon-introduction">Addon Introduction</h6>
+<p>事件拓展支持:
+    该事件的处理需要你获取原始事件实例.</p>
 
-<blockquote>
-  <p>该事件的处理需要你获取原始事件实例.</p>
-  
-  <ol>
-  <li><p>读取该事件的基础信息:</p>
-  
-  <div class="codehilite"><pre><span></span><code><span class="n">event</span><span class="o">.</span><span class="n">supplicant</span><span class="p">:</span> <span class="nb">int</span> <span class="c1"># 发起加好友请求的用户的 ID</span>
-<span class="n">event</span><span class="o">.</span><span class="n">sourceGroup</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="c1"># 对方可能是从某个群发起对账号的请求的, mirai 可以解析对方从哪个群发起的请求.</span>
-<span class="n">event</span><span class="o">.</span><span class="n">nickname</span><span class="p">:</span> <span class="nb">str</span> <span class="c1"># 对方的昵称</span>
-<span class="n">event</span><span class="o">.</span><span class="n">message</span><span class="p">:</span> <span class="nb">str</span> <span class="c1"># 对方发起请求时填写的描述</span>
-</code></pre></div></li>
-  <li><p>同意请求: <code>await event.accept()</code>, 具体查看该方法所附带的说明.</p></li>
-  <li>拒绝请求: <code>await event.reject()</code>, 具体查看该方法所附带的说明.</li>
-  <li>拒绝并不再接受来自对方的请求: <code>await event.rejectAndBlock()</code>, 具体查看该方法所附带的说明.</li>
-  </ol>
-</blockquote>
+<pre><code>1. 读取该事件的基础信息:
+
+    ```python
+    event.supplicant: int # 发起加好友请求的用户的 ID
+    event.sourceGroup: Optional[int] # 对方可能是从某个群发起对账号的请求的, mirai 可以解析对方从哪个群发起的请求.
+    event.nickname: str # 对方的昵称
+    event.message: str # 对方发起请求时填写的描述
+    ```
+
+2. 同意请求: `await event.accept()`, 具体查看该方法所附带的说明.
+3. 拒绝请求: `await event.reject()`, 具体查看该方法所附带的说明.
+4. 拒绝并不再接受来自对方的请求: `await event.rejectAndBlock()`, 具体查看该方法所附带的说明.
+</code></pre>
 </div>
 
 
@@ -7450,14 +7453,14 @@
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">MemberJoinRequestEvent</span><span class="p">(</span><span class="n">RequestEvent</span><span class="p">,</span> <span class="n">GroupEvent</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;当该事件发生时, 有一用户向机器人作为管理员/群主的群组申请加入群组.</span>
+    <span class="sd">&quot;&quot;&quot;有一用户向机器人作为管理员/群主的群组申请加入群组.</span>
 
 <span class="sd">    ** 注意: 当监听该事件时, 请使用原始事件类作为类型注解, 以此获得事件类实例, 并执行相关操作. **</span>
 
-<span class="sd">    Allowed Extra Parameters(提供的额外注解支持):</span>
+<span class="sd">    提供的额外注解支持:</span>
 <span class="sd">        Ariadne (annotation): 发布事件的应用实例</span>
 
-<span class="sd">    Addon Introduction:</span>
+<span class="sd">    事件拓展支持:</span>
 <span class="sd">        该事件的处理需要你获取原始事件实例.</span>
 
 <span class="sd">        1. 读取该事件的基础信息:</span>
@@ -7563,34 +7566,32 @@
 
         </details>
 
-            <div class="docstring"><p>当该事件发生时, 有一用户向机器人作为管理员/群主的群组申请加入群组.</p>
+            <div class="docstring"><p>有一用户向机器人作为管理员/群主的群组申请加入群组.</p>
 
 <p><em>* 注意: 当监听该事件时, 请使用原始事件类作为类型注解, 以此获得事件类实例, 并执行相关操作. *</em></p>
 
-<p>Allowed Extra Parameters(提供的额外注解支持):
+<p>提供的额外注解支持:
     Ariadne (annotation): 发布事件的应用实例</p>
 
-<h6 id="addon-introduction">Addon Introduction</h6>
+<p>事件拓展支持:
+    该事件的处理需要你获取原始事件实例.</p>
 
-<blockquote>
-  <p>该事件的处理需要你获取原始事件实例.</p>
-  
-  <ol>
-  <li><p>读取该事件的基础信息:</p>
-  
-  <div class="codehilite"><pre><span></span><code><span class="n">event</span><span class="o">.</span><span class="n">supplicant</span><span class="p">:</span> <span class="nb">int</span> <span class="c1"># 申请加入群组的用户的 ID</span>
-<span class="n">event</span><span class="o">.</span><span class="n">groupId</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="c1"># 对方试图加入的群组的 ID</span>
-<span class="n">event</span><span class="o">.</span><span class="n">groupName</span><span class="p">:</span> <span class="nb">str</span> <span class="c1"># 对方试图加入的群组的名称</span>
-<span class="n">event</span><span class="o">.</span><span class="n">nickname</span><span class="p">:</span> <span class="nb">str</span> <span class="c1"># 对方的昵称</span>
-<span class="n">event</span><span class="o">.</span><span class="n">message</span><span class="p">:</span> <span class="nb">str</span> <span class="c1"># 对方发起请求时填写的描述</span>
-</code></pre></div></li>
-  <li><p>同意请求: <code>await event.accept()</code>, 具体查看该方法所附带的说明.</p></li>
-  <li>拒绝请求: <code>await event.reject()</code>, 具体查看该方法所附带的说明.</li>
-  <li>忽略请求: <code>await event.ignore()</code>, 具体查看该方法所附带的说明.</li>
-  <li>拒绝并不再接受来自对方的请求: <code>await event.rejectAndBlock()</code>, 具体查看该方法所附带的说明.</li>
-  <li>忽略并不再接受来自对方的请求: <code>await event.ignoreAndBlock()</code>, 具体查看该方法所附带的说明.</li>
-  </ol>
-</blockquote>
+<pre><code>1. 读取该事件的基础信息:
+
+    ``` python
+    event.supplicant: int # 申请加入群组的用户的 ID
+    event.groupId: Optional[int] # 对方试图加入的群组的 ID
+    event.groupName: str # 对方试图加入的群组的名称
+    event.nickname: str # 对方的昵称
+    event.message: str # 对方发起请求时填写的描述
+    ```
+
+2. 同意请求: `await event.accept()`, 具体查看该方法所附带的说明.
+3. 拒绝请求: `await event.reject()`, 具体查看该方法所附带的说明.
+4. 忽略请求: `await event.ignore()`, 具体查看该方法所附带的说明.
+5. 拒绝并不再接受来自对方的请求: `await event.rejectAndBlock()`, 具体查看该方法所附带的说明.
+6. 忽略并不再接受来自对方的请求: `await event.ignoreAndBlock()`, 具体查看该方法所附带的说明.
+</code></pre>
 </div>
 
 
@@ -7901,21 +7902,21 @@
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">BotInvitedJoinGroupRequestEvent</span><span class="p">(</span><span class="n">RequestEvent</span><span class="p">,</span> <span class="n">BotEvent</span><span class="p">,</span> <span class="n">GroupEvent</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;当该事件发生时, 应用实例所辖账号接受到来自某个账号的邀请加入某个群组的请求.</span>
+    <span class="sd">&quot;&quot;&quot;Bot 账号接受到来自某个账号的邀请加入某个群组的请求.</span>
 
 <span class="sd">    ** 注意: 当监听该事件时, 请使用原始事件类作为类型注解, 以此获得事件类实例, 并执行相关操作. **</span>
 
-<span class="sd">    Allowed Extra Parameters(提供的额外注解支持):</span>
+<span class="sd">    提供的额外注解支持:</span>
 <span class="sd">        Ariadne (annotation): 发布事件的应用实例</span>
 
-<span class="sd">    Addon Introduction:</span>
+<span class="sd">    事件拓展支持:</span>
 <span class="sd">        该事件的处理需要你获取原始事件实例.</span>
 
 <span class="sd">        1. 读取该事件的基础信息:</span>
 
 <span class="sd">            ``` python</span>
 <span class="sd">            event.supplicant: int # 邀请所辖账号加入群组的用户的 ID</span>
-<span class="sd">            event.groupId: Optional[int] # 对方邀请所辖账号加入的群组的 ID</span>
+<span class="sd">            event.groupId: int # 对方邀请所辖账号加入的群组的 ID</span>
 <span class="sd">            event.groupName: str # 对方邀请所辖账号加入的群组的名称</span>
 <span class="sd">            event.nickname: str # 对方的昵称</span>
 <span class="sd">            event.message: str # 对方发起请求时填写的描述</span>
@@ -7928,7 +7929,7 @@
     <span class="nb">type</span> <span class="o">=</span> <span class="s2">&quot;BotInvitedJoinGroupRequestEvent&quot;</span>
     <span class="n">requestId</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="o">...</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;eventId&quot;</span><span class="p">)</span>
     <span class="n">supplicant</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="o">...</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;fromId&quot;</span><span class="p">)</span>  <span class="c1"># 即请求方 QQ</span>
-    <span class="n">groupId</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="o">...</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;groupId&quot;</span><span class="p">)</span>
+    <span class="n">groupId</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="o">...</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;groupId&quot;</span><span class="p">)</span>
     <span class="n">groupName</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="o">...</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;groupName&quot;</span><span class="p">)</span>
     <span class="n">nickname</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="o">...</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;nick&quot;</span><span class="p">)</span>
     <span class="n">message</span><span class="p">:</span> <span class="nb">str</span>
@@ -7966,31 +7967,29 @@
 
         </details>
 
-            <div class="docstring"><p>当该事件发生时, 应用实例所辖账号接受到来自某个账号的邀请加入某个群组的请求.</p>
+            <div class="docstring"><p>Bot 账号接受到来自某个账号的邀请加入某个群组的请求.</p>
 
 <p><em>* 注意: 当监听该事件时, 请使用原始事件类作为类型注解, 以此获得事件类实例, 并执行相关操作. *</em></p>
 
-<p>Allowed Extra Parameters(提供的额外注解支持):
+<p>提供的额外注解支持:
     Ariadne (annotation): 发布事件的应用实例</p>
 
-<h6 id="addon-introduction">Addon Introduction</h6>
+<p>事件拓展支持:
+    该事件的处理需要你获取原始事件实例.</p>
 
-<blockquote>
-  <p>该事件的处理需要你获取原始事件实例.</p>
-  
-  <ol>
-  <li><p>读取该事件的基础信息:</p>
-  
-  <div class="codehilite"><pre><span></span><code><span class="n">event</span><span class="o">.</span><span class="n">supplicant</span><span class="p">:</span> <span class="nb">int</span> <span class="c1"># 邀请所辖账号加入群组的用户的 ID</span>
-<span class="n">event</span><span class="o">.</span><span class="n">groupId</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="c1"># 对方邀请所辖账号加入的群组的 ID</span>
-<span class="n">event</span><span class="o">.</span><span class="n">groupName</span><span class="p">:</span> <span class="nb">str</span> <span class="c1"># 对方邀请所辖账号加入的群组的名称</span>
-<span class="n">event</span><span class="o">.</span><span class="n">nickname</span><span class="p">:</span> <span class="nb">str</span> <span class="c1"># 对方的昵称</span>
-<span class="n">event</span><span class="o">.</span><span class="n">message</span><span class="p">:</span> <span class="nb">str</span> <span class="c1"># 对方发起请求时填写的描述</span>
-</code></pre></div></li>
-  <li><p>同意请求: <code>await event.accept()</code>, 具体查看该方法所附带的说明.</p></li>
-  <li>拒绝请求: <code>await event.reject()</code>, 具体查看该方法所附带的说明.</li>
-  </ol>
-</blockquote>
+<pre><code>1. 读取该事件的基础信息:
+
+    ``` python
+    event.supplicant: int # 邀请所辖账号加入群组的用户的 ID
+    event.groupId: int # 对方邀请所辖账号加入的群组的 ID
+    event.groupName: str # 对方邀请所辖账号加入的群组的名称
+    event.nickname: str # 对方的昵称
+    event.message: str # 对方发起请求时填写的描述
+    ```
+
+2. 同意请求: `await event.accept()`, 具体查看该方法所附带的说明.
+3. 拒绝请求: `await event.reject()`, 具体查看该方法所附带的说明.
+</code></pre>
 </div>
 
 
@@ -8145,11 +8144,11 @@
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">OtherClientOnlineEvent</span><span class="p">(</span><span class="n">MiraiEvent</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;当该事件发生时, 应用实例所辖账号在其他客户端上线.</span>
+    <span class="sd">&quot;&quot;&quot;Bot 账号在其他客户端上线.</span>
 
 <span class="sd">    ** 注意: 当监听该事件时, 请使用原始事件类作为类型注解, 以此获得事件类实例, 并执行相关操作. **</span>
 
-<span class="sd">    Allowed Extra Parameters(提供的额外注解支持):</span>
+<span class="sd">    提供的额外注解支持:</span>
 <span class="sd">        Ariadne (annotation): 发布事件的应用实例</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -8160,11 +8159,11 @@
 
         </details>
 
-            <div class="docstring"><p>当该事件发生时, 应用实例所辖账号在其他客户端上线.</p>
+            <div class="docstring"><p>Bot 账号在其他客户端上线.</p>
 
 <p><em>* 注意: 当监听该事件时, 请使用原始事件类作为类型注解, 以此获得事件类实例, 并执行相关操作. *</em></p>
 
-<p>Allowed Extra Parameters(提供的额外注解支持):
+<p>提供的额外注解支持:
     Ariadne (annotation): 发布事件的应用实例</p>
 </div>
 
@@ -8213,11 +8212,11 @@
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">OtherClientOfflineEvent</span><span class="p">(</span><span class="n">MiraiEvent</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;当该事件发生时, 应用实例所辖账号在其他客户端下线.</span>
+    <span class="sd">&quot;&quot;&quot;Bot 账号在其他客户端下线.</span>
 
 <span class="sd">    ** 注意: 当监听该事件时, 请使用原始事件类作为类型注解, 以此获得事件类实例, 并执行相关操作. **</span>
 
-<span class="sd">    Allowed Extra Parameters(提供的额外注解支持):</span>
+<span class="sd">    提供的额外注解支持:</span>
 <span class="sd">        Ariadne (annotation): 发布事件的应用实例</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -8227,11 +8226,11 @@
 
         </details>
 
-            <div class="docstring"><p>当该事件发生时, 应用实例所辖账号在其他客户端下线.</p>
+            <div class="docstring"><p>Bot 账号在其他客户端下线.</p>
 
 <p><em>* 注意: 当监听该事件时, 请使用原始事件类作为类型注解, 以此获得事件类实例, 并执行相关操作. *</em></p>
 
-<p>Allowed Extra Parameters(提供的额外注解支持):
+<p>提供的额外注解支持:
     Ariadne (annotation): 发布事件的应用实例</p>
 </div>
 
@@ -8280,11 +8279,17 @@
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">CommandExecutedEvent</span><span class="p">(</span><span class="n">MiraiEvent</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;当该事件发生时, 有一条命令被执行</span>
+    <span class="sd">&quot;&quot;&quot;有一条命令被执行</span>
 
 <span class="sd">    ** 注意: 当监听该事件时, 请使用原始事件类作为类型注解, 以此获得事件类实例, 并执行相关操作. **</span>
 
-<span class="sd">    Allowed Extra Parameters(提供的额外注解支持):</span>
+<span class="sd">    - eventId (int): 事件标识，响应该事件时的标识</span>
+<span class="sd">    - name (str): 命令名称</span>
+<span class="sd">    - friend (Optional[Friend]): 发送命令的好友, 从控制台发送为 None</span>
+<span class="sd">    - member (Optional[Member]): 发送命令的群成员, 从控制台发送为 None</span>
+<span class="sd">    - args (List[str]): 指令的参数, 以消息类型传递</span>
+
+<span class="sd">    提供的额外注解支持:</span>
 <span class="sd">        Ariadne (annotation): 发布事件的应用实例</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -8292,16 +8297,24 @@
     <span class="n">name</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">friend</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Friend</span><span class="p">]</span>
     <span class="n">member</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Member</span><span class="p">]</span>
-    <span class="n">args</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Element</span><span class="p">]</span>
+    <span class="n">args</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
 </pre></div>
 
         </details>
 
-            <div class="docstring"><p>当该事件发生时, 有一条命令被执行</p>
+            <div class="docstring"><p>有一条命令被执行</p>
 
 <p><em>* 注意: 当监听该事件时, 请使用原始事件类作为类型注解, 以此获得事件类实例, 并执行相关操作. *</em></p>
 
-<p>Allowed Extra Parameters(提供的额外注解支持):
+<ul>
+<li>eventId (int): 事件标识，响应该事件时的标识</li>
+<li>name (str): 命令名称</li>
+<li>friend (Optional[Friend]): 发送命令的好友, 从控制台发送为 None</li>
+<li>member (Optional[Member]): 发送命令的群成员, 从控制台发送为 None</li>
+<li>args (List[str]): 指令的参数, 以消息类型传递</li>
+</ul>
+
+<p>提供的额外注解支持:
     Ariadne (annotation): 发布事件的应用实例</p>
 </div>
 

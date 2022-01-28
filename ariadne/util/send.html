@@ -101,8 +101,7 @@
             <div class="codehilite"><pre><span></span><span class="sd">&quot;&quot;&quot;本模块包含许多用于 Ariadne.SendMessage 的 action 函数&quot;&quot;&quot;</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">TypeVar</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">overload</span>
 
-<span class="kn">from</span> <span class="nn">graia.ariadne.model</span> <span class="kn">import</span> <span class="n">BotMessage</span>
-
+<span class="kn">from</span> <span class="nn">..model</span> <span class="kn">import</span> <span class="n">BotMessage</span>
 <span class="kn">from</span> <span class="nn">..typing</span> <span class="kn">import</span> <span class="n">SendMessageAction</span><span class="p">,</span> <span class="n">SendMessageException</span>
 
 <span class="n">Exc_T</span> <span class="o">=</span> <span class="n">TypeVar</span><span class="p">(</span><span class="s2">&quot;Exc_T&quot;</span><span class="p">,</span> <span class="n">bound</span><span class="o">=</span><span class="n">SendMessageException</span><span class="p">)</span>

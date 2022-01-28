@@ -51,6 +51,9 @@
                         <li>
                                 <a class="variable" href="#CommandToken.PARAM">PARAM</a>
                         </li>
+                        <li>
+                                <a class="variable" href="#CommandToken.ANNOTATED">ANNOTATED</a>
+                        </li>
                 </ul>
 
             </li>
@@ -125,7 +128,7 @@
 <span class="kn">import</span> <span class="nn">inspect</span>
 <span class="kn">import</span> <span class="nn">re</span>
 <span class="kn">from</span> <span class="nn">contextvars</span> <span class="kn">import</span> <span class="n">ContextVar</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">NoReturn</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Type</span><span class="p">,</span> <span class="n">Union</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Literal</span><span class="p">,</span> <span class="n">NoReturn</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Type</span><span class="p">,</span> <span class="n">Union</span>
 
 <span class="kn">from</span> <span class="nn">..chain</span> <span class="kn">import</span> <span class="n">Element_T</span><span class="p">,</span> <span class="n">MessageChain</span>
 
@@ -179,23 +182,30 @@
     <span class="n">TEXT</span> <span class="o">=</span> <span class="s2">&quot;TEXT&quot;</span>
     <span class="n">CHOICE</span> <span class="o">=</span> <span class="s2">&quot;CHOICE&quot;</span>
     <span class="n">PARAM</span> <span class="o">=</span> <span class="s2">&quot;PARAM&quot;</span>
+    <span class="n">ANNOTATED</span> <span class="o">=</span> <span class="s2">&quot;ANNOTATED&quot;</span>
 
 
-<span class="k">def</span> <span class="nf">tokenize_command</span><span class="p">(</span><span class="n">string</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;将字符串转义化, 并处理为 Text, Choice, Param 三种 token</span>
+<span class="n">CommandTokenTuple</span> <span class="o">=</span> <span class="n">Union</span><span class="p">[</span>
+    <span class="n">Tuple</span><span class="p">[</span><span class="n">Literal</span><span class="p">[</span><span class="n">CommandToken</span><span class="o">.</span><span class="n">PARAM</span><span class="p">],</span> <span class="n">List</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]],</span>
+    <span class="n">Tuple</span><span class="p">[</span><span class="n">Literal</span><span class="p">[</span><span class="n">CommandToken</span><span class="o">.</span><span class="n">ANNOTATED</span><span class="p">,</span> <span class="n">CommandToken</span><span class="o">.</span><span class="n">CHOICE</span><span class="p">,</span> <span class="n">CommandToken</span><span class="o">.</span><span class="n">PARAM</span><span class="p">],</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]],</span>
+<span class="p">]</span>
+
+
+<span class="k">def</span> <span class="nf">tokenize_command</span><span class="p">(</span><span class="n">string</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">CommandTokenTuple</span><span class="p">]:</span>
+    <span class="sd">&quot;&quot;&quot;将字符串转义化, 并处理为 Text, Choice, Param, AnnotatedParam 四种 token</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        string (str): 要处理的字符串</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        List[Tuple[CommandToken, List[str]]]: 处理后的 Token</span>
+<span class="sd">        List[Tuple[CommandToken, List[int, str]]]: 处理后的 Token</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">string</span> <span class="o">=</span> <span class="n">escape</span><span class="p">(</span><span class="n">string</span><span class="p">)</span>
 
     <span class="n">paren</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
     <span class="n">char_stk</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="n">token</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="n">CommandToken</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]]]</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">token</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">CommandTokenTuple</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
 
     <span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">char</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">string</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">char</span> <span class="ow">in</span> <span class="n">L_PAREN</span> <span class="o">+</span> <span class="n">R_PAREN</span><span class="p">:</span>
@@ -210,15 +220,31 @@
                 <span class="k">if</span> <span class="n">paren</span> <span class="o">==</span> <span class="s2">&quot;[&quot;</span><span class="p">:</span>  <span class="c1"># CHOICE</span>
                     <span class="n">token</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">CommandToken</span><span class="o">.</span><span class="n">CHOICE</span><span class="p">,</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="n">unescape</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">char_stk</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;|&quot;</span><span class="p">)))))</span>
                 <span class="k">elif</span> <span class="n">paren</span> <span class="o">==</span> <span class="s2">&quot;{&quot;</span><span class="p">:</span>  <span class="c1"># PARAM</span>
-                    <span class="n">token</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
-                        <span class="p">(</span>
-                            <span class="n">CommandToken</span><span class="o">.</span><span class="n">PARAM</span><span class="p">,</span>
-                            <span class="p">[</span>
-                                <span class="nb">int</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">if</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;\d+&quot;</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span> <span class="k">else</span> <span class="n">unescape</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
-                                <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">char_stk</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;|&quot;</span><span class="p">)</span>
-                            <span class="p">],</span>
-                        <span class="p">)</span>
+                    <span class="n">piece</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">char_stk</span><span class="p">)</span>
+                    <span class="n">match</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">fullmatch</span><span class="p">(</span>
+                        <span class="sa">r</span><span class="s2">&quot;(?P&lt;wildcard&gt;\.\.\.)?&quot;</span>
+                        <span class="sa">r</span><span class="s2">&quot;(?P&lt;name&gt;[^:=|]+)&quot;</span>
+                        <span class="sa">r</span><span class="s2">&quot;(?P&lt;annotation&gt;:[^=]+)?&quot;</span>
+                        <span class="sa">r</span><span class="s2">&quot;(?P&lt;default&gt;=.+)?&quot;</span><span class="p">,</span>
+                        <span class="n">piece</span><span class="p">,</span>
                     <span class="p">)</span>
+                    <span class="k">if</span> <span class="n">match</span> <span class="ow">and</span> <span class="p">(</span><span class="s2">&quot;:&quot;</span> <span class="ow">in</span> <span class="n">piece</span> <span class="ow">or</span> <span class="s2">&quot;=&quot;</span> <span class="ow">in</span> <span class="n">piece</span><span class="p">):</span>
+                        <span class="n">token</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>  <span class="c1"># type: List[str]</span>
+                            <span class="p">(</span>
+                                <span class="n">CommandToken</span><span class="o">.</span><span class="n">ANNOTATED</span><span class="p">,</span>
+                                <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">str</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">lstrip</span><span class="p">(</span><span class="s2">&quot;:=&quot;</span><span class="p">)</span> <span class="k">if</span> <span class="n">x</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">match</span><span class="o">.</span><span class="n">groups</span><span class="p">())),</span>
+                            <span class="p">)</span>
+                        <span class="p">)</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">token</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                            <span class="p">(</span>
+                                <span class="n">CommandToken</span><span class="o">.</span><span class="n">PARAM</span><span class="p">,</span>
+                                <span class="p">[</span>
+                                    <span class="nb">int</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">if</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;\d+&quot;</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span> <span class="k">else</span> <span class="n">unescape</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+                                    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">char_stk</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;|&quot;</span><span class="p">)</span>
+                                <span class="p">],</span>
+                            <span class="p">)</span>
+                        <span class="p">)</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;No matching parenthesis: </span><span class="si">{</span><span class="n">paren</span><span class="si">}</span><span class="s2"> @ </span><span class="si">{</span><span class="n">index</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
                 <span class="n">char_stk</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
@@ -254,20 +280,18 @@
     <span class="n">quote</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
     <span class="n">cache</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">char</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">string</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">char</span> <span class="ow">in</span> <span class="s2">&quot;&#39;</span><span class="se">\&quot;</span><span class="s2">&quot;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">char</span> <span class="ow">in</span> <span class="p">{</span><span class="s2">&quot;&#39;&quot;</span><span class="p">,</span> <span class="s1">&#39;&quot;&#39;</span><span class="p">}:</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">quote</span><span class="p">:</span>
                 <span class="n">quote</span> <span class="o">=</span> <span class="n">char</span>
             <span class="k">elif</span> <span class="n">char</span> <span class="o">==</span> <span class="n">quote</span> <span class="ow">and</span> <span class="n">index</span> <span class="ow">and</span> <span class="n">string</span><span class="p">[</span><span class="n">index</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="s2">&quot;</span><span class="se">\\</span><span class="s2">&quot;</span><span class="p">:</span>  <span class="c1"># is current quote, not transfigured</span>
                 <span class="n">quote</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">cache</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">char</span><span class="p">)</span>
-            <span class="k">continue</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">quote</span> <span class="ow">and</span> <span class="n">char</span> <span class="o">==</span> <span class="s2">&quot; &quot;</span><span class="p">:</span>
+        <span class="k">elif</span> <span class="ow">not</span> <span class="n">quote</span> <span class="ow">and</span> <span class="n">char</span> <span class="o">==</span> <span class="s2">&quot; &quot;</span><span class="p">:</span>
             <span class="n">result</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">cache</span><span class="p">))</span>
             <span class="n">cache</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">char</span> <span class="o">!=</span> <span class="s2">&quot;</span><span class="se">\\</span><span class="s2">&quot;</span><span class="p">:</span>
-                <span class="n">cache</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">char</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">char</span> <span class="o">!=</span> <span class="s2">&quot;</span><span class="se">\\</span><span class="s2">&quot;</span><span class="p">:</span>
+            <span class="n">cache</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">char</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">cache</span><span class="p">:</span>
         <span class="n">result</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">cache</span><span class="p">))</span>
     <span class="k">return</span> <span class="n">result</span>
@@ -490,6 +514,7 @@
     <span class="n">TEXT</span> <span class="o">=</span> <span class="s2">&quot;TEXT&quot;</span>
     <span class="n">CHOICE</span> <span class="o">=</span> <span class="s2">&quot;CHOICE&quot;</span>
     <span class="n">PARAM</span> <span class="o">=</span> <span class="s2">&quot;PARAM&quot;</span>
+    <span class="n">ANNOTATED</span> <span class="o">=</span> <span class="s2">&quot;ANNOTATED&quot;</span>
 </pre></div>
 
         </details>
@@ -525,6 +550,15 @@
     
 
                             </div>
+                            <div id="CommandToken.ANNOTATED" class="classattr">
+                                            <div class="attr variable"><a class="headerlink" href="#CommandToken.ANNOTATED">#&nbsp;&nbsp</a>
+
+        <span class="name">ANNOTATED</span><span class="default_value"> = &lt;<a href="#CommandToken.ANNOTATED">CommandToken.ANNOTATED</a>: &#39;ANNOTATED&#39;&gt;</span>
+    </div>
+
+    
+
+                            </div>
                             <div class="inherited">
                                 <h5>Inherited Members</h5>
                                 <dl>
@@ -541,26 +575,28 @@
 
         
             <span class="def">def</span>
-            <span class="name">tokenize_command</span><span class="signature">(string: str)</span>:
+            <span class="name">tokenize_command</span><span class="signature">(
+    string: str
+) -&gt; List[Union[Tuple[Literal[&lt;<a href="#CommandToken.PARAM">CommandToken.PARAM</a>: &#39;PARAM&#39;&gt;], List[Union[int, str]]], Tuple[Literal[&lt;<a href="#CommandToken.ANNOTATED">CommandToken.ANNOTATED</a>: &#39;ANNOTATED&#39;&gt;, &lt;<a href="#CommandToken.CHOICE">CommandToken.CHOICE</a>: &#39;CHOICE&#39;&gt;, &lt;<a href="#CommandToken.PARAM">CommandToken.PARAM</a>: &#39;PARAM&#39;&gt;], List[str]]]]</span>:
     </div>
 
                 <details>
             <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span><span class="k">def</span> <span class="nf">tokenize_command</span><span class="p">(</span><span class="n">string</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;将字符串转义化, 并处理为 Text, Choice, Param 三种 token</span>
+            <div class="codehilite"><pre><span></span><span class="k">def</span> <span class="nf">tokenize_command</span><span class="p">(</span><span class="n">string</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">CommandTokenTuple</span><span class="p">]:</span>
+    <span class="sd">&quot;&quot;&quot;将字符串转义化, 并处理为 Text, Choice, Param, AnnotatedParam 四种 token</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        string (str): 要处理的字符串</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        List[Tuple[CommandToken, List[str]]]: 处理后的 Token</span>
+<span class="sd">        List[Tuple[CommandToken, List[int, str]]]: 处理后的 Token</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">string</span> <span class="o">=</span> <span class="n">escape</span><span class="p">(</span><span class="n">string</span><span class="p">)</span>
 
     <span class="n">paren</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
     <span class="n">char_stk</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="n">token</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="n">CommandToken</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]]]</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">token</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">CommandTokenTuple</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
 
     <span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">char</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">string</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">char</span> <span class="ow">in</span> <span class="n">L_PAREN</span> <span class="o">+</span> <span class="n">R_PAREN</span><span class="p">:</span>
@@ -575,15 +611,31 @@
                 <span class="k">if</span> <span class="n">paren</span> <span class="o">==</span> <span class="s2">&quot;[&quot;</span><span class="p">:</span>  <span class="c1"># CHOICE</span>
                     <span class="n">token</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">CommandToken</span><span class="o">.</span><span class="n">CHOICE</span><span class="p">,</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="n">unescape</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">char_stk</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;|&quot;</span><span class="p">)))))</span>
                 <span class="k">elif</span> <span class="n">paren</span> <span class="o">==</span> <span class="s2">&quot;{&quot;</span><span class="p">:</span>  <span class="c1"># PARAM</span>
-                    <span class="n">token</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
-                        <span class="p">(</span>
-                            <span class="n">CommandToken</span><span class="o">.</span><span class="n">PARAM</span><span class="p">,</span>
-                            <span class="p">[</span>
-                                <span class="nb">int</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">if</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;\d+&quot;</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span> <span class="k">else</span> <span class="n">unescape</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
-                                <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">char_stk</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;|&quot;</span><span class="p">)</span>
-                            <span class="p">],</span>
-                        <span class="p">)</span>
+                    <span class="n">piece</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">char_stk</span><span class="p">)</span>
+                    <span class="n">match</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">fullmatch</span><span class="p">(</span>
+                        <span class="sa">r</span><span class="s2">&quot;(?P&lt;wildcard&gt;\.\.\.)?&quot;</span>
+                        <span class="sa">r</span><span class="s2">&quot;(?P&lt;name&gt;[^:=|]+)&quot;</span>
+                        <span class="sa">r</span><span class="s2">&quot;(?P&lt;annotation&gt;:[^=]+)?&quot;</span>
+                        <span class="sa">r</span><span class="s2">&quot;(?P&lt;default&gt;=.+)?&quot;</span><span class="p">,</span>
+                        <span class="n">piece</span><span class="p">,</span>
                     <span class="p">)</span>
+                    <span class="k">if</span> <span class="n">match</span> <span class="ow">and</span> <span class="p">(</span><span class="s2">&quot;:&quot;</span> <span class="ow">in</span> <span class="n">piece</span> <span class="ow">or</span> <span class="s2">&quot;=&quot;</span> <span class="ow">in</span> <span class="n">piece</span><span class="p">):</span>
+                        <span class="n">token</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>  <span class="c1"># type: List[str]</span>
+                            <span class="p">(</span>
+                                <span class="n">CommandToken</span><span class="o">.</span><span class="n">ANNOTATED</span><span class="p">,</span>
+                                <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">str</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">lstrip</span><span class="p">(</span><span class="s2">&quot;:=&quot;</span><span class="p">)</span> <span class="k">if</span> <span class="n">x</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">match</span><span class="o">.</span><span class="n">groups</span><span class="p">())),</span>
+                            <span class="p">)</span>
+                        <span class="p">)</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">token</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                            <span class="p">(</span>
+                                <span class="n">CommandToken</span><span class="o">.</span><span class="n">PARAM</span><span class="p">,</span>
+                                <span class="p">[</span>
+                                    <span class="nb">int</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">if</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;\d+&quot;</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span> <span class="k">else</span> <span class="n">unescape</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+                                    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">char_stk</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;|&quot;</span><span class="p">)</span>
+                                <span class="p">],</span>
+                            <span class="p">)</span>
+                        <span class="p">)</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;No matching parenthesis: </span><span class="si">{</span><span class="n">paren</span><span class="si">}</span><span class="s2"> @ </span><span class="si">{</span><span class="n">index</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
                 <span class="n">char_stk</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
@@ -608,7 +660,7 @@
 
         </details>
 
-            <div class="docstring"><p>将字符串转义化, 并处理为 Text, Choice, Param 三种 token</p>
+            <div class="docstring"><p>将字符串转义化, 并处理为 Text, Choice, Param, AnnotatedParam 四种 token</p>
 
 <h6 id="args">Args</h6>
 
@@ -619,7 +671,7 @@
 <h6 id="returns">Returns</h6>
 
 <blockquote>
-  <p>List[Tuple[CommandToken, List[str]]]: 处理后的 Token</p>
+  <p>List[Tuple[CommandToken, List[int, str]]]: 处理后的 Token</p>
 </blockquote>
 </div>
 
@@ -648,20 +700,18 @@
     <span class="n">quote</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
     <span class="n">cache</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">char</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">string</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">char</span> <span class="ow">in</span> <span class="s2">&quot;&#39;</span><span class="se">\&quot;</span><span class="s2">&quot;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">char</span> <span class="ow">in</span> <span class="p">{</span><span class="s2">&quot;&#39;&quot;</span><span class="p">,</span> <span class="s1">&#39;&quot;&#39;</span><span class="p">}:</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">quote</span><span class="p">:</span>
                 <span class="n">quote</span> <span class="o">=</span> <span class="n">char</span>
             <span class="k">elif</span> <span class="n">char</span> <span class="o">==</span> <span class="n">quote</span> <span class="ow">and</span> <span class="n">index</span> <span class="ow">and</span> <span class="n">string</span><span class="p">[</span><span class="n">index</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="s2">&quot;</span><span class="se">\\</span><span class="s2">&quot;</span><span class="p">:</span>  <span class="c1"># is current quote, not transfigured</span>
                 <span class="n">quote</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">cache</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">char</span><span class="p">)</span>
-            <span class="k">continue</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">quote</span> <span class="ow">and</span> <span class="n">char</span> <span class="o">==</span> <span class="s2">&quot; &quot;</span><span class="p">:</span>
+        <span class="k">elif</span> <span class="ow">not</span> <span class="n">quote</span> <span class="ow">and</span> <span class="n">char</span> <span class="o">==</span> <span class="s2">&quot; &quot;</span><span class="p">:</span>
             <span class="n">result</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">cache</span><span class="p">))</span>
             <span class="n">cache</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">char</span> <span class="o">!=</span> <span class="s2">&quot;</span><span class="se">\\</span><span class="s2">&quot;</span><span class="p">:</span>
-                <span class="n">cache</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">char</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">char</span> <span class="o">!=</span> <span class="s2">&quot;</span><span class="se">\\</span><span class="s2">&quot;</span><span class="p">:</span>
+            <span class="n">cache</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">char</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">cache</span><span class="p">:</span>
         <span class="n">result</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">cache</span><span class="p">))</span>
     <span class="k">return</span> <span class="n">result</span>

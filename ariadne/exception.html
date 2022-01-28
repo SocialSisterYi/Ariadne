@@ -109,6 +109,12 @@
 
             </li>
             <li>
+                    <a class="class" href="#RemoteException">RemoteException</a>
+                            <ul class="memberlist">
+                </ul>
+
+            </li>
+            <li>
                     <a class="class" href="#UnknownError">UnknownError</a>
                             <ul class="memberlist">
                 </ul>
@@ -190,6 +196,10 @@
 
 <span class="k">class</span> <span class="nc">ConflictItem</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;项冲突/其中一项被重复定义&quot;&quot;&quot;</span>
+
+
+<span class="k">class</span> <span class="nc">RemoteException</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;网络异常: 无头客户端处发生错误, 你应该检查其输出的错误日志.&quot;&quot;&quot;</span>
 
 
 <span class="k">class</span> <span class="nc">UnknownError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
@@ -662,6 +672,42 @@
             <div><dt>builtins.BaseException</dt>
                                 <dd id="ConflictItem.with_traceback" class="function">with_traceback</dd>
                 <dd id="ConflictItem.args" class="variable">args</dd>
+
+            </div>
+                                </dl>
+                            </div>
+                </section>
+                <section id="RemoteException">
+                                <div class="attr class">
+        <a class="headerlink" href="#RemoteException">#&nbsp;&nbsp</a>
+
+        
+        <span class="def">class</span>
+        <span class="name">RemoteException</span><wbr>(<span class="base">builtins.Exception</span>):
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">RemoteException</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;网络异常: 无头客户端处发生错误, 你应该检查其输出的错误日志.&quot;&quot;&quot;</span>
+</pre></div>
+
+        </details>
+
+            <div class="docstring"><p>网络异常: 无头客户端处发生错误, 你应该检查其输出的错误日志.</p>
+</div>
+
+
+                            <div class="inherited">
+                                <h5>Inherited Members</h5>
+                                <dl>
+                                    <div><dt>builtins.Exception</dt>
+                                <dd id="RemoteException.__init__" class="function">Exception</dd>
+
+            </div>
+            <div><dt>builtins.BaseException</dt>
+                                <dd id="RemoteException.with_traceback" class="function">with_traceback</dd>
+                <dd id="RemoteException.args" class="variable">args</dd>
 
             </div>
                                 </dl>

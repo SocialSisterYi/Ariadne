@@ -66,6 +66,15 @@
                     <a class="function" href="#const_call">const_call</a>
             </li>
             <li>
+                    <a class="function" href="#assert_on_">assert_on_</a>
+            </li>
+            <li>
+                    <a class="function" href="#assert_">assert_</a>
+            </li>
+            <li>
+                    <a class="function" href="#assert_not_">assert_not_</a>
+            </li>
+            <li>
                     <a class="function" href="#eval_ctx">eval_ctx</a>
             </li>
             <li>
@@ -145,6 +154,7 @@
     <span class="n">Dict</span><span class="p">,</span>
     <span class="n">Generator</span><span class="p">,</span>
     <span class="n">List</span><span class="p">,</span>
+    <span class="n">NoReturn</span><span class="p">,</span>
     <span class="n">Tuple</span><span class="p">,</span>
     <span class="n">Type</span><span class="p">,</span>
     <span class="n">TypeVar</span><span class="p">,</span>
@@ -170,6 +180,7 @@
     <span class="n">InvalidSession</span><span class="p">,</span>
     <span class="n">InvalidVerifyKey</span><span class="p">,</span>
     <span class="n">MessageTooLong</span><span class="p">,</span>
+    <span class="n">RemoteException</span><span class="p">,</span>
     <span class="n">UnknownError</span><span class="p">,</span>
     <span class="n">UnknownTarget</span><span class="p">,</span>
     <span class="n">UnVerifiedSession</span><span class="p">,</span>
@@ -190,6 +201,7 @@
     <span class="mi">20</span><span class="p">:</span> <span class="n">AccountMuted</span><span class="p">,</span>
     <span class="mi">30</span><span class="p">:</span> <span class="n">MessageTooLong</span><span class="p">,</span>
     <span class="mi">400</span><span class="p">:</span> <span class="n">InvalidArgument</span><span class="p">,</span>
+    <span class="mi">500</span><span class="p">:</span> <span class="n">RemoteException</span><span class="p">,</span>
 <span class="p">}</span>
 
 
@@ -210,8 +222,8 @@
         <span class="k">return</span>
     <span class="n">exc_cls</span> <span class="o">=</span> <span class="n">code_exceptions_mapping</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">int_code</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">exc_cls</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="n">exc_cls</span><span class="p">(</span><span class="n">exc_cls</span><span class="o">.</span><span class="vm">__doc__</span><span class="p">)</span>
-    <span class="k">raise</span> <span class="n">UnknownError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">code</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="n">exc_cls</span><span class="p">(</span><span class="n">exc_cls</span><span class="o">.</span><span class="vm">__doc__</span><span class="p">,</span> <span class="n">code</span><span class="p">)</span>
+    <span class="k">raise</span> <span class="n">UnknownError</span><span class="p">(</span><span class="n">code</span><span class="p">)</span>
 
 
 <span class="k">def</span> <span class="nf">loguru_excepthook</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">val</span><span class="p">,</span> <span class="n">tb</span><span class="p">,</span> <span class="o">*</span><span class="n">_</span><span class="p">,</span> <span class="o">**</span><span class="n">__</span><span class="p">):</span>
@@ -347,6 +359,50 @@
     <span class="k">return</span> <span class="k">lambda</span><span class="p">:</span> <span class="n">val</span>
 
 
+<span class="k">def</span> <span class="nf">assert_on_</span><span class="p">(</span><span class="n">pre_condition</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span> <span class="n">condition</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span> <span class="o">*</span><span class="n">message</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="n">NoReturn</span><span class="p">]:</span>
+    <span class="sd">&quot;&quot;&quot;引发 ValueError 的断言, 仅在满足 pre_condition 时进行</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        pre_condition(bool): 前置条件</span>
+<span class="sd">        condition (bool): 条件语句</span>
+<span class="sd">        message (Any, optional): 附带的消息.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Union[None, NoReturn]: 成功时为 None, 否则引发异常.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">pre_condition</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">condition</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="o">*</span><span class="n">message</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">assert_</span><span class="p">(</span><span class="n">condition</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span> <span class="o">*</span><span class="n">message</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="n">NoReturn</span><span class="p">]:</span>
+    <span class="sd">&quot;&quot;&quot;引发 ValueError 的断言</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        condition (bool): 条件语句</span>
+<span class="sd">        message (Any, optional): 附带的消息.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Union[None, NoReturn]: 成功时为 None, 否则引发异常.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">condition</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="o">*</span><span class="n">message</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">assert_not_</span><span class="p">(</span><span class="n">condition</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span> <span class="o">*</span><span class="n">message</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="n">NoReturn</span><span class="p">]:</span>
+    <span class="sd">&quot;&quot;&quot;引发 ValueError 的 **反向** 断言</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        condition (bool): 条件语句</span>
+<span class="sd">        message (Any, optional): 附带的消息.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Union[None, NoReturn]: 失败时为 None, 否则引发异常.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">condition</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="o">*</span><span class="n">message</span><span class="p">)</span>
+
+
 <span class="k">def</span> <span class="nf">eval_ctx</span><span class="p">(</span><span class="n">layer</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">DictStrAny</span><span class="p">,</span> <span class="n">DictStrAny</span><span class="p">]:</span>
     <span class="sd">&quot;&quot;&quot;返回用于 eval 的 globals 与 locals 字典.</span>
 
@@ -456,7 +512,7 @@
     <span class="sd">&quot;&quot;&quot;Dummy 类, 对所有调用返回 None. (可以预设某些值)&quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwds</span><span class="p">):</span>
-        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">kwds</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">kwds</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="bp">self</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="fm">__getattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">_</span><span class="p">,</span> <span class="o">**</span><span class="n">__</span><span class="p">):</span>
@@ -482,7 +538,7 @@
                 <section id="code_exceptions_mapping">
                                 <div class="attr variable"><a class="headerlink" href="#code_exceptions_mapping">#&nbsp;&nbsp</a>
 
-        <span class="name">code_exceptions_mapping</span><span class="annotation">: Dict[int, Type[Exception]]</span><span class="default_value"> = {1: &lt;class &#39;<a href="exception.html#InvalidVerifyKey">ariadne.exception.InvalidVerifyKey</a>&#39;&gt;, 2: &lt;class &#39;<a href="exception.html#AccountNotFound">ariadne.exception.AccountNotFound</a>&#39;&gt;, 3: &lt;class &#39;<a href="exception.html#InvalidSession">ariadne.exception.InvalidSession</a>&#39;&gt;, 4: &lt;class &#39;<a href="exception.html#UnVerifiedSession">ariadne.exception.UnVerifiedSession</a>&#39;&gt;, 5: &lt;class &#39;<a href="exception.html#UnknownTarget">ariadne.exception.UnknownTarget</a>&#39;&gt;, 6: &lt;class &#39;FileNotFoundError&#39;&gt;, 10: &lt;class &#39;PermissionError&#39;&gt;, 20: &lt;class &#39;<a href="exception.html#AccountMuted">ariadne.exception.AccountMuted</a>&#39;&gt;, 30: &lt;class &#39;<a href="exception.html#MessageTooLong">ariadne.exception.MessageTooLong</a>&#39;&gt;, 400: &lt;class &#39;<a href="exception.html#InvalidArgument">ariadne.exception.InvalidArgument</a>&#39;&gt;}</span>
+        <span class="name">code_exceptions_mapping</span><span class="annotation">: Dict[int, Type[Exception]]</span><span class="default_value"> = {1: &lt;class &#39;<a href="exception.html#InvalidVerifyKey">ariadne.exception.InvalidVerifyKey</a>&#39;&gt;, 2: &lt;class &#39;<a href="exception.html#AccountNotFound">ariadne.exception.AccountNotFound</a>&#39;&gt;, 3: &lt;class &#39;<a href="exception.html#InvalidSession">ariadne.exception.InvalidSession</a>&#39;&gt;, 4: &lt;class &#39;<a href="exception.html#UnVerifiedSession">ariadne.exception.UnVerifiedSession</a>&#39;&gt;, 5: &lt;class &#39;<a href="exception.html#UnknownTarget">ariadne.exception.UnknownTarget</a>&#39;&gt;, 6: &lt;class &#39;FileNotFoundError&#39;&gt;, 10: &lt;class &#39;PermissionError&#39;&gt;, 20: &lt;class &#39;<a href="exception.html#AccountMuted">ariadne.exception.AccountMuted</a>&#39;&gt;, 30: &lt;class &#39;<a href="exception.html#MessageTooLong">ariadne.exception.MessageTooLong</a>&#39;&gt;, 400: &lt;class &#39;<a href="exception.html#InvalidArgument">ariadne.exception.InvalidArgument</a>&#39;&gt;, 500: &lt;class &#39;<a href="exception.html#RemoteException">ariadne.exception.RemoteException</a>&#39;&gt;}</span>
     </div>
 
     
@@ -515,8 +571,8 @@
         <span class="k">return</span>
     <span class="n">exc_cls</span> <span class="o">=</span> <span class="n">code_exceptions_mapping</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">int_code</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">exc_cls</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="n">exc_cls</span><span class="p">(</span><span class="n">exc_cls</span><span class="o">.</span><span class="vm">__doc__</span><span class="p">)</span>
-    <span class="k">raise</span> <span class="n">UnknownError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">code</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="n">exc_cls</span><span class="p">(</span><span class="n">exc_cls</span><span class="o">.</span><span class="vm">__doc__</span><span class="p">,</span> <span class="n">code</span><span class="p">)</span>
+    <span class="k">raise</span> <span class="n">UnknownError</span><span class="p">(</span><span class="n">code</span><span class="p">)</span>
 </pre></div>
 
         </details>
@@ -861,6 +917,145 @@
 
 <blockquote>
   <p>Callable[[], T]: 返回的函数</p>
+</blockquote>
+</div>
+
+
+                </section>
+                <section id="assert_on_">
+                            <div class="attr function"><a class="headerlink" href="#assert_on_">#&nbsp;&nbsp</a>
+
+        
+            <span class="def">def</span>
+            <span class="name">assert_on_</span><span class="signature">(
+    pre_condition: bool,
+    condition: bool,
+    *message: Any
+) -&gt; Optional[NoReturn]</span>:
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span><span class="k">def</span> <span class="nf">assert_on_</span><span class="p">(</span><span class="n">pre_condition</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span> <span class="n">condition</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span> <span class="o">*</span><span class="n">message</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="n">NoReturn</span><span class="p">]:</span>
+    <span class="sd">&quot;&quot;&quot;引发 ValueError 的断言, 仅在满足 pre_condition 时进行</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        pre_condition(bool): 前置条件</span>
+<span class="sd">        condition (bool): 条件语句</span>
+<span class="sd">        message (Any, optional): 附带的消息.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Union[None, NoReturn]: 成功时为 None, 否则引发异常.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">pre_condition</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">condition</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="o">*</span><span class="n">message</span><span class="p">)</span>
+</pre></div>
+
+        </details>
+
+            <div class="docstring"><p>引发 ValueError 的断言, 仅在满足 pre_condition 时进行</p>
+
+<h6 id="args">Args</h6>
+
+<ul>
+<li><strong>pre_condition(bool):</strong>  前置条件</li>
+<li><strong>condition (bool):</strong>  条件语句</li>
+<li><strong>message (Any, optional):</strong>  附带的消息.</li>
+</ul>
+
+<h6 id="returns">Returns</h6>
+
+<blockquote>
+  <p>Union[None, NoReturn]: 成功时为 None, 否则引发异常.</p>
+</blockquote>
+</div>
+
+
+                </section>
+                <section id="assert_">
+                            <div class="attr function"><a class="headerlink" href="#assert_">#&nbsp;&nbsp</a>
+
+        
+            <span class="def">def</span>
+            <span class="name">assert_</span><span class="signature">(condition: bool, *message: Any) -&gt; Optional[NoReturn]</span>:
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span><span class="k">def</span> <span class="nf">assert_</span><span class="p">(</span><span class="n">condition</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span> <span class="o">*</span><span class="n">message</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="n">NoReturn</span><span class="p">]:</span>
+    <span class="sd">&quot;&quot;&quot;引发 ValueError 的断言</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        condition (bool): 条件语句</span>
+<span class="sd">        message (Any, optional): 附带的消息.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Union[None, NoReturn]: 成功时为 None, 否则引发异常.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">condition</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="o">*</span><span class="n">message</span><span class="p">)</span>
+</pre></div>
+
+        </details>
+
+            <div class="docstring"><p>引发 ValueError 的断言</p>
+
+<h6 id="args">Args</h6>
+
+<ul>
+<li><strong>condition (bool):</strong>  条件语句</li>
+<li><strong>message (Any, optional):</strong>  附带的消息.</li>
+</ul>
+
+<h6 id="returns">Returns</h6>
+
+<blockquote>
+  <p>Union[None, NoReturn]: 成功时为 None, 否则引发异常.</p>
+</blockquote>
+</div>
+
+
+                </section>
+                <section id="assert_not_">
+                            <div class="attr function"><a class="headerlink" href="#assert_not_">#&nbsp;&nbsp</a>
+
+        
+            <span class="def">def</span>
+            <span class="name">assert_not_</span><span class="signature">(condition: bool, *message: Any) -&gt; Optional[NoReturn]</span>:
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span><span class="k">def</span> <span class="nf">assert_not_</span><span class="p">(</span><span class="n">condition</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span> <span class="o">*</span><span class="n">message</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="n">NoReturn</span><span class="p">]:</span>
+    <span class="sd">&quot;&quot;&quot;引发 ValueError 的 **反向** 断言</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        condition (bool): 条件语句</span>
+<span class="sd">        message (Any, optional): 附带的消息.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Union[None, NoReturn]: 失败时为 None, 否则引发异常.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">condition</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="o">*</span><span class="n">message</span><span class="p">)</span>
+</pre></div>
+
+        </details>
+
+            <div class="docstring"><p>引发 ValueError 的 <strong>反向</strong> 断言</p>
+
+<h6 id="args">Args</h6>
+
+<ul>
+<li><strong>condition (bool):</strong>  条件语句</li>
+<li><strong>message (Any, optional):</strong>  附带的消息.</li>
+</ul>
+
+<h6 id="returns">Returns</h6>
+
+<blockquote>
+  <p>Union[None, NoReturn]: 失败时为 None, 否则引发异常.</p>
 </blockquote>
 </div>
 
@@ -1217,7 +1412,7 @@
     <span class="sd">&quot;&quot;&quot;Dummy 类, 对所有调用返回 None. (可以预设某些值)&quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwds</span><span class="p">):</span>
-        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">kwds</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">kwds</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="bp">self</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="fm">__getattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">_</span><span class="p">,</span> <span class="o">**</span><span class="n">__</span><span class="p">):</span>
@@ -1243,7 +1438,7 @@
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwds</span><span class="p">):</span>
-        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">kwds</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">kwds</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="bp">self</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span>
 </pre></div>
 

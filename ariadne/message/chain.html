@@ -132,6 +132,9 @@
                         <li>
                                 <a class="function" href="#MessageChain.removesuffix">removesuffix</a>
                         </li>
+                        <li>
+                                <a class="function" href="#MessageChain.join">join</a>
+                        </li>
                 </ul>
 
             </li>
@@ -437,8 +440,6 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">item</span><span class="o">.</span><span class="n">start</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">item</span><span class="o">.</span><span class="n">stop</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
             <span class="k">return</span> <span class="n">MessageChain</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__root__</span><span class="p">[</span><span class="n">item</span><span class="p">],</span> <span class="n">inline</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">item</span><span class="o">.</span><span class="n">start</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">item</span><span class="o">.</span><span class="n">stop</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;f</span><span class="si">{item}</span><span class="s2"> is neither int slice nor tuple slice.&quot;</span><span class="p">)</span>
         <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">copy</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">__root__</span><span class="p">[</span>
             <span class="n">item</span><span class="o">.</span><span class="n">start</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">if</span> <span class="n">item</span><span class="o">.</span><span class="n">start</span> <span class="k">else</span> <span class="kc">None</span> <span class="p">:</span> <span class="n">item</span><span class="o">.</span><span class="n">stop</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">if</span> <span class="n">item</span><span class="o">.</span><span class="n">stop</span> <span class="k">else</span> <span class="kc">None</span>
         <span class="p">]</span>
@@ -781,7 +782,7 @@
         <span class="k">return</span> <span class="n">MessageChain</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="n">inline</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="fm">__imul__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">time</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;MessageChain&quot;</span><span class="p">:</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">__root__</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="fm">__mul__</span><span class="p">(</span><span class="n">time</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__root__</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="fm">__mul__</span><span class="p">(</span><span class="n">time</span><span class="p">)</span><span class="o">.</span><span class="n">__root__</span>
         <span class="k">return</span> <span class="bp">self</span>
 
     <span class="k">def</span> <span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
@@ -856,7 +857,7 @@
         <span class="n">remove_source</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
         <span class="n">remove_quote</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
         <span class="n">remove_extra_space</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Element</span><span class="p">]]:</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Element</span><span class="p">]]:</span>
         <span class="sd">&quot;&quot;&quot;转换消息链为映射字符串与映射字典的元组.</span>
 
 <span class="sd">        Args:</span>
@@ -865,7 +866,7 @@
 <span class="sd">            remove_extra_space (bool, optional): 是否移除 Quote At AtAll 的多余空格. 默认为 False.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            Tuple[str, Dict[int, Element]]: 生成的映射字符串与映射字典的元组</span>
+<span class="sd">            Tuple[str, Dict[str, Element]]: 生成的映射字符串与映射字典的元组</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">elem_mapping</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Element</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="n">elem_str_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
@@ -875,7 +876,7 @@
                     <span class="k">continue</span>
                 <span class="k">if</span> <span class="n">remove_source</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">elem</span><span class="p">,</span> <span class="n">Source</span><span class="p">):</span>
                     <span class="k">continue</span>
-                <span class="n">elem_mapping</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">elem</span>
+                <span class="n">elem_mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">)]</span> <span class="o">=</span> <span class="n">elem</span>
                 <span class="n">elem_str_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\x02</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">elem</span><span class="o">.</span><span class="n">type</span><span class="si">}</span><span class="se">\x03</span><span class="s2">&quot;</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">if</span> <span class="p">(</span>
@@ -892,7 +893,7 @@
         <span class="k">return</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">elem_str_list</span><span class="p">),</span> <span class="n">elem_mapping</span>
 
     <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">fromMappingString</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">string</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">mapping</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Element</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="s2">&quot;MessageChain&quot;</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">fromMappingString</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">string</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">mapping</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Element</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="s2">&quot;MessageChain&quot;</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;从映射字符串与映射字典的元组还原消息链.</span>
 
 <span class="sd">        Args:</span>
@@ -904,16 +905,17 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">elements</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Element</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">re</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;(</span><span class="se">\x02\\</span><span class="s2">d+_</span><span class="se">\\</span><span class="s2">w+</span><span class="se">\x03</span><span class="s2">)&quot;</span><span class="p">,</span> <span class="n">string</span><span class="p">):</span>
-            <span class="k">if</span> <span class="n">match</span> <span class="o">:=</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\x02</span><span class="s2">(</span><span class="se">\\</span><span class="s2">d+)_(</span><span class="se">\\</span><span class="s2">w+)</span><span class="se">\x03</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
-                <span class="n">index</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">match</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
-                <span class="n">class_name</span> <span class="o">=</span> <span class="n">match</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
-                <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">mapping</span><span class="p">[</span><span class="n">index</span><span class="p">],</span> <span class="n">ELEMENT_MAPPING</span><span class="p">[</span><span class="n">class_name</span><span class="p">]):</span>
-                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Validation failed: not matching element type!&quot;</span><span class="p">)</span>
-                <span class="n">elements</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">mapping</span><span class="p">[</span><span class="n">index</span><span class="p">])</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="k">if</span> <span class="n">x</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">x</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;</span><span class="se">\x02</span><span class="s2">&quot;</span> <span class="ow">and</span> <span class="n">x</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;</span><span class="se">\x03</span><span class="s2">&quot;</span><span class="p">:</span>
+                    <span class="n">index</span><span class="p">,</span> <span class="n">class_name</span> <span class="o">=</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;_&quot;</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">mapping</span><span class="p">[</span><span class="n">index</span><span class="p">],</span> <span class="n">ELEMENT_MAPPING</span><span class="p">[</span><span class="n">class_name</span><span class="p">]):</span>
+                        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Validation failed: not matching element type!&quot;</span><span class="p">)</span>
+                    <span class="n">elements</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">mapping</span><span class="p">[</span><span class="n">index</span><span class="p">])</span>
+                <span class="k">else</span><span class="p">:</span>
                     <span class="n">elements</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Plain</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
-        <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">elements</span><span class="p">)</span>
+        <span class="n">chain</span> <span class="o">=</span> <span class="bp">cls</span><span class="p">([],</span> <span class="n">inline</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">chain</span><span class="o">.</span><span class="n">__root__</span> <span class="o">=</span> <span class="n">elements</span>
+        <span class="k">return</span> <span class="n">chain</span>
 
     <span class="k">def</span> <span class="nf">removeprefix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">prefix</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">copy</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">skip_header</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;MessageChain&quot;</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;移除消息链前缀.</span>
@@ -971,6 +973,14 @@
             <span class="k">return</span> <span class="n">MessageChain</span><span class="p">(</span><span class="n">elements</span><span class="p">,</span> <span class="n">inline</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__root__</span> <span class="o">=</span> <span class="n">elements</span>
         <span class="k">return</span> <span class="bp">self</span>
+
+    <span class="k">def</span> <span class="nf">join</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">chains</span><span class="p">:</span> <span class="s2">&quot;MessageChain&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;MessageChain&quot;</span><span class="p">:</span>
+        <span class="n">result</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Element</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">chain</span> <span class="ow">in</span> <span class="n">chains</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">chain</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">chains</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+                <span class="n">result</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__root__</span><span class="p">))</span>
+            <span class="n">result</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">chain</span><span class="o">.</span><span class="n">__root__</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">MessageChain</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="n">inline</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
 
 <span class="n">_update_forward_refs</span><span class="p">()</span>
@@ -1234,8 +1244,6 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">item</span><span class="o">.</span><span class="n">start</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">item</span><span class="o">.</span><span class="n">stop</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
             <span class="k">return</span> <span class="n">MessageChain</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__root__</span><span class="p">[</span><span class="n">item</span><span class="p">],</span> <span class="n">inline</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">item</span><span class="o">.</span><span class="n">start</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">item</span><span class="o">.</span><span class="n">stop</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;f</span><span class="si">{item}</span><span class="s2"> is neither int slice nor tuple slice.&quot;</span><span class="p">)</span>
         <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">copy</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">__root__</span><span class="p">[</span>
             <span class="n">item</span><span class="o">.</span><span class="n">start</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">if</span> <span class="n">item</span><span class="o">.</span><span class="n">start</span> <span class="k">else</span> <span class="kc">None</span> <span class="p">:</span> <span class="n">item</span><span class="o">.</span><span class="n">stop</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">if</span> <span class="n">item</span><span class="o">.</span><span class="n">stop</span> <span class="k">else</span> <span class="kc">None</span>
         <span class="p">]</span>
@@ -1578,7 +1586,7 @@
         <span class="k">return</span> <span class="n">MessageChain</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="n">inline</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="fm">__imul__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">time</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;MessageChain&quot;</span><span class="p">:</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">__root__</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="fm">__mul__</span><span class="p">(</span><span class="n">time</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__root__</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="fm">__mul__</span><span class="p">(</span><span class="n">time</span><span class="p">)</span><span class="o">.</span><span class="n">__root__</span>
         <span class="k">return</span> <span class="bp">self</span>
 
     <span class="k">def</span> <span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
@@ -1653,7 +1661,7 @@
         <span class="n">remove_source</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
         <span class="n">remove_quote</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
         <span class="n">remove_extra_space</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Element</span><span class="p">]]:</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Element</span><span class="p">]]:</span>
         <span class="sd">&quot;&quot;&quot;转换消息链为映射字符串与映射字典的元组.</span>
 
 <span class="sd">        Args:</span>
@@ -1662,7 +1670,7 @@
 <span class="sd">            remove_extra_space (bool, optional): 是否移除 Quote At AtAll 的多余空格. 默认为 False.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            Tuple[str, Dict[int, Element]]: 生成的映射字符串与映射字典的元组</span>
+<span class="sd">            Tuple[str, Dict[str, Element]]: 生成的映射字符串与映射字典的元组</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">elem_mapping</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Element</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="n">elem_str_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
@@ -1672,7 +1680,7 @@
                     <span class="k">continue</span>
                 <span class="k">if</span> <span class="n">remove_source</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">elem</span><span class="p">,</span> <span class="n">Source</span><span class="p">):</span>
                     <span class="k">continue</span>
-                <span class="n">elem_mapping</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">elem</span>
+                <span class="n">elem_mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">)]</span> <span class="o">=</span> <span class="n">elem</span>
                 <span class="n">elem_str_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\x02</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">elem</span><span class="o">.</span><span class="n">type</span><span class="si">}</span><span class="se">\x03</span><span class="s2">&quot;</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">if</span> <span class="p">(</span>
@@ -1689,7 +1697,7 @@
         <span class="k">return</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">elem_str_list</span><span class="p">),</span> <span class="n">elem_mapping</span>
 
     <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">fromMappingString</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">string</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">mapping</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Element</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="s2">&quot;MessageChain&quot;</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">fromMappingString</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">string</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">mapping</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Element</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="s2">&quot;MessageChain&quot;</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;从映射字符串与映射字典的元组还原消息链.</span>
 
 <span class="sd">        Args:</span>
@@ -1701,16 +1709,17 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">elements</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Element</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">re</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;(</span><span class="se">\x02\\</span><span class="s2">d+_</span><span class="se">\\</span><span class="s2">w+</span><span class="se">\x03</span><span class="s2">)&quot;</span><span class="p">,</span> <span class="n">string</span><span class="p">):</span>
-            <span class="k">if</span> <span class="n">match</span> <span class="o">:=</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\x02</span><span class="s2">(</span><span class="se">\\</span><span class="s2">d+)_(</span><span class="se">\\</span><span class="s2">w+)</span><span class="se">\x03</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
-                <span class="n">index</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">match</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
-                <span class="n">class_name</span> <span class="o">=</span> <span class="n">match</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
-                <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">mapping</span><span class="p">[</span><span class="n">index</span><span class="p">],</span> <span class="n">ELEMENT_MAPPING</span><span class="p">[</span><span class="n">class_name</span><span class="p">]):</span>
-                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Validation failed: not matching element type!&quot;</span><span class="p">)</span>
-                <span class="n">elements</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">mapping</span><span class="p">[</span><span class="n">index</span><span class="p">])</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="k">if</span> <span class="n">x</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">x</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;</span><span class="se">\x02</span><span class="s2">&quot;</span> <span class="ow">and</span> <span class="n">x</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;</span><span class="se">\x03</span><span class="s2">&quot;</span><span class="p">:</span>
+                    <span class="n">index</span><span class="p">,</span> <span class="n">class_name</span> <span class="o">=</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;_&quot;</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">mapping</span><span class="p">[</span><span class="n">index</span><span class="p">],</span> <span class="n">ELEMENT_MAPPING</span><span class="p">[</span><span class="n">class_name</span><span class="p">]):</span>
+                        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Validation failed: not matching element type!&quot;</span><span class="p">)</span>
+                    <span class="n">elements</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">mapping</span><span class="p">[</span><span class="n">index</span><span class="p">])</span>
+                <span class="k">else</span><span class="p">:</span>
                     <span class="n">elements</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Plain</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
-        <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">elements</span><span class="p">)</span>
+        <span class="n">chain</span> <span class="o">=</span> <span class="bp">cls</span><span class="p">([],</span> <span class="n">inline</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">chain</span><span class="o">.</span><span class="n">__root__</span> <span class="o">=</span> <span class="n">elements</span>
+        <span class="k">return</span> <span class="n">chain</span>
 
     <span class="k">def</span> <span class="nf">removeprefix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">prefix</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">copy</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">skip_header</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;MessageChain&quot;</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;移除消息链前缀.</span>
@@ -1768,6 +1777,14 @@
             <span class="k">return</span> <span class="n">MessageChain</span><span class="p">(</span><span class="n">elements</span><span class="p">,</span> <span class="n">inline</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__root__</span> <span class="o">=</span> <span class="n">elements</span>
         <span class="k">return</span> <span class="bp">self</span>
+
+    <span class="k">def</span> <span class="nf">join</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">chains</span><span class="p">:</span> <span class="s2">&quot;MessageChain&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;MessageChain&quot;</span><span class="p">:</span>
+        <span class="n">result</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Element</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">chain</span> <span class="ow">in</span> <span class="n">chains</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">chain</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">chains</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+                <span class="n">result</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__root__</span><span class="p">))</span>
+            <span class="n">result</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">chain</span><span class="o">.</span><span class="n">__root__</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">MessageChain</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="n">inline</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 
         </details>
@@ -2263,8 +2280,6 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">item</span><span class="o">.</span><span class="n">start</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">item</span><span class="o">.</span><span class="n">stop</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
             <span class="k">return</span> <span class="n">MessageChain</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__root__</span><span class="p">[</span><span class="n">item</span><span class="p">],</span> <span class="n">inline</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">item</span><span class="o">.</span><span class="n">start</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">item</span><span class="o">.</span><span class="n">stop</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;f</span><span class="si">{item}</span><span class="s2"> is neither int slice nor tuple slice.&quot;</span><span class="p">)</span>
         <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">copy</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">__root__</span><span class="p">[</span>
             <span class="n">item</span><span class="o">.</span><span class="n">start</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">if</span> <span class="n">item</span><span class="o">.</span><span class="n">start</span> <span class="k">else</span> <span class="kc">None</span> <span class="p">:</span> <span class="n">item</span><span class="o">.</span><span class="n">stop</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">if</span> <span class="n">item</span><span class="o">.</span><span class="n">stop</span> <span class="k">else</span> <span class="kc">None</span>
         <span class="p">]</span>
@@ -3186,7 +3201,7 @@
     remove_source: bool = True,
     remove_quote: bool = True,
     remove_extra_space: bool = False
-) -&gt; Tuple[str, Dict[int, <a href="element.html#Element">ariadne.message.element.Element</a>]]</span>:
+) -&gt; Tuple[str, Dict[str, <a href="element.html#Element">ariadne.message.element.Element</a>]]</span>:
     </div>
 
                 <details>
@@ -3197,7 +3212,7 @@
         <span class="n">remove_source</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
         <span class="n">remove_quote</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
         <span class="n">remove_extra_space</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Element</span><span class="p">]]:</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Element</span><span class="p">]]:</span>
         <span class="sd">&quot;&quot;&quot;转换消息链为映射字符串与映射字典的元组.</span>
 
 <span class="sd">        Args:</span>
@@ -3206,7 +3221,7 @@
 <span class="sd">            remove_extra_space (bool, optional): 是否移除 Quote At AtAll 的多余空格. 默认为 False.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            Tuple[str, Dict[int, Element]]: 生成的映射字符串与映射字典的元组</span>
+<span class="sd">            Tuple[str, Dict[str, Element]]: 生成的映射字符串与映射字典的元组</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">elem_mapping</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Element</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="n">elem_str_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
@@ -3216,7 +3231,7 @@
                     <span class="k">continue</span>
                 <span class="k">if</span> <span class="n">remove_source</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">elem</span><span class="p">,</span> <span class="n">Source</span><span class="p">):</span>
                     <span class="k">continue</span>
-                <span class="n">elem_mapping</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">elem</span>
+                <span class="n">elem_mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">)]</span> <span class="o">=</span> <span class="n">elem</span>
                 <span class="n">elem_str_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\x02</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">elem</span><span class="o">.</span><span class="n">type</span><span class="si">}</span><span class="se">\x03</span><span class="s2">&quot;</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">if</span> <span class="p">(</span>
@@ -3248,7 +3263,7 @@
 <h6 id="returns">Returns</h6>
 
 <blockquote>
-  <p>Tuple[str, Dict[int, Element]]: 生成的映射字符串与映射字典的元组</p>
+  <p>Tuple[str, Dict[str, Element]]: 生成的映射字符串与映射字典的元组</p>
 </blockquote>
 </div>
 
@@ -3263,14 +3278,14 @@
             <span class="name">fromMappingString</span><span class="signature">(
     cls,
     string: str,
-    mapping: Dict[int, <a href="element.html#Element">ariadne.message.element.Element</a>]
+    mapping: Dict[str, <a href="element.html#Element">ariadne.message.element.Element</a>]
 ) -&gt; <a href="#MessageChain">ariadne.message.chain.MessageChain</a></span>:
     </div>
 
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span>    <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">fromMappingString</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">string</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">mapping</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Element</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="s2">&quot;MessageChain&quot;</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">fromMappingString</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">string</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">mapping</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Element</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="s2">&quot;MessageChain&quot;</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;从映射字符串与映射字典的元组还原消息链.</span>
 
 <span class="sd">        Args:</span>
@@ -3282,16 +3297,17 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">elements</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Element</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">re</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;(</span><span class="se">\x02\\</span><span class="s2">d+_</span><span class="se">\\</span><span class="s2">w+</span><span class="se">\x03</span><span class="s2">)&quot;</span><span class="p">,</span> <span class="n">string</span><span class="p">):</span>
-            <span class="k">if</span> <span class="n">match</span> <span class="o">:=</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\x02</span><span class="s2">(</span><span class="se">\\</span><span class="s2">d+)_(</span><span class="se">\\</span><span class="s2">w+)</span><span class="se">\x03</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
-                <span class="n">index</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">match</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
-                <span class="n">class_name</span> <span class="o">=</span> <span class="n">match</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
-                <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">mapping</span><span class="p">[</span><span class="n">index</span><span class="p">],</span> <span class="n">ELEMENT_MAPPING</span><span class="p">[</span><span class="n">class_name</span><span class="p">]):</span>
-                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Validation failed: not matching element type!&quot;</span><span class="p">)</span>
-                <span class="n">elements</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">mapping</span><span class="p">[</span><span class="n">index</span><span class="p">])</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="k">if</span> <span class="n">x</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">x</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;</span><span class="se">\x02</span><span class="s2">&quot;</span> <span class="ow">and</span> <span class="n">x</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;</span><span class="se">\x03</span><span class="s2">&quot;</span><span class="p">:</span>
+                    <span class="n">index</span><span class="p">,</span> <span class="n">class_name</span> <span class="o">=</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;_&quot;</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">mapping</span><span class="p">[</span><span class="n">index</span><span class="p">],</span> <span class="n">ELEMENT_MAPPING</span><span class="p">[</span><span class="n">class_name</span><span class="p">]):</span>
+                        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Validation failed: not matching element type!&quot;</span><span class="p">)</span>
+                    <span class="n">elements</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">mapping</span><span class="p">[</span><span class="n">index</span><span class="p">])</span>
+                <span class="k">else</span><span class="p">:</span>
                     <span class="n">elements</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Plain</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
-        <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">elements</span><span class="p">)</span>
+        <span class="n">chain</span> <span class="o">=</span> <span class="bp">cls</span><span class="p">([],</span> <span class="n">inline</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">chain</span><span class="o">.</span><span class="n">__root__</span> <span class="o">=</span> <span class="n">elements</span>
+        <span class="k">return</span> <span class="n">chain</span>
 </pre></div>
 
         </details>
@@ -3443,6 +3459,33 @@
 </blockquote>
 </div>
 
+
+                            </div>
+                            <div id="MessageChain.join" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#MessageChain.join">#&nbsp;&nbsp</a>
+
+        
+            <span class="def">def</span>
+            <span class="name">join</span><span class="signature">(
+    self,
+    *chains: <a href="#MessageChain">ariadne.message.chain.MessageChain</a>
+) -&gt; <a href="#MessageChain">ariadne.message.chain.MessageChain</a></span>:
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">join</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">chains</span><span class="p">:</span> <span class="s2">&quot;MessageChain&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;MessageChain&quot;</span><span class="p">:</span>
+        <span class="n">result</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Element</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">chain</span> <span class="ow">in</span> <span class="n">chains</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">chain</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">chains</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+                <span class="n">result</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__root__</span><span class="p">))</span>
+            <span class="n">result</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">chain</span><span class="o">.</span><span class="n">__root__</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">MessageChain</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="n">inline</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+
+        </details>
+
+    
 
                             </div>
                             <div class="inherited">
