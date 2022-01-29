@@ -108,7 +108,7 @@
     <span class="k">async</span> <span class="k">def</span> <span class="nf">target</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">interface</span><span class="p">:</span> <span class="n">DecoratorInterface</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;检测前缀并 decorate 参数&quot;&quot;&quot;</span>
         <span class="n">chain</span><span class="p">:</span> <span class="n">MessageChain</span> <span class="o">=</span> <span class="k">await</span> <span class="n">interface</span><span class="o">.</span><span class="n">dispatcher_interface</span><span class="o">.</span><span class="n">lookup_param</span><span class="p">(</span>
-            <span class="s2">&quot;message_chain&quot;</span><span class="p">,</span> <span class="n">MessageChain</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="p">[]</span>
+            <span class="s2">&quot;message_chain&quot;</span><span class="p">,</span> <span class="n">MessageChain</span><span class="p">,</span> <span class="kc">None</span>
         <span class="p">)</span>
         <span class="n">header</span> <span class="o">=</span> <span class="n">chain</span><span class="o">.</span><span class="n">include</span><span class="p">(</span><span class="n">Quote</span><span class="p">,</span> <span class="n">Source</span><span class="p">)</span>
         <span class="n">rest</span><span class="p">:</span> <span class="n">MessageChain</span> <span class="o">=</span> <span class="n">chain</span><span class="o">.</span><span class="n">exclude</span><span class="p">(</span><span class="n">Quote</span><span class="p">,</span> <span class="n">Source</span><span class="p">)</span>
@@ -136,7 +136,7 @@
     <span class="k">async</span> <span class="k">def</span> <span class="nf">target</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">interface</span><span class="p">:</span> <span class="n">DecoratorInterface</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;检测后缀并 decorate 参数&quot;&quot;&quot;</span>
         <span class="n">chain</span><span class="p">:</span> <span class="n">MessageChain</span> <span class="o">=</span> <span class="k">await</span> <span class="n">interface</span><span class="o">.</span><span class="n">dispatcher_interface</span><span class="o">.</span><span class="n">lookup_param</span><span class="p">(</span>
-            <span class="s2">&quot;message_chain&quot;</span><span class="p">,</span> <span class="n">MessageChain</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="p">[]</span>
+            <span class="s2">&quot;message_chain&quot;</span><span class="p">,</span> <span class="n">MessageChain</span><span class="p">,</span> <span class="kc">None</span>
         <span class="p">)</span>
         <span class="n">header</span> <span class="o">=</span> <span class="n">chain</span><span class="o">.</span><span class="n">include</span><span class="p">(</span><span class="n">Quote</span><span class="p">,</span> <span class="n">Source</span><span class="p">)</span>
         <span class="n">rest</span><span class="p">:</span> <span class="n">MessageChain</span> <span class="o">=</span> <span class="n">chain</span><span class="o">.</span><span class="n">exclude</span><span class="p">(</span><span class="n">Quote</span><span class="p">,</span> <span class="n">Source</span><span class="p">)</span>
@@ -178,7 +178,7 @@
     <span class="k">async</span> <span class="k">def</span> <span class="nf">target</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">interface</span><span class="p">:</span> <span class="n">DecoratorInterface</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;检测前缀并 decorate 参数&quot;&quot;&quot;</span>
         <span class="n">chain</span><span class="p">:</span> <span class="n">MessageChain</span> <span class="o">=</span> <span class="k">await</span> <span class="n">interface</span><span class="o">.</span><span class="n">dispatcher_interface</span><span class="o">.</span><span class="n">lookup_param</span><span class="p">(</span>
-            <span class="s2">&quot;message_chain&quot;</span><span class="p">,</span> <span class="n">MessageChain</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="p">[]</span>
+            <span class="s2">&quot;message_chain&quot;</span><span class="p">,</span> <span class="n">MessageChain</span><span class="p">,</span> <span class="kc">None</span>
         <span class="p">)</span>
         <span class="n">header</span> <span class="o">=</span> <span class="n">chain</span><span class="o">.</span><span class="n">include</span><span class="p">(</span><span class="n">Quote</span><span class="p">,</span> <span class="n">Source</span><span class="p">)</span>
         <span class="n">rest</span><span class="p">:</span> <span class="n">MessageChain</span> <span class="o">=</span> <span class="n">chain</span><span class="o">.</span><span class="n">exclude</span><span class="p">(</span><span class="n">Quote</span><span class="p">,</span> <span class="n">Source</span><span class="p">)</span>
@@ -252,7 +252,7 @@
             <div class="codehilite"><pre><span></span>    <span class="k">async</span> <span class="k">def</span> <span class="nf">target</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">interface</span><span class="p">:</span> <span class="n">DecoratorInterface</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;检测前缀并 decorate 参数&quot;&quot;&quot;</span>
         <span class="n">chain</span><span class="p">:</span> <span class="n">MessageChain</span> <span class="o">=</span> <span class="k">await</span> <span class="n">interface</span><span class="o">.</span><span class="n">dispatcher_interface</span><span class="o">.</span><span class="n">lookup_param</span><span class="p">(</span>
-            <span class="s2">&quot;message_chain&quot;</span><span class="p">,</span> <span class="n">MessageChain</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="p">[]</span>
+            <span class="s2">&quot;message_chain&quot;</span><span class="p">,</span> <span class="n">MessageChain</span><span class="p">,</span> <span class="kc">None</span>
         <span class="p">)</span>
         <span class="n">header</span> <span class="o">=</span> <span class="n">chain</span><span class="o">.</span><span class="n">include</span><span class="p">(</span><span class="n">Quote</span><span class="p">,</span> <span class="n">Source</span><span class="p">)</span>
         <span class="n">rest</span><span class="p">:</span> <span class="n">MessageChain</span> <span class="o">=</span> <span class="n">chain</span><span class="o">.</span><span class="n">exclude</span><span class="p">(</span><span class="n">Quote</span><span class="p">,</span> <span class="n">Source</span><span class="p">)</span>
@@ -299,7 +299,7 @@
     <span class="k">async</span> <span class="k">def</span> <span class="nf">target</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">interface</span><span class="p">:</span> <span class="n">DecoratorInterface</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;检测后缀并 decorate 参数&quot;&quot;&quot;</span>
         <span class="n">chain</span><span class="p">:</span> <span class="n">MessageChain</span> <span class="o">=</span> <span class="k">await</span> <span class="n">interface</span><span class="o">.</span><span class="n">dispatcher_interface</span><span class="o">.</span><span class="n">lookup_param</span><span class="p">(</span>
-            <span class="s2">&quot;message_chain&quot;</span><span class="p">,</span> <span class="n">MessageChain</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="p">[]</span>
+            <span class="s2">&quot;message_chain&quot;</span><span class="p">,</span> <span class="n">MessageChain</span><span class="p">,</span> <span class="kc">None</span>
         <span class="p">)</span>
         <span class="n">header</span> <span class="o">=</span> <span class="n">chain</span><span class="o">.</span><span class="n">include</span><span class="p">(</span><span class="n">Quote</span><span class="p">,</span> <span class="n">Source</span><span class="p">)</span>
         <span class="n">rest</span><span class="p">:</span> <span class="n">MessageChain</span> <span class="o">=</span> <span class="n">chain</span><span class="o">.</span><span class="n">exclude</span><span class="p">(</span><span class="n">Quote</span><span class="p">,</span> <span class="n">Source</span><span class="p">)</span>
@@ -373,7 +373,7 @@
             <div class="codehilite"><pre><span></span>    <span class="k">async</span> <span class="k">def</span> <span class="nf">target</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">interface</span><span class="p">:</span> <span class="n">DecoratorInterface</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;检测后缀并 decorate 参数&quot;&quot;&quot;</span>
         <span class="n">chain</span><span class="p">:</span> <span class="n">MessageChain</span> <span class="o">=</span> <span class="k">await</span> <span class="n">interface</span><span class="o">.</span><span class="n">dispatcher_interface</span><span class="o">.</span><span class="n">lookup_param</span><span class="p">(</span>
-            <span class="s2">&quot;message_chain&quot;</span><span class="p">,</span> <span class="n">MessageChain</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="p">[]</span>
+            <span class="s2">&quot;message_chain&quot;</span><span class="p">,</span> <span class="n">MessageChain</span><span class="p">,</span> <span class="kc">None</span>
         <span class="p">)</span>
         <span class="n">header</span> <span class="o">=</span> <span class="n">chain</span><span class="o">.</span><span class="n">include</span><span class="p">(</span><span class="n">Quote</span><span class="p">,</span> <span class="n">Source</span><span class="p">)</span>
         <span class="n">rest</span><span class="p">:</span> <span class="n">MessageChain</span> <span class="o">=</span> <span class="n">chain</span><span class="o">.</span><span class="n">exclude</span><span class="p">(</span><span class="n">Quote</span><span class="p">,</span> <span class="n">Source</span><span class="p">)</span>
