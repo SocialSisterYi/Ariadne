@@ -52,6 +52,9 @@
                                 <a class="function" href="#MessageChain.prepare">prepare</a>
                         </li>
                         <li>
+                                <a class="function" href="#MessageChain.unzip">unzip</a>
+                        </li>
+                        <li>
                                 <a class="function" href="#MessageChain.has">has</a>
                         </li>
                         <li>
@@ -134,6 +137,9 @@
                         </li>
                         <li>
                                 <a class="function" href="#MessageChain.join">join</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#MessageChain.replace">replace</a>
                         </li>
                 </ul>
 
@@ -298,6 +304,21 @@
                 <span class="n">chain_ref</span><span class="o">.</span><span class="n">__root__</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">chain_ref</span>
 
+    <span class="k">def</span> <span class="nf">unzip</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Element</span><span class="p">]]:</span>
+        <span class="sd">&quot;&quot;&quot;解压消息链为元素/单字符列表.</span>
+<span class="sd">        Args:</span>
+<span class="sd">            self (MessageChain): 消息链.</span>
+<span class="sd">        Return:</span>
+<span class="sd">            List[Union[str, Element]]: 解压后的元素/字符列表.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">unzipped</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Element</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__root__</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="n">Plain</span><span class="p">):</span>
+                <span class="n">unzipped</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">unzipped</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">unzipped</span>
+
     <span class="k">def</span> <span class="nf">has</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Element</span><span class="p">,</span> <span class="n">Type</span><span class="p">[</span><span class="n">Element</span><span class="p">],</span> <span class="s2">&quot;MessageChain&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        判断消息链中是否含有特定的元素/元素类型/消息链/字符串.</span>
@@ -489,19 +510,9 @@
 <span class="sd">        Returns:</span>
 <span class="sd">            List[int]: 所有找到的下标.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">pattern</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Element</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">subchain</span><span class="p">:</span>
-            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="n">Plain</span><span class="p">):</span>
-                <span class="n">pattern</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">pattern</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+        <span class="n">pattern</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Element</span><span class="p">]]</span> <span class="o">=</span> <span class="n">subchain</span><span class="o">.</span><span class="n">unzip</span><span class="p">()</span>
 
-        <span class="n">match_target</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Element</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__root__</span><span class="p">:</span>
-            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="n">Plain</span><span class="p">):</span>
-                <span class="n">match_target</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">match_target</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+        <span class="n">match_target</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Element</span><span class="p">]]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">unzip</span><span class="p">()</span>
 
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">match_target</span><span class="p">)</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">pattern</span><span class="p">):</span>
             <span class="k">return</span> <span class="p">[]</span>
@@ -981,6 +992,41 @@
                 <span class="n">result</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__root__</span><span class="p">))</span>
             <span class="n">result</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">chain</span><span class="o">.</span><span class="n">__root__</span><span class="p">))</span>
         <span class="k">return</span> <span class="n">MessageChain</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="n">inline</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">replace</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">old</span><span class="p">:</span> <span class="s2">&quot;MessageChain&quot;</span><span class="p">,</span> <span class="n">new</span><span class="p">:</span> <span class="s2">&quot;MessageChain&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;MessageChain&quot;</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;替换消息链中的一部分. (在副本上操作)</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            old (MessageChain): 要替换的消息链.</span>
+<span class="sd">            new (MessageChain): 替换后的消息链.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            MessageChain: 修改后的消息链, 若未替换则原样返回.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">index_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">findSubChain</span><span class="p">(</span><span class="n">old</span><span class="p">)</span>
+        <span class="n">unzipped_new</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Element</span><span class="p">]]</span> <span class="o">=</span> <span class="n">new</span><span class="o">.</span><span class="n">unzip</span><span class="p">()</span>
+        <span class="n">unzipped_old</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Element</span><span class="p">]]</span> <span class="o">=</span> <span class="n">old</span><span class="o">.</span><span class="n">unzip</span><span class="p">()</span>
+        <span class="n">unzipped_self</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Element</span><span class="p">]]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">unzip</span><span class="p">()</span>
+        <span class="n">unzipped_result</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Element</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">last_end</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">start</span> <span class="ow">in</span> <span class="n">index_list</span><span class="p">:</span>
+            <span class="n">unzipped_result</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">unzipped_self</span><span class="p">[</span><span class="n">last_end</span><span class="p">:</span><span class="n">start</span><span class="p">])</span>
+            <span class="n">last_end</span> <span class="o">=</span> <span class="n">start</span> <span class="o">+</span> <span class="nb">len</span><span class="p">(</span><span class="n">unzipped_old</span><span class="p">)</span>
+            <span class="n">unzipped_result</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">unzipped_new</span><span class="p">)</span>
+        <span class="n">unzipped_result</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">unzipped_self</span><span class="p">[</span><span class="n">last_end</span><span class="p">:])</span>
+        <span class="c1"># Merge result</span>
+        <span class="n">result_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Element</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">char_stk</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">unzipped_result</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+                <span class="n">char_stk</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">result_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Plain</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">char_stk</span><span class="p">)))</span>
+                <span class="n">char_stk</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="n">result_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">char_stk</span><span class="p">:</span>
+            <span class="n">result_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Plain</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">char_stk</span><span class="p">)))</span>
+        <span class="k">return</span> <span class="n">MessageChain</span><span class="p">(</span><span class="n">result_list</span><span class="p">,</span> <span class="n">inline</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
 
 <span class="n">_update_forward_refs</span><span class="p">()</span>
@@ -1102,6 +1148,21 @@
                 <span class="n">chain_ref</span><span class="o">.</span><span class="n">__root__</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">chain_ref</span>
 
+    <span class="k">def</span> <span class="nf">unzip</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Element</span><span class="p">]]:</span>
+        <span class="sd">&quot;&quot;&quot;解压消息链为元素/单字符列表.</span>
+<span class="sd">        Args:</span>
+<span class="sd">            self (MessageChain): 消息链.</span>
+<span class="sd">        Return:</span>
+<span class="sd">            List[Union[str, Element]]: 解压后的元素/字符列表.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">unzipped</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Element</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__root__</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="n">Plain</span><span class="p">):</span>
+                <span class="n">unzipped</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">unzipped</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">unzipped</span>
+
     <span class="k">def</span> <span class="nf">has</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Element</span><span class="p">,</span> <span class="n">Type</span><span class="p">[</span><span class="n">Element</span><span class="p">],</span> <span class="s2">&quot;MessageChain&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        判断消息链中是否含有特定的元素/元素类型/消息链/字符串.</span>
@@ -1293,19 +1354,9 @@
 <span class="sd">        Returns:</span>
 <span class="sd">            List[int]: 所有找到的下标.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">pattern</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Element</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">subchain</span><span class="p">:</span>
-            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="n">Plain</span><span class="p">):</span>
-                <span class="n">pattern</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">pattern</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+        <span class="n">pattern</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Element</span><span class="p">]]</span> <span class="o">=</span> <span class="n">subchain</span><span class="o">.</span><span class="n">unzip</span><span class="p">()</span>
 
-        <span class="n">match_target</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Element</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__root__</span><span class="p">:</span>
-            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="n">Plain</span><span class="p">):</span>
-                <span class="n">match_target</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">match_target</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+        <span class="n">match_target</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Element</span><span class="p">]]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">unzip</span><span class="p">()</span>
 
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">match_target</span><span class="p">)</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">pattern</span><span class="p">):</span>
             <span class="k">return</span> <span class="p">[]</span>
@@ -1785,6 +1836,41 @@
                 <span class="n">result</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__root__</span><span class="p">))</span>
             <span class="n">result</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">chain</span><span class="o">.</span><span class="n">__root__</span><span class="p">))</span>
         <span class="k">return</span> <span class="n">MessageChain</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="n">inline</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">replace</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">old</span><span class="p">:</span> <span class="s2">&quot;MessageChain&quot;</span><span class="p">,</span> <span class="n">new</span><span class="p">:</span> <span class="s2">&quot;MessageChain&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;MessageChain&quot;</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;替换消息链中的一部分. (在副本上操作)</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            old (MessageChain): 要替换的消息链.</span>
+<span class="sd">            new (MessageChain): 替换后的消息链.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            MessageChain: 修改后的消息链, 若未替换则原样返回.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">index_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">findSubChain</span><span class="p">(</span><span class="n">old</span><span class="p">)</span>
+        <span class="n">unzipped_new</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Element</span><span class="p">]]</span> <span class="o">=</span> <span class="n">new</span><span class="o">.</span><span class="n">unzip</span><span class="p">()</span>
+        <span class="n">unzipped_old</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Element</span><span class="p">]]</span> <span class="o">=</span> <span class="n">old</span><span class="o">.</span><span class="n">unzip</span><span class="p">()</span>
+        <span class="n">unzipped_self</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Element</span><span class="p">]]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">unzip</span><span class="p">()</span>
+        <span class="n">unzipped_result</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Element</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">last_end</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">start</span> <span class="ow">in</span> <span class="n">index_list</span><span class="p">:</span>
+            <span class="n">unzipped_result</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">unzipped_self</span><span class="p">[</span><span class="n">last_end</span><span class="p">:</span><span class="n">start</span><span class="p">])</span>
+            <span class="n">last_end</span> <span class="o">=</span> <span class="n">start</span> <span class="o">+</span> <span class="nb">len</span><span class="p">(</span><span class="n">unzipped_old</span><span class="p">)</span>
+            <span class="n">unzipped_result</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">unzipped_new</span><span class="p">)</span>
+        <span class="n">unzipped_result</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">unzipped_self</span><span class="p">[</span><span class="n">last_end</span><span class="p">:])</span>
+        <span class="c1"># Merge result</span>
+        <span class="n">result_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Element</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">char_stk</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">unzipped_result</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+                <span class="n">char_stk</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">result_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Plain</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">char_stk</span><span class="p">)))</span>
+                <span class="n">char_stk</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="n">result_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">char_stk</span><span class="p">:</span>
+            <span class="n">result_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Plain</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">char_stk</span><span class="p">)))</span>
+        <span class="k">return</span> <span class="n">MessageChain</span><span class="p">(</span><span class="n">result_list</span><span class="p">,</span> <span class="n">inline</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 
         </details>
@@ -2022,6 +2108,51 @@
 
 <blockquote>
   <p>MessageChain: copy = True 时返回副本, 否则返回自己的引用.</p>
+</blockquote>
+</div>
+
+
+                            </div>
+                            <div id="MessageChain.unzip" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#MessageChain.unzip">#&nbsp;&nbsp</a>
+
+        
+            <span class="def">def</span>
+            <span class="name">unzip</span><span class="signature">(self) -&gt; List[Union[str, <a href="element.html#Element">ariadne.message.element.Element</a>]]</span>:
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">unzip</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Element</span><span class="p">]]:</span>
+        <span class="sd">&quot;&quot;&quot;解压消息链为元素/单字符列表.</span>
+<span class="sd">        Args:</span>
+<span class="sd">            self (MessageChain): 消息链.</span>
+<span class="sd">        Return:</span>
+<span class="sd">            List[Union[str, Element]]: 解压后的元素/字符列表.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">unzipped</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Element</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__root__</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="n">Plain</span><span class="p">):</span>
+                <span class="n">unzipped</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">unzipped</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">unzipped</span>
+</pre></div>
+
+        </details>
+
+            <div class="docstring"><p>解压消息链为元素/单字符列表.</p>
+
+<h6 id="args">Args</h6>
+
+<ul>
+<li><strong>self (MessageChain):</strong>  消息链.</li>
+</ul>
+
+<h6 id="return">Return</h6>
+
+<blockquote>
+  <p>List[Union[str, Element]]: 解压后的元素/字符列表.</p>
 </blockquote>
 </div>
 
@@ -2369,19 +2500,9 @@
 <span class="sd">        Returns:</span>
 <span class="sd">            List[int]: 所有找到的下标.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">pattern</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Element</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">subchain</span><span class="p">:</span>
-            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="n">Plain</span><span class="p">):</span>
-                <span class="n">pattern</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">pattern</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+        <span class="n">pattern</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Element</span><span class="p">]]</span> <span class="o">=</span> <span class="n">subchain</span><span class="o">.</span><span class="n">unzip</span><span class="p">()</span>
 
-        <span class="n">match_target</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Element</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__root__</span><span class="p">:</span>
-            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="n">Plain</span><span class="p">):</span>
-                <span class="n">match_target</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">match_target</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+        <span class="n">match_target</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Element</span><span class="p">]]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">unzip</span><span class="p">()</span>
 
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">match_target</span><span class="p">)</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">pattern</span><span class="p">):</span>
             <span class="k">return</span> <span class="p">[]</span>
@@ -2823,7 +2944,7 @@
             <span class="def">def</span>
             <span class="name">extend</span><span class="signature">(
     self,
-    *content: Union[<a href="#MessageChain">ariadne.message.chain.MessageChain</a>, <a href="element.html#Element">ariadne.message.element.Element</a>, List[Union[<a href="element.html#Element">ariadne.message.element.Element</a>, str]]],
+    *content: Union[<a href="#MessageChain">ariadne.message.chain.MessageChain</a>, <a href="element.html#Element">ariadne.message.element.Element</a>, List[Union[str, <a href="element.html#Element">ariadne.message.element.Element</a>]]],
     copy: bool = False
 ) -&gt; <a href="#MessageChain">ariadne.message.chain.MessageChain</a></span>:
     </div>
@@ -3486,6 +3607,76 @@
         </details>
 
     
+
+                            </div>
+                            <div id="MessageChain.replace" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#MessageChain.replace">#&nbsp;&nbsp</a>
+
+        
+            <span class="def">def</span>
+            <span class="name">replace</span><span class="signature">(
+    self,
+    old: <a href="#MessageChain">ariadne.message.chain.MessageChain</a>,
+    new: <a href="#MessageChain">ariadne.message.chain.MessageChain</a>
+) -&gt; <a href="#MessageChain">ariadne.message.chain.MessageChain</a></span>:
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">replace</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">old</span><span class="p">:</span> <span class="s2">&quot;MessageChain&quot;</span><span class="p">,</span> <span class="n">new</span><span class="p">:</span> <span class="s2">&quot;MessageChain&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;MessageChain&quot;</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;替换消息链中的一部分. (在副本上操作)</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            old (MessageChain): 要替换的消息链.</span>
+<span class="sd">            new (MessageChain): 替换后的消息链.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            MessageChain: 修改后的消息链, 若未替换则原样返回.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">index_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">findSubChain</span><span class="p">(</span><span class="n">old</span><span class="p">)</span>
+        <span class="n">unzipped_new</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Element</span><span class="p">]]</span> <span class="o">=</span> <span class="n">new</span><span class="o">.</span><span class="n">unzip</span><span class="p">()</span>
+        <span class="n">unzipped_old</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Element</span><span class="p">]]</span> <span class="o">=</span> <span class="n">old</span><span class="o">.</span><span class="n">unzip</span><span class="p">()</span>
+        <span class="n">unzipped_self</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Element</span><span class="p">]]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">unzip</span><span class="p">()</span>
+        <span class="n">unzipped_result</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Element</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">last_end</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">start</span> <span class="ow">in</span> <span class="n">index_list</span><span class="p">:</span>
+            <span class="n">unzipped_result</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">unzipped_self</span><span class="p">[</span><span class="n">last_end</span><span class="p">:</span><span class="n">start</span><span class="p">])</span>
+            <span class="n">last_end</span> <span class="o">=</span> <span class="n">start</span> <span class="o">+</span> <span class="nb">len</span><span class="p">(</span><span class="n">unzipped_old</span><span class="p">)</span>
+            <span class="n">unzipped_result</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">unzipped_new</span><span class="p">)</span>
+        <span class="n">unzipped_result</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">unzipped_self</span><span class="p">[</span><span class="n">last_end</span><span class="p">:])</span>
+        <span class="c1"># Merge result</span>
+        <span class="n">result_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Element</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">char_stk</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">unzipped_result</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+                <span class="n">char_stk</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">result_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Plain</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">char_stk</span><span class="p">)))</span>
+                <span class="n">char_stk</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="n">result_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">char_stk</span><span class="p">:</span>
+            <span class="n">result_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Plain</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">char_stk</span><span class="p">)))</span>
+        <span class="k">return</span> <span class="n">MessageChain</span><span class="p">(</span><span class="n">result_list</span><span class="p">,</span> <span class="n">inline</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+
+        </details>
+
+            <div class="docstring"><p>替换消息链中的一部分. (在副本上操作)</p>
+
+<h6 id="args">Args</h6>
+
+<ul>
+<li><strong>old (MessageChain):</strong>  要替换的消息链.</li>
+<li><strong>new (MessageChain):</strong>  替换后的消息链.</li>
+</ul>
+
+<h6 id="returns">Returns</h6>
+
+<blockquote>
+  <p>MessageChain: 修改后的消息链, 若未替换则原样返回.</p>
+</blockquote>
+</div>
+
 
                             </div>
                             <div class="inherited">
