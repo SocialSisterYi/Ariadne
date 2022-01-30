@@ -110,6 +110,9 @@
                 </ul>
 
             </li>
+            <li>
+                    <a class="function" href="#signal_handler">signal_handler</a>
+            </li>
     </ul>
 
 
@@ -520,6 +523,35 @@
 
     <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">_</span><span class="p">,</span> <span class="o">**</span><span class="n">__</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span>
+
+
+<span class="k">def</span> <span class="nf">signal_handler</span><span class="p">(</span><span class="n">callback</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[],</span> <span class="kc">None</span><span class="p">],</span> <span class="n">one_time</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;注册信号处理器</span>
+<span class="sd">    Args:</span>
+<span class="sd">        callback (Callable[[], None]): 信号处理器</span>
+<span class="sd">        one_time (bool, optional): 是否只执行一次. 默认为 True.</span>
+<span class="sd">    Returns:</span>
+<span class="sd">        None</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="kn">import</span> <span class="nn">signal</span>
+    <span class="kn">import</span> <span class="nn">threading</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">threading</span><span class="o">.</span><span class="n">main_thread</span><span class="p">()</span><span class="o">.</span><span class="n">ident</span> <span class="o">==</span> <span class="n">threading</span><span class="o">.</span><span class="n">current_thread</span><span class="p">()</span><span class="o">.</span><span class="n">ident</span><span class="p">:</span>
+        <span class="k">return</span>
+
+    <span class="n">HANDLED_SIGNAL</span> <span class="o">=</span> <span class="p">(</span><span class="n">signal</span><span class="o">.</span><span class="n">SIGINT</span><span class="p">,</span> <span class="n">signal</span><span class="o">.</span><span class="n">SIGTERM</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">sig</span> <span class="ow">in</span> <span class="n">HANDLED_SIGNAL</span><span class="p">:</span>
+        <span class="n">handler</span> <span class="o">=</span> <span class="n">signal</span><span class="o">.</span><span class="n">getsignal</span><span class="p">(</span><span class="n">sig</span><span class="p">)</span>
+
+        <span class="k">def</span> <span class="nf">handler_wrapper</span><span class="p">(</span><span class="n">sig_num</span><span class="p">,</span> <span class="n">frame</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">handler</span><span class="p">:</span>
+                <span class="n">handler</span><span class="p">(</span><span class="n">sig_num</span><span class="p">,</span> <span class="n">frame</span><span class="p">)</span>
+            <span class="n">callback</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">one_time</span><span class="p">:</span>
+                <span class="n">signal</span><span class="o">.</span><span class="n">signal</span><span class="p">(</span><span class="n">sig_num</span><span class="p">,</span> <span class="n">handler</span><span class="p">)</span>
+
+        <span class="n">signal</span><span class="o">.</span><span class="n">signal</span><span class="p">(</span><span class="n">sig</span><span class="p">,</span> <span class="n">handler_wrapper</span><span class="p">)</span>
 
 
 <span class="c1"># Import layout</span>
@@ -1447,6 +1479,65 @@
     
 
                             </div>
+                </section>
+                <section id="signal_handler">
+                            <div class="attr function"><a class="headerlink" href="#signal_handler">#&nbsp;&nbsp</a>
+
+        
+            <span class="def">def</span>
+            <span class="name">signal_handler</span><span class="signature">(callback: Callable[[], NoneType], one_time: bool = True) -&gt; None</span>:
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span><span class="k">def</span> <span class="nf">signal_handler</span><span class="p">(</span><span class="n">callback</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[],</span> <span class="kc">None</span><span class="p">],</span> <span class="n">one_time</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;注册信号处理器</span>
+<span class="sd">    Args:</span>
+<span class="sd">        callback (Callable[[], None]): 信号处理器</span>
+<span class="sd">        one_time (bool, optional): 是否只执行一次. 默认为 True.</span>
+<span class="sd">    Returns:</span>
+<span class="sd">        None</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="kn">import</span> <span class="nn">signal</span>
+    <span class="kn">import</span> <span class="nn">threading</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">threading</span><span class="o">.</span><span class="n">main_thread</span><span class="p">()</span><span class="o">.</span><span class="n">ident</span> <span class="o">==</span> <span class="n">threading</span><span class="o">.</span><span class="n">current_thread</span><span class="p">()</span><span class="o">.</span><span class="n">ident</span><span class="p">:</span>
+        <span class="k">return</span>
+
+    <span class="n">HANDLED_SIGNAL</span> <span class="o">=</span> <span class="p">(</span><span class="n">signal</span><span class="o">.</span><span class="n">SIGINT</span><span class="p">,</span> <span class="n">signal</span><span class="o">.</span><span class="n">SIGTERM</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">sig</span> <span class="ow">in</span> <span class="n">HANDLED_SIGNAL</span><span class="p">:</span>
+        <span class="n">handler</span> <span class="o">=</span> <span class="n">signal</span><span class="o">.</span><span class="n">getsignal</span><span class="p">(</span><span class="n">sig</span><span class="p">)</span>
+
+        <span class="k">def</span> <span class="nf">handler_wrapper</span><span class="p">(</span><span class="n">sig_num</span><span class="p">,</span> <span class="n">frame</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">handler</span><span class="p">:</span>
+                <span class="n">handler</span><span class="p">(</span><span class="n">sig_num</span><span class="p">,</span> <span class="n">frame</span><span class="p">)</span>
+            <span class="n">callback</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">one_time</span><span class="p">:</span>
+                <span class="n">signal</span><span class="o">.</span><span class="n">signal</span><span class="p">(</span><span class="n">sig_num</span><span class="p">,</span> <span class="n">handler</span><span class="p">)</span>
+
+        <span class="n">signal</span><span class="o">.</span><span class="n">signal</span><span class="p">(</span><span class="n">sig</span><span class="p">,</span> <span class="n">handler_wrapper</span><span class="p">)</span>
+</pre></div>
+
+        </details>
+
+            <div class="docstring"><p>注册信号处理器</p>
+
+<h6 id="args">Args</h6>
+
+<ul>
+<li><strong>callback (Callable[[], None]):</strong>  信号处理器</li>
+<li><strong>one_time (bool, optional):</strong>  是否只执行一次. 默认为 True.</li>
+</ul>
+
+<h6 id="returns">Returns</h6>
+
+<blockquote>
+  <p>None</p>
+</blockquote>
+</div>
+
+
                 </section>
     </main>
 <script>
