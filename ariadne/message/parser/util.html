@@ -232,7 +232,12 @@
                         <span class="n">token</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>  <span class="c1"># type: List[str]</span>
                             <span class="p">(</span>
                                 <span class="n">CommandToken</span><span class="o">.</span><span class="n">ANNOTATED</span><span class="p">,</span>
-                                <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">str</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">lstrip</span><span class="p">(</span><span class="s2">&quot;:=&quot;</span><span class="p">)</span> <span class="k">if</span> <span class="n">x</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">match</span><span class="o">.</span><span class="n">groups</span><span class="p">())),</span>
+                                <span class="nb">list</span><span class="p">(</span>
+                                    <span class="nb">map</span><span class="p">(</span>
+                                        <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">unescape</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">lstrip</span><span class="p">(</span><span class="s2">&quot;:=&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="k">if</span> <span class="n">x</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+                                        <span class="k">match</span><span class="o">.</span><span class="n">groups</span><span class="p">(),</span>
+                                    <span class="p">)</span>
+                                <span class="p">),</span>
                             <span class="p">)</span>
                         <span class="p">)</span>
                     <span class="k">else</span><span class="p">:</span>
@@ -623,7 +628,12 @@
                         <span class="n">token</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>  <span class="c1"># type: List[str]</span>
                             <span class="p">(</span>
                                 <span class="n">CommandToken</span><span class="o">.</span><span class="n">ANNOTATED</span><span class="p">,</span>
-                                <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">str</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">lstrip</span><span class="p">(</span><span class="s2">&quot;:=&quot;</span><span class="p">)</span> <span class="k">if</span> <span class="n">x</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">match</span><span class="o">.</span><span class="n">groups</span><span class="p">())),</span>
+                                <span class="nb">list</span><span class="p">(</span>
+                                    <span class="nb">map</span><span class="p">(</span>
+                                        <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">unescape</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">lstrip</span><span class="p">(</span><span class="s2">&quot;:=&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="k">if</span> <span class="n">x</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+                                        <span class="k">match</span><span class="o">.</span><span class="n">groups</span><span class="p">(),</span>
+                                    <span class="p">)</span>
+                                <span class="p">),</span>
                             <span class="p">)</span>
                         <span class="p">)</span>
                     <span class="k">else</span><span class="p">:</span>

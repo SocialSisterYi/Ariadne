@@ -94,6 +94,12 @@
 
             </li>
             <li>
+                    <a class="class" href="#MismatchError">MismatchError</a>
+                            <ul class="memberlist">
+                </ul>
+
+            </li>
+            <li>
                     <a class="class" href="#CommandHandler">CommandHandler</a>
                             <ul class="memberlist">
                         <li>
@@ -156,7 +162,6 @@
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">Any</span><span class="p">,</span>
     <span class="n">Callable</span><span class="p">,</span>
-    <span class="n">DefaultDict</span><span class="p">,</span>
     <span class="n">Dict</span><span class="p">,</span>
     <span class="n">Iterable</span><span class="p">,</span>
     <span class="n">List</span><span class="p">,</span>
@@ -255,13 +260,15 @@
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">placeholder</span> <span class="o">=</span> <span class="n">placeholder</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">type</span> <span class="o">=</span> <span class="nb">type</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="s2">&quot;raw&quot;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">type</span> <span class="o">=</span> <span class="n">_raw</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">default</span> <span class="o">=</span> <span class="n">default</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">default_factory</span> <span class="o">=</span> <span class="n">default_factory</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">param_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">BaseModel</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
 
     <span class="k">def</span> <span class="nf">gen_model</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">validators</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Callable</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">type</span> <span class="ow">is</span> <span class="n">_raw</span><span class="p">:</span>
             <span class="k">return</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">default_factory</span> <span class="o">=</span> <span class="n">const_call</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">default</span><span class="p">)</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">default</span> <span class="ow">is</span> <span class="ow">not</span> <span class="o">...</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_factory</span>
@@ -375,11 +382,15 @@
     <span class="n">token_list</span><span class="p">:</span> <span class="s2">&quot;List[Set[str] | List[int | str]]&quot;</span>
     <span class="n">slot_map</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span> <span class="n">Slot</span><span class="p">]</span>
     <span class="n">arg_map</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Arg</span><span class="p">]</span>
-    <span class="n">last</span><span class="p">:</span> <span class="n">ELast</span>
+    <span class="n">last_type</span><span class="p">:</span> <span class="n">ELast</span>
     <span class="n">wildcard</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
 
 
 <span class="n">_raw</span> <span class="o">=</span> <span class="nb">object</span><span class="p">()</span>  <span class="c1"># wildcard annotation object</span>
+
+
+<span class="k">class</span> <span class="nc">MismatchError</span><span class="p">(</span><span class="ne">ValueError</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;指令失配&quot;&quot;&quot;</span>
 
 
 <span class="k">class</span> <span class="nc">CommandHandler</span><span class="p">(</span><span class="n">ExecTarget</span><span class="p">):</span>
@@ -403,7 +414,7 @@
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">slot_data</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span> <span class="n">MessageChain</span><span class="p">],</span>
         <span class="n">arg_data</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">MessageChain</span><span class="p">]],</span>
-        <span class="n">wildcard_chains</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">MessageChain</span><span class="p">],</span>
+        <span class="n">wildcard_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">MessageChain</span><span class="p">],</span>
     <span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;基于 CommandRecord 与解析数据设置 ConstantDispatcher 参数</span>
 
@@ -447,10 +458,10 @@
                 <span class="n">param_result</span><span class="p">[</span><span class="n">slot</span><span class="o">.</span><span class="n">param_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">slot</span><span class="o">.</span><span class="n">model</span><span class="p">(</span><span class="n">val</span><span class="o">=</span><span class="n">value</span><span class="p">)</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="s2">&quot;val&quot;</span><span class="p">]</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">if</span> <span class="n">slot</span><span class="o">.</span><span class="n">type</span> <span class="ow">is</span> <span class="n">_raw</span><span class="p">:</span>
-                    <span class="n">param_result</span><span class="p">[</span><span class="n">slot</span><span class="o">.</span><span class="n">param_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">MessageChain</span><span class="p">([</span><span class="s2">&quot; &quot;</span><span class="p">])</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">wildcard_chains</span><span class="p">)</span>
+                    <span class="n">param_result</span><span class="p">[</span><span class="n">slot</span><span class="o">.</span><span class="n">param_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">MessageChain</span><span class="p">([</span><span class="s2">&quot; &quot;</span><span class="p">])</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">wildcard_list</span><span class="p">,</span> <span class="n">merge</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="n">param_result</span><span class="p">[</span><span class="n">slot</span><span class="o">.</span><span class="n">param_name</span><span class="p">]</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span>
-                        <span class="n">slot</span><span class="o">.</span><span class="n">model</span><span class="p">(</span><span class="n">val</span><span class="o">=</span><span class="n">chain</span><span class="p">)</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="s2">&quot;val&quot;</span><span class="p">]</span> <span class="k">for</span> <span class="n">chain</span> <span class="ow">in</span> <span class="n">wildcard_chains</span>
+                        <span class="n">slot</span><span class="o">.</span><span class="n">model</span><span class="p">(</span><span class="n">val</span><span class="o">=</span><span class="n">chain</span><span class="p">)</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="s2">&quot;val&quot;</span><span class="p">]</span> <span class="k">for</span> <span class="n">chain</span> <span class="ow">in</span> <span class="n">wildcard_list</span>
                     <span class="p">)</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dispatchers</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">ConstantDispatcher</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">dispatchers</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">param_result</span>
@@ -481,12 +492,12 @@
 
 <span class="sd">        Args:</span>
 <span class="sd">            command (str): 要处理的命令</span>
-<span class="sd">            setting (Dict[str, Union[Slot, Arg]], optional): 参数名 -&gt; Slot | Arg 映射, 用于分配参数, 可从函数中推断 `Slot`.</span>
-<span class="sd">            dispatchers (Sequence[BaseDispatcher], optional): 附加的 `Dispatcher` 序列.</span>
-<span class="sd">            decorators (Sequence[Decorator], optional): 附加的 `Headless Decorator` 序列.</span>
+<span class="sd">            setting (Dict[str, Union[Slot, Arg]], optional): 参数设置.</span>
+<span class="sd">            dispatchers (Sequence[BaseDispatcher], optional): 可选的额外 Dispatcher 序列.</span>
+<span class="sd">            decorators (Sequence[Decorator], optional): 可选的额外 Decorator 序列.</span>
 
 <span class="sd">        Raises:</span>
-<span class="sd">            ValueError: 在将非最后一个参数设置为可选</span>
+<span class="sd">            ValueError: 命令格式错误</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            Callable[[T_Callable], T_Callable]: 装饰器</span>
@@ -536,20 +547,16 @@
                     <span class="n">last</span> <span class="o">=</span> <span class="n">CommandPattern</span><span class="o">.</span><span class="n">ELast</span><span class="o">.</span><span class="n">OPTIONAL</span>
                 <span class="n">assert_not_</span><span class="p">(</span><span class="n">name</span> <span class="ow">in</span> <span class="n">placeholder_set</span><span class="p">,</span> <span class="s2">&quot;Duplicated parameter slot!&quot;</span><span class="p">)</span>
                 <span class="n">placeholder_set</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
-                <span class="n">eval_global</span><span class="p">,</span> <span class="n">eval_local</span> <span class="o">=</span> <span class="n">eval_ctx</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-                <span class="k">if</span> <span class="n">wildcard</span><span class="p">:</span>
-                    <span class="n">eval_global</span> <span class="o">=</span> <span class="n">eval_global</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-                    <span class="n">eval_global</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">raw</span><span class="o">=</span><span class="n">_raw</span><span class="p">)</span>
                 <span class="n">parsed_slot</span> <span class="o">=</span> <span class="n">Slot</span><span class="p">(</span>
                     <span class="n">name</span><span class="p">,</span>
-                    <span class="nb">eval</span><span class="p">(</span><span class="n">annotation</span> <span class="ow">or</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span> <span class="n">eval_global</span><span class="p">,</span> <span class="n">eval_local</span><span class="p">),</span>
-                    <span class="nb">eval</span><span class="p">(</span><span class="n">default</span> <span class="ow">or</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span> <span class="n">eval_global</span><span class="p">,</span> <span class="n">eval_local</span><span class="p">),</span>
+                    <span class="nb">eval</span><span class="p">(</span><span class="n">annotation</span> <span class="ow">or</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span> <span class="o">*</span><span class="n">eval_ctx</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;raw&quot;</span><span class="p">:</span> <span class="n">_raw</span><span class="p">})),</span>
+                    <span class="nb">eval</span><span class="p">(</span><span class="n">default</span> <span class="ow">or</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span> <span class="o">*</span><span class="n">eval_ctx</span><span class="p">(</span><span class="mi">1</span><span class="p">)),</span>
                 <span class="p">)</span>
                 <span class="n">parsed_slot</span><span class="o">.</span><span class="n">param_name</span> <span class="o">=</span> <span class="n">name</span>  <span class="c1"># assuming that param_name is consistent</span>
                 <span class="n">slot_map</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">parsed_slot</span> <span class="o">|</span> <span class="n">slot_map</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="p">{})</span>  <span class="c1"># parsed slot &lt; provided slot</span>
                 <span class="k">if</span> <span class="n">wildcard</span><span class="p">:</span>
                     <span class="n">wildcard_slot_name</span> <span class="o">=</span> <span class="n">name</span>
-                <span class="n">token_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tokens</span><span class="p">)</span>
+                <span class="n">token_list</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">name</span><span class="p">])</span>
             <span class="k">elif</span> <span class="n">t_type</span> <span class="ow">is</span> <span class="n">CommandToken</span><span class="o">.</span><span class="n">PARAM</span><span class="p">:</span>
                 <span class="k">for</span> <span class="n">param_name</span> <span class="ow">in</span> <span class="n">tokens</span><span class="p">:</span>
                     <span class="n">assert_not_</span><span class="p">(</span><span class="n">param_name</span> <span class="ow">in</span> <span class="n">placeholder_set</span><span class="p">,</span> <span class="s2">&quot;Duplicated parameter slot!&quot;</span><span class="p">)</span>
@@ -578,8 +585,8 @@
                     <span class="n">slot_map</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">parsed_slot</span> <span class="o">|</span> <span class="n">slot_map</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="p">{})</span>  <span class="c1"># parsed slot &lt; provided slot</span>
                     <span class="k">if</span> <span class="n">default</span> <span class="ow">is</span> <span class="ow">not</span> <span class="o">...</span><span class="p">:</span>
                         <span class="n">assert_</span><span class="p">(</span>
-                            <span class="n">slot_map</span><span class="p">[</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">placeholder</span> <span class="ow">in</span> <span class="n">token_list</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
-                            <span class="ow">and</span> <span class="n">token_list</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="ow">in</span> <span class="p">{</span><span class="n">CommandToken</span><span class="o">.</span><span class="n">ANNOTATED</span><span class="p">,</span> <span class="n">CommandToken</span><span class="o">.</span><span class="n">PARAM</span><span class="p">},</span>
+                            <span class="n">slot_map</span><span class="p">[</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">placeholder</span> <span class="ow">in</span> <span class="n">command_tokens</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
+                            <span class="ow">and</span> <span class="n">command_tokens</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="ow">in</span> <span class="p">{</span><span class="n">CommandToken</span><span class="o">.</span><span class="n">ANNOTATED</span><span class="p">,</span> <span class="n">CommandToken</span><span class="o">.</span><span class="n">PARAM</span><span class="p">},</span>
                             <span class="s2">&quot;Not setting wildcard / optional on the last slot!&quot;</span><span class="p">,</span>
                         <span class="p">)</span>
                         <span class="k">nonlocal</span> <span class="n">last</span>
@@ -620,59 +627,43 @@
         <span class="n">mapping_str</span><span class="p">,</span> <span class="n">elem_m</span> <span class="o">=</span> <span class="n">chain</span><span class="o">.</span><span class="n">asMappingString</span><span class="p">()</span>
 
         <span class="k">for</span> <span class="n">handler</span> <span class="ow">in</span> <span class="nb">reversed</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">command_handlers</span><span class="p">):</span>  <span class="c1"># starting from latest added</span>
-            <span class="k">with</span> <span class="n">suppress</span><span class="p">(</span><span class="ne">IndexError</span><span class="p">,</span> <span class="ne">ValueError</span><span class="p">):</span>
-                <span class="n">pattern</span> <span class="o">=</span> <span class="n">handler</span><span class="o">.</span><span class="n">pattern</span>
-                <span class="n">arg_data</span><span class="p">:</span> <span class="n">DefaultDict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">MessageChain</span><span class="p">]]</span> <span class="o">=</span> <span class="n">DefaultDict</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>
-                <span class="n">slot_data</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span> <span class="n">MessageChain</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
-                <span class="c1"># scan Arg data</span>
-                <span class="n">mixed_str</span> <span class="o">=</span> <span class="n">split</span><span class="p">(</span><span class="n">mapping_str</span><span class="p">)</span>
-                <span class="n">text_str</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
-                <span class="n">scan_index</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>
-                <span class="k">while</span> <span class="n">scan_index</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">mixed_str</span><span class="p">):</span>
-                    <span class="n">current</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">mixed_str</span><span class="p">[</span><span class="n">scan_index</span><span class="p">]</span>
-                    <span class="n">scan_index</span> <span class="o">+=</span> <span class="mi">1</span>
-                    <span class="k">if</span> <span class="n">current</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">pattern</span><span class="o">.</span><span class="n">arg_map</span><span class="p">:</span>
-                        <span class="n">text_str</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">current</span><span class="p">)</span>
-                    <span class="k">else</span><span class="p">:</span>
-                        <span class="n">assert_not_</span><span class="p">(</span><span class="n">current</span> <span class="ow">in</span> <span class="n">arg_data</span><span class="p">,</span> <span class="s2">&quot;Duplicated argument.&quot;</span><span class="p">)</span>
-                        <span class="n">nargs</span> <span class="o">=</span> <span class="n">pattern</span><span class="o">.</span><span class="n">arg_map</span><span class="p">[</span><span class="n">current</span><span class="p">]</span><span class="o">.</span><span class="n">nargs</span>
-                        <span class="n">arg_data</span><span class="p">[</span><span class="n">current</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span>
-                            <span class="n">MessageChain</span><span class="o">.</span><span class="n">fromMappingString</span><span class="p">(</span><span class="n">piece</span><span class="p">,</span> <span class="n">elem_m</span><span class="p">)</span>
-                            <span class="k">for</span> <span class="n">piece</span> <span class="ow">in</span> <span class="n">mixed_str</span><span class="p">[</span><span class="n">scan_index</span> <span class="p">:</span> <span class="n">scan_index</span> <span class="o">+</span> <span class="n">nargs</span><span class="p">]</span>
-                        <span class="p">]</span>
-                        <span class="n">scan_index</span> <span class="o">+=</span> <span class="n">nargs</span>
-                <span class="c1"># scan text + Slot</span>
-                <span class="k">for</span> <span class="n">scan_index</span><span class="p">,</span> <span class="n">tokens</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">pattern</span><span class="o">.</span><span class="n">token_list</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]):</span>
-                    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">tokens</span><span class="p">,</span> <span class="nb">set</span><span class="p">)</span> <span class="ow">and</span> <span class="n">text_str</span><span class="p">[</span><span class="n">scan_index</span><span class="p">]</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">tokens</span><span class="p">:</span>
-                        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Mismatch&quot;</span><span class="p">)</span>
-                    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">tokens</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
-                        <span class="k">for</span> <span class="n">slot</span> <span class="ow">in</span> <span class="n">tokens</span><span class="p">:</span>
-                            <span class="n">slot_data</span><span class="p">[</span><span class="n">slot</span><span class="p">]</span> <span class="o">=</span> <span class="n">MessageChain</span><span class="o">.</span><span class="n">fromMappingString</span><span class="p">(</span><span class="n">text_str</span><span class="p">[</span><span class="n">scan_index</span><span class="p">],</span> <span class="n">elem_m</span><span class="p">)</span>
-                <span class="n">scan_index</span> <span class="o">+=</span> <span class="mi">1</span>
-                <span class="n">tokens</span> <span class="o">=</span> <span class="n">pattern</span><span class="o">.</span><span class="n">token_list</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-                <span class="n">wildcard_chains</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">MessageChain</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
-                <span class="k">if</span> <span class="n">pattern</span><span class="o">.</span><span class="n">last</span> <span class="ow">is</span> <span class="n">CommandPattern</span><span class="o">.</span><span class="n">ELast</span><span class="o">.</span><span class="n">REQUIRED</span><span class="p">:</span>
-                    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">text_str</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span> <span class="o">!=</span> <span class="n">scan_index</span> <span class="ow">or</span> <span class="p">(</span>
-                        <span class="nb">isinstance</span><span class="p">(</span><span class="n">tokens</span><span class="p">,</span> <span class="nb">set</span><span class="p">)</span> <span class="ow">and</span> <span class="n">text_str</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">tokens</span>
-                    <span class="p">):</span>
-                        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Mismatch&quot;</span><span class="p">)</span>
-                    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">tokens</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
-                        <span class="k">for</span> <span class="n">slot</span> <span class="ow">in</span> <span class="n">tokens</span><span class="p">:</span>
-                            <span class="n">slot_data</span><span class="p">[</span><span class="n">slot</span><span class="p">]</span> <span class="o">=</span> <span class="n">MessageChain</span><span class="o">.</span><span class="n">fromMappingString</span><span class="p">(</span><span class="n">text_str</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">elem_m</span><span class="p">)</span>
-                <span class="k">elif</span> <span class="n">pattern</span><span class="o">.</span><span class="n">last</span> <span class="ow">is</span> <span class="n">CommandPattern</span><span class="o">.</span><span class="n">ELast</span><span class="o">.</span><span class="n">OPTIONAL</span><span class="p">:</span>
-                    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">text_str</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span> <span class="o">==</span> <span class="n">scan_index</span><span class="p">:</span>  <span class="c1"># matched</span>
-                        <span class="k">for</span> <span class="n">slot</span> <span class="ow">in</span> <span class="n">tokens</span><span class="p">:</span>
-                            <span class="n">slot_data</span><span class="p">[</span><span class="n">slot</span><span class="p">]</span> <span class="o">=</span> <span class="n">MessageChain</span><span class="o">.</span><span class="n">fromMappingString</span><span class="p">(</span><span class="n">text_str</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">elem_m</span><span class="p">)</span>
-                    <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">text_str</span><span class="p">)</span> <span class="o">==</span> <span class="n">scan_index</span><span class="p">:</span>  <span class="c1"># not matched</span>
-                        <span class="k">pass</span>
-                    <span class="k">else</span><span class="p">:</span>  <span class="c1"># length overflow</span>
-                        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Mismatch&quot;</span><span class="p">)</span>
-                <span class="k">elif</span> <span class="n">pattern</span><span class="o">.</span><span class="n">last</span> <span class="ow">is</span> <span class="n">CommandPattern</span><span class="o">.</span><span class="n">ELast</span><span class="o">.</span><span class="n">WILDCARD</span><span class="p">:</span>
-                    <span class="n">wildcard_chains</span> <span class="o">=</span> <span class="p">[</span>
-                        <span class="n">MessageChain</span><span class="o">.</span><span class="n">fromMappingString</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">elem_m</span><span class="p">)</span> <span class="k">for</span> <span class="n">text</span> <span class="ow">in</span> <span class="n">text_str</span><span class="p">[</span><span class="n">scan_index</span><span class="p">:]</span>
-                    <span class="p">]</span>
-                <span class="n">handler</span><span class="o">.</span><span class="n">set_data</span><span class="p">(</span><span class="n">slot_data</span><span class="p">,</span> <span class="n">arg_data</span><span class="p">,</span> <span class="n">wildcard_chains</span><span class="p">)</span>
+            <span class="n">pattern</span> <span class="o">=</span> <span class="n">handler</span><span class="o">.</span><span class="n">pattern</span>
+            <span class="n">text_index</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="n">token_index</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="n">arg_data</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">MessageChain</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="n">slot_data</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span> <span class="n">MessageChain</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="n">text_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">split</span><span class="p">(</span><span class="n">mapping_str</span><span class="p">)</span>
+            <span class="n">wildcard_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">MessageChain</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">with</span> <span class="n">suppress</span><span class="p">(</span><span class="ne">IndexError</span><span class="p">,</span> <span class="n">MismatchError</span><span class="p">):</span>  <span class="c1"># TODO: add ValueError</span>
+                <span class="k">while</span> <span class="n">text_index</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">text_list</span><span class="p">):</span>
+                    <span class="n">text</span> <span class="o">=</span> <span class="n">text_list</span><span class="p">[</span><span class="n">text_index</span><span class="p">]</span>
+                    <span class="n">text_index</span> <span class="o">+=</span> <span class="mi">1</span>
 
+                    <span class="k">if</span> <span class="n">text</span> <span class="ow">in</span> <span class="n">pattern</span><span class="o">.</span><span class="n">arg_map</span><span class="p">:</span>  <span class="c1"># Arg handle</span>
+                        <span class="k">if</span> <span class="n">text</span> <span class="ow">in</span> <span class="n">arg_data</span><span class="p">:</span>
+                            <span class="k">raise</span> <span class="n">MismatchError</span><span class="p">(</span><span class="s2">&quot;Duplicated argument&quot;</span><span class="p">)</span>
+                        <span class="n">nargs</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">pattern</span><span class="o">.</span><span class="n">arg_map</span><span class="p">[</span><span class="n">text</span><span class="p">]</span><span class="o">.</span><span class="n">nargs</span>
+                        <span class="n">arg_data</span><span class="p">[</span><span class="n">text</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span>
+                            <span class="n">MessageChain</span><span class="o">.</span><span class="n">fromMappingString</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">elem_m</span><span class="p">)</span>
+                            <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">text_list</span><span class="p">[</span><span class="n">text_index</span> <span class="p">:</span> <span class="n">text_index</span> <span class="o">+</span> <span class="n">nargs</span><span class="p">]</span>
+                        <span class="p">]</span>
+                        <span class="n">text_index</span> <span class="o">+=</span> <span class="n">nargs</span>
+
+                    <span class="k">else</span><span class="p">:</span>  <span class="c1"># Constant and Slot handle</span>
+                        <span class="n">tokens</span> <span class="o">=</span> <span class="n">pattern</span><span class="o">.</span><span class="n">token_list</span><span class="p">[</span><span class="n">token_index</span><span class="p">]</span>
+                        <span class="n">token_index</span> <span class="o">+=</span> <span class="mi">1</span>
+                        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">tokens</span><span class="p">,</span> <span class="nb">set</span><span class="p">)</span> <span class="ow">and</span> <span class="n">text</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">tokens</span><span class="p">:</span>
+                            <span class="k">raise</span> <span class="n">MismatchError</span>
+                        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">tokens</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+                            <span class="k">if</span> <span class="n">pattern</span><span class="o">.</span><span class="n">last_type</span> <span class="ow">is</span> <span class="n">CommandPattern</span><span class="o">.</span><span class="n">ELast</span><span class="o">.</span><span class="n">WILDCARD</span> <span class="ow">and</span> <span class="n">token_index</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span>
+                                <span class="n">pattern</span><span class="o">.</span><span class="n">token_list</span>
+                            <span class="p">):</span>
+                                <span class="n">wildcard_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">MessageChain</span><span class="o">.</span><span class="n">fromMappingString</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">elem_m</span><span class="p">))</span>
+                                <span class="n">token_index</span> <span class="o">-=</span> <span class="mi">1</span>
+                            <span class="k">for</span> <span class="n">slot</span> <span class="ow">in</span> <span class="n">tokens</span><span class="p">:</span>
+                                <span class="n">slot_data</span><span class="p">[</span><span class="n">slot</span><span class="p">]</span> <span class="o">=</span> <span class="n">MessageChain</span><span class="o">.</span><span class="n">fromMappingString</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">elem_m</span><span class="p">)</span>
+
+                <span class="n">handler</span><span class="o">.</span><span class="n">set_data</span><span class="p">(</span><span class="n">slot_data</span><span class="p">,</span> <span class="n">arg_data</span><span class="p">,</span> <span class="n">wildcard_list</span><span class="p">)</span>
                 <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">broadcast</span><span class="o">.</span><span class="n">Executor</span><span class="p">(</span><span class="n">handler</span><span class="p">)</span>
 </pre></div>
 
@@ -840,13 +831,15 @@ inheritance.</p>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">placeholder</span> <span class="o">=</span> <span class="n">placeholder</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">type</span> <span class="o">=</span> <span class="nb">type</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="s2">&quot;raw&quot;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">type</span> <span class="o">=</span> <span class="n">_raw</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">default</span> <span class="o">=</span> <span class="n">default</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">default_factory</span> <span class="o">=</span> <span class="n">default_factory</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">param_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">BaseModel</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
 
     <span class="k">def</span> <span class="nf">gen_model</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">validators</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Callable</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">type</span> <span class="ow">is</span> <span class="n">_raw</span><span class="p">:</span>
             <span class="k">return</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">default_factory</span> <span class="o">=</span> <span class="n">const_call</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">default</span><span class="p">)</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">default</span> <span class="ow">is</span> <span class="ow">not</span> <span class="o">...</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_factory</span>
@@ -893,6 +886,8 @@ inheritance.</p>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">placeholder</span> <span class="o">=</span> <span class="n">placeholder</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">type</span> <span class="o">=</span> <span class="nb">type</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="s2">&quot;raw&quot;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">type</span> <span class="o">=</span> <span class="n">_raw</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">default</span> <span class="o">=</span> <span class="n">default</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">default_factory</span> <span class="o">=</span> <span class="n">default_factory</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">param_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
@@ -915,7 +910,7 @@ inheritance.</p>
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">gen_model</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">validators</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Callable</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">type</span> <span class="ow">is</span> <span class="n">_raw</span><span class="p">:</span>
             <span class="k">return</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">default_factory</span> <span class="o">=</span> <span class="n">const_call</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">default</span><span class="p">)</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">default</span> <span class="ow">is</span> <span class="ow">not</span> <span class="o">...</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_factory</span>
@@ -1197,7 +1192,7 @@ inheritance.</p>
     <span class="n">token_list</span><span class="p">:</span> <span class="s2">&quot;List[Set[str] | List[int | str]]&quot;</span>
     <span class="n">slot_map</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span> <span class="n">Slot</span><span class="p">]</span>
     <span class="n">arg_map</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Arg</span><span class="p">]</span>
-    <span class="n">last</span><span class="p">:</span> <span class="n">ELast</span>
+    <span class="n">last_type</span><span class="p">:</span> <span class="n">ELast</span>
     <span class="n">wildcard</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
 </pre></div>
 
@@ -1215,7 +1210,7 @@ inheritance.</p>
     token_list: &#39;List[Set[str] | List[int | str]]&#39;,
     slot_map: Dict[Union[str, int], <a href="#Slot">ariadne.message.commander.Slot</a>],
     arg_map: Dict[str, <a href="#Arg">ariadne.message.commander.Arg</a>],
-    last: <a href="#CommandPattern.ELast">ariadne.message.commander.CommandPattern.ELast</a>,
+    last_type: <a href="#CommandPattern.ELast">ariadne.message.commander.CommandPattern.ELast</a>,
     wildcard: str = &#39;&#39;
 )</span>
     </div>
@@ -1295,6 +1290,42 @@ inheritance.</p>
                                 </dl>
                             </div>
                 </section>
+                <section id="MismatchError">
+                                <div class="attr class">
+        <a class="headerlink" href="#MismatchError">#&nbsp;&nbsp</a>
+
+        
+        <span class="def">class</span>
+        <span class="name">MismatchError</span><wbr>(<span class="base">builtins.ValueError</span>):
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">MismatchError</span><span class="p">(</span><span class="ne">ValueError</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;指令失配&quot;&quot;&quot;</span>
+</pre></div>
+
+        </details>
+
+            <div class="docstring"><p>指令失配</p>
+</div>
+
+
+                            <div class="inherited">
+                                <h5>Inherited Members</h5>
+                                <dl>
+                                    <div><dt>builtins.ValueError</dt>
+                                <dd id="MismatchError.__init__" class="function">ValueError</dd>
+
+            </div>
+            <div><dt>builtins.BaseException</dt>
+                                <dd id="MismatchError.with_traceback" class="function">with_traceback</dd>
+                <dd id="MismatchError.args" class="variable">args</dd>
+
+            </div>
+                                </dl>
+                            </div>
+                </section>
                 <section id="CommandHandler">
                                 <div class="attr class">
         <a class="headerlink" href="#CommandHandler">#&nbsp;&nbsp</a>
@@ -1327,7 +1358,7 @@ inheritance.</p>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">slot_data</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span> <span class="n">MessageChain</span><span class="p">],</span>
         <span class="n">arg_data</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">MessageChain</span><span class="p">]],</span>
-        <span class="n">wildcard_chains</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">MessageChain</span><span class="p">],</span>
+        <span class="n">wildcard_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">MessageChain</span><span class="p">],</span>
     <span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;基于 CommandRecord 与解析数据设置 ConstantDispatcher 参数</span>
 
@@ -1371,10 +1402,10 @@ inheritance.</p>
                 <span class="n">param_result</span><span class="p">[</span><span class="n">slot</span><span class="o">.</span><span class="n">param_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">slot</span><span class="o">.</span><span class="n">model</span><span class="p">(</span><span class="n">val</span><span class="o">=</span><span class="n">value</span><span class="p">)</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="s2">&quot;val&quot;</span><span class="p">]</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">if</span> <span class="n">slot</span><span class="o">.</span><span class="n">type</span> <span class="ow">is</span> <span class="n">_raw</span><span class="p">:</span>
-                    <span class="n">param_result</span><span class="p">[</span><span class="n">slot</span><span class="o">.</span><span class="n">param_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">MessageChain</span><span class="p">([</span><span class="s2">&quot; &quot;</span><span class="p">])</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">wildcard_chains</span><span class="p">)</span>
+                    <span class="n">param_result</span><span class="p">[</span><span class="n">slot</span><span class="o">.</span><span class="n">param_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">MessageChain</span><span class="p">([</span><span class="s2">&quot; &quot;</span><span class="p">])</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">wildcard_list</span><span class="p">,</span> <span class="n">merge</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="n">param_result</span><span class="p">[</span><span class="n">slot</span><span class="o">.</span><span class="n">param_name</span><span class="p">]</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span>
-                        <span class="n">slot</span><span class="o">.</span><span class="n">model</span><span class="p">(</span><span class="n">val</span><span class="o">=</span><span class="n">chain</span><span class="p">)</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="s2">&quot;val&quot;</span><span class="p">]</span> <span class="k">for</span> <span class="n">chain</span> <span class="ow">in</span> <span class="n">wildcard_chains</span>
+                        <span class="n">slot</span><span class="o">.</span><span class="n">model</span><span class="p">(</span><span class="n">val</span><span class="o">=</span><span class="n">chain</span><span class="p">)</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="s2">&quot;val&quot;</span><span class="p">]</span> <span class="k">for</span> <span class="n">chain</span> <span class="ow">in</span> <span class="n">wildcard_list</span>
                     <span class="p">)</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dispatchers</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">ConstantDispatcher</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">dispatchers</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">param_result</span>
@@ -1431,7 +1462,7 @@ inheritance.</p>
     self,
     slot_data: Dict[Union[int, str], <a href="chain.html#MessageChain">ariadne.message.chain.MessageChain</a>],
     arg_data: Dict[str, List[<a href="chain.html#MessageChain">ariadne.message.chain.MessageChain</a>]],
-    wildcard_chains: List[<a href="chain.html#MessageChain">ariadne.message.chain.MessageChain</a>]
+    wildcard_list: List[<a href="chain.html#MessageChain">ariadne.message.chain.MessageChain</a>]
 )</span>:
     </div>
 
@@ -1441,7 +1472,7 @@ inheritance.</p>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">slot_data</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span> <span class="n">MessageChain</span><span class="p">],</span>
         <span class="n">arg_data</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">MessageChain</span><span class="p">]],</span>
-        <span class="n">wildcard_chains</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">MessageChain</span><span class="p">],</span>
+        <span class="n">wildcard_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">MessageChain</span><span class="p">],</span>
     <span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;基于 CommandRecord 与解析数据设置 ConstantDispatcher 参数</span>
 
@@ -1485,10 +1516,10 @@ inheritance.</p>
                 <span class="n">param_result</span><span class="p">[</span><span class="n">slot</span><span class="o">.</span><span class="n">param_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">slot</span><span class="o">.</span><span class="n">model</span><span class="p">(</span><span class="n">val</span><span class="o">=</span><span class="n">value</span><span class="p">)</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="s2">&quot;val&quot;</span><span class="p">]</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">if</span> <span class="n">slot</span><span class="o">.</span><span class="n">type</span> <span class="ow">is</span> <span class="n">_raw</span><span class="p">:</span>
-                    <span class="n">param_result</span><span class="p">[</span><span class="n">slot</span><span class="o">.</span><span class="n">param_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">MessageChain</span><span class="p">([</span><span class="s2">&quot; &quot;</span><span class="p">])</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">wildcard_chains</span><span class="p">)</span>
+                    <span class="n">param_result</span><span class="p">[</span><span class="n">slot</span><span class="o">.</span><span class="n">param_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">MessageChain</span><span class="p">([</span><span class="s2">&quot; &quot;</span><span class="p">])</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">wildcard_list</span><span class="p">,</span> <span class="n">merge</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="n">param_result</span><span class="p">[</span><span class="n">slot</span><span class="o">.</span><span class="n">param_name</span><span class="p">]</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span>
-                        <span class="n">slot</span><span class="o">.</span><span class="n">model</span><span class="p">(</span><span class="n">val</span><span class="o">=</span><span class="n">chain</span><span class="p">)</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="s2">&quot;val&quot;</span><span class="p">]</span> <span class="k">for</span> <span class="n">chain</span> <span class="ow">in</span> <span class="n">wildcard_chains</span>
+                        <span class="n">slot</span><span class="o">.</span><span class="n">model</span><span class="p">(</span><span class="n">val</span><span class="o">=</span><span class="n">chain</span><span class="p">)</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="s2">&quot;val&quot;</span><span class="p">]</span> <span class="k">for</span> <span class="n">chain</span> <span class="ow">in</span> <span class="n">wildcard_list</span>
                     <span class="p">)</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dispatchers</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">ConstantDispatcher</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">dispatchers</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">param_result</span>
@@ -1551,12 +1582,12 @@ inheritance.</p>
 
 <span class="sd">        Args:</span>
 <span class="sd">            command (str): 要处理的命令</span>
-<span class="sd">            setting (Dict[str, Union[Slot, Arg]], optional): 参数名 -&gt; Slot | Arg 映射, 用于分配参数, 可从函数中推断 `Slot`.</span>
-<span class="sd">            dispatchers (Sequence[BaseDispatcher], optional): 附加的 `Dispatcher` 序列.</span>
-<span class="sd">            decorators (Sequence[Decorator], optional): 附加的 `Headless Decorator` 序列.</span>
+<span class="sd">            setting (Dict[str, Union[Slot, Arg]], optional): 参数设置.</span>
+<span class="sd">            dispatchers (Sequence[BaseDispatcher], optional): 可选的额外 Dispatcher 序列.</span>
+<span class="sd">            decorators (Sequence[Decorator], optional): 可选的额外 Decorator 序列.</span>
 
 <span class="sd">        Raises:</span>
-<span class="sd">            ValueError: 在将非最后一个参数设置为可选</span>
+<span class="sd">            ValueError: 命令格式错误</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            Callable[[T_Callable], T_Callable]: 装饰器</span>
@@ -1606,20 +1637,16 @@ inheritance.</p>
                     <span class="n">last</span> <span class="o">=</span> <span class="n">CommandPattern</span><span class="o">.</span><span class="n">ELast</span><span class="o">.</span><span class="n">OPTIONAL</span>
                 <span class="n">assert_not_</span><span class="p">(</span><span class="n">name</span> <span class="ow">in</span> <span class="n">placeholder_set</span><span class="p">,</span> <span class="s2">&quot;Duplicated parameter slot!&quot;</span><span class="p">)</span>
                 <span class="n">placeholder_set</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
-                <span class="n">eval_global</span><span class="p">,</span> <span class="n">eval_local</span> <span class="o">=</span> <span class="n">eval_ctx</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-                <span class="k">if</span> <span class="n">wildcard</span><span class="p">:</span>
-                    <span class="n">eval_global</span> <span class="o">=</span> <span class="n">eval_global</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-                    <span class="n">eval_global</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">raw</span><span class="o">=</span><span class="n">_raw</span><span class="p">)</span>
                 <span class="n">parsed_slot</span> <span class="o">=</span> <span class="n">Slot</span><span class="p">(</span>
                     <span class="n">name</span><span class="p">,</span>
-                    <span class="nb">eval</span><span class="p">(</span><span class="n">annotation</span> <span class="ow">or</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span> <span class="n">eval_global</span><span class="p">,</span> <span class="n">eval_local</span><span class="p">),</span>
-                    <span class="nb">eval</span><span class="p">(</span><span class="n">default</span> <span class="ow">or</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span> <span class="n">eval_global</span><span class="p">,</span> <span class="n">eval_local</span><span class="p">),</span>
+                    <span class="nb">eval</span><span class="p">(</span><span class="n">annotation</span> <span class="ow">or</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span> <span class="o">*</span><span class="n">eval_ctx</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;raw&quot;</span><span class="p">:</span> <span class="n">_raw</span><span class="p">})),</span>
+                    <span class="nb">eval</span><span class="p">(</span><span class="n">default</span> <span class="ow">or</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span> <span class="o">*</span><span class="n">eval_ctx</span><span class="p">(</span><span class="mi">1</span><span class="p">)),</span>
                 <span class="p">)</span>
                 <span class="n">parsed_slot</span><span class="o">.</span><span class="n">param_name</span> <span class="o">=</span> <span class="n">name</span>  <span class="c1"># assuming that param_name is consistent</span>
                 <span class="n">slot_map</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">parsed_slot</span> <span class="o">|</span> <span class="n">slot_map</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="p">{})</span>  <span class="c1"># parsed slot &lt; provided slot</span>
                 <span class="k">if</span> <span class="n">wildcard</span><span class="p">:</span>
                     <span class="n">wildcard_slot_name</span> <span class="o">=</span> <span class="n">name</span>
-                <span class="n">token_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tokens</span><span class="p">)</span>
+                <span class="n">token_list</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">name</span><span class="p">])</span>
             <span class="k">elif</span> <span class="n">t_type</span> <span class="ow">is</span> <span class="n">CommandToken</span><span class="o">.</span><span class="n">PARAM</span><span class="p">:</span>
                 <span class="k">for</span> <span class="n">param_name</span> <span class="ow">in</span> <span class="n">tokens</span><span class="p">:</span>
                     <span class="n">assert_not_</span><span class="p">(</span><span class="n">param_name</span> <span class="ow">in</span> <span class="n">placeholder_set</span><span class="p">,</span> <span class="s2">&quot;Duplicated parameter slot!&quot;</span><span class="p">)</span>
@@ -1648,8 +1675,8 @@ inheritance.</p>
                     <span class="n">slot_map</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">parsed_slot</span> <span class="o">|</span> <span class="n">slot_map</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="p">{})</span>  <span class="c1"># parsed slot &lt; provided slot</span>
                     <span class="k">if</span> <span class="n">default</span> <span class="ow">is</span> <span class="ow">not</span> <span class="o">...</span><span class="p">:</span>
                         <span class="n">assert_</span><span class="p">(</span>
-                            <span class="n">slot_map</span><span class="p">[</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">placeholder</span> <span class="ow">in</span> <span class="n">token_list</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
-                            <span class="ow">and</span> <span class="n">token_list</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="ow">in</span> <span class="p">{</span><span class="n">CommandToken</span><span class="o">.</span><span class="n">ANNOTATED</span><span class="p">,</span> <span class="n">CommandToken</span><span class="o">.</span><span class="n">PARAM</span><span class="p">},</span>
+                            <span class="n">slot_map</span><span class="p">[</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">placeholder</span> <span class="ow">in</span> <span class="n">command_tokens</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
+                            <span class="ow">and</span> <span class="n">command_tokens</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="ow">in</span> <span class="p">{</span><span class="n">CommandToken</span><span class="o">.</span><span class="n">ANNOTATED</span><span class="p">,</span> <span class="n">CommandToken</span><span class="o">.</span><span class="n">PARAM</span><span class="p">},</span>
                             <span class="s2">&quot;Not setting wildcard / optional on the last slot!&quot;</span><span class="p">,</span>
                         <span class="p">)</span>
                         <span class="k">nonlocal</span> <span class="n">last</span>
@@ -1690,59 +1717,43 @@ inheritance.</p>
         <span class="n">mapping_str</span><span class="p">,</span> <span class="n">elem_m</span> <span class="o">=</span> <span class="n">chain</span><span class="o">.</span><span class="n">asMappingString</span><span class="p">()</span>
 
         <span class="k">for</span> <span class="n">handler</span> <span class="ow">in</span> <span class="nb">reversed</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">command_handlers</span><span class="p">):</span>  <span class="c1"># starting from latest added</span>
-            <span class="k">with</span> <span class="n">suppress</span><span class="p">(</span><span class="ne">IndexError</span><span class="p">,</span> <span class="ne">ValueError</span><span class="p">):</span>
-                <span class="n">pattern</span> <span class="o">=</span> <span class="n">handler</span><span class="o">.</span><span class="n">pattern</span>
-                <span class="n">arg_data</span><span class="p">:</span> <span class="n">DefaultDict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">MessageChain</span><span class="p">]]</span> <span class="o">=</span> <span class="n">DefaultDict</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>
-                <span class="n">slot_data</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span> <span class="n">MessageChain</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
-                <span class="c1"># scan Arg data</span>
-                <span class="n">mixed_str</span> <span class="o">=</span> <span class="n">split</span><span class="p">(</span><span class="n">mapping_str</span><span class="p">)</span>
-                <span class="n">text_str</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
-                <span class="n">scan_index</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>
-                <span class="k">while</span> <span class="n">scan_index</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">mixed_str</span><span class="p">):</span>
-                    <span class="n">current</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">mixed_str</span><span class="p">[</span><span class="n">scan_index</span><span class="p">]</span>
-                    <span class="n">scan_index</span> <span class="o">+=</span> <span class="mi">1</span>
-                    <span class="k">if</span> <span class="n">current</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">pattern</span><span class="o">.</span><span class="n">arg_map</span><span class="p">:</span>
-                        <span class="n">text_str</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">current</span><span class="p">)</span>
-                    <span class="k">else</span><span class="p">:</span>
-                        <span class="n">assert_not_</span><span class="p">(</span><span class="n">current</span> <span class="ow">in</span> <span class="n">arg_data</span><span class="p">,</span> <span class="s2">&quot;Duplicated argument.&quot;</span><span class="p">)</span>
-                        <span class="n">nargs</span> <span class="o">=</span> <span class="n">pattern</span><span class="o">.</span><span class="n">arg_map</span><span class="p">[</span><span class="n">current</span><span class="p">]</span><span class="o">.</span><span class="n">nargs</span>
-                        <span class="n">arg_data</span><span class="p">[</span><span class="n">current</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span>
-                            <span class="n">MessageChain</span><span class="o">.</span><span class="n">fromMappingString</span><span class="p">(</span><span class="n">piece</span><span class="p">,</span> <span class="n">elem_m</span><span class="p">)</span>
-                            <span class="k">for</span> <span class="n">piece</span> <span class="ow">in</span> <span class="n">mixed_str</span><span class="p">[</span><span class="n">scan_index</span> <span class="p">:</span> <span class="n">scan_index</span> <span class="o">+</span> <span class="n">nargs</span><span class="p">]</span>
-                        <span class="p">]</span>
-                        <span class="n">scan_index</span> <span class="o">+=</span> <span class="n">nargs</span>
-                <span class="c1"># scan text + Slot</span>
-                <span class="k">for</span> <span class="n">scan_index</span><span class="p">,</span> <span class="n">tokens</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">pattern</span><span class="o">.</span><span class="n">token_list</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]):</span>
-                    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">tokens</span><span class="p">,</span> <span class="nb">set</span><span class="p">)</span> <span class="ow">and</span> <span class="n">text_str</span><span class="p">[</span><span class="n">scan_index</span><span class="p">]</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">tokens</span><span class="p">:</span>
-                        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Mismatch&quot;</span><span class="p">)</span>
-                    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">tokens</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
-                        <span class="k">for</span> <span class="n">slot</span> <span class="ow">in</span> <span class="n">tokens</span><span class="p">:</span>
-                            <span class="n">slot_data</span><span class="p">[</span><span class="n">slot</span><span class="p">]</span> <span class="o">=</span> <span class="n">MessageChain</span><span class="o">.</span><span class="n">fromMappingString</span><span class="p">(</span><span class="n">text_str</span><span class="p">[</span><span class="n">scan_index</span><span class="p">],</span> <span class="n">elem_m</span><span class="p">)</span>
-                <span class="n">scan_index</span> <span class="o">+=</span> <span class="mi">1</span>
-                <span class="n">tokens</span> <span class="o">=</span> <span class="n">pattern</span><span class="o">.</span><span class="n">token_list</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-                <span class="n">wildcard_chains</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">MessageChain</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
-                <span class="k">if</span> <span class="n">pattern</span><span class="o">.</span><span class="n">last</span> <span class="ow">is</span> <span class="n">CommandPattern</span><span class="o">.</span><span class="n">ELast</span><span class="o">.</span><span class="n">REQUIRED</span><span class="p">:</span>
-                    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">text_str</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span> <span class="o">!=</span> <span class="n">scan_index</span> <span class="ow">or</span> <span class="p">(</span>
-                        <span class="nb">isinstance</span><span class="p">(</span><span class="n">tokens</span><span class="p">,</span> <span class="nb">set</span><span class="p">)</span> <span class="ow">and</span> <span class="n">text_str</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">tokens</span>
-                    <span class="p">):</span>
-                        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Mismatch&quot;</span><span class="p">)</span>
-                    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">tokens</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
-                        <span class="k">for</span> <span class="n">slot</span> <span class="ow">in</span> <span class="n">tokens</span><span class="p">:</span>
-                            <span class="n">slot_data</span><span class="p">[</span><span class="n">slot</span><span class="p">]</span> <span class="o">=</span> <span class="n">MessageChain</span><span class="o">.</span><span class="n">fromMappingString</span><span class="p">(</span><span class="n">text_str</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">elem_m</span><span class="p">)</span>
-                <span class="k">elif</span> <span class="n">pattern</span><span class="o">.</span><span class="n">last</span> <span class="ow">is</span> <span class="n">CommandPattern</span><span class="o">.</span><span class="n">ELast</span><span class="o">.</span><span class="n">OPTIONAL</span><span class="p">:</span>
-                    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">text_str</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span> <span class="o">==</span> <span class="n">scan_index</span><span class="p">:</span>  <span class="c1"># matched</span>
-                        <span class="k">for</span> <span class="n">slot</span> <span class="ow">in</span> <span class="n">tokens</span><span class="p">:</span>
-                            <span class="n">slot_data</span><span class="p">[</span><span class="n">slot</span><span class="p">]</span> <span class="o">=</span> <span class="n">MessageChain</span><span class="o">.</span><span class="n">fromMappingString</span><span class="p">(</span><span class="n">text_str</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">elem_m</span><span class="p">)</span>
-                    <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">text_str</span><span class="p">)</span> <span class="o">==</span> <span class="n">scan_index</span><span class="p">:</span>  <span class="c1"># not matched</span>
-                        <span class="k">pass</span>
-                    <span class="k">else</span><span class="p">:</span>  <span class="c1"># length overflow</span>
-                        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Mismatch&quot;</span><span class="p">)</span>
-                <span class="k">elif</span> <span class="n">pattern</span><span class="o">.</span><span class="n">last</span> <span class="ow">is</span> <span class="n">CommandPattern</span><span class="o">.</span><span class="n">ELast</span><span class="o">.</span><span class="n">WILDCARD</span><span class="p">:</span>
-                    <span class="n">wildcard_chains</span> <span class="o">=</span> <span class="p">[</span>
-                        <span class="n">MessageChain</span><span class="o">.</span><span class="n">fromMappingString</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">elem_m</span><span class="p">)</span> <span class="k">for</span> <span class="n">text</span> <span class="ow">in</span> <span class="n">text_str</span><span class="p">[</span><span class="n">scan_index</span><span class="p">:]</span>
-                    <span class="p">]</span>
-                <span class="n">handler</span><span class="o">.</span><span class="n">set_data</span><span class="p">(</span><span class="n">slot_data</span><span class="p">,</span> <span class="n">arg_data</span><span class="p">,</span> <span class="n">wildcard_chains</span><span class="p">)</span>
+            <span class="n">pattern</span> <span class="o">=</span> <span class="n">handler</span><span class="o">.</span><span class="n">pattern</span>
+            <span class="n">text_index</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="n">token_index</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="n">arg_data</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">MessageChain</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="n">slot_data</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span> <span class="n">MessageChain</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="n">text_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">split</span><span class="p">(</span><span class="n">mapping_str</span><span class="p">)</span>
+            <span class="n">wildcard_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">MessageChain</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">with</span> <span class="n">suppress</span><span class="p">(</span><span class="ne">IndexError</span><span class="p">,</span> <span class="n">MismatchError</span><span class="p">):</span>  <span class="c1"># TODO: add ValueError</span>
+                <span class="k">while</span> <span class="n">text_index</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">text_list</span><span class="p">):</span>
+                    <span class="n">text</span> <span class="o">=</span> <span class="n">text_list</span><span class="p">[</span><span class="n">text_index</span><span class="p">]</span>
+                    <span class="n">text_index</span> <span class="o">+=</span> <span class="mi">1</span>
 
+                    <span class="k">if</span> <span class="n">text</span> <span class="ow">in</span> <span class="n">pattern</span><span class="o">.</span><span class="n">arg_map</span><span class="p">:</span>  <span class="c1"># Arg handle</span>
+                        <span class="k">if</span> <span class="n">text</span> <span class="ow">in</span> <span class="n">arg_data</span><span class="p">:</span>
+                            <span class="k">raise</span> <span class="n">MismatchError</span><span class="p">(</span><span class="s2">&quot;Duplicated argument&quot;</span><span class="p">)</span>
+                        <span class="n">nargs</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">pattern</span><span class="o">.</span><span class="n">arg_map</span><span class="p">[</span><span class="n">text</span><span class="p">]</span><span class="o">.</span><span class="n">nargs</span>
+                        <span class="n">arg_data</span><span class="p">[</span><span class="n">text</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span>
+                            <span class="n">MessageChain</span><span class="o">.</span><span class="n">fromMappingString</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">elem_m</span><span class="p">)</span>
+                            <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">text_list</span><span class="p">[</span><span class="n">text_index</span> <span class="p">:</span> <span class="n">text_index</span> <span class="o">+</span> <span class="n">nargs</span><span class="p">]</span>
+                        <span class="p">]</span>
+                        <span class="n">text_index</span> <span class="o">+=</span> <span class="n">nargs</span>
+
+                    <span class="k">else</span><span class="p">:</span>  <span class="c1"># Constant and Slot handle</span>
+                        <span class="n">tokens</span> <span class="o">=</span> <span class="n">pattern</span><span class="o">.</span><span class="n">token_list</span><span class="p">[</span><span class="n">token_index</span><span class="p">]</span>
+                        <span class="n">token_index</span> <span class="o">+=</span> <span class="mi">1</span>
+                        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">tokens</span><span class="p">,</span> <span class="nb">set</span><span class="p">)</span> <span class="ow">and</span> <span class="n">text</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">tokens</span><span class="p">:</span>
+                            <span class="k">raise</span> <span class="n">MismatchError</span>
+                        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">tokens</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+                            <span class="k">if</span> <span class="n">pattern</span><span class="o">.</span><span class="n">last_type</span> <span class="ow">is</span> <span class="n">CommandPattern</span><span class="o">.</span><span class="n">ELast</span><span class="o">.</span><span class="n">WILDCARD</span> <span class="ow">and</span> <span class="n">token_index</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span>
+                                <span class="n">pattern</span><span class="o">.</span><span class="n">token_list</span>
+                            <span class="p">):</span>
+                                <span class="n">wildcard_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">MessageChain</span><span class="o">.</span><span class="n">fromMappingString</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">elem_m</span><span class="p">))</span>
+                                <span class="n">token_index</span> <span class="o">-=</span> <span class="mi">1</span>
+                            <span class="k">for</span> <span class="n">slot</span> <span class="ow">in</span> <span class="n">tokens</span><span class="p">:</span>
+                                <span class="n">slot_data</span><span class="p">[</span><span class="n">slot</span><span class="p">]</span> <span class="o">=</span> <span class="n">MessageChain</span><span class="o">.</span><span class="n">fromMappingString</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">elem_m</span><span class="p">)</span>
+
+                <span class="n">handler</span><span class="o">.</span><span class="n">set_data</span><span class="p">(</span><span class="n">slot_data</span><span class="p">,</span> <span class="n">arg_data</span><span class="p">,</span> <span class="n">wildcard_list</span><span class="p">)</span>
                 <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">broadcast</span><span class="o">.</span><span class="n">Executor</span><span class="p">(</span><span class="n">handler</span><span class="p">)</span>
 </pre></div>
 
@@ -1821,12 +1832,12 @@ inheritance.</p>
 
 <span class="sd">        Args:</span>
 <span class="sd">            command (str): 要处理的命令</span>
-<span class="sd">            setting (Dict[str, Union[Slot, Arg]], optional): 参数名 -&gt; Slot | Arg 映射, 用于分配参数, 可从函数中推断 `Slot`.</span>
-<span class="sd">            dispatchers (Sequence[BaseDispatcher], optional): 附加的 `Dispatcher` 序列.</span>
-<span class="sd">            decorators (Sequence[Decorator], optional): 附加的 `Headless Decorator` 序列.</span>
+<span class="sd">            setting (Dict[str, Union[Slot, Arg]], optional): 参数设置.</span>
+<span class="sd">            dispatchers (Sequence[BaseDispatcher], optional): 可选的额外 Dispatcher 序列.</span>
+<span class="sd">            decorators (Sequence[Decorator], optional): 可选的额外 Decorator 序列.</span>
 
 <span class="sd">        Raises:</span>
-<span class="sd">            ValueError: 在将非最后一个参数设置为可选</span>
+<span class="sd">            ValueError: 命令格式错误</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            Callable[[T_Callable], T_Callable]: 装饰器</span>
@@ -1876,20 +1887,16 @@ inheritance.</p>
                     <span class="n">last</span> <span class="o">=</span> <span class="n">CommandPattern</span><span class="o">.</span><span class="n">ELast</span><span class="o">.</span><span class="n">OPTIONAL</span>
                 <span class="n">assert_not_</span><span class="p">(</span><span class="n">name</span> <span class="ow">in</span> <span class="n">placeholder_set</span><span class="p">,</span> <span class="s2">&quot;Duplicated parameter slot!&quot;</span><span class="p">)</span>
                 <span class="n">placeholder_set</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
-                <span class="n">eval_global</span><span class="p">,</span> <span class="n">eval_local</span> <span class="o">=</span> <span class="n">eval_ctx</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-                <span class="k">if</span> <span class="n">wildcard</span><span class="p">:</span>
-                    <span class="n">eval_global</span> <span class="o">=</span> <span class="n">eval_global</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-                    <span class="n">eval_global</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">raw</span><span class="o">=</span><span class="n">_raw</span><span class="p">)</span>
                 <span class="n">parsed_slot</span> <span class="o">=</span> <span class="n">Slot</span><span class="p">(</span>
                     <span class="n">name</span><span class="p">,</span>
-                    <span class="nb">eval</span><span class="p">(</span><span class="n">annotation</span> <span class="ow">or</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span> <span class="n">eval_global</span><span class="p">,</span> <span class="n">eval_local</span><span class="p">),</span>
-                    <span class="nb">eval</span><span class="p">(</span><span class="n">default</span> <span class="ow">or</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span> <span class="n">eval_global</span><span class="p">,</span> <span class="n">eval_local</span><span class="p">),</span>
+                    <span class="nb">eval</span><span class="p">(</span><span class="n">annotation</span> <span class="ow">or</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span> <span class="o">*</span><span class="n">eval_ctx</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;raw&quot;</span><span class="p">:</span> <span class="n">_raw</span><span class="p">})),</span>
+                    <span class="nb">eval</span><span class="p">(</span><span class="n">default</span> <span class="ow">or</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span> <span class="o">*</span><span class="n">eval_ctx</span><span class="p">(</span><span class="mi">1</span><span class="p">)),</span>
                 <span class="p">)</span>
                 <span class="n">parsed_slot</span><span class="o">.</span><span class="n">param_name</span> <span class="o">=</span> <span class="n">name</span>  <span class="c1"># assuming that param_name is consistent</span>
                 <span class="n">slot_map</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">parsed_slot</span> <span class="o">|</span> <span class="n">slot_map</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="p">{})</span>  <span class="c1"># parsed slot &lt; provided slot</span>
                 <span class="k">if</span> <span class="n">wildcard</span><span class="p">:</span>
                     <span class="n">wildcard_slot_name</span> <span class="o">=</span> <span class="n">name</span>
-                <span class="n">token_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tokens</span><span class="p">)</span>
+                <span class="n">token_list</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">name</span><span class="p">])</span>
             <span class="k">elif</span> <span class="n">t_type</span> <span class="ow">is</span> <span class="n">CommandToken</span><span class="o">.</span><span class="n">PARAM</span><span class="p">:</span>
                 <span class="k">for</span> <span class="n">param_name</span> <span class="ow">in</span> <span class="n">tokens</span><span class="p">:</span>
                     <span class="n">assert_not_</span><span class="p">(</span><span class="n">param_name</span> <span class="ow">in</span> <span class="n">placeholder_set</span><span class="p">,</span> <span class="s2">&quot;Duplicated parameter slot!&quot;</span><span class="p">)</span>
@@ -1918,8 +1925,8 @@ inheritance.</p>
                     <span class="n">slot_map</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">parsed_slot</span> <span class="o">|</span> <span class="n">slot_map</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="p">{})</span>  <span class="c1"># parsed slot &lt; provided slot</span>
                     <span class="k">if</span> <span class="n">default</span> <span class="ow">is</span> <span class="ow">not</span> <span class="o">...</span><span class="p">:</span>
                         <span class="n">assert_</span><span class="p">(</span>
-                            <span class="n">slot_map</span><span class="p">[</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">placeholder</span> <span class="ow">in</span> <span class="n">token_list</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
-                            <span class="ow">and</span> <span class="n">token_list</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="ow">in</span> <span class="p">{</span><span class="n">CommandToken</span><span class="o">.</span><span class="n">ANNOTATED</span><span class="p">,</span> <span class="n">CommandToken</span><span class="o">.</span><span class="n">PARAM</span><span class="p">},</span>
+                            <span class="n">slot_map</span><span class="p">[</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">placeholder</span> <span class="ow">in</span> <span class="n">command_tokens</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
+                            <span class="ow">and</span> <span class="n">command_tokens</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="ow">in</span> <span class="p">{</span><span class="n">CommandToken</span><span class="o">.</span><span class="n">ANNOTATED</span><span class="p">,</span> <span class="n">CommandToken</span><span class="o">.</span><span class="n">PARAM</span><span class="p">},</span>
                             <span class="s2">&quot;Not setting wildcard / optional on the last slot!&quot;</span><span class="p">,</span>
                         <span class="p">)</span>
                         <span class="k">nonlocal</span> <span class="n">last</span>
@@ -1959,15 +1966,15 @@ inheritance.</p>
 
 <ul>
 <li><strong>command (str):</strong>  要处理的命令</li>
-<li><strong>setting (Dict[str, Union[Slot, Arg]], optional):</strong>  参数名 -> Slot | Arg 映射, 用于分配参数, 可从函数中推断 <code><a href="#Slot">Slot</a></code>.</li>
-<li><strong>dispatchers (Sequence[BaseDispatcher], optional):</strong>  附加的 <code>Dispatcher</code> 序列.</li>
-<li><strong>decorators (Sequence[Decorator], optional):</strong>  附加的 <code>Headless Decorator</code> 序列.</li>
+<li><strong>setting (Dict[str, Union[Slot, Arg]], optional):</strong>  参数设置.</li>
+<li><strong>dispatchers (Sequence[BaseDispatcher], optional):</strong>  可选的额外 Dispatcher 序列.</li>
+<li><strong>decorators (Sequence[Decorator], optional):</strong>  可选的额外 Decorator 序列.</li>
 </ul>
 
 <h6 id="raises">Raises</h6>
 
 <ul>
-<li><strong>ValueError:</strong>  在将非最后一个参数设置为可选</li>
+<li><strong>ValueError:</strong>  命令格式错误</li>
 </ul>
 
 <h6 id="returns">Returns</h6>
@@ -1999,59 +2006,43 @@ inheritance.</p>
         <span class="n">mapping_str</span><span class="p">,</span> <span class="n">elem_m</span> <span class="o">=</span> <span class="n">chain</span><span class="o">.</span><span class="n">asMappingString</span><span class="p">()</span>
 
         <span class="k">for</span> <span class="n">handler</span> <span class="ow">in</span> <span class="nb">reversed</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">command_handlers</span><span class="p">):</span>  <span class="c1"># starting from latest added</span>
-            <span class="k">with</span> <span class="n">suppress</span><span class="p">(</span><span class="ne">IndexError</span><span class="p">,</span> <span class="ne">ValueError</span><span class="p">):</span>
-                <span class="n">pattern</span> <span class="o">=</span> <span class="n">handler</span><span class="o">.</span><span class="n">pattern</span>
-                <span class="n">arg_data</span><span class="p">:</span> <span class="n">DefaultDict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">MessageChain</span><span class="p">]]</span> <span class="o">=</span> <span class="n">DefaultDict</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>
-                <span class="n">slot_data</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span> <span class="n">MessageChain</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
-                <span class="c1"># scan Arg data</span>
-                <span class="n">mixed_str</span> <span class="o">=</span> <span class="n">split</span><span class="p">(</span><span class="n">mapping_str</span><span class="p">)</span>
-                <span class="n">text_str</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
-                <span class="n">scan_index</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>
-                <span class="k">while</span> <span class="n">scan_index</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">mixed_str</span><span class="p">):</span>
-                    <span class="n">current</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">mixed_str</span><span class="p">[</span><span class="n">scan_index</span><span class="p">]</span>
-                    <span class="n">scan_index</span> <span class="o">+=</span> <span class="mi">1</span>
-                    <span class="k">if</span> <span class="n">current</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">pattern</span><span class="o">.</span><span class="n">arg_map</span><span class="p">:</span>
-                        <span class="n">text_str</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">current</span><span class="p">)</span>
-                    <span class="k">else</span><span class="p">:</span>
-                        <span class="n">assert_not_</span><span class="p">(</span><span class="n">current</span> <span class="ow">in</span> <span class="n">arg_data</span><span class="p">,</span> <span class="s2">&quot;Duplicated argument.&quot;</span><span class="p">)</span>
-                        <span class="n">nargs</span> <span class="o">=</span> <span class="n">pattern</span><span class="o">.</span><span class="n">arg_map</span><span class="p">[</span><span class="n">current</span><span class="p">]</span><span class="o">.</span><span class="n">nargs</span>
-                        <span class="n">arg_data</span><span class="p">[</span><span class="n">current</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span>
-                            <span class="n">MessageChain</span><span class="o">.</span><span class="n">fromMappingString</span><span class="p">(</span><span class="n">piece</span><span class="p">,</span> <span class="n">elem_m</span><span class="p">)</span>
-                            <span class="k">for</span> <span class="n">piece</span> <span class="ow">in</span> <span class="n">mixed_str</span><span class="p">[</span><span class="n">scan_index</span> <span class="p">:</span> <span class="n">scan_index</span> <span class="o">+</span> <span class="n">nargs</span><span class="p">]</span>
-                        <span class="p">]</span>
-                        <span class="n">scan_index</span> <span class="o">+=</span> <span class="n">nargs</span>
-                <span class="c1"># scan text + Slot</span>
-                <span class="k">for</span> <span class="n">scan_index</span><span class="p">,</span> <span class="n">tokens</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">pattern</span><span class="o">.</span><span class="n">token_list</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]):</span>
-                    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">tokens</span><span class="p">,</span> <span class="nb">set</span><span class="p">)</span> <span class="ow">and</span> <span class="n">text_str</span><span class="p">[</span><span class="n">scan_index</span><span class="p">]</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">tokens</span><span class="p">:</span>
-                        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Mismatch&quot;</span><span class="p">)</span>
-                    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">tokens</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
-                        <span class="k">for</span> <span class="n">slot</span> <span class="ow">in</span> <span class="n">tokens</span><span class="p">:</span>
-                            <span class="n">slot_data</span><span class="p">[</span><span class="n">slot</span><span class="p">]</span> <span class="o">=</span> <span class="n">MessageChain</span><span class="o">.</span><span class="n">fromMappingString</span><span class="p">(</span><span class="n">text_str</span><span class="p">[</span><span class="n">scan_index</span><span class="p">],</span> <span class="n">elem_m</span><span class="p">)</span>
-                <span class="n">scan_index</span> <span class="o">+=</span> <span class="mi">1</span>
-                <span class="n">tokens</span> <span class="o">=</span> <span class="n">pattern</span><span class="o">.</span><span class="n">token_list</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-                <span class="n">wildcard_chains</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">MessageChain</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
-                <span class="k">if</span> <span class="n">pattern</span><span class="o">.</span><span class="n">last</span> <span class="ow">is</span> <span class="n">CommandPattern</span><span class="o">.</span><span class="n">ELast</span><span class="o">.</span><span class="n">REQUIRED</span><span class="p">:</span>
-                    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">text_str</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span> <span class="o">!=</span> <span class="n">scan_index</span> <span class="ow">or</span> <span class="p">(</span>
-                        <span class="nb">isinstance</span><span class="p">(</span><span class="n">tokens</span><span class="p">,</span> <span class="nb">set</span><span class="p">)</span> <span class="ow">and</span> <span class="n">text_str</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">tokens</span>
-                    <span class="p">):</span>
-                        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Mismatch&quot;</span><span class="p">)</span>
-                    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">tokens</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
-                        <span class="k">for</span> <span class="n">slot</span> <span class="ow">in</span> <span class="n">tokens</span><span class="p">:</span>
-                            <span class="n">slot_data</span><span class="p">[</span><span class="n">slot</span><span class="p">]</span> <span class="o">=</span> <span class="n">MessageChain</span><span class="o">.</span><span class="n">fromMappingString</span><span class="p">(</span><span class="n">text_str</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">elem_m</span><span class="p">)</span>
-                <span class="k">elif</span> <span class="n">pattern</span><span class="o">.</span><span class="n">last</span> <span class="ow">is</span> <span class="n">CommandPattern</span><span class="o">.</span><span class="n">ELast</span><span class="o">.</span><span class="n">OPTIONAL</span><span class="p">:</span>
-                    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">text_str</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span> <span class="o">==</span> <span class="n">scan_index</span><span class="p">:</span>  <span class="c1"># matched</span>
-                        <span class="k">for</span> <span class="n">slot</span> <span class="ow">in</span> <span class="n">tokens</span><span class="p">:</span>
-                            <span class="n">slot_data</span><span class="p">[</span><span class="n">slot</span><span class="p">]</span> <span class="o">=</span> <span class="n">MessageChain</span><span class="o">.</span><span class="n">fromMappingString</span><span class="p">(</span><span class="n">text_str</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">elem_m</span><span class="p">)</span>
-                    <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">text_str</span><span class="p">)</span> <span class="o">==</span> <span class="n">scan_index</span><span class="p">:</span>  <span class="c1"># not matched</span>
-                        <span class="k">pass</span>
-                    <span class="k">else</span><span class="p">:</span>  <span class="c1"># length overflow</span>
-                        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Mismatch&quot;</span><span class="p">)</span>
-                <span class="k">elif</span> <span class="n">pattern</span><span class="o">.</span><span class="n">last</span> <span class="ow">is</span> <span class="n">CommandPattern</span><span class="o">.</span><span class="n">ELast</span><span class="o">.</span><span class="n">WILDCARD</span><span class="p">:</span>
-                    <span class="n">wildcard_chains</span> <span class="o">=</span> <span class="p">[</span>
-                        <span class="n">MessageChain</span><span class="o">.</span><span class="n">fromMappingString</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">elem_m</span><span class="p">)</span> <span class="k">for</span> <span class="n">text</span> <span class="ow">in</span> <span class="n">text_str</span><span class="p">[</span><span class="n">scan_index</span><span class="p">:]</span>
-                    <span class="p">]</span>
-                <span class="n">handler</span><span class="o">.</span><span class="n">set_data</span><span class="p">(</span><span class="n">slot_data</span><span class="p">,</span> <span class="n">arg_data</span><span class="p">,</span> <span class="n">wildcard_chains</span><span class="p">)</span>
+            <span class="n">pattern</span> <span class="o">=</span> <span class="n">handler</span><span class="o">.</span><span class="n">pattern</span>
+            <span class="n">text_index</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="n">token_index</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="n">arg_data</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">MessageChain</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="n">slot_data</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span> <span class="n">MessageChain</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="n">text_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">split</span><span class="p">(</span><span class="n">mapping_str</span><span class="p">)</span>
+            <span class="n">wildcard_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">MessageChain</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">with</span> <span class="n">suppress</span><span class="p">(</span><span class="ne">IndexError</span><span class="p">,</span> <span class="n">MismatchError</span><span class="p">):</span>  <span class="c1"># TODO: add ValueError</span>
+                <span class="k">while</span> <span class="n">text_index</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">text_list</span><span class="p">):</span>
+                    <span class="n">text</span> <span class="o">=</span> <span class="n">text_list</span><span class="p">[</span><span class="n">text_index</span><span class="p">]</span>
+                    <span class="n">text_index</span> <span class="o">+=</span> <span class="mi">1</span>
 
+                    <span class="k">if</span> <span class="n">text</span> <span class="ow">in</span> <span class="n">pattern</span><span class="o">.</span><span class="n">arg_map</span><span class="p">:</span>  <span class="c1"># Arg handle</span>
+                        <span class="k">if</span> <span class="n">text</span> <span class="ow">in</span> <span class="n">arg_data</span><span class="p">:</span>
+                            <span class="k">raise</span> <span class="n">MismatchError</span><span class="p">(</span><span class="s2">&quot;Duplicated argument&quot;</span><span class="p">)</span>
+                        <span class="n">nargs</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">pattern</span><span class="o">.</span><span class="n">arg_map</span><span class="p">[</span><span class="n">text</span><span class="p">]</span><span class="o">.</span><span class="n">nargs</span>
+                        <span class="n">arg_data</span><span class="p">[</span><span class="n">text</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span>
+                            <span class="n">MessageChain</span><span class="o">.</span><span class="n">fromMappingString</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">elem_m</span><span class="p">)</span>
+                            <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">text_list</span><span class="p">[</span><span class="n">text_index</span> <span class="p">:</span> <span class="n">text_index</span> <span class="o">+</span> <span class="n">nargs</span><span class="p">]</span>
+                        <span class="p">]</span>
+                        <span class="n">text_index</span> <span class="o">+=</span> <span class="n">nargs</span>
+
+                    <span class="k">else</span><span class="p">:</span>  <span class="c1"># Constant and Slot handle</span>
+                        <span class="n">tokens</span> <span class="o">=</span> <span class="n">pattern</span><span class="o">.</span><span class="n">token_list</span><span class="p">[</span><span class="n">token_index</span><span class="p">]</span>
+                        <span class="n">token_index</span> <span class="o">+=</span> <span class="mi">1</span>
+                        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">tokens</span><span class="p">,</span> <span class="nb">set</span><span class="p">)</span> <span class="ow">and</span> <span class="n">text</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">tokens</span><span class="p">:</span>
+                            <span class="k">raise</span> <span class="n">MismatchError</span>
+                        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">tokens</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+                            <span class="k">if</span> <span class="n">pattern</span><span class="o">.</span><span class="n">last_type</span> <span class="ow">is</span> <span class="n">CommandPattern</span><span class="o">.</span><span class="n">ELast</span><span class="o">.</span><span class="n">WILDCARD</span> <span class="ow">and</span> <span class="n">token_index</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span>
+                                <span class="n">pattern</span><span class="o">.</span><span class="n">token_list</span>
+                            <span class="p">):</span>
+                                <span class="n">wildcard_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">MessageChain</span><span class="o">.</span><span class="n">fromMappingString</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">elem_m</span><span class="p">))</span>
+                                <span class="n">token_index</span> <span class="o">-=</span> <span class="mi">1</span>
+                            <span class="k">for</span> <span class="n">slot</span> <span class="ow">in</span> <span class="n">tokens</span><span class="p">:</span>
+                                <span class="n">slot_data</span><span class="p">[</span><span class="n">slot</span><span class="p">]</span> <span class="o">=</span> <span class="n">MessageChain</span><span class="o">.</span><span class="n">fromMappingString</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">elem_m</span><span class="p">)</span>
+
+                <span class="n">handler</span><span class="o">.</span><span class="n">set_data</span><span class="p">(</span><span class="n">slot_data</span><span class="p">,</span> <span class="n">arg_data</span><span class="p">,</span> <span class="n">wildcard_list</span><span class="p">)</span>
                 <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">broadcast</span><span class="o">.</span><span class="n">Executor</span><span class="p">(</span><span class="n">handler</span><span class="p">)</span>
 </pre></div>
 

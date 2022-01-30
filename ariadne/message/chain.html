@@ -985,15 +985,28 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">__root__</span> <span class="o">=</span> <span class="n">elements</span>
         <span class="k">return</span> <span class="bp">self</span>
 
-    <span class="k">def</span> <span class="nf">join</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">chains</span><span class="p">:</span> <span class="s2">&quot;MessageChain&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;MessageChain&quot;</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">join</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">chains</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="s2">&quot;MessageChain&quot;</span><span class="p">],</span> <span class="n">merge</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;MessageChain&quot;</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;将多个消息链连接起来, 并在其中插入自身.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            chains (Iterable[MessageChain]): 要连接的消息链.</span>
+<span class="sd">            merge (bool, optional): 是否合并消息链文本, 默认为 False.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            MessageChain: 连接后的消息链.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">result</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Element</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">chain</span> <span class="ow">in</span> <span class="n">chains</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">chain</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">chains</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
                 <span class="n">result</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__root__</span><span class="p">))</span>
             <span class="n">result</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">chain</span><span class="o">.</span><span class="n">__root__</span><span class="p">))</span>
-        <span class="k">return</span> <span class="n">MessageChain</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="n">inline</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">MessageChain</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="n">inline</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">merge</span> <span class="k">else</span> <span class="n">MessageChain</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="n">inline</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">merge</span><span class="p">()</span>
 
-    <span class="k">def</span> <span class="nf">replace</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">old</span><span class="p">:</span> <span class="s2">&quot;MessageChain&quot;</span><span class="p">,</span> <span class="n">new</span><span class="p">:</span> <span class="s2">&quot;MessageChain&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;MessageChain&quot;</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">replace</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">old</span><span class="p">:</span> <span class="s2">&quot;MessageChain | Iterable[Element] | Element&quot;</span><span class="p">,</span>
+        <span class="n">new</span><span class="p">:</span> <span class="s2">&quot;MessageChain | Iterable[Element] | Element&quot;</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;MessageChain&quot;</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;替换消息链中的一部分. (在副本上操作)</span>
 
 <span class="sd">        Args:</span>
@@ -1003,6 +1016,10 @@
 <span class="sd">        Returns:</span>
 <span class="sd">            MessageChain: 修改后的消息链, 若未替换则原样返回.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">old</span><span class="p">,</span> <span class="n">MessageChain</span><span class="p">):</span>
+            <span class="n">old</span> <span class="o">=</span> <span class="n">MessageChain</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">old</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">new</span><span class="p">,</span> <span class="n">MessageChain</span><span class="p">):</span>
+            <span class="n">new</span> <span class="o">=</span> <span class="n">MessageChain</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">new</span><span class="p">)</span>
         <span class="n">index_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">findSubChain</span><span class="p">(</span><span class="n">old</span><span class="p">)</span>
         <span class="n">unzipped_new</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Element</span><span class="p">]]</span> <span class="o">=</span> <span class="n">new</span><span class="o">.</span><span class="n">unzip</span><span class="p">()</span>
         <span class="n">unzipped_old</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Element</span><span class="p">]]</span> <span class="o">=</span> <span class="n">old</span><span class="o">.</span><span class="n">unzip</span><span class="p">()</span>
@@ -1829,15 +1846,28 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">__root__</span> <span class="o">=</span> <span class="n">elements</span>
         <span class="k">return</span> <span class="bp">self</span>
 
-    <span class="k">def</span> <span class="nf">join</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">chains</span><span class="p">:</span> <span class="s2">&quot;MessageChain&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;MessageChain&quot;</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">join</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">chains</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="s2">&quot;MessageChain&quot;</span><span class="p">],</span> <span class="n">merge</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;MessageChain&quot;</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;将多个消息链连接起来, 并在其中插入自身.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            chains (Iterable[MessageChain]): 要连接的消息链.</span>
+<span class="sd">            merge (bool, optional): 是否合并消息链文本, 默认为 False.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            MessageChain: 连接后的消息链.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">result</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Element</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">chain</span> <span class="ow">in</span> <span class="n">chains</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">chain</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">chains</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
                 <span class="n">result</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__root__</span><span class="p">))</span>
             <span class="n">result</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">chain</span><span class="o">.</span><span class="n">__root__</span><span class="p">))</span>
-        <span class="k">return</span> <span class="n">MessageChain</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="n">inline</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">MessageChain</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="n">inline</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">merge</span> <span class="k">else</span> <span class="n">MessageChain</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="n">inline</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">merge</span><span class="p">()</span>
 
-    <span class="k">def</span> <span class="nf">replace</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">old</span><span class="p">:</span> <span class="s2">&quot;MessageChain&quot;</span><span class="p">,</span> <span class="n">new</span><span class="p">:</span> <span class="s2">&quot;MessageChain&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;MessageChain&quot;</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">replace</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">old</span><span class="p">:</span> <span class="s2">&quot;MessageChain | Iterable[Element] | Element&quot;</span><span class="p">,</span>
+        <span class="n">new</span><span class="p">:</span> <span class="s2">&quot;MessageChain | Iterable[Element] | Element&quot;</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;MessageChain&quot;</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;替换消息链中的一部分. (在副本上操作)</span>
 
 <span class="sd">        Args:</span>
@@ -1847,6 +1877,10 @@
 <span class="sd">        Returns:</span>
 <span class="sd">            MessageChain: 修改后的消息链, 若未替换则原样返回.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">old</span><span class="p">,</span> <span class="n">MessageChain</span><span class="p">):</span>
+            <span class="n">old</span> <span class="o">=</span> <span class="n">MessageChain</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">old</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">new</span><span class="p">,</span> <span class="n">MessageChain</span><span class="p">):</span>
+            <span class="n">new</span> <span class="o">=</span> <span class="n">MessageChain</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">new</span><span class="p">)</span>
         <span class="n">index_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">findSubChain</span><span class="p">(</span><span class="n">old</span><span class="p">)</span>
         <span class="n">unzipped_new</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Element</span><span class="p">]]</span> <span class="o">=</span> <span class="n">new</span><span class="o">.</span><span class="n">unzip</span><span class="p">()</span>
         <span class="n">unzipped_old</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Element</span><span class="p">]]</span> <span class="o">=</span> <span class="n">old</span><span class="o">.</span><span class="n">unzip</span><span class="p">()</span>
@@ -3589,24 +3623,49 @@
             <span class="def">def</span>
             <span class="name">join</span><span class="signature">(
     self,
-    *chains: <a href="#MessageChain">ariadne.message.chain.MessageChain</a>
+    chains: Iterable[<a href="#MessageChain">ariadne.message.chain.MessageChain</a>],
+    merge: bool = False
 ) -&gt; <a href="#MessageChain">ariadne.message.chain.MessageChain</a></span>:
     </div>
 
                 <details>
             <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">join</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">chains</span><span class="p">:</span> <span class="s2">&quot;MessageChain&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;MessageChain&quot;</span><span class="p">:</span>
+            <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">join</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">chains</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="s2">&quot;MessageChain&quot;</span><span class="p">],</span> <span class="n">merge</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;MessageChain&quot;</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;将多个消息链连接起来, 并在其中插入自身.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            chains (Iterable[MessageChain]): 要连接的消息链.</span>
+<span class="sd">            merge (bool, optional): 是否合并消息链文本, 默认为 False.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            MessageChain: 连接后的消息链.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">result</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Element</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">chain</span> <span class="ow">in</span> <span class="n">chains</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">chain</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">chains</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
                 <span class="n">result</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__root__</span><span class="p">))</span>
             <span class="n">result</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">chain</span><span class="o">.</span><span class="n">__root__</span><span class="p">))</span>
-        <span class="k">return</span> <span class="n">MessageChain</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="n">inline</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">MessageChain</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="n">inline</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">merge</span> <span class="k">else</span> <span class="n">MessageChain</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="n">inline</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">merge</span><span class="p">()</span>
 </pre></div>
 
         </details>
 
-    
+            <div class="docstring"><p>将多个消息链连接起来, 并在其中插入自身.</p>
+
+<h6 id="args">Args</h6>
+
+<ul>
+<li><strong>chains (Iterable[MessageChain]):</strong>  要连接的消息链.</li>
+<li><strong>merge (bool, optional):</strong>  是否合并消息链文本, 默认为 False.</li>
+</ul>
+
+<h6 id="returns">Returns</h6>
+
+<blockquote>
+  <p>MessageChain: 连接后的消息链.</p>
+</blockquote>
+</div>
+
 
                             </div>
                             <div id="MessageChain.replace" class="classattr">
@@ -3616,14 +3675,18 @@
             <span class="def">def</span>
             <span class="name">replace</span><span class="signature">(
     self,
-    old: <a href="#MessageChain">ariadne.message.chain.MessageChain</a>,
-    new: <a href="#MessageChain">ariadne.message.chain.MessageChain</a>
+    old: &#39;MessageChain | Iterable[Element] | Element&#39;,
+    new: &#39;MessageChain | Iterable[Element] | Element&#39;
 ) -&gt; <a href="#MessageChain">ariadne.message.chain.MessageChain</a></span>:
     </div>
 
                 <details>
             <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">replace</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">old</span><span class="p">:</span> <span class="s2">&quot;MessageChain&quot;</span><span class="p">,</span> <span class="n">new</span><span class="p">:</span> <span class="s2">&quot;MessageChain&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;MessageChain&quot;</span><span class="p">:</span>
+            <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">replace</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">old</span><span class="p">:</span> <span class="s2">&quot;MessageChain | Iterable[Element] | Element&quot;</span><span class="p">,</span>
+        <span class="n">new</span><span class="p">:</span> <span class="s2">&quot;MessageChain | Iterable[Element] | Element&quot;</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;MessageChain&quot;</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;替换消息链中的一部分. (在副本上操作)</span>
 
 <span class="sd">        Args:</span>
@@ -3633,6 +3696,10 @@
 <span class="sd">        Returns:</span>
 <span class="sd">            MessageChain: 修改后的消息链, 若未替换则原样返回.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">old</span><span class="p">,</span> <span class="n">MessageChain</span><span class="p">):</span>
+            <span class="n">old</span> <span class="o">=</span> <span class="n">MessageChain</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">old</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">new</span><span class="p">,</span> <span class="n">MessageChain</span><span class="p">):</span>
+            <span class="n">new</span> <span class="o">=</span> <span class="n">MessageChain</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">new</span><span class="p">)</span>
         <span class="n">index_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">findSubChain</span><span class="p">(</span><span class="n">old</span><span class="p">)</span>
         <span class="n">unzipped_new</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Element</span><span class="p">]]</span> <span class="o">=</span> <span class="n">new</span><span class="o">.</span><span class="n">unzip</span><span class="p">()</span>
         <span class="n">unzipped_old</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Element</span><span class="p">]]</span> <span class="o">=</span> <span class="n">old</span><span class="o">.</span><span class="n">unzip</span><span class="p">()</span>

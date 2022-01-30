@@ -158,6 +158,7 @@
     <span class="n">Generator</span><span class="p">,</span>
     <span class="n">List</span><span class="p">,</span>
     <span class="n">NoReturn</span><span class="p">,</span>
+    <span class="n">Optional</span><span class="p">,</span>
     <span class="n">Tuple</span><span class="p">,</span>
     <span class="n">Type</span><span class="p">,</span>
     <span class="n">TypeVar</span><span class="p">,</span>
@@ -346,7 +347,7 @@
 
 
 <span class="k">def</span> <span class="nf">wrap_bracket</span><span class="p">(</span><span class="n">string</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;替换 &quot;[&quot; 与 &quot;]&quot; 为其 Unicode 形式用于 JSON 解析&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;在字符串中转义中括号括号&quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">string</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;[&quot;</span><span class="p">,</span> <span class="s2">&quot;</span><span class="se">\\</span><span class="s2">u005b&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;]&quot;</span><span class="p">,</span> <span class="s2">&quot;</span><span class="se">\\</span><span class="s2">u005d&quot;</span><span class="p">)</span>
 
 
@@ -363,7 +364,7 @@
 
 
 <span class="k">def</span> <span class="nf">assert_on_</span><span class="p">(</span><span class="n">pre_condition</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span> <span class="n">condition</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span> <span class="o">*</span><span class="n">message</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="n">NoReturn</span><span class="p">]:</span>
-    <span class="sd">&quot;&quot;&quot;引发 ValueError 的断言, 仅在满足 pre_condition 时进行</span>
+    <span class="sd">&quot;&quot;&quot;检查条件是否成立, 如果不成立则抛出 ValueError</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        pre_condition(bool): 前置条件</span>
@@ -371,7 +372,7 @@
 <span class="sd">        message (Any, optional): 附带的消息.</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        Union[None, NoReturn]: 成功时为 None, 否则引发异常.</span>
+<span class="sd">        Union[None, NoReturn]: 无返回值</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">pre_condition</span><span class="p">:</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">condition</span><span class="p">:</span>
@@ -383,40 +384,47 @@
 
 <span class="sd">    Args:</span>
 <span class="sd">        condition (bool): 条件语句</span>
-<span class="sd">        message (Any, optional): 附带的消息.</span>
+<span class="sd">        *message (Any): 附带的消息.</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        Union[None, NoReturn]: 成功时为 None, 否则引发异常.</span>
+<span class="sd">        Union[None, NoReturn]: 无返回值</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">condition</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="o">*</span><span class="n">message</span><span class="p">)</span>
 
 
 <span class="k">def</span> <span class="nf">assert_not_</span><span class="p">(</span><span class="n">condition</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span> <span class="o">*</span><span class="n">message</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="n">NoReturn</span><span class="p">]:</span>
-    <span class="sd">&quot;&quot;&quot;引发 ValueError 的 **反向** 断言</span>
+    <span class="sd">&quot;&quot;&quot;检查条件是否成立, 如果不成立则抛出 ValueError</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        condition (bool): 条件语句</span>
-<span class="sd">        message (Any, optional): 附带的消息.</span>
+<span class="sd">        *message (Any): 附带的消息.</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        Union[None, NoReturn]: 失败时为 None, 否则引发异常.</span>
+<span class="sd">        Union[None, NoReturn]: 无返回值</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">condition</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="o">*</span><span class="n">message</span><span class="p">)</span>
 
 
-<span class="k">def</span> <span class="nf">eval_ctx</span><span class="p">(</span><span class="n">layer</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">DictStrAny</span><span class="p">,</span> <span class="n">DictStrAny</span><span class="p">]:</span>
-    <span class="sd">&quot;&quot;&quot;返回用于 eval 的 globals 与 locals 字典.</span>
+<span class="k">def</span> <span class="nf">eval_ctx</span><span class="p">(</span>
+    <span class="n">layer</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">globals_</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">DictStrAny</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">locals_</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">DictStrAny</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">DictStrAny</span><span class="p">,</span> <span class="n">DictStrAny</span><span class="p">]:</span>
+    <span class="sd">&quot;&quot;&quot;获取一个上下文的全局和局部变量</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        layer (int, optional): 从调用者向外的 Frame 数. 默认为 0.</span>
+<span class="sd">        layer (int, optional): 层数. Defaults to 0.</span>
+<span class="sd">        globals_ (Optional[DictStrAny], optional): 全局变量. Defaults to None.</span>
+<span class="sd">        locals_ (Optional[DictStrAny], optional): 局部变量. Defaults to None.</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        Tuple[DictStrAny, DictStrAny]: (globals, locals) 字典</span>
+<span class="sd">        Tuple[DictStrAny, DictStrAny]: 全局和局部变量字典.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">frame</span> <span class="o">=</span> <span class="n">inspect</span><span class="o">.</span><span class="n">stack</span><span class="p">()[</span><span class="n">layer</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">frame</span>  <span class="c1"># add the current frame</span>
-    <span class="k">return</span> <span class="n">frame</span><span class="o">.</span><span class="n">f_globals</span><span class="p">,</span> <span class="n">frame</span><span class="o">.</span><span class="n">f_locals</span>
+    <span class="n">global_dict</span><span class="p">,</span> <span class="n">local_dict</span> <span class="o">=</span> <span class="n">frame</span><span class="o">.</span><span class="n">f_globals</span><span class="p">,</span> <span class="n">frame</span><span class="o">.</span><span class="n">f_locals</span>
+    <span class="n">global_dict</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">globals_</span> <span class="ow">or</span> <span class="p">{})</span>
+    <span class="n">local_dict</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">locals_</span> <span class="ow">or</span> <span class="p">{})</span>
+    <span class="k">return</span> <span class="n">global_dict</span><span class="p">,</span> <span class="n">local_dict</span>
 
 
 <span class="n">T_Callable</span> <span class="o">=</span> <span class="n">TypeVar</span><span class="p">(</span><span class="s2">&quot;T_Callable&quot;</span><span class="p">,</span> <span class="n">bound</span><span class="o">=</span><span class="n">Callable</span><span class="p">)</span>
@@ -426,8 +434,8 @@
     <span class="sd">&quot;&quot;&quot;异步阻塞至满足 predicate 为 True</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        predicate (Callable[[], bool]): 回调函数</span>
-<span class="sd">        interval (float, optional): 每次等待时长 (s). 默认 0.01s.</span>
+<span class="sd">        predicate (Callable[[], bool]): 判断条件</span>
+<span class="sd">        interval (float, optional): 每次检查间隔. Defaults to 0.01.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">while</span> <span class="ow">not</span> <span class="n">predicate</span><span class="p">():</span>
         <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="n">interval</span><span class="p">)</span>
@@ -522,6 +530,10 @@
         <span class="k">return</span> <span class="bp">self</span>
 
     <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">_</span><span class="p">,</span> <span class="o">**</span><span class="n">__</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span>
+
+    <span class="k">def</span> <span class="fm">__await__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">yield</span>
         <span class="k">return</span> <span class="bp">self</span>
 
 
@@ -902,13 +914,13 @@
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span><span class="k">def</span> <span class="nf">wrap_bracket</span><span class="p">(</span><span class="n">string</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;替换 &quot;[&quot; 与 &quot;]&quot; 为其 Unicode 形式用于 JSON 解析&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;在字符串中转义中括号括号&quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">string</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;[&quot;</span><span class="p">,</span> <span class="s2">&quot;</span><span class="se">\\</span><span class="s2">u005b&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;]&quot;</span><span class="p">,</span> <span class="s2">&quot;</span><span class="se">\\</span><span class="s2">u005d&quot;</span><span class="p">)</span>
 </pre></div>
 
         </details>
 
-            <div class="docstring"><p>替换 "[" 与 "]" 为其 Unicode 形式用于 JSON 解析</p>
+            <div class="docstring"><p>在字符串中转义中括号括号</p>
 </div>
 
 
@@ -969,7 +981,7 @@
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span><span class="k">def</span> <span class="nf">assert_on_</span><span class="p">(</span><span class="n">pre_condition</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span> <span class="n">condition</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span> <span class="o">*</span><span class="n">message</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="n">NoReturn</span><span class="p">]:</span>
-    <span class="sd">&quot;&quot;&quot;引发 ValueError 的断言, 仅在满足 pre_condition 时进行</span>
+    <span class="sd">&quot;&quot;&quot;检查条件是否成立, 如果不成立则抛出 ValueError</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        pre_condition(bool): 前置条件</span>
@@ -977,7 +989,7 @@
 <span class="sd">        message (Any, optional): 附带的消息.</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        Union[None, NoReturn]: 成功时为 None, 否则引发异常.</span>
+<span class="sd">        Union[None, NoReturn]: 无返回值</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">pre_condition</span><span class="p">:</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">condition</span><span class="p">:</span>
@@ -986,7 +998,7 @@
 
         </details>
 
-            <div class="docstring"><p>引发 ValueError 的断言, 仅在满足 pre_condition 时进行</p>
+            <div class="docstring"><p>检查条件是否成立, 如果不成立则抛出 ValueError</p>
 
 <h6 id="args">Args</h6>
 
@@ -999,7 +1011,7 @@
 <h6 id="returns">Returns</h6>
 
 <blockquote>
-  <p>Union[None, NoReturn]: 成功时为 None, 否则引发异常.</p>
+  <p>Union[None, NoReturn]: 无返回值</p>
 </blockquote>
 </div>
 
@@ -1020,10 +1032,10 @@
 
 <span class="sd">    Args:</span>
 <span class="sd">        condition (bool): 条件语句</span>
-<span class="sd">        message (Any, optional): 附带的消息.</span>
+<span class="sd">        *message (Any): 附带的消息.</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        Union[None, NoReturn]: 成功时为 None, 否则引发异常.</span>
+<span class="sd">        Union[None, NoReturn]: 无返回值</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">condition</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="o">*</span><span class="n">message</span><span class="p">)</span>
@@ -1037,13 +1049,13 @@
 
 <ul>
 <li><strong>condition (bool):</strong>  条件语句</li>
-<li><strong>message (Any, optional):</strong>  附带的消息.</li>
+<li><strong>*message (Any):</strong>  附带的消息.</li>
 </ul>
 
 <h6 id="returns">Returns</h6>
 
 <blockquote>
-  <p>Union[None, NoReturn]: 成功时为 None, 否则引发异常.</p>
+  <p>Union[None, NoReturn]: 无返回值</p>
 </blockquote>
 </div>
 
@@ -1060,14 +1072,14 @@
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span><span class="k">def</span> <span class="nf">assert_not_</span><span class="p">(</span><span class="n">condition</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span> <span class="o">*</span><span class="n">message</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="n">NoReturn</span><span class="p">]:</span>
-    <span class="sd">&quot;&quot;&quot;引发 ValueError 的 **反向** 断言</span>
+    <span class="sd">&quot;&quot;&quot;检查条件是否成立, 如果不成立则抛出 ValueError</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        condition (bool): 条件语句</span>
-<span class="sd">        message (Any, optional): 附带的消息.</span>
+<span class="sd">        *message (Any): 附带的消息.</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        Union[None, NoReturn]: 失败时为 None, 否则引发异常.</span>
+<span class="sd">        Union[None, NoReturn]: 无返回值</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">condition</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="o">*</span><span class="n">message</span><span class="p">)</span>
@@ -1075,19 +1087,19 @@
 
         </details>
 
-            <div class="docstring"><p>引发 ValueError 的 <strong>反向</strong> 断言</p>
+            <div class="docstring"><p>检查条件是否成立, 如果不成立则抛出 ValueError</p>
 
 <h6 id="args">Args</h6>
 
 <ul>
 <li><strong>condition (bool):</strong>  条件语句</li>
-<li><strong>message (Any, optional):</strong>  附带的消息.</li>
+<li><strong>*message (Any):</strong>  附带的消息.</li>
 </ul>
 
 <h6 id="returns">Returns</h6>
 
 <blockquote>
-  <p>Union[None, NoReturn]: 失败时为 None, 否则引发异常.</p>
+  <p>Union[None, NoReturn]: 无返回值</p>
 </blockquote>
 </div>
 
@@ -1098,38 +1110,51 @@
 
         
             <span class="def">def</span>
-            <span class="name">eval_ctx</span><span class="signature">(layer: int = 0) -&gt; Tuple[Dict[str, Any], Dict[str, Any]]</span>:
+            <span class="name">eval_ctx</span><span class="signature">(
+    layer: int = 0,
+    globals_: Optional[Dict[str, Any]] = None,
+    locals_: Optional[Dict[str, Any]] = None
+) -&gt; Tuple[Dict[str, Any], Dict[str, Any]]</span>:
     </div>
 
                 <details>
             <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span><span class="k">def</span> <span class="nf">eval_ctx</span><span class="p">(</span><span class="n">layer</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">DictStrAny</span><span class="p">,</span> <span class="n">DictStrAny</span><span class="p">]:</span>
-    <span class="sd">&quot;&quot;&quot;返回用于 eval 的 globals 与 locals 字典.</span>
+            <div class="codehilite"><pre><span></span><span class="k">def</span> <span class="nf">eval_ctx</span><span class="p">(</span>
+    <span class="n">layer</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">globals_</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">DictStrAny</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">locals_</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">DictStrAny</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">DictStrAny</span><span class="p">,</span> <span class="n">DictStrAny</span><span class="p">]:</span>
+    <span class="sd">&quot;&quot;&quot;获取一个上下文的全局和局部变量</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        layer (int, optional): 从调用者向外的 Frame 数. 默认为 0.</span>
+<span class="sd">        layer (int, optional): 层数. Defaults to 0.</span>
+<span class="sd">        globals_ (Optional[DictStrAny], optional): 全局变量. Defaults to None.</span>
+<span class="sd">        locals_ (Optional[DictStrAny], optional): 局部变量. Defaults to None.</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        Tuple[DictStrAny, DictStrAny]: (globals, locals) 字典</span>
+<span class="sd">        Tuple[DictStrAny, DictStrAny]: 全局和局部变量字典.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">frame</span> <span class="o">=</span> <span class="n">inspect</span><span class="o">.</span><span class="n">stack</span><span class="p">()[</span><span class="n">layer</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">frame</span>  <span class="c1"># add the current frame</span>
-    <span class="k">return</span> <span class="n">frame</span><span class="o">.</span><span class="n">f_globals</span><span class="p">,</span> <span class="n">frame</span><span class="o">.</span><span class="n">f_locals</span>
+    <span class="n">global_dict</span><span class="p">,</span> <span class="n">local_dict</span> <span class="o">=</span> <span class="n">frame</span><span class="o">.</span><span class="n">f_globals</span><span class="p">,</span> <span class="n">frame</span><span class="o">.</span><span class="n">f_locals</span>
+    <span class="n">global_dict</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">globals_</span> <span class="ow">or</span> <span class="p">{})</span>
+    <span class="n">local_dict</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">locals_</span> <span class="ow">or</span> <span class="p">{})</span>
+    <span class="k">return</span> <span class="n">global_dict</span><span class="p">,</span> <span class="n">local_dict</span>
 </pre></div>
 
         </details>
 
-            <div class="docstring"><p>返回用于 eval 的 globals 与 locals 字典.</p>
+            <div class="docstring"><p>获取一个上下文的全局和局部变量</p>
 
 <h6 id="args">Args</h6>
 
 <ul>
-<li><strong>layer (int, optional):</strong>  从调用者向外的 Frame 数. 默认为 0.</li>
+<li><strong>layer (int, optional):</strong>  层数. Defaults to 0.</li>
+<li><strong>globals_ (Optional[DictStrAny], optional):</strong>  全局变量. Defaults to None.</li>
+<li><strong>locals_ (Optional[DictStrAny], optional):</strong>  局部变量. Defaults to None.</li>
 </ul>
 
 <h6 id="returns">Returns</h6>
 
 <blockquote>
-  <p>Tuple[DictStrAny, DictStrAny]: (globals, locals) 字典</p>
+  <p>Tuple[DictStrAny, DictStrAny]: 全局和局部变量字典.</p>
 </blockquote>
 </div>
 
@@ -1149,8 +1174,8 @@
     <span class="sd">&quot;&quot;&quot;异步阻塞至满足 predicate 为 True</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        predicate (Callable[[], bool]): 回调函数</span>
-<span class="sd">        interval (float, optional): 每次等待时长 (s). 默认 0.01s.</span>
+<span class="sd">        predicate (Callable[[], bool]): 判断条件</span>
+<span class="sd">        interval (float, optional): 每次检查间隔. Defaults to 0.01.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">while</span> <span class="ow">not</span> <span class="n">predicate</span><span class="p">():</span>
         <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="n">interval</span><span class="p">)</span>
@@ -1163,8 +1188,8 @@
 <h6 id="args">Args</h6>
 
 <ul>
-<li><strong>predicate (Callable[[], bool]):</strong>  回调函数</li>
-<li><strong>interval (float, optional):</strong>  每次等待时长 (s). 默认 0.01s.</li>
+<li><strong>predicate (Callable[[], bool]):</strong>  判断条件</li>
+<li><strong>interval (float, optional):</strong>  每次检查间隔. Defaults to 0.01.</li>
 </ul>
 </div>
 
@@ -1451,6 +1476,10 @@
         <span class="k">return</span> <span class="bp">self</span>
 
     <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">_</span><span class="p">,</span> <span class="o">**</span><span class="n">__</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span>
+
+    <span class="k">def</span> <span class="fm">__await__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">yield</span>
         <span class="k">return</span> <span class="bp">self</span>
 </pre></div>
 
