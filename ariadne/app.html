@@ -208,6 +208,12 @@
                                 <a class="function" href="#Ariadne.__init__">Ariadne</a>
                         </li>
                         <li>
+                                <a class="variable" href="#Ariadne.running">running</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#Ariadne.get_running">get_running</a>
+                        </li>
+                        <li>
                                 <a class="function" href="#Ariadne.create">create</a>
                         </li>
                         <li>
@@ -272,10 +278,12 @@
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">TYPE_CHECKING</span><span class="p">,</span>
     <span class="n">Any</span><span class="p">,</span>
+    <span class="n">ClassVar</span><span class="p">,</span>
     <span class="n">Coroutine</span><span class="p">,</span>
     <span class="n">Dict</span><span class="p">,</span>
     <span class="n">List</span><span class="p">,</span>
     <span class="n">Literal</span><span class="p">,</span>
+    <span class="n">MutableSet</span><span class="p">,</span>
     <span class="n">Optional</span><span class="p">,</span>
     <span class="n">Tuple</span><span class="p">,</span>
     <span class="n">Type</span><span class="p">,</span>
@@ -288,8 +296,8 @@
 
 <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">ARIADNE_ASCII_LOGO</span>
 <span class="kn">from</span> <span class="nn">.adapter</span> <span class="kn">import</span> <span class="n">Adapter</span><span class="p">,</span> <span class="n">DefaultAdapter</span>
-<span class="kn">from</span> <span class="nn">.context</span> <span class="kn">import</span> <span class="n">enter_context</span><span class="p">,</span> <span class="n">enter_message_send_context</span>
-<span class="kn">from</span> <span class="nn">.dispatcher</span> <span class="kn">import</span> <span class="n">MiddlewareDispatcher</span>
+<span class="kn">from</span> <span class="nn">.context</span> <span class="kn">import</span> <span class="n">context_map</span><span class="p">,</span> <span class="n">enter_context</span><span class="p">,</span> <span class="n">enter_message_send_context</span>
+<span class="kn">from</span> <span class="nn">.dispatcher</span> <span class="kn">import</span> <span class="n">ContextDispatcher</span>
 <span class="kn">from</span> <span class="nn">.event.lifecycle</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">AdapterLaunched</span><span class="p">,</span>
     <span class="n">AdapterShutdowned</span><span class="p">,</span>
@@ -1461,6 +1469,24 @@
     <span class="n">broadcast</span><span class="p">:</span> <span class="n">Broadcast</span>
     <span class="n">adapter</span><span class="p">:</span> <span class="n">Adapter</span>
     <span class="n">status</span><span class="p">:</span> <span class="n">AriadneStatus</span>
+    <span class="n">running</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">MutableSet</span><span class="p">[</span><span class="s2">&quot;Ariadne&quot;</span><span class="p">]]</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">get_running</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="nb">type</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="s2">&quot;T&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;Ariadne&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;T&quot;</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;获取一个实例.</span>
+<span class="sd">        Args:</span>
+<span class="sd">            type (Type[T], optional): 实例类型, 默认为 Ariadne.</span>
+<span class="sd">        Returns:</span>
+<span class="sd">            T: 当前正在运行的实例</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">type</span> <span class="o">==</span> <span class="s2">&quot;Ariadne&quot;</span><span class="p">:</span>
+            <span class="nb">type</span> <span class="o">=</span> <span class="n">Ariadne</span>
+        <span class="k">if</span> <span class="nb">type</span> <span class="ow">in</span> <span class="p">{</span><span class="n">Adapter</span><span class="p">,</span> <span class="n">Ariadne</span><span class="p">,</span> <span class="n">Broadcast</span><span class="p">,</span> <span class="n">AbstractEventLoop</span><span class="p">}:</span>
+            <span class="k">if</span> <span class="n">val</span> <span class="o">:=</span> <span class="n">context_map</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="nb">type</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="kc">None</span><span class="p">):</span>
+                <span class="k">return</span> <span class="n">val</span>
+        <span class="k">for</span> <span class="n">ariadne_inst</span> <span class="ow">in</span> <span class="bp">cls</span><span class="o">.</span><span class="n">running</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">type</span> <span class="ow">in</span> <span class="n">ariadne_inst</span><span class="o">.</span><span class="n">info</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">ariadne_inst</span><span class="o">.</span><span class="n">info</span><span class="p">[</span><span class="nb">type</span><span class="p">]</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
@@ -1647,6 +1673,8 @@
             <span class="n">event</span><span class="o">=</span><span class="n">ApplicationShutdowned</span><span class="p">(</span><span class="bp">self</span><span class="p">),</span>
         <span class="p">)</span>
 
+        <span class="bp">self</span><span class="o">.</span><span class="n">running</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
         <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Stopping adapter...&quot;</span><span class="p">)</span>
         <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">adapter</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="n">AriadneStatus</span><span class="o">.</span><span class="n">STOP</span>
@@ -1687,7 +1715,9 @@
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">chat_log_cfg</span><span class="o">.</span><span class="n">enabled</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">chat_log_cfg</span><span class="o">.</span><span class="n">initialize</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
 
-            <span class="bp">self</span><span class="o">.</span><span class="n">broadcast</span><span class="o">.</span><span class="n">finale_dispatchers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">MiddlewareDispatcher</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span>
+            <span class="k">if</span> <span class="n">ContextDispatcher</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">broadcast</span><span class="o">.</span><span class="n">finale_dispatchers</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">broadcast</span><span class="o">.</span><span class="n">finale_dispatchers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ContextDispatcher</span><span class="p">)</span>
+
             <span class="bp">self</span><span class="o">.</span><span class="n">daemon_task</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">loop</span><span class="o">.</span><span class="n">create_task</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">daemon</span><span class="p">(),</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;ariadne_daemon&quot;</span><span class="p">)</span>
             <span class="k">await</span> <span class="n">await_predicate</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">adapter</span><span class="o">.</span><span class="n">session_activated</span><span class="p">,</span> <span class="mf">0.0001</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="n">AriadneStatus</span><span class="o">.</span><span class="n">RUNNING</span>
@@ -1696,6 +1726,8 @@
             <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">remote_version</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;2&quot;</span><span class="p">):</span>
                 <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;You are using an unsupported version: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">remote_version</span><span class="si">}</span><span class="s2">!&quot;</span><span class="p">)</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Application launched with </span><span class="si">{</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">start_time</span><span class="si">:</span><span class="s2">.2</span><span class="si">}</span><span class="s2">s&quot;</span><span class="p">)</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">running</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
 
             <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">broadcast</span><span class="o">.</span><span class="n">layered_scheduler</span><span class="p">(</span>
                 <span class="n">listener_generator</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">broadcast</span><span class="o">.</span><span class="n">default_listener_generator</span><span class="p">(</span><span class="n">ApplicationLaunched</span><span class="p">),</span>
@@ -5609,6 +5641,24 @@
     <span class="n">broadcast</span><span class="p">:</span> <span class="n">Broadcast</span>
     <span class="n">adapter</span><span class="p">:</span> <span class="n">Adapter</span>
     <span class="n">status</span><span class="p">:</span> <span class="n">AriadneStatus</span>
+    <span class="n">running</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">MutableSet</span><span class="p">[</span><span class="s2">&quot;Ariadne&quot;</span><span class="p">]]</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">get_running</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="nb">type</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="s2">&quot;T&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;Ariadne&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;T&quot;</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;获取一个实例.</span>
+<span class="sd">        Args:</span>
+<span class="sd">            type (Type[T], optional): 实例类型, 默认为 Ariadne.</span>
+<span class="sd">        Returns:</span>
+<span class="sd">            T: 当前正在运行的实例</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">type</span> <span class="o">==</span> <span class="s2">&quot;Ariadne&quot;</span><span class="p">:</span>
+            <span class="nb">type</span> <span class="o">=</span> <span class="n">Ariadne</span>
+        <span class="k">if</span> <span class="nb">type</span> <span class="ow">in</span> <span class="p">{</span><span class="n">Adapter</span><span class="p">,</span> <span class="n">Ariadne</span><span class="p">,</span> <span class="n">Broadcast</span><span class="p">,</span> <span class="n">AbstractEventLoop</span><span class="p">}:</span>
+            <span class="k">if</span> <span class="n">val</span> <span class="o">:=</span> <span class="n">context_map</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="nb">type</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="kc">None</span><span class="p">):</span>
+                <span class="k">return</span> <span class="n">val</span>
+        <span class="k">for</span> <span class="n">ariadne_inst</span> <span class="ow">in</span> <span class="bp">cls</span><span class="o">.</span><span class="n">running</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">type</span> <span class="ow">in</span> <span class="n">ariadne_inst</span><span class="o">.</span><span class="n">info</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">ariadne_inst</span><span class="o">.</span><span class="n">info</span><span class="p">[</span><span class="nb">type</span><span class="p">]</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
@@ -5795,6 +5845,8 @@
             <span class="n">event</span><span class="o">=</span><span class="n">ApplicationShutdowned</span><span class="p">(</span><span class="bp">self</span><span class="p">),</span>
         <span class="p">)</span>
 
+        <span class="bp">self</span><span class="o">.</span><span class="n">running</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
         <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Stopping adapter...&quot;</span><span class="p">)</span>
         <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">adapter</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="n">AriadneStatus</span><span class="o">.</span><span class="n">STOP</span>
@@ -5835,7 +5887,9 @@
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">chat_log_cfg</span><span class="o">.</span><span class="n">enabled</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">chat_log_cfg</span><span class="o">.</span><span class="n">initialize</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
 
-            <span class="bp">self</span><span class="o">.</span><span class="n">broadcast</span><span class="o">.</span><span class="n">finale_dispatchers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">MiddlewareDispatcher</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span>
+            <span class="k">if</span> <span class="n">ContextDispatcher</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">broadcast</span><span class="o">.</span><span class="n">finale_dispatchers</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">broadcast</span><span class="o">.</span><span class="n">finale_dispatchers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ContextDispatcher</span><span class="p">)</span>
+
             <span class="bp">self</span><span class="o">.</span><span class="n">daemon_task</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">loop</span><span class="o">.</span><span class="n">create_task</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">daemon</span><span class="p">(),</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;ariadne_daemon&quot;</span><span class="p">)</span>
             <span class="k">await</span> <span class="n">await_predicate</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">adapter</span><span class="o">.</span><span class="n">session_activated</span><span class="p">,</span> <span class="mf">0.0001</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="n">AriadneStatus</span><span class="o">.</span><span class="n">RUNNING</span>
@@ -5844,6 +5898,8 @@
             <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">remote_version</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;2&quot;</span><span class="p">):</span>
                 <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;You are using an unsupported version: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">remote_version</span><span class="si">}</span><span class="s2">!&quot;</span><span class="p">)</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Application launched with </span><span class="si">{</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">start_time</span><span class="si">:</span><span class="s2">.2</span><span class="si">}</span><span class="s2">s&quot;</span><span class="p">)</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">running</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
 
             <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">broadcast</span><span class="o">.</span><span class="n">layered_scheduler</span><span class="p">(</span>
                 <span class="n">listener_generator</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">broadcast</span><span class="o">.</span><span class="n">default_listener_generator</span><span class="p">(</span><span class="n">ApplicationLaunched</span><span class="p">),</span>
@@ -6047,6 +6103,63 @@
 
 
                             </div>
+                            <div id="Ariadne.running" class="classattr">
+                                            <div class="attr variable"><a class="headerlink" href="#Ariadne.running">#&nbsp;&nbsp</a>
+
+        <span class="name">running</span><span class="annotation">: ClassVar[MutableSet[<a href="#Ariadne">ariadne.app.Ariadne</a>]]</span><span class="default_value"> = set()</span>
+    </div>
+
+    
+
+                            </div>
+                            <div id="Ariadne.get_running" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#Ariadne.get_running">#&nbsp;&nbsp</a>
+
+                <div class="decorator">@classmethod</div>
+
+            <span class="def">def</span>
+            <span class="name">get_running</span><span class="signature">(cls, type: Type[~T] = &#39;Ariadne&#39;) -&gt; ~T</span>:
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">get_running</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="nb">type</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="s2">&quot;T&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;Ariadne&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;T&quot;</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;获取一个实例.</span>
+<span class="sd">        Args:</span>
+<span class="sd">            type (Type[T], optional): 实例类型, 默认为 Ariadne.</span>
+<span class="sd">        Returns:</span>
+<span class="sd">            T: 当前正在运行的实例</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">type</span> <span class="o">==</span> <span class="s2">&quot;Ariadne&quot;</span><span class="p">:</span>
+            <span class="nb">type</span> <span class="o">=</span> <span class="n">Ariadne</span>
+        <span class="k">if</span> <span class="nb">type</span> <span class="ow">in</span> <span class="p">{</span><span class="n">Adapter</span><span class="p">,</span> <span class="n">Ariadne</span><span class="p">,</span> <span class="n">Broadcast</span><span class="p">,</span> <span class="n">AbstractEventLoop</span><span class="p">}:</span>
+            <span class="k">if</span> <span class="n">val</span> <span class="o">:=</span> <span class="n">context_map</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="nb">type</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="kc">None</span><span class="p">):</span>
+                <span class="k">return</span> <span class="n">val</span>
+        <span class="k">for</span> <span class="n">ariadne_inst</span> <span class="ow">in</span> <span class="bp">cls</span><span class="o">.</span><span class="n">running</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">type</span> <span class="ow">in</span> <span class="n">ariadne_inst</span><span class="o">.</span><span class="n">info</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">ariadne_inst</span><span class="o">.</span><span class="n">info</span><span class="p">[</span><span class="nb">type</span><span class="p">]</span>
+</pre></div>
+
+        </details>
+
+            <div class="docstring"><p>获取一个实例.</p>
+
+<h6 id="args">Args</h6>
+
+<ul>
+<li><strong>type (Type[T], optional):</strong>  实例类型, 默认为 Ariadne.</li>
+</ul>
+
+<h6 id="returns">Returns</h6>
+
+<blockquote>
+  <p>T: 当前正在运行的实例</p>
+</blockquote>
+</div>
+
+
+                            </div>
                             <div id="Ariadne.create" class="classattr">
                                         <div class="attr function"><a class="headerlink" href="#Ariadne.create">#&nbsp;&nbsp</a>
 
@@ -6201,6 +6314,8 @@
             <span class="n">event</span><span class="o">=</span><span class="n">ApplicationShutdowned</span><span class="p">(</span><span class="bp">self</span><span class="p">),</span>
         <span class="p">)</span>
 
+        <span class="bp">self</span><span class="o">.</span><span class="n">running</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
         <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Stopping adapter...&quot;</span><span class="p">)</span>
         <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">adapter</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="n">AriadneStatus</span><span class="o">.</span><span class="n">STOP</span>
@@ -6265,7 +6380,9 @@
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">chat_log_cfg</span><span class="o">.</span><span class="n">enabled</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">chat_log_cfg</span><span class="o">.</span><span class="n">initialize</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
 
-            <span class="bp">self</span><span class="o">.</span><span class="n">broadcast</span><span class="o">.</span><span class="n">finale_dispatchers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">MiddlewareDispatcher</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span>
+            <span class="k">if</span> <span class="n">ContextDispatcher</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">broadcast</span><span class="o">.</span><span class="n">finale_dispatchers</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">broadcast</span><span class="o">.</span><span class="n">finale_dispatchers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ContextDispatcher</span><span class="p">)</span>
+
             <span class="bp">self</span><span class="o">.</span><span class="n">daemon_task</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">loop</span><span class="o">.</span><span class="n">create_task</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">daemon</span><span class="p">(),</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;ariadne_daemon&quot;</span><span class="p">)</span>
             <span class="k">await</span> <span class="n">await_predicate</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">adapter</span><span class="o">.</span><span class="n">session_activated</span><span class="p">,</span> <span class="mf">0.0001</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="n">AriadneStatus</span><span class="o">.</span><span class="n">RUNNING</span>
@@ -6274,6 +6391,8 @@
             <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">remote_version</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;2&quot;</span><span class="p">):</span>
                 <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;You are using an unsupported version: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">remote_version</span><span class="si">}</span><span class="s2">!&quot;</span><span class="p">)</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Application launched with </span><span class="si">{</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">start_time</span><span class="si">:</span><span class="s2">.2</span><span class="si">}</span><span class="s2">s&quot;</span><span class="p">)</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">running</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
 
             <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">broadcast</span><span class="o">.</span><span class="n">layered_scheduler</span><span class="p">(</span>
                 <span class="n">listener_generator</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">broadcast</span><span class="o">.</span><span class="n">default_listener_generator</span><span class="p">(</span><span class="n">ApplicationLaunched</span><span class="p">),</span>

@@ -31,6 +31,9 @@
                     <h2>API Documentation</h2>
                         <ul class="memberlist">
             <li>
+                    <a class="variable" href="#context_map">context_map</a>
+            </li>
+            <li>
                     <a class="function" href="#enter_message_send_context">enter_message_send_context</a>
             </li>
             <li>
@@ -62,7 +65,7 @@
             <div class="codehilite"><pre><span></span><span class="sd">&quot;&quot;&quot;本模块创建了 Ariadne 中的上下文变量&quot;&quot;&quot;</span>
 <span class="kn">from</span> <span class="nn">contextlib</span> <span class="kn">import</span> <span class="n">contextmanager</span>
 <span class="kn">from</span> <span class="nn">contextvars</span> <span class="kn">import</span> <span class="n">ContextVar</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">TYPE_CHECKING</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">Dict</span>
 
 <span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
     <span class="kn">from</span> <span class="nn">asyncio.events</span> <span class="kn">import</span> <span class="n">AbstractEventLoop</span>
@@ -87,6 +90,15 @@
     <span class="n">event_loop_ctx</span> <span class="o">=</span> <span class="n">ContextVar</span><span class="p">(</span><span class="s2">&quot;event_loop&quot;</span><span class="p">)</span>
     <span class="n">broadcast_ctx</span> <span class="o">=</span> <span class="n">ContextVar</span><span class="p">(</span><span class="s2">&quot;broadcast&quot;</span><span class="p">)</span>
     <span class="n">upload_method_ctx</span> <span class="o">=</span> <span class="n">ContextVar</span><span class="p">(</span><span class="s2">&quot;upload_method&quot;</span><span class="p">)</span>
+
+<span class="n">context_map</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">ContextVar</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;Ariadne&quot;</span><span class="p">:</span> <span class="n">ariadne_ctx</span><span class="p">,</span>
+    <span class="s2">&quot;Adapter&quot;</span><span class="p">:</span> <span class="n">adapter_ctx</span><span class="p">,</span>
+    <span class="s2">&quot;Dispatchable&quot;</span><span class="p">:</span> <span class="n">event_ctx</span><span class="p">,</span>
+    <span class="s2">&quot;AbstractEventLoop&quot;</span><span class="p">:</span> <span class="n">event_loop_ctx</span><span class="p">,</span>
+    <span class="s2">&quot;Broadcast&quot;</span><span class="p">:</span> <span class="n">broadcast_ctx</span><span class="p">,</span>
+    <span class="s2">&quot;UploadMethod&quot;</span><span class="p">:</span> <span class="n">upload_method_ctx</span><span class="p">,</span>
+<span class="p">}</span>
 
 
 <span class="nd">@contextmanager</span>
@@ -143,6 +155,15 @@
         </details>
 
             </section>
+                <section id="context_map">
+                                <div class="attr variable"><a class="headerlink" href="#context_map">#&nbsp;&nbsp</a>
+
+        <span class="name">context_map</span><span class="annotation">: Dict[str, ContextVar]</span><span class="default_value"> = {&#39;Ariadne&#39;: &lt;ContextVar name=&#39;ariadne&#39; at 0x7fbf99995310&gt;, &#39;Adapter&#39;: &lt;ContextVar name=&#39;adapter&#39; at 0x7fbf999952c0&gt;, &#39;Dispatchable&#39;: &lt;ContextVar name=&#39;event&#39; at 0x7fbf99995360&gt;, &#39;AbstractEventLoop&#39;: &lt;ContextVar name=&#39;event_loop&#39; at 0x7fbf999953b0&gt;, &#39;Broadcast&#39;: &lt;ContextVar name=&#39;broadcast&#39; at 0x7fbf99995400&gt;, &#39;UploadMethod&#39;: &lt;ContextVar name=&#39;upload_method&#39; at 0x7fbf99995450&gt;}</span>
+    </div>
+
+    
+
+                </section>
                 <section id="enter_message_send_context">
                             <div class="attr function"><a class="headerlink" href="#enter_message_send_context">#&nbsp;&nbsp</a>
 

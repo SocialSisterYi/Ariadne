@@ -717,9 +717,9 @@
 <span class="sd">        Returns:</span>
 <span class="sd">            Profile: 该好友的 Profile 对象</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="kn">from</span> <span class="nn">.context</span> <span class="kn">import</span> <span class="n">ariadne_ctx</span>
+        <span class="kn">from</span> <span class="nn">.app</span> <span class="kn">import</span> <span class="n">Ariadne</span>
 
-        <span class="k">return</span> <span class="k">await</span> <span class="n">ariadne_ctx</span><span class="o">.</span><span class="n">get</span><span class="p">()</span><span class="o">.</span><span class="n">getFriendProfile</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="k">return</span> <span class="k">await</span> <span class="n">Ariadne</span><span class="o">.</span><span class="n">get_running</span><span class="p">(</span><span class="n">Ariadne</span><span class="p">)</span><span class="o">.</span><span class="n">getFriendProfile</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
 
 
 <span class="k">class</span> <span class="nc">Stranger</span><span class="p">(</span><span class="n">AriadneBaseModel</span><span class="p">):</span>
@@ -775,9 +775,9 @@
 <span class="sd">        Returns:</span>
 <span class="sd">            Config: 该群组的设置对象.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="kn">from</span> <span class="nn">.context</span> <span class="kn">import</span> <span class="n">ariadne_ctx</span>
+        <span class="kn">from</span> <span class="nn">.app</span> <span class="kn">import</span> <span class="n">Ariadne</span>
 
-        <span class="k">return</span> <span class="k">await</span> <span class="n">ariadne_ctx</span><span class="o">.</span><span class="n">get</span><span class="p">()</span><span class="o">.</span><span class="n">getGroupConfig</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="k">return</span> <span class="k">await</span> <span class="n">Ariadne</span><span class="o">.</span><span class="n">get_running</span><span class="p">(</span><span class="n">Ariadne</span><span class="p">)</span><span class="o">.</span><span class="n">getGroupConfig</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
 
     <span class="k">async</span> <span class="k">def</span> <span class="nf">modifyConfig</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">:</span> <span class="s2">&quot;GroupConfig&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;修改该群组的 Config</span>
@@ -785,9 +785,9 @@
 <span class="sd">        Args:</span>
 <span class="sd">            config (GroupConfig): 经过修改后的群设置对象.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="kn">from</span> <span class="nn">.context</span> <span class="kn">import</span> <span class="n">ariadne_ctx</span>
+        <span class="kn">from</span> <span class="nn">.app</span> <span class="kn">import</span> <span class="n">Ariadne</span>
 
-        <span class="k">return</span> <span class="k">await</span> <span class="n">ariadne_ctx</span><span class="o">.</span><span class="n">get</span><span class="p">()</span><span class="o">.</span><span class="n">modifyGroupConfig</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">)</span>
+        <span class="k">return</span> <span class="k">await</span> <span class="n">Ariadne</span><span class="o">.</span><span class="n">get_running</span><span class="p">(</span><span class="n">Ariadne</span><span class="p">)</span><span class="o">.</span><span class="n">modifyGroupConfig</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">)</span>
 
 
 <span class="k">class</span> <span class="nc">Member</span><span class="p">(</span><span class="n">AriadneBaseModel</span><span class="p">):</span>
@@ -826,9 +826,9 @@
 <span class="sd">        Returns:</span>
 <span class="sd">            Profile: 该群成员的 Profile 对象</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="kn">from</span> <span class="nn">.context</span> <span class="kn">import</span> <span class="n">ariadne_ctx</span>
+        <span class="kn">from</span> <span class="nn">.app</span> <span class="kn">import</span> <span class="n">Ariadne</span>
 
-        <span class="k">return</span> <span class="k">await</span> <span class="n">ariadne_ctx</span><span class="o">.</span><span class="n">get</span><span class="p">()</span><span class="o">.</span><span class="n">getMemberProfile</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="k">return</span> <span class="k">await</span> <span class="n">Ariadne</span><span class="o">.</span><span class="n">get_running</span><span class="p">(</span><span class="n">Ariadne</span><span class="p">)</span><span class="o">.</span><span class="n">getMemberProfile</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
 
     <span class="k">async</span> <span class="k">def</span> <span class="nf">getInfo</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;MemberInfo&quot;</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;获取该成员的可修改状态</span>
@@ -836,9 +836,9 @@
 <span class="sd">        Returns:</span>
 <span class="sd">            MemberInfo: 群组成员的可修改状态</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="kn">from</span> <span class="nn">.context</span> <span class="kn">import</span> <span class="n">ariadne_ctx</span>
+        <span class="kn">from</span> <span class="nn">.app</span> <span class="kn">import</span> <span class="n">Ariadne</span>
 
-        <span class="k">return</span> <span class="k">await</span> <span class="n">ariadne_ctx</span><span class="o">.</span><span class="n">get</span><span class="p">()</span><span class="o">.</span><span class="n">getMemberInfo</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="k">return</span> <span class="k">await</span> <span class="n">Ariadne</span><span class="o">.</span><span class="n">get_running</span><span class="p">(</span><span class="n">Ariadne</span><span class="p">)</span><span class="o">.</span><span class="n">getMemberInfo</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
 
     <span class="k">async</span> <span class="k">def</span> <span class="nf">modifyInfo</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">info</span><span class="p">:</span> <span class="s2">&quot;MemberInfo&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -850,9 +850,9 @@
 <span class="sd">        Returns:</span>
 <span class="sd">            None: 没有返回.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="kn">from</span> <span class="nn">.context</span> <span class="kn">import</span> <span class="n">ariadne_ctx</span>
+        <span class="kn">from</span> <span class="nn">.app</span> <span class="kn">import</span> <span class="n">Ariadne</span>
 
-        <span class="k">return</span> <span class="k">await</span> <span class="n">ariadne_ctx</span><span class="o">.</span><span class="n">get</span><span class="p">()</span><span class="o">.</span><span class="n">modifyMemberInfo</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">info</span><span class="p">)</span>
+        <span class="k">return</span> <span class="k">await</span> <span class="n">Ariadne</span><span class="o">.</span><span class="n">get_running</span><span class="p">(</span><span class="n">Ariadne</span><span class="p">)</span><span class="o">.</span><span class="n">modifyMemberInfo</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">info</span><span class="p">)</span>
 
     <span class="k">async</span> <span class="k">def</span> <span class="nf">modifyAdmin</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">assign</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -864,9 +864,9 @@
 <span class="sd">        Returns:</span>
 <span class="sd">            None: 没有返回.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="kn">from</span> <span class="nn">.context</span> <span class="kn">import</span> <span class="n">ariadne_ctx</span>
+        <span class="kn">from</span> <span class="nn">.app</span> <span class="kn">import</span> <span class="n">Ariadne</span>
 
-        <span class="k">return</span> <span class="k">await</span> <span class="n">ariadne_ctx</span><span class="o">.</span><span class="n">get</span><span class="p">()</span><span class="o">.</span><span class="n">modifyMemberAdmin</span><span class="p">(</span><span class="n">assign</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span>
+        <span class="k">return</span> <span class="k">await</span> <span class="n">Ariadne</span><span class="o">.</span><span class="n">get_running</span><span class="p">(</span><span class="n">Ariadne</span><span class="p">)</span><span class="o">.</span><span class="n">modifyMemberAdmin</span><span class="p">(</span><span class="n">assign</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span>
 
 
 <span class="k">class</span> <span class="nc">GroupConfig</span><span class="p">(</span><span class="n">AriadneBaseModel</span><span class="p">):</span>
@@ -976,6 +976,9 @@
 
     <span class="n">Temp</span> <span class="o">=</span> <span class="s2">&quot;temp&quot;</span>
     <span class="sd">&quot;&quot;&quot;临时消息&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">value</span>
 
 
 <span class="k">class</span> <span class="nc">CallMethod</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
@@ -1353,7 +1356,7 @@ implement default like this::</p>
                             <div id="AriadneBaseModel.Config.json_encoders" class="classattr">
                                             <div class="attr variable"><a class="headerlink" href="#AriadneBaseModel.Config.json_encoders">#&nbsp;&nbsp</a>
 
-        <span class="name">json_encoders</span><span class="default_value"> = {&lt;class &#39;datetime.datetime&#39;&gt;: &lt;function datetime_encoder at 0x7fc5331a7ca0&gt;}</span>
+        <span class="name">json_encoders</span><span class="default_value"> = {&lt;class &#39;datetime.datetime&#39;&gt;: &lt;function datetime_encoder at 0x7fbf99a34820&gt;}</span>
     </div>
 
     
@@ -1985,9 +1988,9 @@ implement default like this::</p>
 <span class="sd">        Returns:</span>
 <span class="sd">            Profile: 该好友的 Profile 对象</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="kn">from</span> <span class="nn">.context</span> <span class="kn">import</span> <span class="n">ariadne_ctx</span>
+        <span class="kn">from</span> <span class="nn">.app</span> <span class="kn">import</span> <span class="n">Ariadne</span>
 
-        <span class="k">return</span> <span class="k">await</span> <span class="n">ariadne_ctx</span><span class="o">.</span><span class="n">get</span><span class="p">()</span><span class="o">.</span><span class="n">getFriendProfile</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="k">return</span> <span class="k">await</span> <span class="n">Ariadne</span><span class="o">.</span><span class="n">get_running</span><span class="p">(</span><span class="n">Ariadne</span><span class="p">)</span><span class="o">.</span><span class="n">getFriendProfile</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
 </pre></div>
 
         </details>
@@ -2045,9 +2048,9 @@ implement default like this::</p>
 <span class="sd">        Returns:</span>
 <span class="sd">            Profile: 该好友的 Profile 对象</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="kn">from</span> <span class="nn">.context</span> <span class="kn">import</span> <span class="n">ariadne_ctx</span>
+        <span class="kn">from</span> <span class="nn">.app</span> <span class="kn">import</span> <span class="n">Ariadne</span>
 
-        <span class="k">return</span> <span class="k">await</span> <span class="n">ariadne_ctx</span><span class="o">.</span><span class="n">get</span><span class="p">()</span><span class="o">.</span><span class="n">getFriendProfile</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="k">return</span> <span class="k">await</span> <span class="n">Ariadne</span><span class="o">.</span><span class="n">get_running</span><span class="p">(</span><span class="n">Ariadne</span><span class="p">)</span><span class="o">.</span><span class="n">getFriendProfile</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
 </pre></div>
 
         </details>
@@ -2285,9 +2288,9 @@ implement default like this::</p>
 <span class="sd">        Returns:</span>
 <span class="sd">            Config: 该群组的设置对象.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="kn">from</span> <span class="nn">.context</span> <span class="kn">import</span> <span class="n">ariadne_ctx</span>
+        <span class="kn">from</span> <span class="nn">.app</span> <span class="kn">import</span> <span class="n">Ariadne</span>
 
-        <span class="k">return</span> <span class="k">await</span> <span class="n">ariadne_ctx</span><span class="o">.</span><span class="n">get</span><span class="p">()</span><span class="o">.</span><span class="n">getGroupConfig</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="k">return</span> <span class="k">await</span> <span class="n">Ariadne</span><span class="o">.</span><span class="n">get_running</span><span class="p">(</span><span class="n">Ariadne</span><span class="p">)</span><span class="o">.</span><span class="n">getGroupConfig</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
 
     <span class="k">async</span> <span class="k">def</span> <span class="nf">modifyConfig</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">:</span> <span class="s2">&quot;GroupConfig&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;修改该群组的 Config</span>
@@ -2295,9 +2298,9 @@ implement default like this::</p>
 <span class="sd">        Args:</span>
 <span class="sd">            config (GroupConfig): 经过修改后的群设置对象.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="kn">from</span> <span class="nn">.context</span> <span class="kn">import</span> <span class="n">ariadne_ctx</span>
+        <span class="kn">from</span> <span class="nn">.app</span> <span class="kn">import</span> <span class="n">Ariadne</span>
 
-        <span class="k">return</span> <span class="k">await</span> <span class="n">ariadne_ctx</span><span class="o">.</span><span class="n">get</span><span class="p">()</span><span class="o">.</span><span class="n">modifyGroupConfig</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">)</span>
+        <span class="k">return</span> <span class="k">await</span> <span class="n">Ariadne</span><span class="o">.</span><span class="n">get_running</span><span class="p">(</span><span class="n">Ariadne</span><span class="p">)</span><span class="o">.</span><span class="n">modifyGroupConfig</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">)</span>
 </pre></div>
 
         </details>
@@ -2355,9 +2358,9 @@ implement default like this::</p>
 <span class="sd">        Returns:</span>
 <span class="sd">            Config: 该群组的设置对象.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="kn">from</span> <span class="nn">.context</span> <span class="kn">import</span> <span class="n">ariadne_ctx</span>
+        <span class="kn">from</span> <span class="nn">.app</span> <span class="kn">import</span> <span class="n">Ariadne</span>
 
-        <span class="k">return</span> <span class="k">await</span> <span class="n">ariadne_ctx</span><span class="o">.</span><span class="n">get</span><span class="p">()</span><span class="o">.</span><span class="n">getGroupConfig</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="k">return</span> <span class="k">await</span> <span class="n">Ariadne</span><span class="o">.</span><span class="n">get_running</span><span class="p">(</span><span class="n">Ariadne</span><span class="p">)</span><span class="o">.</span><span class="n">getGroupConfig</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
 </pre></div>
 
         </details>
@@ -2389,9 +2392,9 @@ implement default like this::</p>
 <span class="sd">        Args:</span>
 <span class="sd">            config (GroupConfig): 经过修改后的群设置对象.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="kn">from</span> <span class="nn">.context</span> <span class="kn">import</span> <span class="n">ariadne_ctx</span>
+        <span class="kn">from</span> <span class="nn">.app</span> <span class="kn">import</span> <span class="n">Ariadne</span>
 
-        <span class="k">return</span> <span class="k">await</span> <span class="n">ariadne_ctx</span><span class="o">.</span><span class="n">get</span><span class="p">()</span><span class="o">.</span><span class="n">modifyGroupConfig</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">)</span>
+        <span class="k">return</span> <span class="k">await</span> <span class="n">Ariadne</span><span class="o">.</span><span class="n">get_running</span><span class="p">(</span><span class="n">Ariadne</span><span class="p">)</span><span class="o">.</span><span class="n">modifyGroupConfig</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">)</span>
 </pre></div>
 
         </details>
@@ -2480,9 +2483,9 @@ implement default like this::</p>
 <span class="sd">        Returns:</span>
 <span class="sd">            Profile: 该群成员的 Profile 对象</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="kn">from</span> <span class="nn">.context</span> <span class="kn">import</span> <span class="n">ariadne_ctx</span>
+        <span class="kn">from</span> <span class="nn">.app</span> <span class="kn">import</span> <span class="n">Ariadne</span>
 
-        <span class="k">return</span> <span class="k">await</span> <span class="n">ariadne_ctx</span><span class="o">.</span><span class="n">get</span><span class="p">()</span><span class="o">.</span><span class="n">getMemberProfile</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="k">return</span> <span class="k">await</span> <span class="n">Ariadne</span><span class="o">.</span><span class="n">get_running</span><span class="p">(</span><span class="n">Ariadne</span><span class="p">)</span><span class="o">.</span><span class="n">getMemberProfile</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
 
     <span class="k">async</span> <span class="k">def</span> <span class="nf">getInfo</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;MemberInfo&quot;</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;获取该成员的可修改状态</span>
@@ -2490,9 +2493,9 @@ implement default like this::</p>
 <span class="sd">        Returns:</span>
 <span class="sd">            MemberInfo: 群组成员的可修改状态</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="kn">from</span> <span class="nn">.context</span> <span class="kn">import</span> <span class="n">ariadne_ctx</span>
+        <span class="kn">from</span> <span class="nn">.app</span> <span class="kn">import</span> <span class="n">Ariadne</span>
 
-        <span class="k">return</span> <span class="k">await</span> <span class="n">ariadne_ctx</span><span class="o">.</span><span class="n">get</span><span class="p">()</span><span class="o">.</span><span class="n">getMemberInfo</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="k">return</span> <span class="k">await</span> <span class="n">Ariadne</span><span class="o">.</span><span class="n">get_running</span><span class="p">(</span><span class="n">Ariadne</span><span class="p">)</span><span class="o">.</span><span class="n">getMemberInfo</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
 
     <span class="k">async</span> <span class="k">def</span> <span class="nf">modifyInfo</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">info</span><span class="p">:</span> <span class="s2">&quot;MemberInfo&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -2504,9 +2507,9 @@ implement default like this::</p>
 <span class="sd">        Returns:</span>
 <span class="sd">            None: 没有返回.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="kn">from</span> <span class="nn">.context</span> <span class="kn">import</span> <span class="n">ariadne_ctx</span>
+        <span class="kn">from</span> <span class="nn">.app</span> <span class="kn">import</span> <span class="n">Ariadne</span>
 
-        <span class="k">return</span> <span class="k">await</span> <span class="n">ariadne_ctx</span><span class="o">.</span><span class="n">get</span><span class="p">()</span><span class="o">.</span><span class="n">modifyMemberInfo</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">info</span><span class="p">)</span>
+        <span class="k">return</span> <span class="k">await</span> <span class="n">Ariadne</span><span class="o">.</span><span class="n">get_running</span><span class="p">(</span><span class="n">Ariadne</span><span class="p">)</span><span class="o">.</span><span class="n">modifyMemberInfo</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">info</span><span class="p">)</span>
 
     <span class="k">async</span> <span class="k">def</span> <span class="nf">modifyAdmin</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">assign</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -2518,9 +2521,9 @@ implement default like this::</p>
 <span class="sd">        Returns:</span>
 <span class="sd">            None: 没有返回.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="kn">from</span> <span class="nn">.context</span> <span class="kn">import</span> <span class="n">ariadne_ctx</span>
+        <span class="kn">from</span> <span class="nn">.app</span> <span class="kn">import</span> <span class="n">Ariadne</span>
 
-        <span class="k">return</span> <span class="k">await</span> <span class="n">ariadne_ctx</span><span class="o">.</span><span class="n">get</span><span class="p">()</span><span class="o">.</span><span class="n">modifyMemberAdmin</span><span class="p">(</span><span class="n">assign</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span>
+        <span class="k">return</span> <span class="k">await</span> <span class="n">Ariadne</span><span class="o">.</span><span class="n">get_running</span><span class="p">(</span><span class="n">Ariadne</span><span class="p">)</span><span class="o">.</span><span class="n">modifyMemberAdmin</span><span class="p">(</span><span class="n">assign</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span>
 </pre></div>
 
         </details>
@@ -2633,9 +2636,9 @@ implement default like this::</p>
 <span class="sd">        Returns:</span>
 <span class="sd">            Profile: 该群成员的 Profile 对象</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="kn">from</span> <span class="nn">.context</span> <span class="kn">import</span> <span class="n">ariadne_ctx</span>
+        <span class="kn">from</span> <span class="nn">.app</span> <span class="kn">import</span> <span class="n">Ariadne</span>
 
-        <span class="k">return</span> <span class="k">await</span> <span class="n">ariadne_ctx</span><span class="o">.</span><span class="n">get</span><span class="p">()</span><span class="o">.</span><span class="n">getMemberProfile</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="k">return</span> <span class="k">await</span> <span class="n">Ariadne</span><span class="o">.</span><span class="n">get_running</span><span class="p">(</span><span class="n">Ariadne</span><span class="p">)</span><span class="o">.</span><span class="n">getMemberProfile</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
 </pre></div>
 
         </details>
@@ -2667,9 +2670,9 @@ implement default like this::</p>
 <span class="sd">        Returns:</span>
 <span class="sd">            MemberInfo: 群组成员的可修改状态</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="kn">from</span> <span class="nn">.context</span> <span class="kn">import</span> <span class="n">ariadne_ctx</span>
+        <span class="kn">from</span> <span class="nn">.app</span> <span class="kn">import</span> <span class="n">Ariadne</span>
 
-        <span class="k">return</span> <span class="k">await</span> <span class="n">ariadne_ctx</span><span class="o">.</span><span class="n">get</span><span class="p">()</span><span class="o">.</span><span class="n">getMemberInfo</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="k">return</span> <span class="k">await</span> <span class="n">Ariadne</span><span class="o">.</span><span class="n">get_running</span><span class="p">(</span><span class="n">Ariadne</span><span class="p">)</span><span class="o">.</span><span class="n">getMemberInfo</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
 </pre></div>
 
         </details>
@@ -2705,9 +2708,9 @@ implement default like this::</p>
 <span class="sd">        Returns:</span>
 <span class="sd">            None: 没有返回.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="kn">from</span> <span class="nn">.context</span> <span class="kn">import</span> <span class="n">ariadne_ctx</span>
+        <span class="kn">from</span> <span class="nn">.app</span> <span class="kn">import</span> <span class="n">Ariadne</span>
 
-        <span class="k">return</span> <span class="k">await</span> <span class="n">ariadne_ctx</span><span class="o">.</span><span class="n">get</span><span class="p">()</span><span class="o">.</span><span class="n">modifyMemberInfo</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">info</span><span class="p">)</span>
+        <span class="k">return</span> <span class="k">await</span> <span class="n">Ariadne</span><span class="o">.</span><span class="n">get_running</span><span class="p">(</span><span class="n">Ariadne</span><span class="p">)</span><span class="o">.</span><span class="n">modifyMemberInfo</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">info</span><span class="p">)</span>
 </pre></div>
 
         </details>
@@ -2749,9 +2752,9 @@ implement default like this::</p>
 <span class="sd">        Returns:</span>
 <span class="sd">            None: 没有返回.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="kn">from</span> <span class="nn">.context</span> <span class="kn">import</span> <span class="n">ariadne_ctx</span>
+        <span class="kn">from</span> <span class="nn">.app</span> <span class="kn">import</span> <span class="n">Ariadne</span>
 
-        <span class="k">return</span> <span class="k">await</span> <span class="n">ariadne_ctx</span><span class="o">.</span><span class="n">get</span><span class="p">()</span><span class="o">.</span><span class="n">modifyMemberAdmin</span><span class="p">(</span><span class="n">assign</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span>
+        <span class="k">return</span> <span class="k">await</span> <span class="n">Ariadne</span><span class="o">.</span><span class="n">get_running</span><span class="p">(</span><span class="n">Ariadne</span><span class="p">)</span><span class="o">.</span><span class="n">modifyMemberAdmin</span><span class="p">(</span><span class="n">assign</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span>
 </pre></div>
 
         </details>
@@ -3339,6 +3342,9 @@ implement default like this::</p>
 
     <span class="n">Temp</span> <span class="o">=</span> <span class="s2">&quot;temp&quot;</span>
     <span class="sd">&quot;&quot;&quot;临时消息&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">value</span>
 </pre></div>
 
         </details>

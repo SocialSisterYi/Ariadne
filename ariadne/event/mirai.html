@@ -664,6 +664,87 @@
 
             </li>
             <li>
+                    <a class="class" href="#ClientKind">ClientKind</a>
+                            <ul class="memberlist">
+                        <li>
+                                <a class="variable" href="#ClientKind.ANDROID_PAD">ANDROID_PAD</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#ClientKind.AOL_CHAOJIHUIYUAN">AOL_CHAOJIHUIYUAN</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#ClientKind.AOL_HUIYUAN">AOL_HUIYUAN</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#ClientKind.AOL_SQQ">AOL_SQQ</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#ClientKind.CAR">CAR</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#ClientKind.HRTX_IPHONE">HRTX_IPHONE</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#ClientKind.HRTX_PC">HRTX_PC</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#ClientKind.MC_3G">MC_3G</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#ClientKind.MISRO_MSG">MISRO_MSG</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#ClientKind.MOBILE_ANDROID">MOBILE_ANDROID</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#ClientKind.MOBILE_ANDROID_NEW">MOBILE_ANDROID_NEW</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#ClientKind.MOBILE_HD">MOBILE_HD</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#ClientKind.MOBILE_HD_NEW">MOBILE_HD_NEW</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#ClientKind.MOBILE_IPAD">MOBILE_IPAD</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#ClientKind.MOBILE_IPAD_NEW">MOBILE_IPAD_NEW</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#ClientKind.MOBILE_IPHONE">MOBILE_IPHONE</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#ClientKind.MOBILE_OTHER">MOBILE_OTHER</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#ClientKind.MOBILE_PC_QQ">MOBILE_PC_QQ</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#ClientKind.MOBILE_PC_TIM">MOBILE_PC_TIM</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#ClientKind.MOBILE_WINPHONE_NEW">MOBILE_WINPHONE_NEW</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#ClientKind.QQ_FORELDER">QQ_FORELDER</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#ClientKind.QQ_SERVICE">QQ_SERVICE</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#ClientKind.TV_QQ">TV_QQ</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#ClientKind.WIN8">WIN8</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#ClientKind.WINPHONE">WINPHONE</a>
+                        </li>
+                </ul>
+
+            </li>
+            <li>
                     <a class="class" href="#OtherClientOnlineEvent">OtherClientOnlineEvent</a>
                             <ul class="memberlist">
                 </ul>
@@ -706,6 +787,7 @@
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span><span class="sd">&quot;&quot;&quot;Mirai 的各种事件&quot;&quot;&quot;</span>
 <span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
+<span class="kn">from</span> <span class="nn">enum</span> <span class="kn">import</span> <span class="n">Enum</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span>
 
 <span class="kn">from</span> <span class="nn">graia.broadcast.entities.dispatcher</span> <span class="kn">import</span> <span class="n">BaseDispatcher</span>
@@ -713,7 +795,6 @@
 <span class="kn">from</span> <span class="nn">pydantic</span> <span class="kn">import</span> <span class="n">Field</span>
 <span class="kn">from</span> <span class="nn">typing_extensions</span> <span class="kn">import</span> <span class="n">Literal</span>
 
-<span class="kn">from</span> <span class="nn">..context</span> <span class="kn">import</span> <span class="n">adapter_ctx</span>
 <span class="kn">from</span> <span class="nn">..dispatcher</span> <span class="kn">import</span> <span class="n">ContextDispatcher</span>
 <span class="kn">from</span> <span class="nn">..exception</span> <span class="kn">import</span> <span class="n">InvalidSession</span>
 <span class="kn">from</span> <span class="nn">..model</span> <span class="kn">import</span> <span class="n">CallMethod</span><span class="p">,</span> <span class="n">Client</span><span class="p">,</span> <span class="n">Friend</span><span class="p">,</span> <span class="n">Group</span><span class="p">,</span> <span class="n">Member</span><span class="p">,</span> <span class="n">MemberPerm</span>
@@ -1540,7 +1621,10 @@
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        内部接口, 用于内部便捷发送相应操作.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">adapter</span> <span class="o">=</span> <span class="n">adapter_ctx</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+        <span class="kn">from</span> <span class="nn">..adapter</span> <span class="kn">import</span> <span class="n">Adapter</span>
+        <span class="kn">from</span> <span class="nn">..app</span> <span class="kn">import</span> <span class="n">Ariadne</span>
+
+        <span class="n">adapter</span> <span class="o">=</span> <span class="n">Ariadne</span><span class="o">.</span><span class="n">get_running</span><span class="p">(</span><span class="n">Adapter</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">adapter</span><span class="o">.</span><span class="n">mirai_session</span><span class="o">.</span><span class="n">session_key</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">InvalidSession</span><span class="p">(</span><span class="s2">&quot;you must authenticate before this.&quot;</span><span class="p">)</span>
         <span class="n">api_route</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
@@ -1807,6 +1891,36 @@
         <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_operate</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">message</span><span class="p">)</span>
 
 
+<span class="k">class</span> <span class="nc">ClientKind</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;详细设备类型。&quot;&quot;&quot;</span>
+
+    <span class="n">ANDROID_PAD</span> <span class="o">=</span> <span class="mi">68104</span>
+    <span class="n">AOL_CHAOJIHUIYUAN</span> <span class="o">=</span> <span class="mi">73730</span>
+    <span class="n">AOL_HUIYUAN</span> <span class="o">=</span> <span class="mi">73474</span>
+    <span class="n">AOL_SQQ</span> <span class="o">=</span> <span class="mi">69378</span>
+    <span class="n">CAR</span> <span class="o">=</span> <span class="mi">65806</span>
+    <span class="n">HRTX_IPHONE</span> <span class="o">=</span> <span class="mi">66566</span>
+    <span class="n">HRTX_PC</span> <span class="o">=</span> <span class="mi">66561</span>
+    <span class="n">MC_3G</span> <span class="o">=</span> <span class="mi">65795</span>
+    <span class="n">MISRO_MSG</span> <span class="o">=</span> <span class="mi">69634</span>
+    <span class="n">MOBILE_ANDROID</span> <span class="o">=</span> <span class="mi">65799</span>
+    <span class="n">MOBILE_ANDROID_NEW</span> <span class="o">=</span> <span class="mi">72450</span>
+    <span class="n">MOBILE_HD</span> <span class="o">=</span> <span class="mi">65805</span>
+    <span class="n">MOBILE_HD_NEW</span> <span class="o">=</span> <span class="mi">71426</span>
+    <span class="n">MOBILE_IPAD</span> <span class="o">=</span> <span class="mi">68361</span>
+    <span class="n">MOBILE_IPAD_NEW</span> <span class="o">=</span> <span class="mi">72194</span>
+    <span class="n">MOBILE_IPHONE</span> <span class="o">=</span> <span class="mi">67586</span>
+    <span class="n">MOBILE_OTHER</span> <span class="o">=</span> <span class="mi">65794</span>
+    <span class="n">MOBILE_PC_QQ</span> <span class="o">=</span> <span class="mi">65793</span>
+    <span class="n">MOBILE_PC_TIM</span> <span class="o">=</span> <span class="mi">77313</span>
+    <span class="n">MOBILE_WINPHONE_NEW</span> <span class="o">=</span> <span class="mi">72706</span>
+    <span class="n">QQ_FORELDER</span> <span class="o">=</span> <span class="mi">70922</span>
+    <span class="n">QQ_SERVICE</span> <span class="o">=</span> <span class="mi">71170</span>
+    <span class="n">TV_QQ</span> <span class="o">=</span> <span class="mi">69130</span>
+    <span class="n">WIN8</span> <span class="o">=</span> <span class="mi">69899</span>
+    <span class="n">WINPHONE</span> <span class="o">=</span> <span class="mi">65804</span>
+
+
 <span class="k">class</span> <span class="nc">OtherClientOnlineEvent</span><span class="p">(</span><span class="n">MiraiEvent</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Bot 账号在其他客户端上线.</span>
 
@@ -1818,7 +1932,7 @@
 
     <span class="nb">type</span> <span class="o">=</span> <span class="s2">&quot;OtherClientOnlineEvent&quot;</span>
     <span class="n">client</span><span class="p">:</span> <span class="n">Client</span>
-    <span class="n">kind</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span>
+    <span class="n">kind</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ClientKind</span><span class="p">]</span>
 
 
 <span class="k">class</span> <span class="nc">OtherClientOfflineEvent</span><span class="p">(</span><span class="n">MiraiEvent</span><span class="p">):</span>
@@ -7072,7 +7186,10 @@
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        内部接口, 用于内部便捷发送相应操作.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">adapter</span> <span class="o">=</span> <span class="n">adapter_ctx</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+        <span class="kn">from</span> <span class="nn">..adapter</span> <span class="kn">import</span> <span class="n">Adapter</span>
+        <span class="kn">from</span> <span class="nn">..app</span> <span class="kn">import</span> <span class="n">Ariadne</span>
+
+        <span class="n">adapter</span> <span class="o">=</span> <span class="n">Ariadne</span><span class="o">.</span><span class="n">get_running</span><span class="p">(</span><span class="n">Adapter</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">adapter</span><span class="o">.</span><span class="n">mirai_session</span><span class="o">.</span><span class="n">session_key</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">InvalidSession</span><span class="p">(</span><span class="s2">&quot;you must authenticate before this.&quot;</span><span class="p">)</span>
         <span class="n">api_route</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
@@ -8132,6 +8249,301 @@
                                 </dl>
                             </div>
                 </section>
+                <section id="ClientKind">
+                                <div class="attr class">
+        <a class="headerlink" href="#ClientKind">#&nbsp;&nbsp</a>
+
+        
+        <span class="def">class</span>
+        <span class="name">ClientKind</span><wbr>(<span class="base">builtins.int</span>, <span class="base">enum.Enum</span>):
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">ClientKind</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;详细设备类型。&quot;&quot;&quot;</span>
+
+    <span class="n">ANDROID_PAD</span> <span class="o">=</span> <span class="mi">68104</span>
+    <span class="n">AOL_CHAOJIHUIYUAN</span> <span class="o">=</span> <span class="mi">73730</span>
+    <span class="n">AOL_HUIYUAN</span> <span class="o">=</span> <span class="mi">73474</span>
+    <span class="n">AOL_SQQ</span> <span class="o">=</span> <span class="mi">69378</span>
+    <span class="n">CAR</span> <span class="o">=</span> <span class="mi">65806</span>
+    <span class="n">HRTX_IPHONE</span> <span class="o">=</span> <span class="mi">66566</span>
+    <span class="n">HRTX_PC</span> <span class="o">=</span> <span class="mi">66561</span>
+    <span class="n">MC_3G</span> <span class="o">=</span> <span class="mi">65795</span>
+    <span class="n">MISRO_MSG</span> <span class="o">=</span> <span class="mi">69634</span>
+    <span class="n">MOBILE_ANDROID</span> <span class="o">=</span> <span class="mi">65799</span>
+    <span class="n">MOBILE_ANDROID_NEW</span> <span class="o">=</span> <span class="mi">72450</span>
+    <span class="n">MOBILE_HD</span> <span class="o">=</span> <span class="mi">65805</span>
+    <span class="n">MOBILE_HD_NEW</span> <span class="o">=</span> <span class="mi">71426</span>
+    <span class="n">MOBILE_IPAD</span> <span class="o">=</span> <span class="mi">68361</span>
+    <span class="n">MOBILE_IPAD_NEW</span> <span class="o">=</span> <span class="mi">72194</span>
+    <span class="n">MOBILE_IPHONE</span> <span class="o">=</span> <span class="mi">67586</span>
+    <span class="n">MOBILE_OTHER</span> <span class="o">=</span> <span class="mi">65794</span>
+    <span class="n">MOBILE_PC_QQ</span> <span class="o">=</span> <span class="mi">65793</span>
+    <span class="n">MOBILE_PC_TIM</span> <span class="o">=</span> <span class="mi">77313</span>
+    <span class="n">MOBILE_WINPHONE_NEW</span> <span class="o">=</span> <span class="mi">72706</span>
+    <span class="n">QQ_FORELDER</span> <span class="o">=</span> <span class="mi">70922</span>
+    <span class="n">QQ_SERVICE</span> <span class="o">=</span> <span class="mi">71170</span>
+    <span class="n">TV_QQ</span> <span class="o">=</span> <span class="mi">69130</span>
+    <span class="n">WIN8</span> <span class="o">=</span> <span class="mi">69899</span>
+    <span class="n">WINPHONE</span> <span class="o">=</span> <span class="mi">65804</span>
+</pre></div>
+
+        </details>
+
+            <div class="docstring"><p>详细设备类型。</p>
+</div>
+
+
+                            <div id="ClientKind.ANDROID_PAD" class="classattr">
+                                            <div class="attr variable"><a class="headerlink" href="#ClientKind.ANDROID_PAD">#&nbsp;&nbsp</a>
+
+        <span class="name">ANDROID_PAD</span><span class="default_value"> = &lt;<a href="#ClientKind.ANDROID_PAD">ClientKind.ANDROID_PAD</a>: 68104&gt;</span>
+    </div>
+
+    
+
+                            </div>
+                            <div id="ClientKind.AOL_CHAOJIHUIYUAN" class="classattr">
+                                            <div class="attr variable"><a class="headerlink" href="#ClientKind.AOL_CHAOJIHUIYUAN">#&nbsp;&nbsp</a>
+
+        <span class="name">AOL_CHAOJIHUIYUAN</span><span class="default_value"> = &lt;<a href="#ClientKind.AOL_CHAOJIHUIYUAN">ClientKind.AOL_CHAOJIHUIYUAN</a>: 73730&gt;</span>
+    </div>
+
+    
+
+                            </div>
+                            <div id="ClientKind.AOL_HUIYUAN" class="classattr">
+                                            <div class="attr variable"><a class="headerlink" href="#ClientKind.AOL_HUIYUAN">#&nbsp;&nbsp</a>
+
+        <span class="name">AOL_HUIYUAN</span><span class="default_value"> = &lt;<a href="#ClientKind.AOL_HUIYUAN">ClientKind.AOL_HUIYUAN</a>: 73474&gt;</span>
+    </div>
+
+    
+
+                            </div>
+                            <div id="ClientKind.AOL_SQQ" class="classattr">
+                                            <div class="attr variable"><a class="headerlink" href="#ClientKind.AOL_SQQ">#&nbsp;&nbsp</a>
+
+        <span class="name">AOL_SQQ</span><span class="default_value"> = &lt;<a href="#ClientKind.AOL_SQQ">ClientKind.AOL_SQQ</a>: 69378&gt;</span>
+    </div>
+
+    
+
+                            </div>
+                            <div id="ClientKind.CAR" class="classattr">
+                                            <div class="attr variable"><a class="headerlink" href="#ClientKind.CAR">#&nbsp;&nbsp</a>
+
+        <span class="name">CAR</span><span class="default_value"> = &lt;<a href="#ClientKind.CAR">ClientKind.CAR</a>: 65806&gt;</span>
+    </div>
+
+    
+
+                            </div>
+                            <div id="ClientKind.HRTX_IPHONE" class="classattr">
+                                            <div class="attr variable"><a class="headerlink" href="#ClientKind.HRTX_IPHONE">#&nbsp;&nbsp</a>
+
+        <span class="name">HRTX_IPHONE</span><span class="default_value"> = &lt;<a href="#ClientKind.HRTX_IPHONE">ClientKind.HRTX_IPHONE</a>: 66566&gt;</span>
+    </div>
+
+    
+
+                            </div>
+                            <div id="ClientKind.HRTX_PC" class="classattr">
+                                            <div class="attr variable"><a class="headerlink" href="#ClientKind.HRTX_PC">#&nbsp;&nbsp</a>
+
+        <span class="name">HRTX_PC</span><span class="default_value"> = &lt;<a href="#ClientKind.HRTX_PC">ClientKind.HRTX_PC</a>: 66561&gt;</span>
+    </div>
+
+    
+
+                            </div>
+                            <div id="ClientKind.MC_3G" class="classattr">
+                                            <div class="attr variable"><a class="headerlink" href="#ClientKind.MC_3G">#&nbsp;&nbsp</a>
+
+        <span class="name">MC_3G</span><span class="default_value"> = &lt;<a href="#ClientKind.MC_3G">ClientKind.MC_3G</a>: 65795&gt;</span>
+    </div>
+
+    
+
+                            </div>
+                            <div id="ClientKind.MISRO_MSG" class="classattr">
+                                            <div class="attr variable"><a class="headerlink" href="#ClientKind.MISRO_MSG">#&nbsp;&nbsp</a>
+
+        <span class="name">MISRO_MSG</span><span class="default_value"> = &lt;<a href="#ClientKind.MISRO_MSG">ClientKind.MISRO_MSG</a>: 69634&gt;</span>
+    </div>
+
+    
+
+                            </div>
+                            <div id="ClientKind.MOBILE_ANDROID" class="classattr">
+                                            <div class="attr variable"><a class="headerlink" href="#ClientKind.MOBILE_ANDROID">#&nbsp;&nbsp</a>
+
+        <span class="name">MOBILE_ANDROID</span><span class="default_value"> = &lt;<a href="#ClientKind.MOBILE_ANDROID">ClientKind.MOBILE_ANDROID</a>: 65799&gt;</span>
+    </div>
+
+    
+
+                            </div>
+                            <div id="ClientKind.MOBILE_ANDROID_NEW" class="classattr">
+                                            <div class="attr variable"><a class="headerlink" href="#ClientKind.MOBILE_ANDROID_NEW">#&nbsp;&nbsp</a>
+
+        <span class="name">MOBILE_ANDROID_NEW</span><span class="default_value"> = &lt;<a href="#ClientKind.MOBILE_ANDROID_NEW">ClientKind.MOBILE_ANDROID_NEW</a>: 72450&gt;</span>
+    </div>
+
+    
+
+                            </div>
+                            <div id="ClientKind.MOBILE_HD" class="classattr">
+                                            <div class="attr variable"><a class="headerlink" href="#ClientKind.MOBILE_HD">#&nbsp;&nbsp</a>
+
+        <span class="name">MOBILE_HD</span><span class="default_value"> = &lt;<a href="#ClientKind.MOBILE_HD">ClientKind.MOBILE_HD</a>: 65805&gt;</span>
+    </div>
+
+    
+
+                            </div>
+                            <div id="ClientKind.MOBILE_HD_NEW" class="classattr">
+                                            <div class="attr variable"><a class="headerlink" href="#ClientKind.MOBILE_HD_NEW">#&nbsp;&nbsp</a>
+
+        <span class="name">MOBILE_HD_NEW</span><span class="default_value"> = &lt;<a href="#ClientKind.MOBILE_HD_NEW">ClientKind.MOBILE_HD_NEW</a>: 71426&gt;</span>
+    </div>
+
+    
+
+                            </div>
+                            <div id="ClientKind.MOBILE_IPAD" class="classattr">
+                                            <div class="attr variable"><a class="headerlink" href="#ClientKind.MOBILE_IPAD">#&nbsp;&nbsp</a>
+
+        <span class="name">MOBILE_IPAD</span><span class="default_value"> = &lt;<a href="#ClientKind.MOBILE_IPAD">ClientKind.MOBILE_IPAD</a>: 68361&gt;</span>
+    </div>
+
+    
+
+                            </div>
+                            <div id="ClientKind.MOBILE_IPAD_NEW" class="classattr">
+                                            <div class="attr variable"><a class="headerlink" href="#ClientKind.MOBILE_IPAD_NEW">#&nbsp;&nbsp</a>
+
+        <span class="name">MOBILE_IPAD_NEW</span><span class="default_value"> = &lt;<a href="#ClientKind.MOBILE_IPAD_NEW">ClientKind.MOBILE_IPAD_NEW</a>: 72194&gt;</span>
+    </div>
+
+    
+
+                            </div>
+                            <div id="ClientKind.MOBILE_IPHONE" class="classattr">
+                                            <div class="attr variable"><a class="headerlink" href="#ClientKind.MOBILE_IPHONE">#&nbsp;&nbsp</a>
+
+        <span class="name">MOBILE_IPHONE</span><span class="default_value"> = &lt;<a href="#ClientKind.MOBILE_IPHONE">ClientKind.MOBILE_IPHONE</a>: 67586&gt;</span>
+    </div>
+
+    
+
+                            </div>
+                            <div id="ClientKind.MOBILE_OTHER" class="classattr">
+                                            <div class="attr variable"><a class="headerlink" href="#ClientKind.MOBILE_OTHER">#&nbsp;&nbsp</a>
+
+        <span class="name">MOBILE_OTHER</span><span class="default_value"> = &lt;<a href="#ClientKind.MOBILE_OTHER">ClientKind.MOBILE_OTHER</a>: 65794&gt;</span>
+    </div>
+
+    
+
+                            </div>
+                            <div id="ClientKind.MOBILE_PC_QQ" class="classattr">
+                                            <div class="attr variable"><a class="headerlink" href="#ClientKind.MOBILE_PC_QQ">#&nbsp;&nbsp</a>
+
+        <span class="name">MOBILE_PC_QQ</span><span class="default_value"> = &lt;<a href="#ClientKind.MOBILE_PC_QQ">ClientKind.MOBILE_PC_QQ</a>: 65793&gt;</span>
+    </div>
+
+    
+
+                            </div>
+                            <div id="ClientKind.MOBILE_PC_TIM" class="classattr">
+                                            <div class="attr variable"><a class="headerlink" href="#ClientKind.MOBILE_PC_TIM">#&nbsp;&nbsp</a>
+
+        <span class="name">MOBILE_PC_TIM</span><span class="default_value"> = &lt;<a href="#ClientKind.MOBILE_PC_TIM">ClientKind.MOBILE_PC_TIM</a>: 77313&gt;</span>
+    </div>
+
+    
+
+                            </div>
+                            <div id="ClientKind.MOBILE_WINPHONE_NEW" class="classattr">
+                                            <div class="attr variable"><a class="headerlink" href="#ClientKind.MOBILE_WINPHONE_NEW">#&nbsp;&nbsp</a>
+
+        <span class="name">MOBILE_WINPHONE_NEW</span><span class="default_value"> = &lt;<a href="#ClientKind.MOBILE_WINPHONE_NEW">ClientKind.MOBILE_WINPHONE_NEW</a>: 72706&gt;</span>
+    </div>
+
+    
+
+                            </div>
+                            <div id="ClientKind.QQ_FORELDER" class="classattr">
+                                            <div class="attr variable"><a class="headerlink" href="#ClientKind.QQ_FORELDER">#&nbsp;&nbsp</a>
+
+        <span class="name">QQ_FORELDER</span><span class="default_value"> = &lt;<a href="#ClientKind.QQ_FORELDER">ClientKind.QQ_FORELDER</a>: 70922&gt;</span>
+    </div>
+
+    
+
+                            </div>
+                            <div id="ClientKind.QQ_SERVICE" class="classattr">
+                                            <div class="attr variable"><a class="headerlink" href="#ClientKind.QQ_SERVICE">#&nbsp;&nbsp</a>
+
+        <span class="name">QQ_SERVICE</span><span class="default_value"> = &lt;<a href="#ClientKind.QQ_SERVICE">ClientKind.QQ_SERVICE</a>: 71170&gt;</span>
+    </div>
+
+    
+
+                            </div>
+                            <div id="ClientKind.TV_QQ" class="classattr">
+                                            <div class="attr variable"><a class="headerlink" href="#ClientKind.TV_QQ">#&nbsp;&nbsp</a>
+
+        <span class="name">TV_QQ</span><span class="default_value"> = &lt;<a href="#ClientKind.TV_QQ">ClientKind.TV_QQ</a>: 69130&gt;</span>
+    </div>
+
+    
+
+                            </div>
+                            <div id="ClientKind.WIN8" class="classattr">
+                                            <div class="attr variable"><a class="headerlink" href="#ClientKind.WIN8">#&nbsp;&nbsp</a>
+
+        <span class="name">WIN8</span><span class="default_value"> = &lt;<a href="#ClientKind.WIN8">ClientKind.WIN8</a>: 69899&gt;</span>
+    </div>
+
+    
+
+                            </div>
+                            <div id="ClientKind.WINPHONE" class="classattr">
+                                            <div class="attr variable"><a class="headerlink" href="#ClientKind.WINPHONE">#&nbsp;&nbsp</a>
+
+        <span class="name">WINPHONE</span><span class="default_value"> = &lt;<a href="#ClientKind.WINPHONE">ClientKind.WINPHONE</a>: 65804&gt;</span>
+    </div>
+
+    
+
+                            </div>
+                            <div class="inherited">
+                                <h5>Inherited Members</h5>
+                                <dl>
+                                    <div><dt>enum.Enum</dt>
+                                <dd id="ClientKind.name" class="variable">name</dd>
+                <dd id="ClientKind.value" class="variable">value</dd>
+
+            </div>
+            <div><dt>builtins.int</dt>
+                                <dd id="ClientKind.conjugate" class="function">conjugate</dd>
+                <dd id="ClientKind.bit_length" class="function">bit_length</dd>
+                <dd id="ClientKind.to_bytes" class="function">to_bytes</dd>
+                <dd id="ClientKind.from_bytes" class="function">from_bytes</dd>
+                <dd id="ClientKind.as_integer_ratio" class="function">as_integer_ratio</dd>
+                <dd id="ClientKind.real" class="variable">real</dd>
+                <dd id="ClientKind.imag" class="variable">imag</dd>
+                <dd id="ClientKind.numerator" class="variable">numerator</dd>
+                <dd id="ClientKind.denominator" class="variable">denominator</dd>
+
+            </div>
+                                </dl>
+                            </div>
+                </section>
                 <section id="OtherClientOnlineEvent">
                                 <div class="attr class">
         <a class="headerlink" href="#OtherClientOnlineEvent">#&nbsp;&nbsp</a>
@@ -8154,7 +8566,7 @@
 
     <span class="nb">type</span> <span class="o">=</span> <span class="s2">&quot;OtherClientOnlineEvent&quot;</span>
     <span class="n">client</span><span class="p">:</span> <span class="n">Client</span>
-    <span class="n">kind</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span>
+    <span class="n">kind</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ClientKind</span><span class="p">]</span>
 </pre></div>
 
         </details>

@@ -196,6 +196,9 @@
                     <a class="class" href="#Xml">Xml</a>
                             <ul class="memberlist">
                         <li>
+                                <a class="function" href="#Xml.__init__">Xml</a>
+                        </li>
+                        <li>
                                 <a class="variable" href="#Xml.xml">xml</a>
                         </li>
                         <li>
@@ -225,6 +228,9 @@
             <li>
                     <a class="class" href="#App">App</a>
                             <ul class="memberlist">
+                        <li>
+                                <a class="function" href="#App.__init__">App</a>
+                        </li>
                         <li>
                                 <a class="variable" href="#App.content">content</a>
                         </li>
@@ -319,8 +325,53 @@
 
             </li>
             <li>
+                    <a class="class" href="#MusicShareKind">MusicShareKind</a>
+                            <ul class="memberlist">
+                        <li>
+                                <a class="variable" href="#MusicShareKind.NeteaseCloudMusic">NeteaseCloudMusic</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#MusicShareKind.QQMusic">QQMusic</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#MusicShareKind.MiguMusic">MiguMusic</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#MusicShareKind.KugouMusic">KugouMusic</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#MusicShareKind.KuwoMusic">KuwoMusic</a>
+                        </li>
+                </ul>
+
+            </li>
+            <li>
                     <a class="class" href="#MusicShare">MusicShare</a>
                             <ul class="memberlist">
+                        <li>
+                                <a class="function" href="#MusicShare.__init__">MusicShare</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#MusicShare.kind">kind</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#MusicShare.title">title</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#MusicShare.summary">summary</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#MusicShare.jumpUrl">jumpUrl</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#MusicShare.pictureUrl">pictureUrl</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#MusicShare.musicUrl">musicUrl</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#MusicShare.brief">brief</a>
+                        </li>
                         <li>
                                 <a class="function" href="#MusicShare.asDisplay">asDisplay</a>
                         </li>
@@ -530,7 +581,7 @@
 <span class="kn">from</span> <span class="nn">pydantic</span> <span class="kn">import</span> <span class="n">validator</span>
 <span class="kn">from</span> <span class="nn">pydantic.fields</span> <span class="kn">import</span> <span class="n">Field</span>
 
-<span class="kn">from</span> <span class="nn">..context</span> <span class="kn">import</span> <span class="n">adapter_ctx</span><span class="p">,</span> <span class="n">upload_method_ctx</span>
+<span class="kn">from</span> <span class="nn">..context</span> <span class="kn">import</span> <span class="n">upload_method_ctx</span>
 <span class="kn">from</span> <span class="nn">..exception</span> <span class="kn">import</span> <span class="n">InvalidArgument</span>
 <span class="kn">from</span> <span class="nn">..model</span> <span class="kn">import</span> <span class="n">AriadneBaseModel</span><span class="p">,</span> <span class="n">Friend</span><span class="p">,</span> <span class="n">Member</span><span class="p">,</span> <span class="n">Stranger</span><span class="p">,</span> <span class="n">UploadMethod</span>
 <span class="kn">from</span> <span class="nn">..util</span> <span class="kn">import</span> <span class="n">wrap_bracket</span>
@@ -781,6 +832,9 @@
     <span class="n">xml</span><span class="p">:</span> <span class="nb">str</span>
     <span class="sd">&quot;&quot;&quot;XML文本&quot;&quot;&quot;</span>
 
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">xml</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">**</span><span class="n">_</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">xml</span><span class="o">=</span><span class="n">xml</span><span class="p">)</span>
+
     <span class="k">def</span> <span class="nf">asDisplay</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="k">return</span> <span class="s2">&quot;[XML消息]&quot;</span>
 
@@ -812,6 +866,9 @@
 
     <span class="n">content</span><span class="p">:</span> <span class="nb">str</span>
     <span class="sd">&quot;&quot;&quot;App 内容&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">content</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">**</span><span class="n">_</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">content</span><span class="o">=</span><span class="n">content</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">asDisplay</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="k">return</span> <span class="s2">&quot;[APP消息]&quot;</span>
@@ -899,20 +956,74 @@
         <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;[骰子:</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="si">}</span><span class="s2">]&quot;</span>
 
 
+<span class="k">class</span> <span class="nc">MusicShareKind</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;音乐分享的来源。&quot;&quot;&quot;</span>
+
+    <span class="n">NeteaseCloudMusic</span> <span class="o">=</span> <span class="s2">&quot;NeteaseCloudMusic&quot;</span>
+    <span class="sd">&quot;&quot;&quot;网易云音乐&quot;&quot;&quot;</span>
+
+    <span class="n">QQMusic</span> <span class="o">=</span> <span class="s2">&quot;QQMusic&quot;</span>
+    <span class="sd">&quot;&quot;&quot;QQ音乐&quot;&quot;&quot;</span>
+
+    <span class="n">MiguMusic</span> <span class="o">=</span> <span class="s2">&quot;MiguMusic&quot;</span>
+    <span class="sd">&quot;&quot;&quot;咪咕音乐&quot;&quot;&quot;</span>
+
+    <span class="n">KugouMusic</span> <span class="o">=</span> <span class="s2">&quot;KugouMusic&quot;</span>
+    <span class="sd">&quot;&quot;&quot;酷狗音乐&quot;&quot;&quot;</span>
+
+    <span class="n">KuwoMusic</span> <span class="o">=</span> <span class="s2">&quot;KuwoMusic&quot;</span>
+    <span class="sd">&quot;&quot;&quot;酷我音乐&quot;&quot;&quot;</span>
+
+
 <span class="k">class</span> <span class="nc">MusicShare</span><span class="p">(</span><span class="n">Element</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;表示消息中音乐分享消息元素&quot;&quot;&quot;</span>
 
     <span class="nb">type</span> <span class="o">=</span> <span class="s2">&quot;MusicShare&quot;</span>
-    <span class="n">kind</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
+    <span class="n">kind</span><span class="p">:</span> <span class="n">MusicShareKind</span>
+    <span class="sd">&quot;&quot;&quot;音乐分享的来源&quot;&quot;&quot;</span>
+
     <span class="n">title</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
+    <span class="sd">&quot;&quot;&quot;音乐标题&quot;&quot;&quot;</span>
+
     <span class="n">summary</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
+    <span class="sd">&quot;&quot;&quot;音乐摘要&quot;&quot;&quot;</span>
+
     <span class="n">jumpUrl</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
+    <span class="sd">&quot;&quot;&quot;音乐跳转链接&quot;&quot;&quot;</span>
+
     <span class="n">pictureUrl</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
+    <span class="sd">&quot;&quot;&quot;音乐图片链接&quot;&quot;&quot;</span>
+
     <span class="n">musicUrl</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
+    <span class="sd">&quot;&quot;&quot;音乐链接&quot;&quot;&quot;</span>
+
     <span class="n">brief</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
+    <span class="sd">&quot;&quot;&quot;音乐简介&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">kind</span><span class="p">:</span> <span class="n">MusicShareKind</span><span class="p">,</span>
+        <span class="n">title</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">summary</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">jumpUrl</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">pictureUrl</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">musicUrl</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">brief</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="o">*</span><span class="n">_</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">__</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="n">kind</span><span class="o">=</span><span class="n">kind</span><span class="p">,</span>
+            <span class="n">title</span><span class="o">=</span><span class="n">title</span><span class="p">,</span>
+            <span class="n">summary</span><span class="o">=</span><span class="n">summary</span><span class="p">,</span>
+            <span class="n">jumpUrl</span><span class="o">=</span><span class="n">jumpUrl</span><span class="p">,</span>
+            <span class="n">pictureUrl</span><span class="o">=</span><span class="n">pictureUrl</span><span class="p">,</span>
+            <span class="n">musicUrl</span><span class="o">=</span><span class="n">musicUrl</span><span class="p">,</span>
+            <span class="n">brief</span><span class="o">=</span><span class="n">brief</span><span class="p">,</span>
+        <span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">asDisplay</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;[音乐分享:</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">title</span><span class="si">}</span><span class="s2">]&quot;</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;[音乐分享:</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">title</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">brief</span><span class="si">}</span><span class="s2">]&quot;</span>
 
 
 <span class="k">class</span> <span class="nc">ForwardNode</span><span class="p">(</span><span class="n">AriadneBaseModel</span><span class="p">):</span>
@@ -1100,11 +1211,13 @@
 <span class="sd">        Returns:</span>
 <span class="sd">            bytes: 元素原始数据</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="kn">from</span> <span class="nn">..app</span> <span class="kn">import</span> <span class="n">Ariadne</span>
+
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">base64</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">b64decode</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">base64</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">url</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;you should offer a url.&quot;</span><span class="p">)</span>
-        <span class="n">session</span> <span class="o">=</span> <span class="n">adapter_ctx</span><span class="o">.</span><span class="n">get</span><span class="p">()</span><span class="o">.</span><span class="n">session</span>
+        <span class="n">session</span> <span class="o">=</span> <span class="n">Ariadne</span><span class="o">.</span><span class="n">get_running</span><span class="p">(</span><span class="n">Ariadne</span><span class="p">)</span><span class="o">.</span><span class="n">adapter</span><span class="o">.</span><span class="n">session</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">session</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;Unable to get session!&quot;</span><span class="p">)</span>
         <span class="k">async</span> <span class="k">with</span> <span class="n">session</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">url</span><span class="p">)</span> <span class="k">as</span> <span class="n">response</span><span class="p">:</span>
@@ -2613,6 +2726,9 @@ type (str): 元素类型</p>
     <span class="n">xml</span><span class="p">:</span> <span class="nb">str</span>
     <span class="sd">&quot;&quot;&quot;XML文本&quot;&quot;&quot;</span>
 
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">xml</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">**</span><span class="n">_</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">xml</span><span class="o">=</span><span class="n">xml</span><span class="p">)</span>
+
     <span class="k">def</span> <span class="nf">asDisplay</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="k">return</span> <span class="s2">&quot;[XML消息]&quot;</span>
 </pre></div>
@@ -2623,6 +2739,28 @@ type (str): 元素类型</p>
 </div>
 
 
+                            <div id="Xml.__init__" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#Xml.__init__">#&nbsp;&nbsp</a>
+
+        
+            <span class="name">Xml</span><span class="signature">(xml: str, **_)</span>
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">xml</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">**</span><span class="n">_</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">xml</span><span class="o">=</span><span class="n">xml</span><span class="p">)</span>
+</pre></div>
+
+        </details>
+
+            <div class="docstring"><p>Create a new model by parsing and validating input data from keyword arguments.</p>
+
+<p>Raises ValidationError if the input data cannot be parsed to form a valid model.</p>
+</div>
+
+
+                            </div>
                             <div id="Xml.xml" class="classattr">
                                             <div class="attr variable"><a class="headerlink" href="#Xml.xml">#&nbsp;&nbsp</a>
 
@@ -2664,9 +2802,19 @@ type (str): 元素类型</p>
                             <div class="inherited">
                                 <h5>Inherited Members</h5>
                                 <dl>
-                                    <div><dt>pydantic.main.BaseModel</dt>
-                                <dd id="Xml.__init__" class="function">BaseModel</dd>
-                <dd id="Xml.json" class="function">json</dd>
+                                    <div><dt><a href="#Element">Element</a></dt>
+                                <dd id="Xml.type" class="variable"><a href="#Element.type">type</a></dd>
+                <dd id="Xml.asPersistentString" class="function"><a href="#Element.asPersistentString">asPersistentString</a></dd>
+                <dd id="Xml.prepare" class="function"><a href="#Element.prepare">prepare</a></dd>
+
+            </div>
+            <div><dt><a href="../model.html#AriadneBaseModel">ariadne.model.AriadneBaseModel</a></dt>
+                                <dd id="Xml.dict" class="function"><a href="../model.html#AriadneBaseModel.dict">dict</a></dd>
+                <dd id="Xml.Config" class="class"><a href="../model.html#AriadneBaseModel.Config">Config</a></dd>
+
+            </div>
+            <div><dt>pydantic.main.BaseModel</dt>
+                                <dd id="Xml.json" class="function">json</dd>
                 <dd id="Xml.parse_obj" class="function">parse_obj</dd>
                 <dd id="Xml.parse_raw" class="function">parse_raw</dd>
                 <dd id="Xml.parse_file" class="function">parse_file</dd>
@@ -2677,17 +2825,6 @@ type (str): 元素类型</p>
                 <dd id="Xml.schema_json" class="function">schema_json</dd>
                 <dd id="Xml.validate" class="function">validate</dd>
                 <dd id="Xml.update_forward_refs" class="function">update_forward_refs</dd>
-
-            </div>
-            <div><dt><a href="#Element">Element</a></dt>
-                                <dd id="Xml.type" class="variable"><a href="#Element.type">type</a></dd>
-                <dd id="Xml.asPersistentString" class="function"><a href="#Element.asPersistentString">asPersistentString</a></dd>
-                <dd id="Xml.prepare" class="function"><a href="#Element.prepare">prepare</a></dd>
-
-            </div>
-            <div><dt><a href="../model.html#AriadneBaseModel">ariadne.model.AriadneBaseModel</a></dt>
-                                <dd id="Xml.dict" class="function"><a href="../model.html#AriadneBaseModel.dict">dict</a></dd>
-                <dd id="Xml.Config" class="class"><a href="../model.html#AriadneBaseModel.Config">Config</a></dd>
 
             </div>
                                 </dl>
@@ -2862,6 +2999,9 @@ type (str): 元素类型</p>
     <span class="n">content</span><span class="p">:</span> <span class="nb">str</span>
     <span class="sd">&quot;&quot;&quot;App 内容&quot;&quot;&quot;</span>
 
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">content</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">**</span><span class="n">_</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">content</span><span class="o">=</span><span class="n">content</span><span class="p">)</span>
+
     <span class="k">def</span> <span class="nf">asDisplay</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="k">return</span> <span class="s2">&quot;[APP消息]&quot;</span>
 </pre></div>
@@ -2872,6 +3012,28 @@ type (str): 元素类型</p>
 </div>
 
 
+                            <div id="App.__init__" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#App.__init__">#&nbsp;&nbsp</a>
+
+        
+            <span class="name">App</span><span class="signature">(content: str, **_)</span>
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">content</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">**</span><span class="n">_</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">content</span><span class="o">=</span><span class="n">content</span><span class="p">)</span>
+</pre></div>
+
+        </details>
+
+            <div class="docstring"><p>Create a new model by parsing and validating input data from keyword arguments.</p>
+
+<p>Raises ValidationError if the input data cannot be parsed to form a valid model.</p>
+</div>
+
+
+                            </div>
                             <div id="App.content" class="classattr">
                                             <div class="attr variable"><a class="headerlink" href="#App.content">#&nbsp;&nbsp</a>
 
@@ -2913,9 +3075,19 @@ type (str): 元素类型</p>
                             <div class="inherited">
                                 <h5>Inherited Members</h5>
                                 <dl>
-                                    <div><dt>pydantic.main.BaseModel</dt>
-                                <dd id="App.__init__" class="function">BaseModel</dd>
-                <dd id="App.json" class="function">json</dd>
+                                    <div><dt><a href="#Element">Element</a></dt>
+                                <dd id="App.type" class="variable"><a href="#Element.type">type</a></dd>
+                <dd id="App.asPersistentString" class="function"><a href="#Element.asPersistentString">asPersistentString</a></dd>
+                <dd id="App.prepare" class="function"><a href="#Element.prepare">prepare</a></dd>
+
+            </div>
+            <div><dt><a href="../model.html#AriadneBaseModel">ariadne.model.AriadneBaseModel</a></dt>
+                                <dd id="App.dict" class="function"><a href="../model.html#AriadneBaseModel.dict">dict</a></dd>
+                <dd id="App.Config" class="class"><a href="../model.html#AriadneBaseModel.Config">Config</a></dd>
+
+            </div>
+            <div><dt>pydantic.main.BaseModel</dt>
+                                <dd id="App.json" class="function">json</dd>
                 <dd id="App.parse_obj" class="function">parse_obj</dd>
                 <dd id="App.parse_raw" class="function">parse_raw</dd>
                 <dd id="App.parse_file" class="function">parse_file</dd>
@@ -2926,17 +3098,6 @@ type (str): 元素类型</p>
                 <dd id="App.schema_json" class="function">schema_json</dd>
                 <dd id="App.validate" class="function">validate</dd>
                 <dd id="App.update_forward_refs" class="function">update_forward_refs</dd>
-
-            </div>
-            <div><dt><a href="#Element">Element</a></dt>
-                                <dd id="App.type" class="variable"><a href="#Element.type">type</a></dd>
-                <dd id="App.asPersistentString" class="function"><a href="#Element.asPersistentString">asPersistentString</a></dd>
-                <dd id="App.prepare" class="function"><a href="#Element.prepare">prepare</a></dd>
-
-            </div>
-            <div><dt><a href="../model.html#AriadneBaseModel">ariadne.model.AriadneBaseModel</a></dt>
-                                <dd id="App.dict" class="function"><a href="../model.html#AriadneBaseModel.dict">dict</a></dd>
-                <dd id="App.Config" class="class"><a href="../model.html#AriadneBaseModel.Config">Config</a></dd>
 
             </div>
                                 </dl>
@@ -3494,6 +3655,158 @@ type (str): 元素类型</p>
                                 </dl>
                             </div>
                 </section>
+                <section id="MusicShareKind">
+                                <div class="attr class">
+        <a class="headerlink" href="#MusicShareKind">#&nbsp;&nbsp</a>
+
+        
+        <span class="def">class</span>
+        <span class="name">MusicShareKind</span><wbr>(<span class="base">builtins.str</span>, <span class="base">enum.Enum</span>):
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">MusicShareKind</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;音乐分享的来源。&quot;&quot;&quot;</span>
+
+    <span class="n">NeteaseCloudMusic</span> <span class="o">=</span> <span class="s2">&quot;NeteaseCloudMusic&quot;</span>
+    <span class="sd">&quot;&quot;&quot;网易云音乐&quot;&quot;&quot;</span>
+
+    <span class="n">QQMusic</span> <span class="o">=</span> <span class="s2">&quot;QQMusic&quot;</span>
+    <span class="sd">&quot;&quot;&quot;QQ音乐&quot;&quot;&quot;</span>
+
+    <span class="n">MiguMusic</span> <span class="o">=</span> <span class="s2">&quot;MiguMusic&quot;</span>
+    <span class="sd">&quot;&quot;&quot;咪咕音乐&quot;&quot;&quot;</span>
+
+    <span class="n">KugouMusic</span> <span class="o">=</span> <span class="s2">&quot;KugouMusic&quot;</span>
+    <span class="sd">&quot;&quot;&quot;酷狗音乐&quot;&quot;&quot;</span>
+
+    <span class="n">KuwoMusic</span> <span class="o">=</span> <span class="s2">&quot;KuwoMusic&quot;</span>
+    <span class="sd">&quot;&quot;&quot;酷我音乐&quot;&quot;&quot;</span>
+</pre></div>
+
+        </details>
+
+            <div class="docstring"><p>音乐分享的来源。</p>
+</div>
+
+
+                            <div id="MusicShareKind.NeteaseCloudMusic" class="classattr">
+                                            <div class="attr variable"><a class="headerlink" href="#MusicShareKind.NeteaseCloudMusic">#&nbsp;&nbsp</a>
+
+        <span class="name">NeteaseCloudMusic</span><span class="default_value"> = &lt;<a href="#MusicShareKind.NeteaseCloudMusic">MusicShareKind.NeteaseCloudMusic</a>: &#39;NeteaseCloudMusic&#39;&gt;</span>
+    </div>
+
+            <div class="docstring"><p>网易云音乐</p>
+</div>
+
+
+                            </div>
+                            <div id="MusicShareKind.QQMusic" class="classattr">
+                                            <div class="attr variable"><a class="headerlink" href="#MusicShareKind.QQMusic">#&nbsp;&nbsp</a>
+
+        <span class="name">QQMusic</span><span class="default_value"> = &lt;<a href="#MusicShareKind.QQMusic">MusicShareKind.QQMusic</a>: &#39;QQMusic&#39;&gt;</span>
+    </div>
+
+            <div class="docstring"><p>QQ音乐</p>
+</div>
+
+
+                            </div>
+                            <div id="MusicShareKind.MiguMusic" class="classattr">
+                                            <div class="attr variable"><a class="headerlink" href="#MusicShareKind.MiguMusic">#&nbsp;&nbsp</a>
+
+        <span class="name">MiguMusic</span><span class="default_value"> = &lt;<a href="#MusicShareKind.MiguMusic">MusicShareKind.MiguMusic</a>: &#39;MiguMusic&#39;&gt;</span>
+    </div>
+
+            <div class="docstring"><p>咪咕音乐</p>
+</div>
+
+
+                            </div>
+                            <div id="MusicShareKind.KugouMusic" class="classattr">
+                                            <div class="attr variable"><a class="headerlink" href="#MusicShareKind.KugouMusic">#&nbsp;&nbsp</a>
+
+        <span class="name">KugouMusic</span><span class="default_value"> = &lt;<a href="#MusicShareKind.KugouMusic">MusicShareKind.KugouMusic</a>: &#39;KugouMusic&#39;&gt;</span>
+    </div>
+
+            <div class="docstring"><p>酷狗音乐</p>
+</div>
+
+
+                            </div>
+                            <div id="MusicShareKind.KuwoMusic" class="classattr">
+                                            <div class="attr variable"><a class="headerlink" href="#MusicShareKind.KuwoMusic">#&nbsp;&nbsp</a>
+
+        <span class="name">KuwoMusic</span><span class="default_value"> = &lt;<a href="#MusicShareKind.KuwoMusic">MusicShareKind.KuwoMusic</a>: &#39;KuwoMusic&#39;&gt;</span>
+    </div>
+
+            <div class="docstring"><p>酷我音乐</p>
+</div>
+
+
+                            </div>
+                            <div class="inherited">
+                                <h5>Inherited Members</h5>
+                                <dl>
+                                    <div><dt>enum.Enum</dt>
+                                <dd id="MusicShareKind.name" class="variable">name</dd>
+                <dd id="MusicShareKind.value" class="variable">value</dd>
+
+            </div>
+            <div><dt>builtins.str</dt>
+                                <dd id="MusicShareKind.encode" class="function">encode</dd>
+                <dd id="MusicShareKind.replace" class="function">replace</dd>
+                <dd id="MusicShareKind.split" class="function">split</dd>
+                <dd id="MusicShareKind.rsplit" class="function">rsplit</dd>
+                <dd id="MusicShareKind.join" class="function">join</dd>
+                <dd id="MusicShareKind.capitalize" class="function">capitalize</dd>
+                <dd id="MusicShareKind.casefold" class="function">casefold</dd>
+                <dd id="MusicShareKind.title" class="function">title</dd>
+                <dd id="MusicShareKind.center" class="function">center</dd>
+                <dd id="MusicShareKind.count" class="function">count</dd>
+                <dd id="MusicShareKind.expandtabs" class="function">expandtabs</dd>
+                <dd id="MusicShareKind.find" class="function">find</dd>
+                <dd id="MusicShareKind.partition" class="function">partition</dd>
+                <dd id="MusicShareKind.index" class="function">index</dd>
+                <dd id="MusicShareKind.ljust" class="function">ljust</dd>
+                <dd id="MusicShareKind.lower" class="function">lower</dd>
+                <dd id="MusicShareKind.lstrip" class="function">lstrip</dd>
+                <dd id="MusicShareKind.rfind" class="function">rfind</dd>
+                <dd id="MusicShareKind.rindex" class="function">rindex</dd>
+                <dd id="MusicShareKind.rjust" class="function">rjust</dd>
+                <dd id="MusicShareKind.rstrip" class="function">rstrip</dd>
+                <dd id="MusicShareKind.rpartition" class="function">rpartition</dd>
+                <dd id="MusicShareKind.splitlines" class="function">splitlines</dd>
+                <dd id="MusicShareKind.strip" class="function">strip</dd>
+                <dd id="MusicShareKind.swapcase" class="function">swapcase</dd>
+                <dd id="MusicShareKind.translate" class="function">translate</dd>
+                <dd id="MusicShareKind.upper" class="function">upper</dd>
+                <dd id="MusicShareKind.startswith" class="function">startswith</dd>
+                <dd id="MusicShareKind.endswith" class="function">endswith</dd>
+                <dd id="MusicShareKind.removeprefix" class="function">removeprefix</dd>
+                <dd id="MusicShareKind.removesuffix" class="function">removesuffix</dd>
+                <dd id="MusicShareKind.isascii" class="function">isascii</dd>
+                <dd id="MusicShareKind.islower" class="function">islower</dd>
+                <dd id="MusicShareKind.isupper" class="function">isupper</dd>
+                <dd id="MusicShareKind.istitle" class="function">istitle</dd>
+                <dd id="MusicShareKind.isspace" class="function">isspace</dd>
+                <dd id="MusicShareKind.isdecimal" class="function">isdecimal</dd>
+                <dd id="MusicShareKind.isdigit" class="function">isdigit</dd>
+                <dd id="MusicShareKind.isnumeric" class="function">isnumeric</dd>
+                <dd id="MusicShareKind.isalpha" class="function">isalpha</dd>
+                <dd id="MusicShareKind.isalnum" class="function">isalnum</dd>
+                <dd id="MusicShareKind.isidentifier" class="function">isidentifier</dd>
+                <dd id="MusicShareKind.isprintable" class="function">isprintable</dd>
+                <dd id="MusicShareKind.zfill" class="function">zfill</dd>
+                <dd id="MusicShareKind.format" class="function">format</dd>
+                <dd id="MusicShareKind.format_map" class="function">format_map</dd>
+                <dd id="MusicShareKind.maketrans" class="function">maketrans</dd>
+
+            </div>
+                                </dl>
+                            </div>
+                </section>
                 <section id="MusicShare">
                                 <div class="attr class">
         <a class="headerlink" href="#MusicShare">#&nbsp;&nbsp</a>
@@ -3509,16 +3822,51 @@ type (str): 元素类型</p>
     <span class="sd">&quot;&quot;&quot;表示消息中音乐分享消息元素&quot;&quot;&quot;</span>
 
     <span class="nb">type</span> <span class="o">=</span> <span class="s2">&quot;MusicShare&quot;</span>
-    <span class="n">kind</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
+    <span class="n">kind</span><span class="p">:</span> <span class="n">MusicShareKind</span>
+    <span class="sd">&quot;&quot;&quot;音乐分享的来源&quot;&quot;&quot;</span>
+
     <span class="n">title</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
+    <span class="sd">&quot;&quot;&quot;音乐标题&quot;&quot;&quot;</span>
+
     <span class="n">summary</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
+    <span class="sd">&quot;&quot;&quot;音乐摘要&quot;&quot;&quot;</span>
+
     <span class="n">jumpUrl</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
+    <span class="sd">&quot;&quot;&quot;音乐跳转链接&quot;&quot;&quot;</span>
+
     <span class="n">pictureUrl</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
+    <span class="sd">&quot;&quot;&quot;音乐图片链接&quot;&quot;&quot;</span>
+
     <span class="n">musicUrl</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
+    <span class="sd">&quot;&quot;&quot;音乐链接&quot;&quot;&quot;</span>
+
     <span class="n">brief</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
+    <span class="sd">&quot;&quot;&quot;音乐简介&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">kind</span><span class="p">:</span> <span class="n">MusicShareKind</span><span class="p">,</span>
+        <span class="n">title</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">summary</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">jumpUrl</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">pictureUrl</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">musicUrl</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">brief</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="o">*</span><span class="n">_</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">__</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="n">kind</span><span class="o">=</span><span class="n">kind</span><span class="p">,</span>
+            <span class="n">title</span><span class="o">=</span><span class="n">title</span><span class="p">,</span>
+            <span class="n">summary</span><span class="o">=</span><span class="n">summary</span><span class="p">,</span>
+            <span class="n">jumpUrl</span><span class="o">=</span><span class="n">jumpUrl</span><span class="p">,</span>
+            <span class="n">pictureUrl</span><span class="o">=</span><span class="n">pictureUrl</span><span class="p">,</span>
+            <span class="n">musicUrl</span><span class="o">=</span><span class="n">musicUrl</span><span class="p">,</span>
+            <span class="n">brief</span><span class="o">=</span><span class="n">brief</span><span class="p">,</span>
+        <span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">asDisplay</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;[音乐分享:</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">title</span><span class="si">}</span><span class="s2">]&quot;</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;[音乐分享:</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">title</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">brief</span><span class="si">}</span><span class="s2">]&quot;</span>
 </pre></div>
 
         </details>
@@ -3527,6 +3875,134 @@ type (str): 元素类型</p>
 </div>
 
 
+                            <div id="MusicShare.__init__" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#MusicShare.__init__">#&nbsp;&nbsp</a>
+
+        
+            <span class="name">MusicShare</span><span class="signature">(
+    kind: <a href="#MusicShareKind">ariadne.message.element.MusicShareKind</a>,
+    title: Optional[str] = None,
+    summary: Optional[str] = None,
+    jumpUrl: Optional[str] = None,
+    pictureUrl: Optional[str] = None,
+    musicUrl: Optional[str] = None,
+    brief: Optional[str] = None,
+    *_,
+    **__
+)</span>
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">kind</span><span class="p">:</span> <span class="n">MusicShareKind</span><span class="p">,</span>
+        <span class="n">title</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">summary</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">jumpUrl</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">pictureUrl</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">musicUrl</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">brief</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="o">*</span><span class="n">_</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">__</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="n">kind</span><span class="o">=</span><span class="n">kind</span><span class="p">,</span>
+            <span class="n">title</span><span class="o">=</span><span class="n">title</span><span class="p">,</span>
+            <span class="n">summary</span><span class="o">=</span><span class="n">summary</span><span class="p">,</span>
+            <span class="n">jumpUrl</span><span class="o">=</span><span class="n">jumpUrl</span><span class="p">,</span>
+            <span class="n">pictureUrl</span><span class="o">=</span><span class="n">pictureUrl</span><span class="p">,</span>
+            <span class="n">musicUrl</span><span class="o">=</span><span class="n">musicUrl</span><span class="p">,</span>
+            <span class="n">brief</span><span class="o">=</span><span class="n">brief</span><span class="p">,</span>
+        <span class="p">)</span>
+</pre></div>
+
+        </details>
+
+            <div class="docstring"><p>Create a new model by parsing and validating input data from keyword arguments.</p>
+
+<p>Raises ValidationError if the input data cannot be parsed to form a valid model.</p>
+</div>
+
+
+                            </div>
+                            <div id="MusicShare.kind" class="classattr">
+                                            <div class="attr variable"><a class="headerlink" href="#MusicShare.kind">#&nbsp;&nbsp</a>
+
+        <span class="name">kind</span><span class="annotation">: <a href="#MusicShareKind">ariadne.message.element.MusicShareKind</a></span>
+    </div>
+
+            <div class="docstring"><p>音乐分享的来源</p>
+</div>
+
+
+                            </div>
+                            <div id="MusicShare.title" class="classattr">
+                                            <div class="attr variable"><a class="headerlink" href="#MusicShare.title">#&nbsp;&nbsp</a>
+
+        <span class="name">title</span><span class="annotation">: Optional[str]</span>
+    </div>
+
+            <div class="docstring"><p>音乐标题</p>
+</div>
+
+
+                            </div>
+                            <div id="MusicShare.summary" class="classattr">
+                                            <div class="attr variable"><a class="headerlink" href="#MusicShare.summary">#&nbsp;&nbsp</a>
+
+        <span class="name">summary</span><span class="annotation">: Optional[str]</span>
+    </div>
+
+            <div class="docstring"><p>音乐摘要</p>
+</div>
+
+
+                            </div>
+                            <div id="MusicShare.jumpUrl" class="classattr">
+                                            <div class="attr variable"><a class="headerlink" href="#MusicShare.jumpUrl">#&nbsp;&nbsp</a>
+
+        <span class="name">jumpUrl</span><span class="annotation">: Optional[str]</span>
+    </div>
+
+            <div class="docstring"><p>音乐跳转链接</p>
+</div>
+
+
+                            </div>
+                            <div id="MusicShare.pictureUrl" class="classattr">
+                                            <div class="attr variable"><a class="headerlink" href="#MusicShare.pictureUrl">#&nbsp;&nbsp</a>
+
+        <span class="name">pictureUrl</span><span class="annotation">: Optional[str]</span>
+    </div>
+
+            <div class="docstring"><p>音乐图片链接</p>
+</div>
+
+
+                            </div>
+                            <div id="MusicShare.musicUrl" class="classattr">
+                                            <div class="attr variable"><a class="headerlink" href="#MusicShare.musicUrl">#&nbsp;&nbsp</a>
+
+        <span class="name">musicUrl</span><span class="annotation">: Optional[str]</span>
+    </div>
+
+            <div class="docstring"><p>音乐链接</p>
+</div>
+
+
+                            </div>
+                            <div id="MusicShare.brief" class="classattr">
+                                            <div class="attr variable"><a class="headerlink" href="#MusicShare.brief">#&nbsp;&nbsp</a>
+
+        <span class="name">brief</span><span class="annotation">: Optional[str]</span>
+    </div>
+
+            <div class="docstring"><p>音乐简介</p>
+</div>
+
+
+                            </div>
                             <div id="MusicShare.asDisplay" class="classattr">
                                         <div class="attr function"><a class="headerlink" href="#MusicShare.asDisplay">#&nbsp;&nbsp</a>
 
@@ -3538,7 +4014,7 @@ type (str): 元素类型</p>
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">asDisplay</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;[音乐分享:</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">title</span><span class="si">}</span><span class="s2">]&quot;</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;[音乐分享:</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">title</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">brief</span><span class="si">}</span><span class="s2">]&quot;</span>
 </pre></div>
 
         </details>
@@ -3557,9 +4033,19 @@ type (str): 元素类型</p>
                             <div class="inherited">
                                 <h5>Inherited Members</h5>
                                 <dl>
-                                    <div><dt>pydantic.main.BaseModel</dt>
-                                <dd id="MusicShare.__init__" class="function">BaseModel</dd>
-                <dd id="MusicShare.json" class="function">json</dd>
+                                    <div><dt><a href="#Element">Element</a></dt>
+                                <dd id="MusicShare.type" class="variable"><a href="#Element.type">type</a></dd>
+                <dd id="MusicShare.asPersistentString" class="function"><a href="#Element.asPersistentString">asPersistentString</a></dd>
+                <dd id="MusicShare.prepare" class="function"><a href="#Element.prepare">prepare</a></dd>
+
+            </div>
+            <div><dt><a href="../model.html#AriadneBaseModel">ariadne.model.AriadneBaseModel</a></dt>
+                                <dd id="MusicShare.dict" class="function"><a href="../model.html#AriadneBaseModel.dict">dict</a></dd>
+                <dd id="MusicShare.Config" class="class"><a href="../model.html#AriadneBaseModel.Config">Config</a></dd>
+
+            </div>
+            <div><dt>pydantic.main.BaseModel</dt>
+                                <dd id="MusicShare.json" class="function">json</dd>
                 <dd id="MusicShare.parse_obj" class="function">parse_obj</dd>
                 <dd id="MusicShare.parse_raw" class="function">parse_raw</dd>
                 <dd id="MusicShare.parse_file" class="function">parse_file</dd>
@@ -3570,17 +4056,6 @@ type (str): 元素类型</p>
                 <dd id="MusicShare.schema_json" class="function">schema_json</dd>
                 <dd id="MusicShare.validate" class="function">validate</dd>
                 <dd id="MusicShare.update_forward_refs" class="function">update_forward_refs</dd>
-
-            </div>
-            <div><dt><a href="#Element">Element</a></dt>
-                                <dd id="MusicShare.type" class="variable"><a href="#Element.type">type</a></dd>
-                <dd id="MusicShare.asPersistentString" class="function"><a href="#Element.asPersistentString">asPersistentString</a></dd>
-                <dd id="MusicShare.prepare" class="function"><a href="#Element.prepare">prepare</a></dd>
-
-            </div>
-            <div><dt><a href="../model.html#AriadneBaseModel">ariadne.model.AriadneBaseModel</a></dt>
-                                <dd id="MusicShare.dict" class="function"><a href="../model.html#AriadneBaseModel.dict">dict</a></dd>
-                <dd id="MusicShare.Config" class="class"><a href="../model.html#AriadneBaseModel.Config">Config</a></dd>
 
             </div>
                                 </dl>
@@ -4362,11 +4837,13 @@ type (str): 元素类型</p>
 <span class="sd">        Returns:</span>
 <span class="sd">            bytes: 元素原始数据</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="kn">from</span> <span class="nn">..app</span> <span class="kn">import</span> <span class="n">Ariadne</span>
+
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">base64</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">b64decode</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">base64</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">url</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;you should offer a url.&quot;</span><span class="p">)</span>
-        <span class="n">session</span> <span class="o">=</span> <span class="n">adapter_ctx</span><span class="o">.</span><span class="n">get</span><span class="p">()</span><span class="o">.</span><span class="n">session</span>
+        <span class="n">session</span> <span class="o">=</span> <span class="n">Ariadne</span><span class="o">.</span><span class="n">get_running</span><span class="p">(</span><span class="n">Ariadne</span><span class="p">)</span><span class="o">.</span><span class="n">adapter</span><span class="o">.</span><span class="n">session</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">session</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;Unable to get session!&quot;</span><span class="p">)</span>
         <span class="k">async</span> <span class="k">with</span> <span class="n">session</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">url</span><span class="p">)</span> <span class="k">as</span> <span class="n">response</span><span class="p">:</span>
@@ -4530,11 +5007,13 @@ type (str): 元素类型</p>
 <span class="sd">        Returns:</span>
 <span class="sd">            bytes: 元素原始数据</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="kn">from</span> <span class="nn">..app</span> <span class="kn">import</span> <span class="n">Ariadne</span>
+
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">base64</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">b64decode</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">base64</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">url</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;you should offer a url.&quot;</span><span class="p">)</span>
-        <span class="n">session</span> <span class="o">=</span> <span class="n">adapter_ctx</span><span class="o">.</span><span class="n">get</span><span class="p">()</span><span class="o">.</span><span class="n">session</span>
+        <span class="n">session</span> <span class="o">=</span> <span class="n">Ariadne</span><span class="o">.</span><span class="n">get_running</span><span class="p">(</span><span class="n">Ariadne</span><span class="p">)</span><span class="o">.</span><span class="n">adapter</span><span class="o">.</span><span class="n">session</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">session</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;Unable to get session!&quot;</span><span class="p">)</span>
         <span class="k">async</span> <span class="k">with</span> <span class="n">session</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">url</span><span class="p">)</span> <span class="k">as</span> <span class="n">response</span><span class="p">:</span>

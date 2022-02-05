@@ -60,6 +60,81 @@
                 </ul>
 
             </li>
+            <li>
+                    <a class="class" href="#MentionMe">MentionMe</a>
+                            <ul class="memberlist">
+                        <li>
+                                <a class="function" href="#MentionMe.__init__">MentionMe</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#MentionMe.pre">pre</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#MentionMe.target">target</a>
+                        </li>
+                </ul>
+
+            </li>
+            <li>
+                    <a class="class" href="#HasKeyword">HasKeyword</a>
+                            <ul class="memberlist">
+                        <li>
+                                <a class="function" href="#HasKeyword.__init__">HasKeyword</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#HasKeyword.pre">pre</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#HasKeyword.target">target</a>
+                        </li>
+                </ul>
+
+            </li>
+            <li>
+                    <a class="class" href="#Mention">Mention</a>
+                            <ul class="memberlist">
+                        <li>
+                                <a class="function" href="#Mention.__init__">Mention</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#Mention.pre">pre</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#Mention.target">target</a>
+                        </li>
+                </ul>
+
+            </li>
+            <li>
+                    <a class="class" href="#MatchContent">MatchContent</a>
+                            <ul class="memberlist">
+                        <li>
+                                <a class="function" href="#MatchContent.__init__">MatchContent</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#MatchContent.pre">pre</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#MatchContent.target">target</a>
+                        </li>
+                </ul>
+
+            </li>
+            <li>
+                    <a class="class" href="#MatchRegex">MatchRegex</a>
+                            <ul class="memberlist">
+                        <li>
+                                <a class="function" href="#MatchRegex.__init__">MatchRegex</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#MatchRegex.pre">pre</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#MatchRegex.target">target</a>
+                        </li>
+                </ul>
+
+            </li>
     </ul>
 
 
@@ -84,12 +159,17 @@
                         <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span><span class="sd">&quot;&quot;&quot;Ariadne 基础的 parser, 包括 DetectPrefix 与 DetectSuffix&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Union</span>
+
 <span class="kn">from</span> <span class="nn">graia.broadcast.entities.decorator</span> <span class="kn">import</span> <span class="n">Decorator</span>
 <span class="kn">from</span> <span class="nn">graia.broadcast.exceptions</span> <span class="kn">import</span> <span class="n">ExecutionStop</span>
 <span class="kn">from</span> <span class="nn">graia.broadcast.interfaces.decorator</span> <span class="kn">import</span> <span class="n">DecoratorInterface</span>
 
+<span class="kn">from</span> <span class="nn">...app</span> <span class="kn">import</span> <span class="n">Ariadne</span>
+<span class="kn">from</span> <span class="nn">...event.message</span> <span class="kn">import</span> <span class="n">GroupMessage</span>
 <span class="kn">from</span> <span class="nn">..chain</span> <span class="kn">import</span> <span class="n">MessageChain</span>
-<span class="kn">from</span> <span class="nn">..element</span> <span class="kn">import</span> <span class="n">Quote</span><span class="p">,</span> <span class="n">Source</span>
+<span class="kn">from</span> <span class="nn">..element</span> <span class="kn">import</span> <span class="n">At</span><span class="p">,</span> <span class="n">Element</span><span class="p">,</span> <span class="n">Plain</span><span class="p">,</span> <span class="n">Quote</span><span class="p">,</span> <span class="n">Source</span>
 
 
 <span class="k">class</span> <span class="nc">DetectPrefix</span><span class="p">(</span><span class="n">Decorator</span><span class="p">):</span>
@@ -146,6 +226,110 @@
         <span class="k">if</span> <span class="n">interface</span><span class="o">.</span><span class="n">annotation</span> <span class="ow">is</span> <span class="n">MessageChain</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">header</span> <span class="o">+</span> <span class="n">result</span>
         <span class="k">return</span> <span class="kc">None</span>
+
+
+<span class="k">class</span> <span class="nc">MentionMe</span><span class="p">(</span><span class="n">Decorator</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;At 账号或者提到账号群昵称&quot;&quot;&quot;</span>
+
+    <span class="n">pre</span> <span class="o">=</span> <span class="kc">True</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">target</span><span class="p">(</span><span class="n">interface</span><span class="p">:</span> <span class="n">DecoratorInterface</span><span class="p">):</span>
+
+        <span class="n">ariadne</span> <span class="o">=</span> <span class="n">Ariadne</span><span class="o">.</span><span class="n">get_running</span><span class="p">(</span><span class="n">Ariadne</span><span class="p">)</span>
+        <span class="n">chain</span><span class="p">:</span> <span class="n">MessageChain</span> <span class="o">=</span> <span class="k">await</span> <span class="n">interface</span><span class="o">.</span><span class="n">dispatcher_interface</span><span class="o">.</span><span class="n">lookup_param</span><span class="p">(</span>
+            <span class="s2">&quot;message_chain&quot;</span><span class="p">,</span> <span class="n">MessageChain</span><span class="p">,</span> <span class="kc">None</span>
+        <span class="p">)</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">interface</span><span class="o">.</span><span class="n">event</span><span class="p">,</span> <span class="n">GroupMessage</span><span class="p">):</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="p">(</span><span class="k">await</span> <span class="n">ariadne</span><span class="o">.</span><span class="n">getMemberInfo</span><span class="p">(</span><span class="n">ariadne</span><span class="o">.</span><span class="n">account</span><span class="p">,</span> <span class="n">interface</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">sender</span><span class="o">.</span><span class="n">group</span><span class="p">))</span><span class="o">.</span><span class="n">name</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="p">(</span><span class="k">await</span> <span class="n">ariadne</span><span class="o">.</span><span class="n">getBotProfile</span><span class="p">())</span><span class="o">.</span><span class="n">nickname</span>
+        <span class="n">header</span> <span class="o">=</span> <span class="n">chain</span><span class="o">.</span><span class="n">include</span><span class="p">(</span><span class="n">Quote</span><span class="p">,</span> <span class="n">Source</span><span class="p">)</span>
+        <span class="n">rest</span><span class="p">:</span> <span class="n">MessageChain</span> <span class="o">=</span> <span class="n">chain</span><span class="o">.</span><span class="n">exclude</span><span class="p">(</span><span class="n">Quote</span><span class="p">,</span> <span class="n">Source</span><span class="p">)</span>
+        <span class="n">first</span><span class="p">:</span> <span class="n">Element</span> <span class="o">=</span> <span class="n">rest</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">rest</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">first</span><span class="p">,</span> <span class="n">Plain</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">first</span><span class="o">.</span><span class="n">asDisplay</span><span class="p">()</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
+                <span class="k">return</span> <span class="n">header</span> <span class="o">+</span> <span class="n">rest</span><span class="o">.</span><span class="n">removeprefix</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">rest</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">first</span><span class="p">,</span> <span class="n">At</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">first</span><span class="o">.</span><span class="n">target</span> <span class="o">==</span> <span class="n">ariadne</span><span class="o">.</span><span class="n">account</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">header</span> <span class="o">+</span> <span class="n">rest</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
+
+        <span class="k">raise</span> <span class="n">ExecutionStop</span>
+
+
+<span class="k">class</span> <span class="nc">HasKeyword</span><span class="p">(</span><span class="n">Decorator</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;消息中含有指定关键字&quot;&quot;&quot;</span>
+
+    <span class="n">pre</span> <span class="o">=</span> <span class="kc">True</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">keyword</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">keyword</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">keyword</span>
+
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">target</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">interface</span><span class="p">:</span> <span class="n">DecoratorInterface</span><span class="p">):</span>
+        <span class="n">chain</span><span class="p">:</span> <span class="n">MessageChain</span> <span class="o">=</span> <span class="k">await</span> <span class="n">interface</span><span class="o">.</span><span class="n">dispatcher_interface</span><span class="o">.</span><span class="n">lookup_param</span><span class="p">(</span>
+            <span class="s2">&quot;message_chain&quot;</span><span class="p">,</span> <span class="n">MessageChain</span><span class="p">,</span> <span class="kc">None</span>
+        <span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">keyword</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">chain</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">ExecutionStop</span>
+
+
+<span class="k">class</span> <span class="nc">Mention</span><span class="p">(</span><span class="n">Decorator</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;At 或提到指定人&quot;&quot;&quot;</span>
+
+    <span class="n">pre</span> <span class="o">=</span> <span class="kc">True</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">target</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">target</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">target</span>
+
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">target</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">interface</span><span class="p">:</span> <span class="n">DecoratorInterface</span><span class="p">):</span>
+        <span class="n">chain</span><span class="p">:</span> <span class="n">MessageChain</span> <span class="o">=</span> <span class="k">await</span> <span class="n">interface</span><span class="o">.</span><span class="n">dispatcher_interface</span><span class="o">.</span><span class="n">lookup_param</span><span class="p">(</span>
+            <span class="s2">&quot;message_chain&quot;</span><span class="p">,</span> <span class="n">MessageChain</span><span class="p">,</span> <span class="kc">None</span>
+        <span class="p">)</span>
+        <span class="n">header</span> <span class="o">=</span> <span class="n">chain</span><span class="o">.</span><span class="n">include</span><span class="p">(</span><span class="n">Quote</span><span class="p">,</span> <span class="n">Source</span><span class="p">)</span>
+        <span class="n">rest</span><span class="p">:</span> <span class="n">MessageChain</span> <span class="o">=</span> <span class="n">chain</span><span class="o">.</span><span class="n">exclude</span><span class="p">(</span><span class="n">Quote</span><span class="p">,</span> <span class="n">Source</span><span class="p">)</span>
+        <span class="n">first</span><span class="p">:</span> <span class="n">Element</span> <span class="o">=</span> <span class="n">rest</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">rest</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">first</span><span class="p">,</span> <span class="n">Plain</span><span class="p">):</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">target</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">and</span> <span class="n">first</span><span class="o">.</span><span class="n">asDisplay</span><span class="p">()</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">target</span><span class="p">):</span>
+                <span class="k">return</span> <span class="n">header</span> <span class="o">+</span> <span class="n">rest</span><span class="o">.</span><span class="n">removeprefix</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">target</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">rest</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">first</span><span class="p">,</span> <span class="n">At</span><span class="p">):</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">target</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="ow">and</span> <span class="n">first</span><span class="o">.</span><span class="n">target</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">target</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">header</span> <span class="o">+</span> <span class="n">rest</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
+
+        <span class="k">raise</span> <span class="n">ExecutionStop</span>
+
+
+<span class="k">class</span> <span class="nc">MatchContent</span><span class="p">(</span><span class="n">Decorator</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;匹配字符串 / 消息链&quot;&quot;&quot;</span>
+
+    <span class="n">pre</span> <span class="o">=</span> <span class="kc">True</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">content</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">MessageChain</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">content</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">MessageChain</span><span class="p">]</span> <span class="o">=</span> <span class="n">content</span>
+
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">target</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">interface</span><span class="p">:</span> <span class="n">DecoratorInterface</span><span class="p">):</span>
+        <span class="n">chain</span><span class="p">:</span> <span class="n">MessageChain</span> <span class="o">=</span> <span class="k">await</span> <span class="n">interface</span><span class="o">.</span><span class="n">dispatcher_interface</span><span class="o">.</span><span class="n">lookup_param</span><span class="p">(</span>
+            <span class="s2">&quot;message_chain&quot;</span><span class="p">,</span> <span class="n">MessageChain</span><span class="p">,</span> <span class="kc">None</span>
+        <span class="p">)</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">content</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">and</span> <span class="n">chain</span><span class="o">.</span><span class="n">asDisplay</span><span class="p">()</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">content</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">ExecutionStop</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">content</span><span class="p">,</span> <span class="n">MessageChain</span><span class="p">)</span> <span class="ow">and</span> <span class="n">chain</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">content</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">ExecutionStop</span>
+
+
+<span class="k">class</span> <span class="nc">MatchRegex</span><span class="p">(</span><span class="n">Decorator</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;匹配正则表达式&quot;&quot;&quot;</span>
+
+    <span class="n">pre</span> <span class="o">=</span> <span class="kc">True</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">regex</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">regex</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">regex</span>
+
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">target</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">interface</span><span class="p">:</span> <span class="n">DecoratorInterface</span><span class="p">):</span>
+        <span class="n">chain</span><span class="p">:</span> <span class="n">MessageChain</span> <span class="o">=</span> <span class="k">await</span> <span class="n">interface</span><span class="o">.</span><span class="n">dispatcher_interface</span><span class="o">.</span><span class="n">lookup_param</span><span class="p">(</span>
+            <span class="s2">&quot;message_chain&quot;</span><span class="p">,</span> <span class="n">MessageChain</span><span class="p">,</span> <span class="kc">None</span>
+        <span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">regex</span><span class="p">,</span> <span class="n">chain</span><span class="o">.</span><span class="n">asDisplay</span><span class="p">()):</span>
+            <span class="k">raise</span> <span class="n">ExecutionStop</span>
 </pre></div>
 
         </details>
@@ -390,6 +574,483 @@
             <div class="docstring"><p>检测后缀并 decorate 参数</p>
 </div>
 
+
+                            </div>
+                </section>
+                <section id="MentionMe">
+                                <div class="attr class">
+        <a class="headerlink" href="#MentionMe">#&nbsp;&nbsp</a>
+
+        
+        <span class="def">class</span>
+        <span class="name">MentionMe</span><wbr>(<span class="base">graia.broadcast.entities.decorator.Decorator</span>):
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">MentionMe</span><span class="p">(</span><span class="n">Decorator</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;At 账号或者提到账号群昵称&quot;&quot;&quot;</span>
+
+    <span class="n">pre</span> <span class="o">=</span> <span class="kc">True</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">target</span><span class="p">(</span><span class="n">interface</span><span class="p">:</span> <span class="n">DecoratorInterface</span><span class="p">):</span>
+
+        <span class="n">ariadne</span> <span class="o">=</span> <span class="n">Ariadne</span><span class="o">.</span><span class="n">get_running</span><span class="p">(</span><span class="n">Ariadne</span><span class="p">)</span>
+        <span class="n">chain</span><span class="p">:</span> <span class="n">MessageChain</span> <span class="o">=</span> <span class="k">await</span> <span class="n">interface</span><span class="o">.</span><span class="n">dispatcher_interface</span><span class="o">.</span><span class="n">lookup_param</span><span class="p">(</span>
+            <span class="s2">&quot;message_chain&quot;</span><span class="p">,</span> <span class="n">MessageChain</span><span class="p">,</span> <span class="kc">None</span>
+        <span class="p">)</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">interface</span><span class="o">.</span><span class="n">event</span><span class="p">,</span> <span class="n">GroupMessage</span><span class="p">):</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="p">(</span><span class="k">await</span> <span class="n">ariadne</span><span class="o">.</span><span class="n">getMemberInfo</span><span class="p">(</span><span class="n">ariadne</span><span class="o">.</span><span class="n">account</span><span class="p">,</span> <span class="n">interface</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">sender</span><span class="o">.</span><span class="n">group</span><span class="p">))</span><span class="o">.</span><span class="n">name</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="p">(</span><span class="k">await</span> <span class="n">ariadne</span><span class="o">.</span><span class="n">getBotProfile</span><span class="p">())</span><span class="o">.</span><span class="n">nickname</span>
+        <span class="n">header</span> <span class="o">=</span> <span class="n">chain</span><span class="o">.</span><span class="n">include</span><span class="p">(</span><span class="n">Quote</span><span class="p">,</span> <span class="n">Source</span><span class="p">)</span>
+        <span class="n">rest</span><span class="p">:</span> <span class="n">MessageChain</span> <span class="o">=</span> <span class="n">chain</span><span class="o">.</span><span class="n">exclude</span><span class="p">(</span><span class="n">Quote</span><span class="p">,</span> <span class="n">Source</span><span class="p">)</span>
+        <span class="n">first</span><span class="p">:</span> <span class="n">Element</span> <span class="o">=</span> <span class="n">rest</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">rest</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">first</span><span class="p">,</span> <span class="n">Plain</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">first</span><span class="o">.</span><span class="n">asDisplay</span><span class="p">()</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
+                <span class="k">return</span> <span class="n">header</span> <span class="o">+</span> <span class="n">rest</span><span class="o">.</span><span class="n">removeprefix</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">rest</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">first</span><span class="p">,</span> <span class="n">At</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">first</span><span class="o">.</span><span class="n">target</span> <span class="o">==</span> <span class="n">ariadne</span><span class="o">.</span><span class="n">account</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">header</span> <span class="o">+</span> <span class="n">rest</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
+
+        <span class="k">raise</span> <span class="n">ExecutionStop</span>
+</pre></div>
+
+        </details>
+
+            <div class="docstring"><p>At 账号或者提到账号群昵称</p>
+</div>
+
+
+                            <div id="MentionMe.__init__" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#MentionMe.__init__">#&nbsp;&nbsp</a>
+
+        
+            <span class="name">MentionMe</span><span class="signature">()</span>
+    </div>
+
+        
+    
+
+                            </div>
+                            <div id="MentionMe.pre" class="classattr">
+                                            <div class="attr variable"><a class="headerlink" href="#MentionMe.pre">#&nbsp;&nbsp</a>
+
+        <span class="name">pre</span><span class="annotation">: bool</span><span class="default_value"> = True</span>
+    </div>
+
+    
+
+                            </div>
+                            <div id="MentionMe.target" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#MentionMe.target">#&nbsp;&nbsp</a>
+
+                <div class="decorator">@staticmethod</div>
+
+            <span class="def">async def</span>
+            <span class="name">target</span><span class="signature">(interface: graia.broadcast.interfaces.decorator.DecoratorInterface)</span>:
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span>    <span class="nd">@staticmethod</span>
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">target</span><span class="p">(</span><span class="n">interface</span><span class="p">:</span> <span class="n">DecoratorInterface</span><span class="p">):</span>
+
+        <span class="n">ariadne</span> <span class="o">=</span> <span class="n">Ariadne</span><span class="o">.</span><span class="n">get_running</span><span class="p">(</span><span class="n">Ariadne</span><span class="p">)</span>
+        <span class="n">chain</span><span class="p">:</span> <span class="n">MessageChain</span> <span class="o">=</span> <span class="k">await</span> <span class="n">interface</span><span class="o">.</span><span class="n">dispatcher_interface</span><span class="o">.</span><span class="n">lookup_param</span><span class="p">(</span>
+            <span class="s2">&quot;message_chain&quot;</span><span class="p">,</span> <span class="n">MessageChain</span><span class="p">,</span> <span class="kc">None</span>
+        <span class="p">)</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">interface</span><span class="o">.</span><span class="n">event</span><span class="p">,</span> <span class="n">GroupMessage</span><span class="p">):</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="p">(</span><span class="k">await</span> <span class="n">ariadne</span><span class="o">.</span><span class="n">getMemberInfo</span><span class="p">(</span><span class="n">ariadne</span><span class="o">.</span><span class="n">account</span><span class="p">,</span> <span class="n">interface</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">sender</span><span class="o">.</span><span class="n">group</span><span class="p">))</span><span class="o">.</span><span class="n">name</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="p">(</span><span class="k">await</span> <span class="n">ariadne</span><span class="o">.</span><span class="n">getBotProfile</span><span class="p">())</span><span class="o">.</span><span class="n">nickname</span>
+        <span class="n">header</span> <span class="o">=</span> <span class="n">chain</span><span class="o">.</span><span class="n">include</span><span class="p">(</span><span class="n">Quote</span><span class="p">,</span> <span class="n">Source</span><span class="p">)</span>
+        <span class="n">rest</span><span class="p">:</span> <span class="n">MessageChain</span> <span class="o">=</span> <span class="n">chain</span><span class="o">.</span><span class="n">exclude</span><span class="p">(</span><span class="n">Quote</span><span class="p">,</span> <span class="n">Source</span><span class="p">)</span>
+        <span class="n">first</span><span class="p">:</span> <span class="n">Element</span> <span class="o">=</span> <span class="n">rest</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">rest</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">first</span><span class="p">,</span> <span class="n">Plain</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">first</span><span class="o">.</span><span class="n">asDisplay</span><span class="p">()</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
+                <span class="k">return</span> <span class="n">header</span> <span class="o">+</span> <span class="n">rest</span><span class="o">.</span><span class="n">removeprefix</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">rest</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">first</span><span class="p">,</span> <span class="n">At</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">first</span><span class="o">.</span><span class="n">target</span> <span class="o">==</span> <span class="n">ariadne</span><span class="o">.</span><span class="n">account</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">header</span> <span class="o">+</span> <span class="n">rest</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
+
+        <span class="k">raise</span> <span class="n">ExecutionStop</span>
+</pre></div>
+
+        </details>
+
+    
+
+                            </div>
+                </section>
+                <section id="HasKeyword">
+                                <div class="attr class">
+        <a class="headerlink" href="#HasKeyword">#&nbsp;&nbsp</a>
+
+        
+        <span class="def">class</span>
+        <span class="name">HasKeyword</span><wbr>(<span class="base">graia.broadcast.entities.decorator.Decorator</span>):
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">HasKeyword</span><span class="p">(</span><span class="n">Decorator</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;消息中含有指定关键字&quot;&quot;&quot;</span>
+
+    <span class="n">pre</span> <span class="o">=</span> <span class="kc">True</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">keyword</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">keyword</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">keyword</span>
+
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">target</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">interface</span><span class="p">:</span> <span class="n">DecoratorInterface</span><span class="p">):</span>
+        <span class="n">chain</span><span class="p">:</span> <span class="n">MessageChain</span> <span class="o">=</span> <span class="k">await</span> <span class="n">interface</span><span class="o">.</span><span class="n">dispatcher_interface</span><span class="o">.</span><span class="n">lookup_param</span><span class="p">(</span>
+            <span class="s2">&quot;message_chain&quot;</span><span class="p">,</span> <span class="n">MessageChain</span><span class="p">,</span> <span class="kc">None</span>
+        <span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">keyword</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">chain</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">ExecutionStop</span>
+</pre></div>
+
+        </details>
+
+            <div class="docstring"><p>消息中含有指定关键字</p>
+</div>
+
+
+                            <div id="HasKeyword.__init__" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#HasKeyword.__init__">#&nbsp;&nbsp</a>
+
+        
+            <span class="name">HasKeyword</span><span class="signature">(keyword: str)</span>
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">keyword</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">keyword</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">keyword</span>
+</pre></div>
+
+        </details>
+
+    
+
+                            </div>
+                            <div id="HasKeyword.pre" class="classattr">
+                                            <div class="attr variable"><a class="headerlink" href="#HasKeyword.pre">#&nbsp;&nbsp</a>
+
+        <span class="name">pre</span><span class="annotation">: bool</span><span class="default_value"> = True</span>
+    </div>
+
+    
+
+                            </div>
+                            <div id="HasKeyword.target" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#HasKeyword.target">#&nbsp;&nbsp</a>
+
+        
+            <span class="def">async def</span>
+            <span class="name">target</span><span class="signature">(
+    self,
+    interface: graia.broadcast.interfaces.decorator.DecoratorInterface
+)</span>:
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span>    <span class="k">async</span> <span class="k">def</span> <span class="nf">target</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">interface</span><span class="p">:</span> <span class="n">DecoratorInterface</span><span class="p">):</span>
+        <span class="n">chain</span><span class="p">:</span> <span class="n">MessageChain</span> <span class="o">=</span> <span class="k">await</span> <span class="n">interface</span><span class="o">.</span><span class="n">dispatcher_interface</span><span class="o">.</span><span class="n">lookup_param</span><span class="p">(</span>
+            <span class="s2">&quot;message_chain&quot;</span><span class="p">,</span> <span class="n">MessageChain</span><span class="p">,</span> <span class="kc">None</span>
+        <span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">keyword</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">chain</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">ExecutionStop</span>
+</pre></div>
+
+        </details>
+
+    
+
+                            </div>
+                </section>
+                <section id="Mention">
+                                <div class="attr class">
+        <a class="headerlink" href="#Mention">#&nbsp;&nbsp</a>
+
+        
+        <span class="def">class</span>
+        <span class="name">Mention</span><wbr>(<span class="base">graia.broadcast.entities.decorator.Decorator</span>):
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">Mention</span><span class="p">(</span><span class="n">Decorator</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;At 或提到指定人&quot;&quot;&quot;</span>
+
+    <span class="n">pre</span> <span class="o">=</span> <span class="kc">True</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">target</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">target</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">target</span>
+
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">target</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">interface</span><span class="p">:</span> <span class="n">DecoratorInterface</span><span class="p">):</span>
+        <span class="n">chain</span><span class="p">:</span> <span class="n">MessageChain</span> <span class="o">=</span> <span class="k">await</span> <span class="n">interface</span><span class="o">.</span><span class="n">dispatcher_interface</span><span class="o">.</span><span class="n">lookup_param</span><span class="p">(</span>
+            <span class="s2">&quot;message_chain&quot;</span><span class="p">,</span> <span class="n">MessageChain</span><span class="p">,</span> <span class="kc">None</span>
+        <span class="p">)</span>
+        <span class="n">header</span> <span class="o">=</span> <span class="n">chain</span><span class="o">.</span><span class="n">include</span><span class="p">(</span><span class="n">Quote</span><span class="p">,</span> <span class="n">Source</span><span class="p">)</span>
+        <span class="n">rest</span><span class="p">:</span> <span class="n">MessageChain</span> <span class="o">=</span> <span class="n">chain</span><span class="o">.</span><span class="n">exclude</span><span class="p">(</span><span class="n">Quote</span><span class="p">,</span> <span class="n">Source</span><span class="p">)</span>
+        <span class="n">first</span><span class="p">:</span> <span class="n">Element</span> <span class="o">=</span> <span class="n">rest</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">rest</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">first</span><span class="p">,</span> <span class="n">Plain</span><span class="p">):</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">target</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">and</span> <span class="n">first</span><span class="o">.</span><span class="n">asDisplay</span><span class="p">()</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">target</span><span class="p">):</span>
+                <span class="k">return</span> <span class="n">header</span> <span class="o">+</span> <span class="n">rest</span><span class="o">.</span><span class="n">removeprefix</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">target</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">rest</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">first</span><span class="p">,</span> <span class="n">At</span><span class="p">):</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">target</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="ow">and</span> <span class="n">first</span><span class="o">.</span><span class="n">target</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">target</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">header</span> <span class="o">+</span> <span class="n">rest</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
+
+        <span class="k">raise</span> <span class="n">ExecutionStop</span>
+</pre></div>
+
+        </details>
+
+            <div class="docstring"><p>At 或提到指定人</p>
+</div>
+
+
+                            <div id="Mention.__init__" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#Mention.__init__">#&nbsp;&nbsp</a>
+
+        
+            <span class="name">Mention</span><span class="signature">(target: Union[int, str])</span>
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">target</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">target</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">target</span>
+</pre></div>
+
+        </details>
+
+    
+
+                            </div>
+                            <div id="Mention.pre" class="classattr">
+                                            <div class="attr variable"><a class="headerlink" href="#Mention.pre">#&nbsp;&nbsp</a>
+
+        <span class="name">pre</span><span class="annotation">: bool</span><span class="default_value"> = True</span>
+    </div>
+
+    
+
+                            </div>
+                            <div id="Mention.target" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#Mention.target">#&nbsp;&nbsp</a>
+
+        
+            <span class="def">async def</span>
+            <span class="name">target</span><span class="signature">(
+    self,
+    interface: graia.broadcast.interfaces.decorator.DecoratorInterface
+)</span>:
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span>    <span class="k">async</span> <span class="k">def</span> <span class="nf">target</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">interface</span><span class="p">:</span> <span class="n">DecoratorInterface</span><span class="p">):</span>
+        <span class="n">chain</span><span class="p">:</span> <span class="n">MessageChain</span> <span class="o">=</span> <span class="k">await</span> <span class="n">interface</span><span class="o">.</span><span class="n">dispatcher_interface</span><span class="o">.</span><span class="n">lookup_param</span><span class="p">(</span>
+            <span class="s2">&quot;message_chain&quot;</span><span class="p">,</span> <span class="n">MessageChain</span><span class="p">,</span> <span class="kc">None</span>
+        <span class="p">)</span>
+        <span class="n">header</span> <span class="o">=</span> <span class="n">chain</span><span class="o">.</span><span class="n">include</span><span class="p">(</span><span class="n">Quote</span><span class="p">,</span> <span class="n">Source</span><span class="p">)</span>
+        <span class="n">rest</span><span class="p">:</span> <span class="n">MessageChain</span> <span class="o">=</span> <span class="n">chain</span><span class="o">.</span><span class="n">exclude</span><span class="p">(</span><span class="n">Quote</span><span class="p">,</span> <span class="n">Source</span><span class="p">)</span>
+        <span class="n">first</span><span class="p">:</span> <span class="n">Element</span> <span class="o">=</span> <span class="n">rest</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">rest</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">first</span><span class="p">,</span> <span class="n">Plain</span><span class="p">):</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">target</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">and</span> <span class="n">first</span><span class="o">.</span><span class="n">asDisplay</span><span class="p">()</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">target</span><span class="p">):</span>
+                <span class="k">return</span> <span class="n">header</span> <span class="o">+</span> <span class="n">rest</span><span class="o">.</span><span class="n">removeprefix</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">target</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">rest</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">first</span><span class="p">,</span> <span class="n">At</span><span class="p">):</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">target</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="ow">and</span> <span class="n">first</span><span class="o">.</span><span class="n">target</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">target</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">header</span> <span class="o">+</span> <span class="n">rest</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
+
+        <span class="k">raise</span> <span class="n">ExecutionStop</span>
+</pre></div>
+
+        </details>
+
+    
+
+                            </div>
+                </section>
+                <section id="MatchContent">
+                                <div class="attr class">
+        <a class="headerlink" href="#MatchContent">#&nbsp;&nbsp</a>
+
+        
+        <span class="def">class</span>
+        <span class="name">MatchContent</span><wbr>(<span class="base">graia.broadcast.entities.decorator.Decorator</span>):
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">MatchContent</span><span class="p">(</span><span class="n">Decorator</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;匹配字符串 / 消息链&quot;&quot;&quot;</span>
+
+    <span class="n">pre</span> <span class="o">=</span> <span class="kc">True</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">content</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">MessageChain</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">content</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">MessageChain</span><span class="p">]</span> <span class="o">=</span> <span class="n">content</span>
+
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">target</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">interface</span><span class="p">:</span> <span class="n">DecoratorInterface</span><span class="p">):</span>
+        <span class="n">chain</span><span class="p">:</span> <span class="n">MessageChain</span> <span class="o">=</span> <span class="k">await</span> <span class="n">interface</span><span class="o">.</span><span class="n">dispatcher_interface</span><span class="o">.</span><span class="n">lookup_param</span><span class="p">(</span>
+            <span class="s2">&quot;message_chain&quot;</span><span class="p">,</span> <span class="n">MessageChain</span><span class="p">,</span> <span class="kc">None</span>
+        <span class="p">)</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">content</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">and</span> <span class="n">chain</span><span class="o">.</span><span class="n">asDisplay</span><span class="p">()</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">content</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">ExecutionStop</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">content</span><span class="p">,</span> <span class="n">MessageChain</span><span class="p">)</span> <span class="ow">and</span> <span class="n">chain</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">content</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">ExecutionStop</span>
+</pre></div>
+
+        </details>
+
+            <div class="docstring"><p>匹配字符串 / 消息链</p>
+</div>
+
+
+                            <div id="MatchContent.__init__" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#MatchContent.__init__">#&nbsp;&nbsp</a>
+
+        
+            <span class="name">MatchContent</span><span class="signature">(content: Union[str, <a href="../chain.html#MessageChain">ariadne.message.chain.MessageChain</a>])</span>
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">content</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">MessageChain</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">content</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">MessageChain</span><span class="p">]</span> <span class="o">=</span> <span class="n">content</span>
+</pre></div>
+
+        </details>
+
+    
+
+                            </div>
+                            <div id="MatchContent.pre" class="classattr">
+                                            <div class="attr variable"><a class="headerlink" href="#MatchContent.pre">#&nbsp;&nbsp</a>
+
+        <span class="name">pre</span><span class="annotation">: bool</span><span class="default_value"> = True</span>
+    </div>
+
+    
+
+                            </div>
+                            <div id="MatchContent.target" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#MatchContent.target">#&nbsp;&nbsp</a>
+
+        
+            <span class="def">async def</span>
+            <span class="name">target</span><span class="signature">(
+    self,
+    interface: graia.broadcast.interfaces.decorator.DecoratorInterface
+)</span>:
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span>    <span class="k">async</span> <span class="k">def</span> <span class="nf">target</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">interface</span><span class="p">:</span> <span class="n">DecoratorInterface</span><span class="p">):</span>
+        <span class="n">chain</span><span class="p">:</span> <span class="n">MessageChain</span> <span class="o">=</span> <span class="k">await</span> <span class="n">interface</span><span class="o">.</span><span class="n">dispatcher_interface</span><span class="o">.</span><span class="n">lookup_param</span><span class="p">(</span>
+            <span class="s2">&quot;message_chain&quot;</span><span class="p">,</span> <span class="n">MessageChain</span><span class="p">,</span> <span class="kc">None</span>
+        <span class="p">)</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">content</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">and</span> <span class="n">chain</span><span class="o">.</span><span class="n">asDisplay</span><span class="p">()</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">content</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">ExecutionStop</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">content</span><span class="p">,</span> <span class="n">MessageChain</span><span class="p">)</span> <span class="ow">and</span> <span class="n">chain</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">content</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">ExecutionStop</span>
+</pre></div>
+
+        </details>
+
+    
+
+                            </div>
+                </section>
+                <section id="MatchRegex">
+                                <div class="attr class">
+        <a class="headerlink" href="#MatchRegex">#&nbsp;&nbsp</a>
+
+        
+        <span class="def">class</span>
+        <span class="name">MatchRegex</span><wbr>(<span class="base">graia.broadcast.entities.decorator.Decorator</span>):
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">MatchRegex</span><span class="p">(</span><span class="n">Decorator</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;匹配正则表达式&quot;&quot;&quot;</span>
+
+    <span class="n">pre</span> <span class="o">=</span> <span class="kc">True</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">regex</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">regex</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">regex</span>
+
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">target</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">interface</span><span class="p">:</span> <span class="n">DecoratorInterface</span><span class="p">):</span>
+        <span class="n">chain</span><span class="p">:</span> <span class="n">MessageChain</span> <span class="o">=</span> <span class="k">await</span> <span class="n">interface</span><span class="o">.</span><span class="n">dispatcher_interface</span><span class="o">.</span><span class="n">lookup_param</span><span class="p">(</span>
+            <span class="s2">&quot;message_chain&quot;</span><span class="p">,</span> <span class="n">MessageChain</span><span class="p">,</span> <span class="kc">None</span>
+        <span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">regex</span><span class="p">,</span> <span class="n">chain</span><span class="o">.</span><span class="n">asDisplay</span><span class="p">()):</span>
+            <span class="k">raise</span> <span class="n">ExecutionStop</span>
+</pre></div>
+
+        </details>
+
+            <div class="docstring"><p>匹配正则表达式</p>
+</div>
+
+
+                            <div id="MatchRegex.__init__" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#MatchRegex.__init__">#&nbsp;&nbsp</a>
+
+        
+            <span class="name">MatchRegex</span><span class="signature">(regex: str)</span>
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">regex</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">regex</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">regex</span>
+</pre></div>
+
+        </details>
+
+    
+
+                            </div>
+                            <div id="MatchRegex.pre" class="classattr">
+                                            <div class="attr variable"><a class="headerlink" href="#MatchRegex.pre">#&nbsp;&nbsp</a>
+
+        <span class="name">pre</span><span class="annotation">: bool</span><span class="default_value"> = True</span>
+    </div>
+
+    
+
+                            </div>
+                            <div id="MatchRegex.target" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#MatchRegex.target">#&nbsp;&nbsp</a>
+
+        
+            <span class="def">async def</span>
+            <span class="name">target</span><span class="signature">(
+    self,
+    interface: graia.broadcast.interfaces.decorator.DecoratorInterface
+)</span>:
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span>    <span class="k">async</span> <span class="k">def</span> <span class="nf">target</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">interface</span><span class="p">:</span> <span class="n">DecoratorInterface</span><span class="p">):</span>
+        <span class="n">chain</span><span class="p">:</span> <span class="n">MessageChain</span> <span class="o">=</span> <span class="k">await</span> <span class="n">interface</span><span class="o">.</span><span class="n">dispatcher_interface</span><span class="o">.</span><span class="n">lookup_param</span><span class="p">(</span>
+            <span class="s2">&quot;message_chain&quot;</span><span class="p">,</span> <span class="n">MessageChain</span><span class="p">,</span> <span class="kc">None</span>
+        <span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">regex</span><span class="p">,</span> <span class="n">chain</span><span class="o">.</span><span class="n">asDisplay</span><span class="p">()):</span>
+            <span class="k">raise</span> <span class="n">ExecutionStop</span>
+</pre></div>
+
+        </details>
+
+    
 
                             </div>
                 </section>
