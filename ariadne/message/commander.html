@@ -27,6 +27,10 @@
                                pattern=".+" required>
 
 
+                    <h2>Submodules</h2>
+                    <ul>
+                            <li><a href="commander/saya.html">ariadne.message.commander.saya</a></li>
+                    </ul>
 
                     <h2>API Documentation</h2>
                         <ul class="memberlist">
@@ -143,7 +147,7 @@
         </nav>
     <main class="pdoc">
             <section>
-                        <a class="pdoc-button git-button" href="https://github.com/GraiaProject/Ariadne/blob/master/src/graia/ariadne/message/commander.py">Edit on GitHub</a>
+                        <a class="pdoc-button git-button" href="https://github.com/GraiaProject/Ariadne/blob/master/src/graia/ariadne/message/commander/__init__.py">Edit on GitHub</a>
                     <h1 class="modulename">
 <a href="./../../ariadne.html">ariadne</a><wbr>.<a href="./../message.html">message</a><wbr>.commander    </h1>
 
@@ -174,17 +178,17 @@
     <span class="n">cast</span><span class="p">,</span>
 <span class="p">)</span>
 
-<span class="kn">from</span> <span class="nn">graia.broadcast</span> <span class="kn">import</span> <span class="n">Broadcast</span>
+<span class="kn">from</span> <span class="nn">graia.broadcast</span> <span class="kn">import</span> <span class="n">Broadcast</span><span class="p">,</span> <span class="n">Listener</span>
 <span class="kn">from</span> <span class="nn">graia.broadcast.entities.decorator</span> <span class="kn">import</span> <span class="n">Decorator</span>
 <span class="kn">from</span> <span class="nn">graia.broadcast.entities.dispatcher</span> <span class="kn">import</span> <span class="n">BaseDispatcher</span>
 <span class="kn">from</span> <span class="nn">graia.broadcast.entities.exectarget</span> <span class="kn">import</span> <span class="n">ExecTarget</span>
 <span class="kn">from</span> <span class="nn">pydantic</span> <span class="kn">import</span> <span class="n">BaseModel</span><span class="p">,</span> <span class="n">create_model</span><span class="p">,</span> <span class="n">validator</span>
 <span class="kn">from</span> <span class="nn">pydantic.fields</span> <span class="kn">import</span> <span class="n">ModelField</span>
 
-<span class="kn">from</span> <span class="nn">..dispatcher</span> <span class="kn">import</span> <span class="n">ContextDispatcher</span>
-<span class="kn">from</span> <span class="nn">..event.message</span> <span class="kn">import</span> <span class="n">MessageEvent</span>
-<span class="kn">from</span> <span class="nn">..model</span> <span class="kn">import</span> <span class="n">AriadneBaseModel</span>
-<span class="kn">from</span> <span class="nn">..util</span> <span class="kn">import</span> <span class="p">(</span>
+<span class="kn">from</span> <span class="nn">...dispatcher</span> <span class="kn">import</span> <span class="n">ContextDispatcher</span>
+<span class="kn">from</span> <span class="nn">...event.message</span> <span class="kn">import</span> <span class="n">MessageEvent</span>
+<span class="kn">from</span> <span class="nn">...model</span> <span class="kn">import</span> <span class="n">AriadneBaseModel</span>
+<span class="kn">from</span> <span class="nn">...util</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">ConstantDispatcher</span><span class="p">,</span>
     <span class="n">assert_</span><span class="p">,</span>
     <span class="n">assert_not_</span><span class="p">,</span>
@@ -194,9 +198,9 @@
     <span class="n">gen_subclass</span><span class="p">,</span>
     <span class="n">resolve_dispatchers_mixin</span><span class="p">,</span>
 <span class="p">)</span>
-<span class="kn">from</span> <span class="nn">.chain</span> <span class="kn">import</span> <span class="n">MessageChain</span>
-<span class="kn">from</span> <span class="nn">.element</span> <span class="kn">import</span> <span class="n">Element</span>
-<span class="kn">from</span> <span class="nn">.parser.util</span> <span class="kn">import</span> <span class="n">CommandToken</span><span class="p">,</span> <span class="n">CommandTokenTuple</span><span class="p">,</span> <span class="n">split</span><span class="p">,</span> <span class="n">tokenize_command</span>
+<span class="kn">from</span> <span class="nn">..chain</span> <span class="kn">import</span> <span class="n">MessageChain</span>
+<span class="kn">from</span> <span class="nn">..element</span> <span class="kn">import</span> <span class="n">Element</span>
+<span class="kn">from</span> <span class="nn">..parser.util</span> <span class="kn">import</span> <span class="n">CommandToken</span><span class="p">,</span> <span class="n">CommandTokenTuple</span><span class="p">,</span> <span class="n">split</span><span class="p">,</span> <span class="n">tokenize_command</span>
 
 <span class="n">T_Callable</span> <span class="o">=</span> <span class="n">TypeVar</span><span class="p">(</span><span class="s2">&quot;T_Callable&quot;</span><span class="p">,</span> <span class="n">bound</span><span class="o">=</span><span class="n">Callable</span><span class="p">)</span>
 
@@ -475,7 +479,11 @@
     <span class="sd">&quot;&quot;&quot;便利的指令触发体系&quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">broadcast</span><span class="p">:</span> <span class="n">Broadcast</span><span class="p">,</span> <span class="n">listen</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; &quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Args:</span>
+<span class="sd">            broadcast (Broadcast): 事件系统</span>
+<span class="sd">            listen (bool): 是否监听指令</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">broadcast</span> <span class="o">=</span> <span class="n">broadcast</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">command_handlers</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">CommandHandler</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">validators</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Callable</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">chain_validator</span><span class="p">]</span>
@@ -486,12 +494,16 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">listen_func</span> <span class="o">=</span> <span class="n">execute_func</span>
 
         <span class="k">if</span> <span class="n">listen</span><span class="p">:</span>
-            <span class="k">for</span> <span class="n">event</span> <span class="ow">in</span> <span class="n">gen_subclass</span><span class="p">(</span><span class="n">MessageEvent</span><span class="p">):</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">broadcast</span><span class="o">.</span><span class="n">receiver</span><span class="p">(</span><span class="n">event</span><span class="p">)(</span><span class="bp">self</span><span class="o">.</span><span class="n">listen_func</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">broadcast</span><span class="o">.</span><span class="n">listeners</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                <span class="n">Listener</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">listen_func</span><span class="p">,</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">broadcast</span><span class="o">.</span><span class="n">getDefaultNamespace</span><span class="p">(),</span>
+                    <span class="nb">list</span><span class="p">(</span><span class="n">gen_subclass</span><span class="p">(</span><span class="n">MessageEvent</span><span class="p">)),</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
 
     <span class="k">def</span> <span class="fm">__del__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">while</span> <span class="n">listener</span> <span class="o">:=</span> <span class="bp">self</span><span class="o">.</span><span class="n">broadcast</span><span class="o">.</span><span class="n">getListener</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">listen_func</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">broadcast</span><span class="o">.</span><span class="n">removeListener</span><span class="p">(</span><span class="n">listener</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">broadcast</span><span class="o">.</span><span class="n">listeners</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">broadcast</span><span class="o">.</span><span class="n">listeners</span> <span class="k">if</span> <span class="n">i</span><span class="o">.</span><span class="n">callable</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">listen_func</span><span class="p">]</span>
 
     <span class="k">def</span> <span class="nf">add_type_cast</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">caster</span><span class="p">:</span> <span class="n">Callable</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;添加类型验证器 (type caster / validator)&quot;&quot;&quot;</span>
@@ -650,7 +662,7 @@
             <span class="n">slot_data</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span> <span class="n">MessageChain</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
             <span class="n">text_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">split</span><span class="p">(</span><span class="n">mapping_str</span><span class="p">)</span>
             <span class="n">wildcard_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">MessageChain</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
-            <span class="k">with</span> <span class="n">suppress</span><span class="p">(</span><span class="ne">IndexError</span><span class="p">,</span> <span class="n">MismatchError</span><span class="p">):</span>  <span class="c1"># TODO: add ValueError</span>
+            <span class="k">with</span> <span class="n">suppress</span><span class="p">(</span><span class="ne">IndexError</span><span class="p">,</span> <span class="n">MismatchError</span><span class="p">,</span> <span class="ne">ValueError</span><span class="p">):</span>
                 <span class="k">while</span> <span class="n">text_index</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">text_list</span><span class="p">):</span>
                     <span class="n">text</span> <span class="o">=</span> <span class="n">text_list</span><span class="p">[</span><span class="n">text_index</span><span class="p">]</span>
                     <span class="n">text_index</span> <span class="o">+=</span> <span class="mi">1</span>
@@ -1579,7 +1591,11 @@ inheritance.</p>
     <span class="sd">&quot;&quot;&quot;便利的指令触发体系&quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">broadcast</span><span class="p">:</span> <span class="n">Broadcast</span><span class="p">,</span> <span class="n">listen</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; &quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Args:</span>
+<span class="sd">            broadcast (Broadcast): 事件系统</span>
+<span class="sd">            listen (bool): 是否监听指令</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">broadcast</span> <span class="o">=</span> <span class="n">broadcast</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">command_handlers</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">CommandHandler</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">validators</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Callable</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">chain_validator</span><span class="p">]</span>
@@ -1590,12 +1606,16 @@ inheritance.</p>
         <span class="bp">self</span><span class="o">.</span><span class="n">listen_func</span> <span class="o">=</span> <span class="n">execute_func</span>
 
         <span class="k">if</span> <span class="n">listen</span><span class="p">:</span>
-            <span class="k">for</span> <span class="n">event</span> <span class="ow">in</span> <span class="n">gen_subclass</span><span class="p">(</span><span class="n">MessageEvent</span><span class="p">):</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">broadcast</span><span class="o">.</span><span class="n">receiver</span><span class="p">(</span><span class="n">event</span><span class="p">)(</span><span class="bp">self</span><span class="o">.</span><span class="n">listen_func</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">broadcast</span><span class="o">.</span><span class="n">listeners</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                <span class="n">Listener</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">listen_func</span><span class="p">,</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">broadcast</span><span class="o">.</span><span class="n">getDefaultNamespace</span><span class="p">(),</span>
+                    <span class="nb">list</span><span class="p">(</span><span class="n">gen_subclass</span><span class="p">(</span><span class="n">MessageEvent</span><span class="p">)),</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
 
     <span class="k">def</span> <span class="fm">__del__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">while</span> <span class="n">listener</span> <span class="o">:=</span> <span class="bp">self</span><span class="o">.</span><span class="n">broadcast</span><span class="o">.</span><span class="n">getListener</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">listen_func</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">broadcast</span><span class="o">.</span><span class="n">removeListener</span><span class="p">(</span><span class="n">listener</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">broadcast</span><span class="o">.</span><span class="n">listeners</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">broadcast</span><span class="o">.</span><span class="n">listeners</span> <span class="k">if</span> <span class="n">i</span><span class="o">.</span><span class="n">callable</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">listen_func</span><span class="p">]</span>
 
     <span class="k">def</span> <span class="nf">add_type_cast</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">caster</span><span class="p">:</span> <span class="n">Callable</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;添加类型验证器 (type caster / validator)&quot;&quot;&quot;</span>
@@ -1754,7 +1774,7 @@ inheritance.</p>
             <span class="n">slot_data</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span> <span class="n">MessageChain</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
             <span class="n">text_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">split</span><span class="p">(</span><span class="n">mapping_str</span><span class="p">)</span>
             <span class="n">wildcard_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">MessageChain</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
-            <span class="k">with</span> <span class="n">suppress</span><span class="p">(</span><span class="ne">IndexError</span><span class="p">,</span> <span class="n">MismatchError</span><span class="p">):</span>  <span class="c1"># TODO: add ValueError</span>
+            <span class="k">with</span> <span class="n">suppress</span><span class="p">(</span><span class="ne">IndexError</span><span class="p">,</span> <span class="n">MismatchError</span><span class="p">,</span> <span class="ne">ValueError</span><span class="p">):</span>
                 <span class="k">while</span> <span class="n">text_index</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">text_list</span><span class="p">):</span>
                     <span class="n">text</span> <span class="o">=</span> <span class="n">text_list</span><span class="p">[</span><span class="n">text_index</span><span class="p">]</span>
                     <span class="n">text_index</span> <span class="o">+=</span> <span class="mi">1</span>
@@ -1803,7 +1823,11 @@ inheritance.</p>
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">broadcast</span><span class="p">:</span> <span class="n">Broadcast</span><span class="p">,</span> <span class="n">listen</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; &quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Args:</span>
+<span class="sd">            broadcast (Broadcast): 事件系统</span>
+<span class="sd">            listen (bool): 是否监听指令</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">broadcast</span> <span class="o">=</span> <span class="n">broadcast</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">command_handlers</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">CommandHandler</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">validators</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Callable</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">chain_validator</span><span class="p">]</span>
@@ -1814,13 +1838,25 @@ inheritance.</p>
         <span class="bp">self</span><span class="o">.</span><span class="n">listen_func</span> <span class="o">=</span> <span class="n">execute_func</span>
 
         <span class="k">if</span> <span class="n">listen</span><span class="p">:</span>
-            <span class="k">for</span> <span class="n">event</span> <span class="ow">in</span> <span class="n">gen_subclass</span><span class="p">(</span><span class="n">MessageEvent</span><span class="p">):</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">broadcast</span><span class="o">.</span><span class="n">receiver</span><span class="p">(</span><span class="n">event</span><span class="p">)(</span><span class="bp">self</span><span class="o">.</span><span class="n">listen_func</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">broadcast</span><span class="o">.</span><span class="n">listeners</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                <span class="n">Listener</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">listen_func</span><span class="p">,</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">broadcast</span><span class="o">.</span><span class="n">getDefaultNamespace</span><span class="p">(),</span>
+                    <span class="nb">list</span><span class="p">(</span><span class="n">gen_subclass</span><span class="p">(</span><span class="n">MessageEvent</span><span class="p">)),</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
 </pre></div>
 
         </details>
 
-    
+            <div class="docstring"><h6 id="args">Args</h6>
+
+<ul>
+<li><strong>broadcast (Broadcast):</strong>  事件系统</li>
+<li><strong>listen (bool):</strong>  是否监听指令</li>
+</ul>
+</div>
+
 
                             </div>
                             <div id="Commander.add_type_cast" class="classattr">
@@ -2053,7 +2089,7 @@ inheritance.</p>
             <span class="n">slot_data</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span> <span class="n">MessageChain</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
             <span class="n">text_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">split</span><span class="p">(</span><span class="n">mapping_str</span><span class="p">)</span>
             <span class="n">wildcard_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">MessageChain</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
-            <span class="k">with</span> <span class="n">suppress</span><span class="p">(</span><span class="ne">IndexError</span><span class="p">,</span> <span class="n">MismatchError</span><span class="p">):</span>  <span class="c1"># TODO: add ValueError</span>
+            <span class="k">with</span> <span class="n">suppress</span><span class="p">(</span><span class="ne">IndexError</span><span class="p">,</span> <span class="n">MismatchError</span><span class="p">,</span> <span class="ne">ValueError</span><span class="p">):</span>
                 <span class="k">while</span> <span class="n">text_index</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">text_list</span><span class="p">):</span>
                     <span class="n">text</span> <span class="o">=</span> <span class="n">text_list</span><span class="p">[</span><span class="n">text_index</span><span class="p">]</span>
                     <span class="n">text_index</span> <span class="o">+=</span> <span class="mi">1</span>
