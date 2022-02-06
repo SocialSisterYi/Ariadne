@@ -76,21 +76,6 @@
 
             </li>
             <li>
-                    <a class="class" href="#HasKeyword">HasKeyword</a>
-                            <ul class="memberlist">
-                        <li>
-                                <a class="function" href="#HasKeyword.__init__">HasKeyword</a>
-                        </li>
-                        <li>
-                                <a class="variable" href="#HasKeyword.pre">pre</a>
-                        </li>
-                        <li>
-                                <a class="function" href="#HasKeyword.target">target</a>
-                        </li>
-                </ul>
-
-            </li>
-            <li>
                     <a class="class" href="#Mention">Mention</a>
                             <ul class="memberlist">
                         <li>
@@ -101,6 +86,21 @@
                         </li>
                         <li>
                                 <a class="function" href="#Mention.target">target</a>
+                        </li>
+                </ul>
+
+            </li>
+            <li>
+                    <a class="class" href="#ContainKeyword">ContainKeyword</a>
+                            <ul class="memberlist">
+                        <li>
+                                <a class="function" href="#ContainKeyword.__init__">ContainKeyword</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#ContainKeyword.pre">pre</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#ContainKeyword.target">target</a>
                         </li>
                 </ul>
 
@@ -257,22 +257,6 @@
         <span class="k">raise</span> <span class="n">ExecutionStop</span>
 
 
-<span class="k">class</span> <span class="nc">HasKeyword</span><span class="p">(</span><span class="n">Decorator</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;消息中含有指定关键字&quot;&quot;&quot;</span>
-
-    <span class="n">pre</span> <span class="o">=</span> <span class="kc">True</span>
-
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">keyword</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">keyword</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">keyword</span>
-
-    <span class="k">async</span> <span class="k">def</span> <span class="nf">target</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">interface</span><span class="p">:</span> <span class="n">DecoratorInterface</span><span class="p">):</span>
-        <span class="n">chain</span><span class="p">:</span> <span class="n">MessageChain</span> <span class="o">=</span> <span class="k">await</span> <span class="n">interface</span><span class="o">.</span><span class="n">dispatcher_interface</span><span class="o">.</span><span class="n">lookup_param</span><span class="p">(</span>
-            <span class="s2">&quot;message_chain&quot;</span><span class="p">,</span> <span class="n">MessageChain</span><span class="p">,</span> <span class="kc">None</span>
-        <span class="p">)</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">keyword</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">chain</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">ExecutionStop</span>
-
-
 <span class="k">class</span> <span class="nc">Mention</span><span class="p">(</span><span class="n">Decorator</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;At 或提到指定人&quot;&quot;&quot;</span>
 
@@ -296,6 +280,22 @@
                 <span class="k">return</span> <span class="n">header</span> <span class="o">+</span> <span class="n">rest</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
 
         <span class="k">raise</span> <span class="n">ExecutionStop</span>
+
+
+<span class="k">class</span> <span class="nc">ContainKeyword</span><span class="p">(</span><span class="n">Decorator</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;消息中含有指定关键字&quot;&quot;&quot;</span>
+
+    <span class="n">pre</span> <span class="o">=</span> <span class="kc">True</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">keyword</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">keyword</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">keyword</span>
+
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">target</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">interface</span><span class="p">:</span> <span class="n">DecoratorInterface</span><span class="p">):</span>
+        <span class="n">chain</span><span class="p">:</span> <span class="n">MessageChain</span> <span class="o">=</span> <span class="k">await</span> <span class="n">interface</span><span class="o">.</span><span class="n">dispatcher_interface</span><span class="o">.</span><span class="n">lookup_param</span><span class="p">(</span>
+            <span class="s2">&quot;message_chain&quot;</span><span class="p">,</span> <span class="n">MessageChain</span><span class="p">,</span> <span class="kc">None</span>
+        <span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">keyword</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">chain</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">ExecutionStop</span>
 
 
 <span class="k">class</span> <span class="nc">MatchContent</span><span class="p">(</span><span class="n">Decorator</span><span class="p">):</span>
@@ -684,93 +684,6 @@
 
                             </div>
                 </section>
-                <section id="HasKeyword">
-                                <div class="attr class">
-        <a class="headerlink" href="#HasKeyword">#&nbsp;&nbsp</a>
-
-        
-        <span class="def">class</span>
-        <span class="name">HasKeyword</span><wbr>(<span class="base">graia.broadcast.entities.decorator.Decorator</span>):
-    </div>
-
-                <details>
-            <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">HasKeyword</span><span class="p">(</span><span class="n">Decorator</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;消息中含有指定关键字&quot;&quot;&quot;</span>
-
-    <span class="n">pre</span> <span class="o">=</span> <span class="kc">True</span>
-
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">keyword</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">keyword</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">keyword</span>
-
-    <span class="k">async</span> <span class="k">def</span> <span class="nf">target</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">interface</span><span class="p">:</span> <span class="n">DecoratorInterface</span><span class="p">):</span>
-        <span class="n">chain</span><span class="p">:</span> <span class="n">MessageChain</span> <span class="o">=</span> <span class="k">await</span> <span class="n">interface</span><span class="o">.</span><span class="n">dispatcher_interface</span><span class="o">.</span><span class="n">lookup_param</span><span class="p">(</span>
-            <span class="s2">&quot;message_chain&quot;</span><span class="p">,</span> <span class="n">MessageChain</span><span class="p">,</span> <span class="kc">None</span>
-        <span class="p">)</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">keyword</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">chain</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">ExecutionStop</span>
-</pre></div>
-
-        </details>
-
-            <div class="docstring"><p>消息中含有指定关键字</p>
-</div>
-
-
-                            <div id="HasKeyword.__init__" class="classattr">
-                                        <div class="attr function"><a class="headerlink" href="#HasKeyword.__init__">#&nbsp;&nbsp</a>
-
-        
-            <span class="name">HasKeyword</span><span class="signature">(keyword: str)</span>
-    </div>
-
-                <details>
-            <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">keyword</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">keyword</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">keyword</span>
-</pre></div>
-
-        </details>
-
-    
-
-                            </div>
-                            <div id="HasKeyword.pre" class="classattr">
-                                            <div class="attr variable"><a class="headerlink" href="#HasKeyword.pre">#&nbsp;&nbsp</a>
-
-        <span class="name">pre</span><span class="annotation">: bool</span><span class="default_value"> = True</span>
-    </div>
-
-    
-
-                            </div>
-                            <div id="HasKeyword.target" class="classattr">
-                                        <div class="attr function"><a class="headerlink" href="#HasKeyword.target">#&nbsp;&nbsp</a>
-
-        
-            <span class="def">async def</span>
-            <span class="name">target</span><span class="signature">(
-    self,
-    interface: graia.broadcast.interfaces.decorator.DecoratorInterface
-)</span>:
-    </div>
-
-                <details>
-            <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span>    <span class="k">async</span> <span class="k">def</span> <span class="nf">target</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">interface</span><span class="p">:</span> <span class="n">DecoratorInterface</span><span class="p">):</span>
-        <span class="n">chain</span><span class="p">:</span> <span class="n">MessageChain</span> <span class="o">=</span> <span class="k">await</span> <span class="n">interface</span><span class="o">.</span><span class="n">dispatcher_interface</span><span class="o">.</span><span class="n">lookup_param</span><span class="p">(</span>
-            <span class="s2">&quot;message_chain&quot;</span><span class="p">,</span> <span class="n">MessageChain</span><span class="p">,</span> <span class="kc">None</span>
-        <span class="p">)</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">keyword</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">chain</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">ExecutionStop</span>
-</pre></div>
-
-        </details>
-
-    
-
-                            </div>
-                </section>
                 <section id="Mention">
                                 <div class="attr class">
         <a class="headerlink" href="#Mention">#&nbsp;&nbsp</a>
@@ -868,6 +781,93 @@
                 <span class="k">return</span> <span class="n">header</span> <span class="o">+</span> <span class="n">rest</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
 
         <span class="k">raise</span> <span class="n">ExecutionStop</span>
+</pre></div>
+
+        </details>
+
+    
+
+                            </div>
+                </section>
+                <section id="ContainKeyword">
+                                <div class="attr class">
+        <a class="headerlink" href="#ContainKeyword">#&nbsp;&nbsp</a>
+
+        
+        <span class="def">class</span>
+        <span class="name">ContainKeyword</span><wbr>(<span class="base">graia.broadcast.entities.decorator.Decorator</span>):
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">ContainKeyword</span><span class="p">(</span><span class="n">Decorator</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;消息中含有指定关键字&quot;&quot;&quot;</span>
+
+    <span class="n">pre</span> <span class="o">=</span> <span class="kc">True</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">keyword</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">keyword</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">keyword</span>
+
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">target</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">interface</span><span class="p">:</span> <span class="n">DecoratorInterface</span><span class="p">):</span>
+        <span class="n">chain</span><span class="p">:</span> <span class="n">MessageChain</span> <span class="o">=</span> <span class="k">await</span> <span class="n">interface</span><span class="o">.</span><span class="n">dispatcher_interface</span><span class="o">.</span><span class="n">lookup_param</span><span class="p">(</span>
+            <span class="s2">&quot;message_chain&quot;</span><span class="p">,</span> <span class="n">MessageChain</span><span class="p">,</span> <span class="kc">None</span>
+        <span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">keyword</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">chain</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">ExecutionStop</span>
+</pre></div>
+
+        </details>
+
+            <div class="docstring"><p>消息中含有指定关键字</p>
+</div>
+
+
+                            <div id="ContainKeyword.__init__" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#ContainKeyword.__init__">#&nbsp;&nbsp</a>
+
+        
+            <span class="name">ContainKeyword</span><span class="signature">(keyword: str)</span>
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">keyword</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">keyword</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">keyword</span>
+</pre></div>
+
+        </details>
+
+    
+
+                            </div>
+                            <div id="ContainKeyword.pre" class="classattr">
+                                            <div class="attr variable"><a class="headerlink" href="#ContainKeyword.pre">#&nbsp;&nbsp</a>
+
+        <span class="name">pre</span><span class="annotation">: bool</span><span class="default_value"> = True</span>
+    </div>
+
+    
+
+                            </div>
+                            <div id="ContainKeyword.target" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#ContainKeyword.target">#&nbsp;&nbsp</a>
+
+        
+            <span class="def">async def</span>
+            <span class="name">target</span><span class="signature">(
+    self,
+    interface: graia.broadcast.interfaces.decorator.DecoratorInterface
+)</span>:
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span>    <span class="k">async</span> <span class="k">def</span> <span class="nf">target</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">interface</span><span class="p">:</span> <span class="n">DecoratorInterface</span><span class="p">):</span>
+        <span class="n">chain</span><span class="p">:</span> <span class="n">MessageChain</span> <span class="o">=</span> <span class="k">await</span> <span class="n">interface</span><span class="o">.</span><span class="n">dispatcher_interface</span><span class="o">.</span><span class="n">lookup_param</span><span class="p">(</span>
+            <span class="s2">&quot;message_chain&quot;</span><span class="p">,</span> <span class="n">MessageChain</span><span class="p">,</span> <span class="kc">None</span>
+        <span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">keyword</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">chain</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">ExecutionStop</span>
 </pre></div>
 
         </details>
