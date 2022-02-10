@@ -701,6 +701,11 @@
                             <span class="k">for</span> <span class="n">slot</span> <span class="ow">in</span> <span class="n">tokens</span><span class="p">:</span>
                                 <span class="n">slot_data</span><span class="p">[</span><span class="n">slot</span><span class="p">]</span> <span class="o">=</span> <span class="n">MessageChain</span><span class="o">.</span><span class="n">fromMappingString</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">elem_m</span><span class="p">)</span>
 
+                <span class="k">if</span> <span class="n">text_index</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">pattern</span><span class="o">.</span><span class="n">token_list</span><span class="p">)</span> <span class="o">-</span> <span class="p">(</span>
+                    <span class="n">pattern</span><span class="o">.</span><span class="n">last_type</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">CommandPattern</span><span class="o">.</span><span class="n">ELast</span><span class="o">.</span><span class="n">REQUIRED</span>
+                <span class="p">):</span>
+                    <span class="k">continue</span>
+
                 <span class="n">dispatchers</span> <span class="o">=</span> <span class="p">[]</span>
                 <span class="k">if</span> <span class="n">event</span> <span class="o">:=</span> <span class="n">event_ctx</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="kc">None</span><span class="p">):</span>
                     <span class="n">dispatchers</span> <span class="o">=</span> <span class="n">resolve_dispatchers_mixin</span><span class="p">([</span><span class="n">event</span><span class="o">.</span><span class="n">Dispatcher</span><span class="p">])</span>
@@ -1828,6 +1833,11 @@ inheritance.</p>
                             <span class="k">for</span> <span class="n">slot</span> <span class="ow">in</span> <span class="n">tokens</span><span class="p">:</span>
                                 <span class="n">slot_data</span><span class="p">[</span><span class="n">slot</span><span class="p">]</span> <span class="o">=</span> <span class="n">MessageChain</span><span class="o">.</span><span class="n">fromMappingString</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">elem_m</span><span class="p">)</span>
 
+                <span class="k">if</span> <span class="n">text_index</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">pattern</span><span class="o">.</span><span class="n">token_list</span><span class="p">)</span> <span class="o">-</span> <span class="p">(</span>
+                    <span class="n">pattern</span><span class="o">.</span><span class="n">last_type</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">CommandPattern</span><span class="o">.</span><span class="n">ELast</span><span class="o">.</span><span class="n">REQUIRED</span>
+                <span class="p">):</span>
+                    <span class="k">continue</span>
+
                 <span class="n">dispatchers</span> <span class="o">=</span> <span class="p">[]</span>
                 <span class="k">if</span> <span class="n">event</span> <span class="o">:=</span> <span class="n">event_ctx</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="kc">None</span><span class="p">):</span>
                     <span class="n">dispatchers</span> <span class="o">=</span> <span class="n">resolve_dispatchers_mixin</span><span class="p">([</span><span class="n">event</span><span class="o">.</span><span class="n">Dispatcher</span><span class="p">])</span>
@@ -2146,6 +2156,11 @@ inheritance.</p>
                                 <span class="n">token_index</span> <span class="o">-=</span> <span class="mi">1</span>
                             <span class="k">for</span> <span class="n">slot</span> <span class="ow">in</span> <span class="n">tokens</span><span class="p">:</span>
                                 <span class="n">slot_data</span><span class="p">[</span><span class="n">slot</span><span class="p">]</span> <span class="o">=</span> <span class="n">MessageChain</span><span class="o">.</span><span class="n">fromMappingString</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">elem_m</span><span class="p">)</span>
+
+                <span class="k">if</span> <span class="n">text_index</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">pattern</span><span class="o">.</span><span class="n">token_list</span><span class="p">)</span> <span class="o">-</span> <span class="p">(</span>
+                    <span class="n">pattern</span><span class="o">.</span><span class="n">last_type</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">CommandPattern</span><span class="o">.</span><span class="n">ELast</span><span class="o">.</span><span class="n">REQUIRED</span>
+                <span class="p">):</span>
+                    <span class="k">continue</span>
 
                 <span class="n">dispatchers</span> <span class="o">=</span> <span class="p">[]</span>
                 <span class="k">if</span> <span class="n">event</span> <span class="o">:=</span> <span class="n">event_ctx</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="kc">None</span><span class="p">):</span>
