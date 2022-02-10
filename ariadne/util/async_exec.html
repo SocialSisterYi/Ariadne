@@ -109,7 +109,7 @@
 <span class="kn">import</span> <span class="nn">multiprocessing</span>
 <span class="kn">from</span> <span class="nn">asyncio.events</span> <span class="kn">import</span> <span class="n">AbstractEventLoop</span>
 <span class="kn">from</span> <span class="nn">concurrent.futures</span> <span class="kn">import</span> <span class="n">ProcessPoolExecutor</span><span class="p">,</span> <span class="n">ThreadPoolExecutor</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Awaitable</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">ClassVar</span><span class="p">,</span> <span class="n">Dict</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Awaitable</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">ClassVar</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Tuple</span>
 
 <span class="kn">from</span> <span class="nn">..typing</span> <span class="kn">import</span> <span class="n">P</span><span class="p">,</span> <span class="n">R</span>
 
@@ -137,7 +137,7 @@
     <span class="n">thread_exec</span><span class="p">:</span> <span class="n">ThreadPoolExecutor</span>
     <span class="n">proc_exec</span><span class="p">:</span> <span class="n">ProcessPoolExecutor</span>
     <span class="n">loop_ref_dict</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="n">AbstractEventLoop</span><span class="p">,</span> <span class="s2">&quot;ParallelExecutor&quot;</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{}</span>
-    <span class="n">func_mapping</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Callable</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">func_mapping</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span> <span class="n">Callable</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{}</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
@@ -208,7 +208,7 @@
 <span class="sd">            R: 底层函数的返回值</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">importlib</span><span class="o">.</span><span class="n">import_module</span><span class="p">(</span><span class="n">module</span><span class="p">)</span>
-        <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">func_mapping</span><span class="p">[</span><span class="n">name</span><span class="p">](</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">func_mapping</span><span class="p">[</span><span class="n">module</span><span class="p">,</span> <span class="n">name</span><span class="p">](</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">run_func_static</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">func</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="n">R</span><span class="p">],</span> <span class="n">args</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">R</span><span class="p">:</span>
@@ -222,8 +222,8 @@
 <span class="sd">        Returns:</span>
 <span class="sd">            R: 底层函数的返回值</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">func</span><span class="o">.</span><span class="vm">__qualname__</span> <span class="ow">in</span> <span class="bp">cls</span><span class="o">.</span><span class="n">func_mapping</span><span class="p">:</span>
-            <span class="n">func</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">func_mapping</span><span class="p">[</span><span class="n">func</span><span class="o">.</span><span class="vm">__qualname__</span><span class="p">]</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">func</span><span class="o">.</span><span class="vm">__module__</span><span class="p">,</span> <span class="n">func</span><span class="o">.</span><span class="vm">__qualname__</span><span class="p">)</span> <span class="ow">in</span> <span class="bp">cls</span><span class="o">.</span><span class="n">func_mapping</span><span class="p">:</span>
+            <span class="n">func</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">func_mapping</span><span class="p">[</span><span class="n">func</span><span class="o">.</span><span class="vm">__module__</span><span class="p">,</span> <span class="n">func</span><span class="o">.</span><span class="vm">__qualname__</span><span class="p">]</span>
         <span class="k">return</span> <span class="n">func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>  <span class="c1"># type: ignore</span>
 
     <span class="k">def</span> <span class="nf">to_thread</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">func</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[</span><span class="n">P</span><span class="p">,</span> <span class="n">R</span><span class="p">],</span> <span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">P</span><span class="o">.</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">P</span><span class="o">.</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Awaitable</span><span class="p">[</span><span class="n">R</span><span class="p">]:</span>
@@ -274,7 +274,7 @@
 <span class="sd">    Returns:</span>
 <span class="sd">        Callable[P, Awaitable[R]]: 包装后的函数</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">ParallelExecutor</span><span class="o">.</span><span class="n">func_mapping</span><span class="p">[</span><span class="n">func</span><span class="o">.</span><span class="vm">__qualname__</span><span class="p">]</span> <span class="o">=</span> <span class="n">func</span>
+    <span class="n">ParallelExecutor</span><span class="o">.</span><span class="n">func_mapping</span><span class="p">[</span><span class="n">func</span><span class="o">.</span><span class="vm">__module__</span><span class="p">,</span> <span class="n">func</span><span class="o">.</span><span class="vm">__qualname__</span><span class="p">]</span> <span class="o">=</span> <span class="n">func</span>
 
     <span class="nd">@functools</span><span class="o">.</span><span class="n">wraps</span><span class="p">(</span><span class="n">func</span><span class="p">)</span>
     <span class="k">async</span> <span class="k">def</span> <span class="nf">wrapper</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">P</span><span class="o">.</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">P</span><span class="o">.</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">R</span><span class="p">:</span>
@@ -301,7 +301,7 @@
 <span class="sd">    Returns:</span>
 <span class="sd">        Callable[P, Awaitable[R]]: 包装后的函数</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">ParallelExecutor</span><span class="o">.</span><span class="n">func_mapping</span><span class="p">[</span><span class="n">func</span><span class="o">.</span><span class="vm">__qualname__</span><span class="p">]</span> <span class="o">=</span> <span class="n">func</span>
+    <span class="n">ParallelExecutor</span><span class="o">.</span><span class="n">func_mapping</span><span class="p">[</span><span class="n">func</span><span class="o">.</span><span class="vm">__module__</span><span class="p">,</span> <span class="n">func</span><span class="o">.</span><span class="vm">__qualname__</span><span class="p">]</span> <span class="o">=</span> <span class="n">func</span>
 
     <span class="nd">@functools</span><span class="o">.</span><span class="n">wraps</span><span class="p">(</span><span class="n">func</span><span class="p">)</span>
     <span class="k">async</span> <span class="k">def</span> <span class="nf">wrapper</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">P</span><span class="o">.</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">P</span><span class="o">.</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">R</span><span class="p">:</span>
@@ -371,7 +371,7 @@
     <span class="n">thread_exec</span><span class="p">:</span> <span class="n">ThreadPoolExecutor</span>
     <span class="n">proc_exec</span><span class="p">:</span> <span class="n">ProcessPoolExecutor</span>
     <span class="n">loop_ref_dict</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="n">AbstractEventLoop</span><span class="p">,</span> <span class="s2">&quot;ParallelExecutor&quot;</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{}</span>
-    <span class="n">func_mapping</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Callable</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">func_mapping</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span> <span class="n">Callable</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{}</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
@@ -442,7 +442,7 @@
 <span class="sd">            R: 底层函数的返回值</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">importlib</span><span class="o">.</span><span class="n">import_module</span><span class="p">(</span><span class="n">module</span><span class="p">)</span>
-        <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">func_mapping</span><span class="p">[</span><span class="n">name</span><span class="p">](</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">func_mapping</span><span class="p">[</span><span class="n">module</span><span class="p">,</span> <span class="n">name</span><span class="p">](</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">run_func_static</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">func</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="n">R</span><span class="p">],</span> <span class="n">args</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">R</span><span class="p">:</span>
@@ -456,8 +456,8 @@
 <span class="sd">        Returns:</span>
 <span class="sd">            R: 底层函数的返回值</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">func</span><span class="o">.</span><span class="vm">__qualname__</span> <span class="ow">in</span> <span class="bp">cls</span><span class="o">.</span><span class="n">func_mapping</span><span class="p">:</span>
-            <span class="n">func</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">func_mapping</span><span class="p">[</span><span class="n">func</span><span class="o">.</span><span class="vm">__qualname__</span><span class="p">]</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">func</span><span class="o">.</span><span class="vm">__module__</span><span class="p">,</span> <span class="n">func</span><span class="o">.</span><span class="vm">__qualname__</span><span class="p">)</span> <span class="ow">in</span> <span class="bp">cls</span><span class="o">.</span><span class="n">func_mapping</span><span class="p">:</span>
+            <span class="n">func</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">func_mapping</span><span class="p">[</span><span class="n">func</span><span class="o">.</span><span class="vm">__module__</span><span class="p">,</span> <span class="n">func</span><span class="o">.</span><span class="vm">__qualname__</span><span class="p">]</span>
         <span class="k">return</span> <span class="n">func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>  <span class="c1"># type: ignore</span>
 
     <span class="k">def</span> <span class="nf">to_thread</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">func</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[</span><span class="n">P</span><span class="p">,</span> <span class="n">R</span><span class="p">],</span> <span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">P</span><span class="o">.</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">P</span><span class="o">.</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Awaitable</span><span class="p">[</span><span class="n">R</span><span class="p">]:</span>
@@ -569,7 +569,7 @@
                             <div id="ParallelExecutor.func_mapping" class="classattr">
                                             <div class="attr variable"><a class="headerlink" href="#ParallelExecutor.func_mapping">#&nbsp;&nbsp</a>
 
-        <span class="name">func_mapping</span><span class="annotation">: ClassVar[Dict[str, Callable]]</span><span class="default_value"> = {}</span>
+        <span class="name">func_mapping</span><span class="annotation">: ClassVar[Dict[Tuple[str, str], Callable]]</span><span class="default_value"> = {}</span>
     </div>
 
     
@@ -726,7 +726,7 @@
 <span class="sd">            R: 底层函数的返回值</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">importlib</span><span class="o">.</span><span class="n">import_module</span><span class="p">(</span><span class="n">module</span><span class="p">)</span>
-        <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">func_mapping</span><span class="p">[</span><span class="n">name</span><span class="p">](</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">func_mapping</span><span class="p">[</span><span class="n">module</span><span class="p">,</span> <span class="n">name</span><span class="p">](</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 </pre></div>
 
         </details>
@@ -774,8 +774,8 @@
 <span class="sd">        Returns:</span>
 <span class="sd">            R: 底层函数的返回值</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">func</span><span class="o">.</span><span class="vm">__qualname__</span> <span class="ow">in</span> <span class="bp">cls</span><span class="o">.</span><span class="n">func_mapping</span><span class="p">:</span>
-            <span class="n">func</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">func_mapping</span><span class="p">[</span><span class="n">func</span><span class="o">.</span><span class="vm">__qualname__</span><span class="p">]</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">func</span><span class="o">.</span><span class="vm">__module__</span><span class="p">,</span> <span class="n">func</span><span class="o">.</span><span class="vm">__qualname__</span><span class="p">)</span> <span class="ow">in</span> <span class="bp">cls</span><span class="o">.</span><span class="n">func_mapping</span><span class="p">:</span>
+            <span class="n">func</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">func_mapping</span><span class="p">[</span><span class="n">func</span><span class="o">.</span><span class="vm">__module__</span><span class="p">,</span> <span class="n">func</span><span class="o">.</span><span class="vm">__qualname__</span><span class="p">]</span>
         <span class="k">return</span> <span class="n">func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>  <span class="c1"># type: ignore</span>
 </pre></div>
 
@@ -932,7 +932,7 @@
 <span class="sd">    Returns:</span>
 <span class="sd">        Callable[P, Awaitable[R]]: 包装后的函数</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">ParallelExecutor</span><span class="o">.</span><span class="n">func_mapping</span><span class="p">[</span><span class="n">func</span><span class="o">.</span><span class="vm">__qualname__</span><span class="p">]</span> <span class="o">=</span> <span class="n">func</span>
+    <span class="n">ParallelExecutor</span><span class="o">.</span><span class="n">func_mapping</span><span class="p">[</span><span class="n">func</span><span class="o">.</span><span class="vm">__module__</span><span class="p">,</span> <span class="n">func</span><span class="o">.</span><span class="vm">__qualname__</span><span class="p">]</span> <span class="o">=</span> <span class="n">func</span>
 
     <span class="nd">@functools</span><span class="o">.</span><span class="n">wraps</span><span class="p">(</span><span class="n">func</span><span class="p">)</span>
     <span class="k">async</span> <span class="k">def</span> <span class="nf">wrapper</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">P</span><span class="o">.</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">P</span><span class="o">.</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">R</span><span class="p">:</span>
@@ -988,7 +988,7 @@
 <span class="sd">    Returns:</span>
 <span class="sd">        Callable[P, Awaitable[R]]: 包装后的函数</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">ParallelExecutor</span><span class="o">.</span><span class="n">func_mapping</span><span class="p">[</span><span class="n">func</span><span class="o">.</span><span class="vm">__qualname__</span><span class="p">]</span> <span class="o">=</span> <span class="n">func</span>
+    <span class="n">ParallelExecutor</span><span class="o">.</span><span class="n">func_mapping</span><span class="p">[</span><span class="n">func</span><span class="o">.</span><span class="vm">__module__</span><span class="p">,</span> <span class="n">func</span><span class="o">.</span><span class="vm">__qualname__</span><span class="p">]</span> <span class="o">=</span> <span class="n">func</span>
 
     <span class="nd">@functools</span><span class="o">.</span><span class="n">wraps</span><span class="p">(</span><span class="n">func</span><span class="p">)</span>
     <span class="k">async</span> <span class="k">def</span> <span class="nf">wrapper</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">P</span><span class="o">.</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">P</span><span class="o">.</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">R</span><span class="p">:</span>
