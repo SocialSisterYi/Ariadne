@@ -94,6 +94,9 @@
                                 <a class="variable" href="#ChatLogConfig.stranger_message_log_format">stranger_message_log_format</a>
                         </li>
                         <li>
+                                <a class="variable" href="#ChatLogConfig.active_message_log_format">active_message_log_format</a>
+                        </li>
+                        <li>
                                 <a class="function" href="#ChatLogConfig.initialize">initialize</a>
                         </li>
                 </ul>
@@ -130,39 +133,6 @@
 
             </li>
             <li>
-                    <a class="class" href="#Friend">Friend</a>
-                            <ul class="memberlist">
-                        <li>
-                                <a class="variable" href="#Friend.id">id</a>
-                        </li>
-                        <li>
-                                <a class="variable" href="#Friend.nickname">nickname</a>
-                        </li>
-                        <li>
-                                <a class="variable" href="#Friend.remark">remark</a>
-                        </li>
-                        <li>
-                                <a class="function" href="#Friend.getProfile">getProfile</a>
-                        </li>
-                </ul>
-
-            </li>
-            <li>
-                    <a class="class" href="#Stranger">Stranger</a>
-                            <ul class="memberlist">
-                        <li>
-                                <a class="variable" href="#Stranger.id">id</a>
-                        </li>
-                        <li>
-                                <a class="variable" href="#Stranger.nickname">nickname</a>
-                        </li>
-                        <li>
-                                <a class="variable" href="#Stranger.remark">remark</a>
-                        </li>
-                </ul>
-
-            </li>
-            <li>
                     <a class="class" href="#MemberPerm">MemberPerm</a>
                             <ul class="memberlist">
                         <li>
@@ -194,6 +164,9 @@
                         </li>
                         <li>
                                 <a class="function" href="#Group.modifyConfig">modifyConfig</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#Group.getAvatar">getAvatar</a>
                         </li>
                 </ul>
 
@@ -236,6 +209,48 @@
                         </li>
                         <li>
                                 <a class="function" href="#Member.modifyAdmin">modifyAdmin</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#Member.getAvatar">getAvatar</a>
+                        </li>
+                </ul>
+
+            </li>
+            <li>
+                    <a class="class" href="#Friend">Friend</a>
+                            <ul class="memberlist">
+                        <li>
+                                <a class="variable" href="#Friend.id">id</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#Friend.nickname">nickname</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#Friend.remark">remark</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#Friend.getProfile">getProfile</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#Friend.getAvatar">getAvatar</a>
+                        </li>
+                </ul>
+
+            </li>
+            <li>
+                    <a class="class" href="#Stranger">Stranger</a>
+                            <ul class="memberlist">
+                        <li>
+                                <a class="variable" href="#Stranger.id">id</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#Stranger.nickname">nickname</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#Stranger.remark">remark</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#Stranger.getAvatar">getAvatar</a>
                         </li>
                 </ul>
 
@@ -467,14 +482,17 @@
 <span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">dataclass</span>
 <span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
 <span class="kn">from</span> <span class="nn">enum</span> <span class="kn">import</span> <span class="n">Enum</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span>
 
+<span class="kn">from</span> <span class="nn">graia.broadcast.entities.listener</span> <span class="kn">import</span> <span class="n">Listener</span>
 <span class="kn">from</span> <span class="nn">loguru</span> <span class="kn">import</span> <span class="n">logger</span>
 <span class="kn">from</span> <span class="nn">pydantic</span> <span class="kn">import</span> <span class="n">BaseModel</span><span class="p">,</span> <span class="n">Field</span><span class="p">,</span> <span class="n">validator</span>
 <span class="kn">from</span> <span class="nn">pydantic.main</span> <span class="kn">import</span> <span class="n">BaseConfig</span><span class="p">,</span> <span class="n">Extra</span>
 <span class="kn">from</span> <span class="nn">pydantic.networks</span> <span class="kn">import</span> <span class="n">AnyHttpUrl</span>
 <span class="kn">from</span> <span class="nn">typing_extensions</span> <span class="kn">import</span> <span class="n">Literal</span>
 <span class="kn">from</span> <span class="nn">yarl</span> <span class="kn">import</span> <span class="n">URL</span>
+
+<span class="kn">from</span> <span class="nn">graia.ariadne.util</span> <span class="kn">import</span> <span class="n">gen_subclass</span>
 
 <span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
     <span class="kn">from</span> <span class="nn">.app</span> <span class="kn">import</span> <span class="n">Ariadne</span>
@@ -568,9 +586,12 @@
     <span class="n">stranger_message_log_format</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{bot_id}</span><span class="s2">: [</span><span class="si">{stranger_name}</span><span class="s2">(</span><span class="si">{stranger_id}</span><span class="s2">)] -&gt; </span><span class="si">{message_string}</span><span class="s2">&quot;</span>
     <span class="sd">&quot;&quot;&quot;陌生人消息格式&quot;&quot;&quot;</span>
 
+    <span class="n">active_message_log_format</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{bot_id}</span><span class="s2">: </span><span class="si">{sync_label}</span><span class="s2">[</span><span class="si">{subject}</span><span class="s2">] &lt;- </span><span class="si">{message_string}</span><span class="s2">&quot;</span>
+
     <span class="k">def</span> <span class="nf">initialize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">app</span><span class="p">:</span> <span class="s2">&quot;Ariadne&quot;</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;利用 Ariadne 对象注册事件日志处理器&quot;&quot;&quot;</span>
         <span class="kn">from</span> <span class="nn">.event.message</span> <span class="kn">import</span> <span class="p">(</span>
+            <span class="n">ActiveMessage</span><span class="p">,</span>
             <span class="n">FriendMessage</span><span class="p">,</span>
             <span class="n">GroupMessage</span><span class="p">,</span>
             <span class="n">OtherClientMessage</span><span class="p">,</span>
@@ -644,6 +665,23 @@
                 <span class="p">),</span>
             <span class="p">)</span>
 
+        <span class="k">def</span> <span class="nf">log_active_message</span><span class="p">(</span><span class="n">event</span><span class="p">:</span> <span class="n">ActiveMessage</span><span class="p">):</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">log_level</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">active_message_log_format</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="n">bot_id</span><span class="o">=</span><span class="n">app</span><span class="o">.</span><span class="n">mirai_session</span><span class="o">.</span><span class="n">account</span><span class="p">,</span>
+                    <span class="n">sync_label</span><span class="o">=</span><span class="s2">&quot;[SYNC]&quot;</span> <span class="k">if</span> <span class="n">event</span><span class="o">.</span><span class="n">sync</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+                    <span class="n">subject</span><span class="o">=</span><span class="n">event</span><span class="o">.</span><span class="n">subject</span><span class="p">,</span>
+                    <span class="n">message_string</span><span class="o">=</span><span class="n">event</span><span class="o">.</span><span class="n">messageChain</span><span class="o">.</span><span class="n">asDisplay</span><span class="p">()</span><span class="o">.</span><span class="fm">__repr__</span><span class="p">(),</span>
+                <span class="p">),</span>
+            <span class="p">)</span>
+
+        <span class="n">app</span><span class="o">.</span><span class="n">broadcast</span><span class="o">.</span><span class="n">listeners</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+            <span class="n">Listener</span><span class="p">(</span>
+                <span class="n">log_active_message</span><span class="p">,</span> <span class="n">app</span><span class="o">.</span><span class="n">broadcast</span><span class="o">.</span><span class="n">getDefaultNamespace</span><span class="p">(),</span> <span class="nb">list</span><span class="p">(</span><span class="n">gen_subclass</span><span class="p">(</span><span class="n">ActiveMessage</span><span class="p">))</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
+
 
 <span class="k">class</span> <span class="nc">MiraiSession</span><span class="p">(</span><span class="n">AriadneBaseModel</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
@@ -696,48 +734,6 @@
         <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">URL</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">host</span><span class="p">)</span> <span class="o">/</span> <span class="n">route</span><span class="p">)</span>
 
 
-<span class="k">class</span> <span class="nc">Friend</span><span class="p">(</span><span class="n">AriadneBaseModel</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;描述 Tencent QQ 中的好友.&quot;&quot;&quot;</span>
-
-    <span class="nb">id</span><span class="p">:</span> <span class="nb">int</span>
-    <span class="sd">&quot;&quot;&quot;QQ 号&quot;&quot;&quot;</span>
-
-    <span class="n">nickname</span><span class="p">:</span> <span class="nb">str</span>
-    <span class="sd">&quot;&quot;&quot;昵称&quot;&quot;&quot;</span>
-
-    <span class="n">remark</span><span class="p">:</span> <span class="nb">str</span>
-    <span class="sd">&quot;&quot;&quot;自行设置的代称&quot;&quot;&quot;</span>
-
-    <span class="k">def</span> <span class="fm">__int__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span>
-
-    <span class="k">async</span> <span class="k">def</span> <span class="nf">getProfile</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;Profile&quot;</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;获取该好友的 Profile</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            Profile: 该好友的 Profile 对象</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="kn">from</span> <span class="nn">.app</span> <span class="kn">import</span> <span class="n">Ariadne</span>
-
-        <span class="k">return</span> <span class="k">await</span> <span class="n">Ariadne</span><span class="o">.</span><span class="n">get_running</span><span class="p">(</span><span class="n">Ariadne</span><span class="p">)</span><span class="o">.</span><span class="n">getFriendProfile</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-
-
-<span class="k">class</span> <span class="nc">Stranger</span><span class="p">(</span><span class="n">AriadneBaseModel</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;描述 Tencent QQ 中的陌生人.&quot;&quot;&quot;</span>
-
-    <span class="nb">id</span><span class="p">:</span> <span class="nb">int</span>
-    <span class="sd">&quot;&quot;&quot;QQ 号&quot;&quot;&quot;</span>
-
-    <span class="n">nickname</span><span class="p">:</span> <span class="nb">str</span>
-    <span class="sd">&quot;&quot;&quot;昵称&quot;&quot;&quot;</span>
-
-    <span class="n">remark</span><span class="p">:</span> <span class="nb">str</span>
-    <span class="sd">&quot;&quot;&quot;自行设置的代称&quot;&quot;&quot;</span>
-
-    <span class="k">def</span> <span class="fm">__int__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span>
-
-
 <span class="nd">@functools</span><span class="o">.</span><span class="n">total_ordering</span>
 <span class="k">class</span> <span class="nc">MemberPerm</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;描述群成员在群组中所具备的权限&quot;&quot;&quot;</span>
@@ -752,6 +748,14 @@
     <span class="k">def</span> <span class="fm">__lt__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="s2">&quot;MemberPerm&quot;</span><span class="p">):</span>
         <span class="n">lv_map</span> <span class="o">=</span> <span class="p">{</span><span class="n">MemberPerm</span><span class="o">.</span><span class="n">Member</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="n">MemberPerm</span><span class="o">.</span><span class="n">Administrator</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="n">MemberPerm</span><span class="o">.</span><span class="n">Owner</span><span class="p">:</span> <span class="mi">3</span><span class="p">}</span>
         <span class="k">return</span> <span class="n">lv_map</span><span class="p">[</span><span class="bp">self</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">lv_map</span><span class="p">[</span><span class="n">other</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="n">perm_map</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;MEMBER&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;普通成员&gt;&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;ADMINISTRATOR&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;管理员&gt;&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;OWNER&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;群主&gt;&quot;</span><span class="p">,</span>
+        <span class="p">}</span>
+        <span class="k">return</span> <span class="n">perm_map</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="p">]</span>
 
 
 <span class="k">class</span> <span class="nc">Group</span><span class="p">(</span><span class="n">AriadneBaseModel</span><span class="p">):</span>
@@ -768,6 +772,9 @@
 
     <span class="k">def</span> <span class="fm">__int__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span>
+
+    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">(</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="si">}</span><span class="s2">)&quot;</span>
 
     <span class="k">async</span> <span class="k">def</span> <span class="nf">getConfig</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;GroupConfig&quot;</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;获取该群组的 Config</span>
@@ -788,6 +795,20 @@
         <span class="kn">from</span> <span class="nn">.app</span> <span class="kn">import</span> <span class="n">Ariadne</span>
 
         <span class="k">return</span> <span class="k">await</span> <span class="n">Ariadne</span><span class="o">.</span><span class="n">get_running</span><span class="p">(</span><span class="n">Ariadne</span><span class="p">)</span><span class="o">.</span><span class="n">modifyGroupConfig</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">)</span>
+
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">getAvatar</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bytes</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;获取该群组的头像</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            bytes: 群头像的二进制内容.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="kn">from</span> <span class="nn">.app</span> <span class="kn">import</span> <span class="n">Ariadne</span>
+
+        <span class="k">return</span> <span class="k">await</span> <span class="p">(</span>
+            <span class="k">await</span> <span class="n">Ariadne</span><span class="o">.</span><span class="n">get_running</span><span class="p">(</span><span class="n">Ariadne</span><span class="p">)</span><span class="o">.</span><span class="n">adapter</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;https://p.qlogo.cn/gh/</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="si">}</span><span class="s2">/&quot;</span>
+            <span class="p">)</span>
+        <span class="p">)</span><span class="o">.</span><span class="n">content</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
 
 
 <span class="k">class</span> <span class="nc">Member</span><span class="p">(</span><span class="n">AriadneBaseModel</span><span class="p">):</span>
@@ -816,6 +837,9 @@
 
     <span class="n">group</span><span class="p">:</span> <span class="n">Group</span>
     <span class="sd">&quot;&quot;&quot;所在群组&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">(</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="si">}</span><span class="s2"> @ </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">group</span><span class="si">}</span><span class="s2">)&quot;</span>
 
     <span class="k">def</span> <span class="fm">__int__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span>
@@ -867,6 +891,105 @@
         <span class="kn">from</span> <span class="nn">.app</span> <span class="kn">import</span> <span class="n">Ariadne</span>
 
         <span class="k">return</span> <span class="k">await</span> <span class="n">Ariadne</span><span class="o">.</span><span class="n">get_running</span><span class="p">(</span><span class="n">Ariadne</span><span class="p">)</span><span class="o">.</span><span class="n">modifyMemberAdmin</span><span class="p">(</span><span class="n">assign</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span>
+
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">getAvatar</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">size</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="mi">640</span><span class="p">,</span> <span class="mi">140</span><span class="p">]</span> <span class="o">=</span> <span class="mi">640</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bytes</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;获取该群成员的头像</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            size (Literal[640, 140]): 头像尺寸</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            bytes: 群成员头像的二进制内容.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="kn">from</span> <span class="nn">.app</span> <span class="kn">import</span> <span class="n">Ariadne</span>
+
+        <span class="k">return</span> <span class="k">await</span> <span class="p">(</span>
+            <span class="k">await</span> <span class="n">Ariadne</span><span class="o">.</span><span class="n">get_running</span><span class="p">(</span><span class="n">Ariadne</span><span class="p">)</span><span class="o">.</span><span class="n">adapter</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;https://q.qlogo.cn/g?b=qq&amp;nk=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="si">}</span><span class="s2">&amp;s=</span><span class="si">{</span><span class="n">size</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="p">)</span>
+        <span class="p">)</span><span class="o">.</span><span class="n">content</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+
+
+<span class="k">class</span> <span class="nc">Friend</span><span class="p">(</span><span class="n">AriadneBaseModel</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;描述 Tencent QQ 中的好友.&quot;&quot;&quot;</span>
+
+    <span class="nb">id</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="sd">&quot;&quot;&quot;QQ 号&quot;&quot;&quot;</span>
+
+    <span class="n">nickname</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="sd">&quot;&quot;&quot;昵称&quot;&quot;&quot;</span>
+
+    <span class="n">remark</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="sd">&quot;&quot;&quot;自行设置的代称&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__int__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span>
+
+    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">remark</span><span class="si">}</span><span class="s2">(</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="si">}</span><span class="s2">)&quot;</span>
+
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">getProfile</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;Profile&quot;</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;获取该好友的 Profile</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Profile: 该好友的 Profile 对象</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="kn">from</span> <span class="nn">.app</span> <span class="kn">import</span> <span class="n">Ariadne</span>
+
+        <span class="k">return</span> <span class="k">await</span> <span class="n">Ariadne</span><span class="o">.</span><span class="n">get_running</span><span class="p">(</span><span class="n">Ariadne</span><span class="p">)</span><span class="o">.</span><span class="n">getFriendProfile</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">getAvatar</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">size</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="mi">640</span><span class="p">,</span> <span class="mi">140</span><span class="p">]</span> <span class="o">=</span> <span class="mi">640</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bytes</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;获取该好友的头像</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            size (Literal[640, 140]): 头像尺寸</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            bytes: 好友头像的二进制内容.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="kn">from</span> <span class="nn">.app</span> <span class="kn">import</span> <span class="n">Ariadne</span>
+
+        <span class="k">return</span> <span class="k">await</span> <span class="p">(</span>
+            <span class="k">await</span> <span class="n">Ariadne</span><span class="o">.</span><span class="n">get_running</span><span class="p">(</span><span class="n">Ariadne</span><span class="p">)</span><span class="o">.</span><span class="n">adapter</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;https://q.qlogo.cn/g?b=qq&amp;nk=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="si">}</span><span class="s2">&amp;s=</span><span class="si">{</span><span class="n">size</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="p">)</span>
+        <span class="p">)</span><span class="o">.</span><span class="n">content</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+
+
+<span class="k">class</span> <span class="nc">Stranger</span><span class="p">(</span><span class="n">AriadneBaseModel</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;描述 Tencent QQ 中的陌生人.&quot;&quot;&quot;</span>
+
+    <span class="nb">id</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="sd">&quot;&quot;&quot;QQ 号&quot;&quot;&quot;</span>
+
+    <span class="n">nickname</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="sd">&quot;&quot;&quot;昵称&quot;&quot;&quot;</span>
+
+    <span class="n">remark</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="sd">&quot;&quot;&quot;自行设置的代称&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__int__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span>
+
+    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;Stranger(</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">nickname</span><span class="si">}</span><span class="s2">)&quot;</span>
+
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">getAvatar</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">size</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="mi">640</span><span class="p">,</span> <span class="mi">140</span><span class="p">]</span> <span class="o">=</span> <span class="mi">640</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bytes</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;获取该陌生人的头像</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            size (Literal[640, 140]): 头像尺寸</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            bytes: 陌生人头像的二进制内容.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="kn">from</span> <span class="nn">.app</span> <span class="kn">import</span> <span class="n">Ariadne</span>
+
+        <span class="k">return</span> <span class="k">await</span> <span class="p">(</span>
+            <span class="k">await</span> <span class="n">Ariadne</span><span class="o">.</span><span class="n">get_running</span><span class="p">(</span><span class="n">Ariadne</span><span class="p">)</span><span class="o">.</span><span class="n">adapter</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;https://q.qlogo.cn/g?b=qq&amp;nk=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="si">}</span><span class="s2">&amp;s=</span><span class="si">{</span><span class="n">size</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="p">)</span>
+        <span class="p">)</span><span class="o">.</span><span class="n">content</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
 
 
 <span class="k">class</span> <span class="nc">GroupConfig</span><span class="p">(</span><span class="n">AriadneBaseModel</span><span class="p">):</span>
@@ -1356,7 +1479,7 @@ implement default like this::</p>
                             <div id="AriadneBaseModel.Config.json_encoders" class="classattr">
                                             <div class="attr variable"><a class="headerlink" href="#AriadneBaseModel.Config.json_encoders">#&nbsp;&nbsp</a>
 
-        <span class="name">json_encoders</span><span class="default_value"> = {&lt;class &#39;datetime.datetime&#39;&gt;: &lt;function datetime_encoder at 0x7f13036e2b80&gt;}</span>
+        <span class="name">json_encoders</span><span class="default_value"> = {&lt;class &#39;datetime.datetime&#39;&gt;: &lt;function datetime_encoder at 0x7fc980fa7700&gt;}</span>
     </div>
 
     
@@ -1438,9 +1561,12 @@ implement default like this::</p>
     <span class="n">stranger_message_log_format</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{bot_id}</span><span class="s2">: [</span><span class="si">{stranger_name}</span><span class="s2">(</span><span class="si">{stranger_id}</span><span class="s2">)] -&gt; </span><span class="si">{message_string}</span><span class="s2">&quot;</span>
     <span class="sd">&quot;&quot;&quot;陌生人消息格式&quot;&quot;&quot;</span>
 
+    <span class="n">active_message_log_format</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{bot_id}</span><span class="s2">: </span><span class="si">{sync_label}</span><span class="s2">[</span><span class="si">{subject}</span><span class="s2">] &lt;- </span><span class="si">{message_string}</span><span class="s2">&quot;</span>
+
     <span class="k">def</span> <span class="nf">initialize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">app</span><span class="p">:</span> <span class="s2">&quot;Ariadne&quot;</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;利用 Ariadne 对象注册事件日志处理器&quot;&quot;&quot;</span>
         <span class="kn">from</span> <span class="nn">.event.message</span> <span class="kn">import</span> <span class="p">(</span>
+            <span class="n">ActiveMessage</span><span class="p">,</span>
             <span class="n">FriendMessage</span><span class="p">,</span>
             <span class="n">GroupMessage</span><span class="p">,</span>
             <span class="n">OtherClientMessage</span><span class="p">,</span>
@@ -1513,6 +1639,23 @@ implement default like this::</p>
                     <span class="n">message_string</span><span class="o">=</span><span class="n">event</span><span class="o">.</span><span class="n">messageChain</span><span class="o">.</span><span class="n">asDisplay</span><span class="p">()</span><span class="o">.</span><span class="fm">__repr__</span><span class="p">(),</span>
                 <span class="p">),</span>
             <span class="p">)</span>
+
+        <span class="k">def</span> <span class="nf">log_active_message</span><span class="p">(</span><span class="n">event</span><span class="p">:</span> <span class="n">ActiveMessage</span><span class="p">):</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">log_level</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">active_message_log_format</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="n">bot_id</span><span class="o">=</span><span class="n">app</span><span class="o">.</span><span class="n">mirai_session</span><span class="o">.</span><span class="n">account</span><span class="p">,</span>
+                    <span class="n">sync_label</span><span class="o">=</span><span class="s2">&quot;[SYNC]&quot;</span> <span class="k">if</span> <span class="n">event</span><span class="o">.</span><span class="n">sync</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+                    <span class="n">subject</span><span class="o">=</span><span class="n">event</span><span class="o">.</span><span class="n">subject</span><span class="p">,</span>
+                    <span class="n">message_string</span><span class="o">=</span><span class="n">event</span><span class="o">.</span><span class="n">messageChain</span><span class="o">.</span><span class="n">asDisplay</span><span class="p">()</span><span class="o">.</span><span class="fm">__repr__</span><span class="p">(),</span>
+                <span class="p">),</span>
+            <span class="p">)</span>
+
+        <span class="n">app</span><span class="o">.</span><span class="n">broadcast</span><span class="o">.</span><span class="n">listeners</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+            <span class="n">Listener</span><span class="p">(</span>
+                <span class="n">log_active_message</span><span class="p">,</span> <span class="n">app</span><span class="o">.</span><span class="n">broadcast</span><span class="o">.</span><span class="n">getDefaultNamespace</span><span class="p">(),</span> <span class="nb">list</span><span class="p">(</span><span class="n">gen_subclass</span><span class="p">(</span><span class="n">ActiveMessage</span><span class="p">))</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
 </pre></div>
 
         </details>
@@ -1532,7 +1675,8 @@ implement default like this::</p>
     friend_message_log_format: str = &#39;{bot_id}: [{friend_name}({friend_id})] -&gt; {message_string}&#39;,
     temp_message_log_format: str = &#39;{bot_id}: [{group_name}({group_id}).{member_name}({member_id})] -&gt; {message_string}&#39;,
     other_client_message_log_format: str = &#39;{bot_id}: [{platform_name}({platform_id})] -&gt; {message_string}&#39;,
-    stranger_message_log_format: str = &#39;{bot_id}: [{stranger_name}({stranger_id})] -&gt; {message_string}&#39;
+    stranger_message_log_format: str = &#39;{bot_id}: [{stranger_name}({stranger_id})] -&gt; {message_string}&#39;,
+    active_message_log_format: str = &#39;{bot_id}: {sync_label}[{subject}] &lt;- {message_string}&#39;
 )</span>
     </div>
 
@@ -1617,6 +1761,15 @@ implement default like this::</p>
 
 
                             </div>
+                            <div id="ChatLogConfig.active_message_log_format" class="classattr">
+                                            <div class="attr variable"><a class="headerlink" href="#ChatLogConfig.active_message_log_format">#&nbsp;&nbsp</a>
+
+        <span class="name">active_message_log_format</span><span class="annotation">: str</span><span class="default_value"> = &#39;{bot_id}: {sync_label}[{subject}] &lt;- {message_string}&#39;</span>
+    </div>
+
+    
+
+                            </div>
                             <div id="ChatLogConfig.initialize" class="classattr">
                                         <div class="attr function"><a class="headerlink" href="#ChatLogConfig.initialize">#&nbsp;&nbsp</a>
 
@@ -1630,6 +1783,7 @@ implement default like this::</p>
             <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">initialize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">app</span><span class="p">:</span> <span class="s2">&quot;Ariadne&quot;</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;利用 Ariadne 对象注册事件日志处理器&quot;&quot;&quot;</span>
         <span class="kn">from</span> <span class="nn">.event.message</span> <span class="kn">import</span> <span class="p">(</span>
+            <span class="n">ActiveMessage</span><span class="p">,</span>
             <span class="n">FriendMessage</span><span class="p">,</span>
             <span class="n">GroupMessage</span><span class="p">,</span>
             <span class="n">OtherClientMessage</span><span class="p">,</span>
@@ -1702,6 +1856,23 @@ implement default like this::</p>
                     <span class="n">message_string</span><span class="o">=</span><span class="n">event</span><span class="o">.</span><span class="n">messageChain</span><span class="o">.</span><span class="n">asDisplay</span><span class="p">()</span><span class="o">.</span><span class="fm">__repr__</span><span class="p">(),</span>
                 <span class="p">),</span>
             <span class="p">)</span>
+
+        <span class="k">def</span> <span class="nf">log_active_message</span><span class="p">(</span><span class="n">event</span><span class="p">:</span> <span class="n">ActiveMessage</span><span class="p">):</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">log_level</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">active_message_log_format</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="n">bot_id</span><span class="o">=</span><span class="n">app</span><span class="o">.</span><span class="n">mirai_session</span><span class="o">.</span><span class="n">account</span><span class="p">,</span>
+                    <span class="n">sync_label</span><span class="o">=</span><span class="s2">&quot;[SYNC]&quot;</span> <span class="k">if</span> <span class="n">event</span><span class="o">.</span><span class="n">sync</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+                    <span class="n">subject</span><span class="o">=</span><span class="n">event</span><span class="o">.</span><span class="n">subject</span><span class="p">,</span>
+                    <span class="n">message_string</span><span class="o">=</span><span class="n">event</span><span class="o">.</span><span class="n">messageChain</span><span class="o">.</span><span class="n">asDisplay</span><span class="p">()</span><span class="o">.</span><span class="fm">__repr__</span><span class="p">(),</span>
+                <span class="p">),</span>
+            <span class="p">)</span>
+
+        <span class="n">app</span><span class="o">.</span><span class="n">broadcast</span><span class="o">.</span><span class="n">listeners</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+            <span class="n">Listener</span><span class="p">(</span>
+                <span class="n">log_active_message</span><span class="p">,</span> <span class="n">app</span><span class="o">.</span><span class="n">broadcast</span><span class="o">.</span><span class="n">getDefaultNamespace</span><span class="p">(),</span> <span class="nb">list</span><span class="p">(</span><span class="n">gen_subclass</span><span class="p">(</span><span class="n">ActiveMessage</span><span class="p">))</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
 </pre></div>
 
         </details>
@@ -1956,234 +2127,6 @@ implement default like this::</p>
                                 </dl>
                             </div>
                 </section>
-                <section id="Friend">
-                                <div class="attr class">
-        <a class="headerlink" href="#Friend">#&nbsp;&nbsp</a>
-
-        
-        <span class="def">class</span>
-        <span class="name">Friend</span><wbr>(<span class="base"><a href="#AriadneBaseModel">AriadneBaseModel</a></span>):
-    </div>
-
-                <details>
-            <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">Friend</span><span class="p">(</span><span class="n">AriadneBaseModel</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;描述 Tencent QQ 中的好友.&quot;&quot;&quot;</span>
-
-    <span class="nb">id</span><span class="p">:</span> <span class="nb">int</span>
-    <span class="sd">&quot;&quot;&quot;QQ 号&quot;&quot;&quot;</span>
-
-    <span class="n">nickname</span><span class="p">:</span> <span class="nb">str</span>
-    <span class="sd">&quot;&quot;&quot;昵称&quot;&quot;&quot;</span>
-
-    <span class="n">remark</span><span class="p">:</span> <span class="nb">str</span>
-    <span class="sd">&quot;&quot;&quot;自行设置的代称&quot;&quot;&quot;</span>
-
-    <span class="k">def</span> <span class="fm">__int__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span>
-
-    <span class="k">async</span> <span class="k">def</span> <span class="nf">getProfile</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;Profile&quot;</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;获取该好友的 Profile</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            Profile: 该好友的 Profile 对象</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="kn">from</span> <span class="nn">.app</span> <span class="kn">import</span> <span class="n">Ariadne</span>
-
-        <span class="k">return</span> <span class="k">await</span> <span class="n">Ariadne</span><span class="o">.</span><span class="n">get_running</span><span class="p">(</span><span class="n">Ariadne</span><span class="p">)</span><span class="o">.</span><span class="n">getFriendProfile</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-</pre></div>
-
-        </details>
-
-            <div class="docstring"><p>描述 Tencent QQ 中的好友.</p>
-</div>
-
-
-                            <div id="Friend.id" class="classattr">
-                                            <div class="attr variable"><a class="headerlink" href="#Friend.id">#&nbsp;&nbsp</a>
-
-        <span class="name">id</span><span class="annotation">: int</span>
-    </div>
-
-            <div class="docstring"><p>QQ 号</p>
-</div>
-
-
-                            </div>
-                            <div id="Friend.nickname" class="classattr">
-                                            <div class="attr variable"><a class="headerlink" href="#Friend.nickname">#&nbsp;&nbsp</a>
-
-        <span class="name">nickname</span><span class="annotation">: str</span>
-    </div>
-
-            <div class="docstring"><p>昵称</p>
-</div>
-
-
-                            </div>
-                            <div id="Friend.remark" class="classattr">
-                                            <div class="attr variable"><a class="headerlink" href="#Friend.remark">#&nbsp;&nbsp</a>
-
-        <span class="name">remark</span><span class="annotation">: str</span>
-    </div>
-
-            <div class="docstring"><p>自行设置的代称</p>
-</div>
-
-
-                            </div>
-                            <div id="Friend.getProfile" class="classattr">
-                                        <div class="attr function"><a class="headerlink" href="#Friend.getProfile">#&nbsp;&nbsp</a>
-
-        
-            <span class="def">async def</span>
-            <span class="name">getProfile</span><span class="signature">(self) -&gt; <a href="#Profile">ariadne.model.Profile</a></span>:
-    </div>
-
-                <details>
-            <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span>    <span class="k">async</span> <span class="k">def</span> <span class="nf">getProfile</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;Profile&quot;</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;获取该好友的 Profile</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            Profile: 该好友的 Profile 对象</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="kn">from</span> <span class="nn">.app</span> <span class="kn">import</span> <span class="n">Ariadne</span>
-
-        <span class="k">return</span> <span class="k">await</span> <span class="n">Ariadne</span><span class="o">.</span><span class="n">get_running</span><span class="p">(</span><span class="n">Ariadne</span><span class="p">)</span><span class="o">.</span><span class="n">getFriendProfile</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-</pre></div>
-
-        </details>
-
-            <div class="docstring"><p>获取该好友的 Profile</p>
-
-<h6 id="returns">Returns</h6>
-
-<blockquote>
-  <p>Profile: 该好友的 Profile 对象</p>
-</blockquote>
-</div>
-
-
-                            </div>
-                            <div class="inherited">
-                                <h5>Inherited Members</h5>
-                                <dl>
-                                    <div><dt>pydantic.main.BaseModel</dt>
-                                <dd id="Friend.__init__" class="function">BaseModel</dd>
-                <dd id="Friend.json" class="function">json</dd>
-                <dd id="Friend.parse_obj" class="function">parse_obj</dd>
-                <dd id="Friend.parse_raw" class="function">parse_raw</dd>
-                <dd id="Friend.parse_file" class="function">parse_file</dd>
-                <dd id="Friend.from_orm" class="function">from_orm</dd>
-                <dd id="Friend.construct" class="function">construct</dd>
-                <dd id="Friend.copy" class="function">copy</dd>
-                <dd id="Friend.schema" class="function">schema</dd>
-                <dd id="Friend.schema_json" class="function">schema_json</dd>
-                <dd id="Friend.validate" class="function">validate</dd>
-                <dd id="Friend.update_forward_refs" class="function">update_forward_refs</dd>
-
-            </div>
-            <div><dt><a href="#AriadneBaseModel">AriadneBaseModel</a></dt>
-                                <dd id="Friend.dict" class="function"><a href="#AriadneBaseModel.dict">dict</a></dd>
-                <dd id="Friend.Config" class="class"><a href="#AriadneBaseModel.Config">Config</a></dd>
-
-            </div>
-                                </dl>
-                            </div>
-                </section>
-                <section id="Stranger">
-                                <div class="attr class">
-        <a class="headerlink" href="#Stranger">#&nbsp;&nbsp</a>
-
-        
-        <span class="def">class</span>
-        <span class="name">Stranger</span><wbr>(<span class="base"><a href="#AriadneBaseModel">AriadneBaseModel</a></span>):
-    </div>
-
-                <details>
-            <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">Stranger</span><span class="p">(</span><span class="n">AriadneBaseModel</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;描述 Tencent QQ 中的陌生人.&quot;&quot;&quot;</span>
-
-    <span class="nb">id</span><span class="p">:</span> <span class="nb">int</span>
-    <span class="sd">&quot;&quot;&quot;QQ 号&quot;&quot;&quot;</span>
-
-    <span class="n">nickname</span><span class="p">:</span> <span class="nb">str</span>
-    <span class="sd">&quot;&quot;&quot;昵称&quot;&quot;&quot;</span>
-
-    <span class="n">remark</span><span class="p">:</span> <span class="nb">str</span>
-    <span class="sd">&quot;&quot;&quot;自行设置的代称&quot;&quot;&quot;</span>
-
-    <span class="k">def</span> <span class="fm">__int__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span>
-</pre></div>
-
-        </details>
-
-            <div class="docstring"><p>描述 Tencent QQ 中的陌生人.</p>
-</div>
-
-
-                            <div id="Stranger.id" class="classattr">
-                                            <div class="attr variable"><a class="headerlink" href="#Stranger.id">#&nbsp;&nbsp</a>
-
-        <span class="name">id</span><span class="annotation">: int</span>
-    </div>
-
-            <div class="docstring"><p>QQ 号</p>
-</div>
-
-
-                            </div>
-                            <div id="Stranger.nickname" class="classattr">
-                                            <div class="attr variable"><a class="headerlink" href="#Stranger.nickname">#&nbsp;&nbsp</a>
-
-        <span class="name">nickname</span><span class="annotation">: str</span>
-    </div>
-
-            <div class="docstring"><p>昵称</p>
-</div>
-
-
-                            </div>
-                            <div id="Stranger.remark" class="classattr">
-                                            <div class="attr variable"><a class="headerlink" href="#Stranger.remark">#&nbsp;&nbsp</a>
-
-        <span class="name">remark</span><span class="annotation">: str</span>
-    </div>
-
-            <div class="docstring"><p>自行设置的代称</p>
-</div>
-
-
-                            </div>
-                            <div class="inherited">
-                                <h5>Inherited Members</h5>
-                                <dl>
-                                    <div><dt>pydantic.main.BaseModel</dt>
-                                <dd id="Stranger.__init__" class="function">BaseModel</dd>
-                <dd id="Stranger.json" class="function">json</dd>
-                <dd id="Stranger.parse_obj" class="function">parse_obj</dd>
-                <dd id="Stranger.parse_raw" class="function">parse_raw</dd>
-                <dd id="Stranger.parse_file" class="function">parse_file</dd>
-                <dd id="Stranger.from_orm" class="function">from_orm</dd>
-                <dd id="Stranger.construct" class="function">construct</dd>
-                <dd id="Stranger.copy" class="function">copy</dd>
-                <dd id="Stranger.schema" class="function">schema</dd>
-                <dd id="Stranger.schema_json" class="function">schema_json</dd>
-                <dd id="Stranger.validate" class="function">validate</dd>
-                <dd id="Stranger.update_forward_refs" class="function">update_forward_refs</dd>
-
-            </div>
-            <div><dt><a href="#AriadneBaseModel">AriadneBaseModel</a></dt>
-                                <dd id="Stranger.dict" class="function"><a href="#AriadneBaseModel.dict">dict</a></dd>
-                <dd id="Stranger.Config" class="class"><a href="#AriadneBaseModel.Config">Config</a></dd>
-
-            </div>
-                                </dl>
-                            </div>
-                </section>
                 <section id="MemberPerm">
                                 <div class="attr class">
         <a class="headerlink" href="#MemberPerm">#&nbsp;&nbsp</a>
@@ -2210,6 +2153,14 @@ implement default like this::</p>
     <span class="k">def</span> <span class="fm">__lt__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="s2">&quot;MemberPerm&quot;</span><span class="p">):</span>
         <span class="n">lv_map</span> <span class="o">=</span> <span class="p">{</span><span class="n">MemberPerm</span><span class="o">.</span><span class="n">Member</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="n">MemberPerm</span><span class="o">.</span><span class="n">Administrator</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="n">MemberPerm</span><span class="o">.</span><span class="n">Owner</span><span class="p">:</span> <span class="mi">3</span><span class="p">}</span>
         <span class="k">return</span> <span class="n">lv_map</span><span class="p">[</span><span class="bp">self</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">lv_map</span><span class="p">[</span><span class="n">other</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="n">perm_map</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;MEMBER&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;普通成员&gt;&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;ADMINISTRATOR&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;管理员&gt;&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;OWNER&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;群主&gt;&quot;</span><span class="p">,</span>
+        <span class="p">}</span>
+        <span class="k">return</span> <span class="n">perm_map</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="p">]</span>
 </pre></div>
 
         </details>
@@ -2221,7 +2172,7 @@ implement default like this::</p>
                             <div id="MemberPerm.Member" class="classattr">
                                             <div class="attr variable"><a class="headerlink" href="#MemberPerm.Member">#&nbsp;&nbsp</a>
 
-        <span class="name">Member</span><span class="default_value"> = &lt;<a href="#MemberPerm.Member">MemberPerm.Member</a>: &#39;MEMBER&#39;&gt;</span>
+        <span class="name">Member</span><span class="default_value"> = &lt;普通成员&gt;</span>
     </div>
 
     
@@ -2230,7 +2181,7 @@ implement default like this::</p>
                             <div id="MemberPerm.Administrator" class="classattr">
                                             <div class="attr variable"><a class="headerlink" href="#MemberPerm.Administrator">#&nbsp;&nbsp</a>
 
-        <span class="name">Administrator</span><span class="default_value"> = &lt;<a href="#MemberPerm.Administrator">MemberPerm.Administrator</a>: &#39;ADMINISTRATOR&#39;&gt;</span>
+        <span class="name">Administrator</span><span class="default_value"> = &lt;管理员&gt;</span>
     </div>
 
     
@@ -2239,7 +2190,7 @@ implement default like this::</p>
                             <div id="MemberPerm.Owner" class="classattr">
                                             <div class="attr variable"><a class="headerlink" href="#MemberPerm.Owner">#&nbsp;&nbsp</a>
 
-        <span class="name">Owner</span><span class="default_value"> = &lt;<a href="#MemberPerm.Owner">MemberPerm.Owner</a>: &#39;OWNER&#39;&gt;</span>
+        <span class="name">Owner</span><span class="default_value"> = &lt;群主&gt;</span>
     </div>
 
     
@@ -2282,6 +2233,9 @@ implement default like this::</p>
     <span class="k">def</span> <span class="fm">__int__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span>
 
+    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">(</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="si">}</span><span class="s2">)&quot;</span>
+
     <span class="k">async</span> <span class="k">def</span> <span class="nf">getConfig</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;GroupConfig&quot;</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;获取该群组的 Config</span>
 
@@ -2301,6 +2255,20 @@ implement default like this::</p>
         <span class="kn">from</span> <span class="nn">.app</span> <span class="kn">import</span> <span class="n">Ariadne</span>
 
         <span class="k">return</span> <span class="k">await</span> <span class="n">Ariadne</span><span class="o">.</span><span class="n">get_running</span><span class="p">(</span><span class="n">Ariadne</span><span class="p">)</span><span class="o">.</span><span class="n">modifyGroupConfig</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">)</span>
+
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">getAvatar</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bytes</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;获取该群组的头像</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            bytes: 群头像的二进制内容.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="kn">from</span> <span class="nn">.app</span> <span class="kn">import</span> <span class="n">Ariadne</span>
+
+        <span class="k">return</span> <span class="k">await</span> <span class="p">(</span>
+            <span class="k">await</span> <span class="n">Ariadne</span><span class="o">.</span><span class="n">get_running</span><span class="p">(</span><span class="n">Ariadne</span><span class="p">)</span><span class="o">.</span><span class="n">adapter</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;https://p.qlogo.cn/gh/</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="si">}</span><span class="s2">/&quot;</span>
+            <span class="p">)</span>
+        <span class="p">)</span><span class="o">.</span><span class="n">content</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
 </pre></div>
 
         </details>
@@ -2410,6 +2378,44 @@ implement default like this::</p>
 
 
                             </div>
+                            <div id="Group.getAvatar" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#Group.getAvatar">#&nbsp;&nbsp</a>
+
+        
+            <span class="def">async def</span>
+            <span class="name">getAvatar</span><span class="signature">(self) -&gt; bytes</span>:
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span>    <span class="k">async</span> <span class="k">def</span> <span class="nf">getAvatar</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bytes</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;获取该群组的头像</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            bytes: 群头像的二进制内容.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="kn">from</span> <span class="nn">.app</span> <span class="kn">import</span> <span class="n">Ariadne</span>
+
+        <span class="k">return</span> <span class="k">await</span> <span class="p">(</span>
+            <span class="k">await</span> <span class="n">Ariadne</span><span class="o">.</span><span class="n">get_running</span><span class="p">(</span><span class="n">Ariadne</span><span class="p">)</span><span class="o">.</span><span class="n">adapter</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;https://p.qlogo.cn/gh/</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="si">}</span><span class="s2">/&quot;</span>
+            <span class="p">)</span>
+        <span class="p">)</span><span class="o">.</span><span class="n">content</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+</pre></div>
+
+        </details>
+
+            <div class="docstring"><p>获取该群组的头像</p>
+
+<h6 id="returns">Returns</h6>
+
+<blockquote>
+  <p>bytes: 群头像的二进制内容.</p>
+</blockquote>
+</div>
+
+
+                            </div>
                             <div class="inherited">
                                 <h5>Inherited Members</h5>
                                 <dl>
@@ -2474,6 +2480,9 @@ implement default like this::</p>
     <span class="n">group</span><span class="p">:</span> <span class="n">Group</span>
     <span class="sd">&quot;&quot;&quot;所在群组&quot;&quot;&quot;</span>
 
+    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">(</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="si">}</span><span class="s2"> @ </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">group</span><span class="si">}</span><span class="s2">)&quot;</span>
+
     <span class="k">def</span> <span class="fm">__int__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span>
 
@@ -2524,6 +2533,23 @@ implement default like this::</p>
         <span class="kn">from</span> <span class="nn">.app</span> <span class="kn">import</span> <span class="n">Ariadne</span>
 
         <span class="k">return</span> <span class="k">await</span> <span class="n">Ariadne</span><span class="o">.</span><span class="n">get_running</span><span class="p">(</span><span class="n">Ariadne</span><span class="p">)</span><span class="o">.</span><span class="n">modifyMemberAdmin</span><span class="p">(</span><span class="n">assign</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span>
+
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">getAvatar</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">size</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="mi">640</span><span class="p">,</span> <span class="mi">140</span><span class="p">]</span> <span class="o">=</span> <span class="mi">640</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bytes</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;获取该群成员的头像</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            size (Literal[640, 140]): 头像尺寸</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            bytes: 群成员头像的二进制内容.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="kn">from</span> <span class="nn">.app</span> <span class="kn">import</span> <span class="n">Ariadne</span>
+
+        <span class="k">return</span> <span class="k">await</span> <span class="p">(</span>
+            <span class="k">await</span> <span class="n">Ariadne</span><span class="o">.</span><span class="n">get_running</span><span class="p">(</span><span class="n">Ariadne</span><span class="p">)</span><span class="o">.</span><span class="n">adapter</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;https://q.qlogo.cn/g?b=qq&amp;nk=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="si">}</span><span class="s2">&amp;s=</span><span class="si">{</span><span class="n">size</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="p">)</span>
+        <span class="p">)</span><span class="o">.</span><span class="n">content</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
 </pre></div>
 
         </details>
@@ -2776,6 +2802,53 @@ implement default like this::</p>
 
 
                             </div>
+                            <div id="Member.getAvatar" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#Member.getAvatar">#&nbsp;&nbsp</a>
+
+        
+            <span class="def">async def</span>
+            <span class="name">getAvatar</span><span class="signature">(self, size: Literal[640, 140] = 640) -&gt; bytes</span>:
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span>    <span class="k">async</span> <span class="k">def</span> <span class="nf">getAvatar</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">size</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="mi">640</span><span class="p">,</span> <span class="mi">140</span><span class="p">]</span> <span class="o">=</span> <span class="mi">640</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bytes</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;获取该群成员的头像</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            size (Literal[640, 140]): 头像尺寸</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            bytes: 群成员头像的二进制内容.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="kn">from</span> <span class="nn">.app</span> <span class="kn">import</span> <span class="n">Ariadne</span>
+
+        <span class="k">return</span> <span class="k">await</span> <span class="p">(</span>
+            <span class="k">await</span> <span class="n">Ariadne</span><span class="o">.</span><span class="n">get_running</span><span class="p">(</span><span class="n">Ariadne</span><span class="p">)</span><span class="o">.</span><span class="n">adapter</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;https://q.qlogo.cn/g?b=qq&amp;nk=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="si">}</span><span class="s2">&amp;s=</span><span class="si">{</span><span class="n">size</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="p">)</span>
+        <span class="p">)</span><span class="o">.</span><span class="n">content</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+</pre></div>
+
+        </details>
+
+            <div class="docstring"><p>获取该群成员的头像</p>
+
+<h6 id="args">Args</h6>
+
+<ul>
+<li><strong>size (Literal[640, 140]):</strong>  头像尺寸</li>
+</ul>
+
+<h6 id="returns">Returns</h6>
+
+<blockquote>
+  <p>bytes: 群成员头像的二进制内容.</p>
+</blockquote>
+</div>
+
+
+                            </div>
                             <div class="inherited">
                                 <h5>Inherited Members</h5>
                                 <dl>
@@ -2797,6 +2870,368 @@ implement default like this::</p>
             <div><dt><a href="#AriadneBaseModel">AriadneBaseModel</a></dt>
                                 <dd id="Member.dict" class="function"><a href="#AriadneBaseModel.dict">dict</a></dd>
                 <dd id="Member.Config" class="class"><a href="#AriadneBaseModel.Config">Config</a></dd>
+
+            </div>
+                                </dl>
+                            </div>
+                </section>
+                <section id="Friend">
+                                <div class="attr class">
+        <a class="headerlink" href="#Friend">#&nbsp;&nbsp</a>
+
+        
+        <span class="def">class</span>
+        <span class="name">Friend</span><wbr>(<span class="base"><a href="#AriadneBaseModel">AriadneBaseModel</a></span>):
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">Friend</span><span class="p">(</span><span class="n">AriadneBaseModel</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;描述 Tencent QQ 中的好友.&quot;&quot;&quot;</span>
+
+    <span class="nb">id</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="sd">&quot;&quot;&quot;QQ 号&quot;&quot;&quot;</span>
+
+    <span class="n">nickname</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="sd">&quot;&quot;&quot;昵称&quot;&quot;&quot;</span>
+
+    <span class="n">remark</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="sd">&quot;&quot;&quot;自行设置的代称&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__int__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span>
+
+    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">remark</span><span class="si">}</span><span class="s2">(</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="si">}</span><span class="s2">)&quot;</span>
+
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">getProfile</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;Profile&quot;</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;获取该好友的 Profile</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Profile: 该好友的 Profile 对象</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="kn">from</span> <span class="nn">.app</span> <span class="kn">import</span> <span class="n">Ariadne</span>
+
+        <span class="k">return</span> <span class="k">await</span> <span class="n">Ariadne</span><span class="o">.</span><span class="n">get_running</span><span class="p">(</span><span class="n">Ariadne</span><span class="p">)</span><span class="o">.</span><span class="n">getFriendProfile</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">getAvatar</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">size</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="mi">640</span><span class="p">,</span> <span class="mi">140</span><span class="p">]</span> <span class="o">=</span> <span class="mi">640</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bytes</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;获取该好友的头像</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            size (Literal[640, 140]): 头像尺寸</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            bytes: 好友头像的二进制内容.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="kn">from</span> <span class="nn">.app</span> <span class="kn">import</span> <span class="n">Ariadne</span>
+
+        <span class="k">return</span> <span class="k">await</span> <span class="p">(</span>
+            <span class="k">await</span> <span class="n">Ariadne</span><span class="o">.</span><span class="n">get_running</span><span class="p">(</span><span class="n">Ariadne</span><span class="p">)</span><span class="o">.</span><span class="n">adapter</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;https://q.qlogo.cn/g?b=qq&amp;nk=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="si">}</span><span class="s2">&amp;s=</span><span class="si">{</span><span class="n">size</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="p">)</span>
+        <span class="p">)</span><span class="o">.</span><span class="n">content</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+</pre></div>
+
+        </details>
+
+            <div class="docstring"><p>描述 Tencent QQ 中的好友.</p>
+</div>
+
+
+                            <div id="Friend.id" class="classattr">
+                                            <div class="attr variable"><a class="headerlink" href="#Friend.id">#&nbsp;&nbsp</a>
+
+        <span class="name">id</span><span class="annotation">: int</span>
+    </div>
+
+            <div class="docstring"><p>QQ 号</p>
+</div>
+
+
+                            </div>
+                            <div id="Friend.nickname" class="classattr">
+                                            <div class="attr variable"><a class="headerlink" href="#Friend.nickname">#&nbsp;&nbsp</a>
+
+        <span class="name">nickname</span><span class="annotation">: str</span>
+    </div>
+
+            <div class="docstring"><p>昵称</p>
+</div>
+
+
+                            </div>
+                            <div id="Friend.remark" class="classattr">
+                                            <div class="attr variable"><a class="headerlink" href="#Friend.remark">#&nbsp;&nbsp</a>
+
+        <span class="name">remark</span><span class="annotation">: str</span>
+    </div>
+
+            <div class="docstring"><p>自行设置的代称</p>
+</div>
+
+
+                            </div>
+                            <div id="Friend.getProfile" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#Friend.getProfile">#&nbsp;&nbsp</a>
+
+        
+            <span class="def">async def</span>
+            <span class="name">getProfile</span><span class="signature">(self) -&gt; <a href="#Profile">ariadne.model.Profile</a></span>:
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span>    <span class="k">async</span> <span class="k">def</span> <span class="nf">getProfile</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;Profile&quot;</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;获取该好友的 Profile</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Profile: 该好友的 Profile 对象</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="kn">from</span> <span class="nn">.app</span> <span class="kn">import</span> <span class="n">Ariadne</span>
+
+        <span class="k">return</span> <span class="k">await</span> <span class="n">Ariadne</span><span class="o">.</span><span class="n">get_running</span><span class="p">(</span><span class="n">Ariadne</span><span class="p">)</span><span class="o">.</span><span class="n">getFriendProfile</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+</pre></div>
+
+        </details>
+
+            <div class="docstring"><p>获取该好友的 Profile</p>
+
+<h6 id="returns">Returns</h6>
+
+<blockquote>
+  <p>Profile: 该好友的 Profile 对象</p>
+</blockquote>
+</div>
+
+
+                            </div>
+                            <div id="Friend.getAvatar" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#Friend.getAvatar">#&nbsp;&nbsp</a>
+
+        
+            <span class="def">async def</span>
+            <span class="name">getAvatar</span><span class="signature">(self, size: Literal[640, 140] = 640) -&gt; bytes</span>:
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span>    <span class="k">async</span> <span class="k">def</span> <span class="nf">getAvatar</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">size</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="mi">640</span><span class="p">,</span> <span class="mi">140</span><span class="p">]</span> <span class="o">=</span> <span class="mi">640</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bytes</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;获取该好友的头像</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            size (Literal[640, 140]): 头像尺寸</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            bytes: 好友头像的二进制内容.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="kn">from</span> <span class="nn">.app</span> <span class="kn">import</span> <span class="n">Ariadne</span>
+
+        <span class="k">return</span> <span class="k">await</span> <span class="p">(</span>
+            <span class="k">await</span> <span class="n">Ariadne</span><span class="o">.</span><span class="n">get_running</span><span class="p">(</span><span class="n">Ariadne</span><span class="p">)</span><span class="o">.</span><span class="n">adapter</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;https://q.qlogo.cn/g?b=qq&amp;nk=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="si">}</span><span class="s2">&amp;s=</span><span class="si">{</span><span class="n">size</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="p">)</span>
+        <span class="p">)</span><span class="o">.</span><span class="n">content</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+</pre></div>
+
+        </details>
+
+            <div class="docstring"><p>获取该好友的头像</p>
+
+<h6 id="args">Args</h6>
+
+<ul>
+<li><strong>size (Literal[640, 140]):</strong>  头像尺寸</li>
+</ul>
+
+<h6 id="returns">Returns</h6>
+
+<blockquote>
+  <p>bytes: 好友头像的二进制内容.</p>
+</blockquote>
+</div>
+
+
+                            </div>
+                            <div class="inherited">
+                                <h5>Inherited Members</h5>
+                                <dl>
+                                    <div><dt>pydantic.main.BaseModel</dt>
+                                <dd id="Friend.__init__" class="function">BaseModel</dd>
+                <dd id="Friend.json" class="function">json</dd>
+                <dd id="Friend.parse_obj" class="function">parse_obj</dd>
+                <dd id="Friend.parse_raw" class="function">parse_raw</dd>
+                <dd id="Friend.parse_file" class="function">parse_file</dd>
+                <dd id="Friend.from_orm" class="function">from_orm</dd>
+                <dd id="Friend.construct" class="function">construct</dd>
+                <dd id="Friend.copy" class="function">copy</dd>
+                <dd id="Friend.schema" class="function">schema</dd>
+                <dd id="Friend.schema_json" class="function">schema_json</dd>
+                <dd id="Friend.validate" class="function">validate</dd>
+                <dd id="Friend.update_forward_refs" class="function">update_forward_refs</dd>
+
+            </div>
+            <div><dt><a href="#AriadneBaseModel">AriadneBaseModel</a></dt>
+                                <dd id="Friend.dict" class="function"><a href="#AriadneBaseModel.dict">dict</a></dd>
+                <dd id="Friend.Config" class="class"><a href="#AriadneBaseModel.Config">Config</a></dd>
+
+            </div>
+                                </dl>
+                            </div>
+                </section>
+                <section id="Stranger">
+                                <div class="attr class">
+        <a class="headerlink" href="#Stranger">#&nbsp;&nbsp</a>
+
+        
+        <span class="def">class</span>
+        <span class="name">Stranger</span><wbr>(<span class="base"><a href="#AriadneBaseModel">AriadneBaseModel</a></span>):
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">Stranger</span><span class="p">(</span><span class="n">AriadneBaseModel</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;描述 Tencent QQ 中的陌生人.&quot;&quot;&quot;</span>
+
+    <span class="nb">id</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="sd">&quot;&quot;&quot;QQ 号&quot;&quot;&quot;</span>
+
+    <span class="n">nickname</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="sd">&quot;&quot;&quot;昵称&quot;&quot;&quot;</span>
+
+    <span class="n">remark</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="sd">&quot;&quot;&quot;自行设置的代称&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__int__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span>
+
+    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;Stranger(</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">nickname</span><span class="si">}</span><span class="s2">)&quot;</span>
+
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">getAvatar</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">size</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="mi">640</span><span class="p">,</span> <span class="mi">140</span><span class="p">]</span> <span class="o">=</span> <span class="mi">640</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bytes</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;获取该陌生人的头像</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            size (Literal[640, 140]): 头像尺寸</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            bytes: 陌生人头像的二进制内容.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="kn">from</span> <span class="nn">.app</span> <span class="kn">import</span> <span class="n">Ariadne</span>
+
+        <span class="k">return</span> <span class="k">await</span> <span class="p">(</span>
+            <span class="k">await</span> <span class="n">Ariadne</span><span class="o">.</span><span class="n">get_running</span><span class="p">(</span><span class="n">Ariadne</span><span class="p">)</span><span class="o">.</span><span class="n">adapter</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;https://q.qlogo.cn/g?b=qq&amp;nk=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="si">}</span><span class="s2">&amp;s=</span><span class="si">{</span><span class="n">size</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="p">)</span>
+        <span class="p">)</span><span class="o">.</span><span class="n">content</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+</pre></div>
+
+        </details>
+
+            <div class="docstring"><p>描述 Tencent QQ 中的陌生人.</p>
+</div>
+
+
+                            <div id="Stranger.id" class="classattr">
+                                            <div class="attr variable"><a class="headerlink" href="#Stranger.id">#&nbsp;&nbsp</a>
+
+        <span class="name">id</span><span class="annotation">: int</span>
+    </div>
+
+            <div class="docstring"><p>QQ 号</p>
+</div>
+
+
+                            </div>
+                            <div id="Stranger.nickname" class="classattr">
+                                            <div class="attr variable"><a class="headerlink" href="#Stranger.nickname">#&nbsp;&nbsp</a>
+
+        <span class="name">nickname</span><span class="annotation">: str</span>
+    </div>
+
+            <div class="docstring"><p>昵称</p>
+</div>
+
+
+                            </div>
+                            <div id="Stranger.remark" class="classattr">
+                                            <div class="attr variable"><a class="headerlink" href="#Stranger.remark">#&nbsp;&nbsp</a>
+
+        <span class="name">remark</span><span class="annotation">: str</span>
+    </div>
+
+            <div class="docstring"><p>自行设置的代称</p>
+</div>
+
+
+                            </div>
+                            <div id="Stranger.getAvatar" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#Stranger.getAvatar">#&nbsp;&nbsp</a>
+
+        
+            <span class="def">async def</span>
+            <span class="name">getAvatar</span><span class="signature">(self, size: Literal[640, 140] = 640) -&gt; bytes</span>:
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span>    <span class="k">async</span> <span class="k">def</span> <span class="nf">getAvatar</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">size</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="mi">640</span><span class="p">,</span> <span class="mi">140</span><span class="p">]</span> <span class="o">=</span> <span class="mi">640</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bytes</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;获取该陌生人的头像</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            size (Literal[640, 140]): 头像尺寸</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            bytes: 陌生人头像的二进制内容.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="kn">from</span> <span class="nn">.app</span> <span class="kn">import</span> <span class="n">Ariadne</span>
+
+        <span class="k">return</span> <span class="k">await</span> <span class="p">(</span>
+            <span class="k">await</span> <span class="n">Ariadne</span><span class="o">.</span><span class="n">get_running</span><span class="p">(</span><span class="n">Ariadne</span><span class="p">)</span><span class="o">.</span><span class="n">adapter</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;https://q.qlogo.cn/g?b=qq&amp;nk=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="si">}</span><span class="s2">&amp;s=</span><span class="si">{</span><span class="n">size</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="p">)</span>
+        <span class="p">)</span><span class="o">.</span><span class="n">content</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+</pre></div>
+
+        </details>
+
+            <div class="docstring"><p>获取该陌生人的头像</p>
+
+<h6 id="args">Args</h6>
+
+<ul>
+<li><strong>size (Literal[640, 140]):</strong>  头像尺寸</li>
+</ul>
+
+<h6 id="returns">Returns</h6>
+
+<blockquote>
+  <p>bytes: 陌生人头像的二进制内容.</p>
+</blockquote>
+</div>
+
+
+                            </div>
+                            <div class="inherited">
+                                <h5>Inherited Members</h5>
+                                <dl>
+                                    <div><dt>pydantic.main.BaseModel</dt>
+                                <dd id="Stranger.__init__" class="function">BaseModel</dd>
+                <dd id="Stranger.json" class="function">json</dd>
+                <dd id="Stranger.parse_obj" class="function">parse_obj</dd>
+                <dd id="Stranger.parse_raw" class="function">parse_raw</dd>
+                <dd id="Stranger.parse_file" class="function">parse_file</dd>
+                <dd id="Stranger.from_orm" class="function">from_orm</dd>
+                <dd id="Stranger.construct" class="function">construct</dd>
+                <dd id="Stranger.copy" class="function">copy</dd>
+                <dd id="Stranger.schema" class="function">schema</dd>
+                <dd id="Stranger.schema_json" class="function">schema_json</dd>
+                <dd id="Stranger.validate" class="function">validate</dd>
+                <dd id="Stranger.update_forward_refs" class="function">update_forward_refs</dd>
+
+            </div>
+            <div><dt><a href="#AriadneBaseModel">AriadneBaseModel</a></dt>
+                                <dd id="Stranger.dict" class="function"><a href="#AriadneBaseModel.dict">dict</a></dd>
+                <dd id="Stranger.Config" class="class"><a href="#AriadneBaseModel.Config">Config</a></dd>
 
             </div>
                                 </dl>

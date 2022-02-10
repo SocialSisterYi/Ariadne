@@ -193,6 +193,24 @@
 
             </li>
             <li>
+                    <a class="class" href="#MarketFace">MarketFace</a>
+                            <ul class="memberlist">
+                        <li>
+                                <a class="variable" href="#MarketFace.type">type</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#MarketFace.faceId">faceId</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#MarketFace.name">name</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#MarketFace.asDisplay">asDisplay</a>
+                        </li>
+                </ul>
+
+            </li>
+            <li>
                     <a class="class" href="#Xml">Xml</a>
                             <ul class="memberlist">
                         <li>
@@ -820,8 +838,29 @@
     <span class="k">def</span> <span class="nf">asDisplay</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;[表情: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">faceId</span><span class="si">}</span><span class="s2">]&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="s2">&quot;Face&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
         <span class="k">return</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">Face</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">faceId</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">faceId</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+
+
+<span class="k">class</span> <span class="nc">MarketFace</span><span class="p">(</span><span class="n">Element</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;表示消息中的商城表情.</span>
+
+<span class="sd">    注意: 本类型不支持用户发送</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="nb">type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;MarketFace&quot;</span>
+
+    <span class="n">faceId</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;id&quot;</span><span class="p">)</span>
+    <span class="sd">&quot;&quot;&quot;QQ 表情编号&quot;&quot;&quot;</span>
+
+    <span class="n">name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="sd">&quot;&quot;&quot;QQ 表情名称&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">asDisplay</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;[商城表情: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">faceId</span><span class="si">}</span><span class="s2">]&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="k">return</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">MarketFace</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">faceId</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">faceId</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
 
 
 <span class="k">class</span> <span class="nc">Xml</span><span class="p">(</span><span class="n">Element</span><span class="p">):</span>
@@ -2581,7 +2620,7 @@ type (str): 元素类型</p>
     <span class="k">def</span> <span class="nf">asDisplay</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;[表情: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">faceId</span><span class="si">}</span><span class="s2">]&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="s2">&quot;Face&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
         <span class="k">return</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">Face</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">faceId</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">faceId</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
 </pre></div>
 
@@ -2702,6 +2741,137 @@ type (str): 元素类型</p>
                 <dd id="Face.schema_json" class="function">schema_json</dd>
                 <dd id="Face.validate" class="function">validate</dd>
                 <dd id="Face.update_forward_refs" class="function">update_forward_refs</dd>
+
+            </div>
+                                </dl>
+                            </div>
+                </section>
+                <section id="MarketFace">
+                                <div class="attr class">
+        <a class="headerlink" href="#MarketFace">#&nbsp;&nbsp</a>
+
+        
+        <span class="def">class</span>
+        <span class="name">MarketFace</span><wbr>(<span class="base"><a href="#Element">Element</a></span>):
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">MarketFace</span><span class="p">(</span><span class="n">Element</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;表示消息中的商城表情.</span>
+
+<span class="sd">    注意: 本类型不支持用户发送</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="nb">type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;MarketFace&quot;</span>
+
+    <span class="n">faceId</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;id&quot;</span><span class="p">)</span>
+    <span class="sd">&quot;&quot;&quot;QQ 表情编号&quot;&quot;&quot;</span>
+
+    <span class="n">name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="sd">&quot;&quot;&quot;QQ 表情名称&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">asDisplay</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;[商城表情: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">faceId</span><span class="si">}</span><span class="s2">]&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="k">return</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">MarketFace</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">faceId</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">faceId</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+</pre></div>
+
+        </details>
+
+            <div class="docstring"><p>表示消息中的商城表情.</p>
+
+<p>注意: 本类型不支持用户发送</p>
+</div>
+
+
+                            <div id="MarketFace.type" class="classattr">
+                                            <div class="attr variable"><a class="headerlink" href="#MarketFace.type">#&nbsp;&nbsp</a>
+
+        <span class="name">type</span><span class="annotation">: str</span>
+    </div>
+
+            <div class="docstring"><p>元素类型</p>
+</div>
+
+
+                            </div>
+                            <div id="MarketFace.faceId" class="classattr">
+                                            <div class="attr variable"><a class="headerlink" href="#MarketFace.faceId">#&nbsp;&nbsp</a>
+
+        <span class="name">faceId</span><span class="annotation">: Optional[int]</span>
+    </div>
+
+            <div class="docstring"><p>QQ 表情编号</p>
+</div>
+
+
+                            </div>
+                            <div id="MarketFace.name" class="classattr">
+                                            <div class="attr variable"><a class="headerlink" href="#MarketFace.name">#&nbsp;&nbsp</a>
+
+        <span class="name">name</span><span class="annotation">: Optional[str]</span>
+    </div>
+
+            <div class="docstring"><p>QQ 表情名称</p>
+</div>
+
+
+                            </div>
+                            <div id="MarketFace.asDisplay" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#MarketFace.asDisplay">#&nbsp;&nbsp</a>
+
+        
+            <span class="def">def</span>
+            <span class="name">asDisplay</span><span class="signature">(self) -&gt; str</span>:
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">asDisplay</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;[商城表情: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">faceId</span><span class="si">}</span><span class="s2">]&quot;</span>
+</pre></div>
+
+        </details>
+
+            <div class="docstring"><p>返回该元素的 "显示" 形式字符串, 趋近于你见到的样子.</p>
+
+<h6 id="returns">Returns</h6>
+
+<blockquote>
+  <p>str: "显示" 字符串.</p>
+</blockquote>
+</div>
+
+
+                            </div>
+                            <div class="inherited">
+                                <h5>Inherited Members</h5>
+                                <dl>
+                                    <div><dt>pydantic.main.BaseModel</dt>
+                                <dd id="MarketFace.__init__" class="function">BaseModel</dd>
+                <dd id="MarketFace.json" class="function">json</dd>
+                <dd id="MarketFace.parse_obj" class="function">parse_obj</dd>
+                <dd id="MarketFace.parse_raw" class="function">parse_raw</dd>
+                <dd id="MarketFace.parse_file" class="function">parse_file</dd>
+                <dd id="MarketFace.from_orm" class="function">from_orm</dd>
+                <dd id="MarketFace.construct" class="function">construct</dd>
+                <dd id="MarketFace.copy" class="function">copy</dd>
+                <dd id="MarketFace.schema" class="function">schema</dd>
+                <dd id="MarketFace.schema_json" class="function">schema_json</dd>
+                <dd id="MarketFace.validate" class="function">validate</dd>
+                <dd id="MarketFace.update_forward_refs" class="function">update_forward_refs</dd>
+
+            </div>
+            <div><dt><a href="#Element">Element</a></dt>
+                                <dd id="MarketFace.asPersistentString" class="function"><a href="#Element.asPersistentString">asPersistentString</a></dd>
+                <dd id="MarketFace.prepare" class="function"><a href="#Element.prepare">prepare</a></dd>
+
+            </div>
+            <div><dt><a href="../model.html#AriadneBaseModel">ariadne.model.AriadneBaseModel</a></dt>
+                                <dd id="MarketFace.dict" class="function"><a href="../model.html#AriadneBaseModel.dict">dict</a></dd>
+                <dd id="MarketFace.Config" class="class"><a href="../model.html#AriadneBaseModel.Config">Config</a></dd>
 
             </div>
                                 </dl>

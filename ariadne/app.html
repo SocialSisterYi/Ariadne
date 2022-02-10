@@ -100,6 +100,9 @@
                                 <a class="function" href="#RelationshipMixin.getBotProfile">getBotProfile</a>
                         </li>
                         <li>
+                                <a class="function" href="#RelationshipMixin.getUserProfile">getUserProfile</a>
+                        </li>
+                        <li>
                                 <a class="function" href="#RelationshipMixin.getFriendProfile">getFriendProfile</a>
                         </li>
                         <li>
@@ -275,6 +278,7 @@
 <span class="kn">import</span> <span class="nn">time</span>
 <span class="kn">from</span> <span class="nn">asyncio.events</span> <span class="kn">import</span> <span class="n">AbstractEventLoop</span>
 <span class="kn">from</span> <span class="nn">asyncio.tasks</span> <span class="kn">import</span> <span class="n">Task</span>
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">TYPE_CHECKING</span><span class="p">,</span>
     <span class="n">Any</span><span class="p">,</span>
@@ -320,6 +324,7 @@
     <span class="n">MemberInfo</span><span class="p">,</span>
     <span class="n">MiraiSession</span><span class="p">,</span>
     <span class="n">Profile</span><span class="p">,</span>
+    <span class="n">Stranger</span><span class="p">,</span>
     <span class="n">UploadMethod</span><span class="p">,</span>
 <span class="p">)</span>
 <span class="kn">from</span> <span class="nn">.typing</span> <span class="kn">import</span> <span class="n">SendMessageAction</span><span class="p">,</span> <span class="n">SendMessageDict</span><span class="p">,</span> <span class="n">SendMessageException</span>
@@ -391,6 +396,8 @@
 <span class="sd">        Returns:</span>
 <span class="sd">            BotMessage: 即当前会话账号所发出消息的元数据, 内包含有一 `messageId` 属性, 可用于回复.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="kn">from</span> <span class="nn">.event.message</span> <span class="kn">import</span> <span class="n">ActiveFriendMessage</span>
+
         <span class="k">with</span> <span class="n">enter_message_send_context</span><span class="p">(</span><span class="n">UploadMethod</span><span class="o">.</span><span class="n">Friend</span><span class="p">):</span>
             <span class="n">new_msg</span> <span class="o">=</span> <span class="n">message</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
             <span class="n">new_msg</span><span class="o">.</span><span class="n">prepare</span><span class="p">()</span>
@@ -399,26 +406,23 @@
                 <span class="n">CallMethod</span><span class="o">.</span><span class="n">POST</span><span class="p">,</span>
                 <span class="p">{</span>
                     <span class="s2">&quot;sessionKey&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">session_key</span><span class="p">,</span>
-                    <span class="s2">&quot;target&quot;</span><span class="p">:</span> <span class="n">target</span><span class="o">.</span><span class="n">id</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">Friend</span><span class="p">)</span> <span class="k">else</span> <span class="n">target</span><span class="p">,</span>
+                    <span class="s2">&quot;target&quot;</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">target</span><span class="p">),</span>
                     <span class="s2">&quot;messageChain&quot;</span><span class="p">:</span> <span class="n">new_msg</span><span class="o">.</span><span class="n">dict</span><span class="p">()[</span><span class="s2">&quot;__root__&quot;</span><span class="p">],</span>
                     <span class="o">**</span><span class="p">({</span><span class="s2">&quot;quote&quot;</span><span class="p">:</span> <span class="n">quote</span><span class="o">.</span><span class="n">id</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">quote</span><span class="p">,</span> <span class="n">Source</span><span class="p">)</span> <span class="k">else</span> <span class="n">quote</span><span class="p">}</span> <span class="k">if</span> <span class="n">quote</span> <span class="k">else</span> <span class="p">{}),</span>
                 <span class="p">},</span>
             <span class="p">)</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
-                <span class="s2">&quot;</span><span class="si">{bot_id}</span><span class="s2">: [Friend(</span><span class="si">{friend_id}</span><span class="s2">)] &lt;- </span><span class="si">{message}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format_map</span><span class="p">(</span>
-                    <span class="p">{</span>
-                        <span class="s2">&quot;bot_id&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">mirai_session</span><span class="o">.</span><span class="n">account</span><span class="p">,</span>
-                        <span class="s2">&quot;friend_id&quot;</span><span class="p">:</span> <span class="n">target</span><span class="o">.</span><span class="n">id</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">Friend</span><span class="p">)</span> <span class="k">else</span> <span class="n">target</span><span class="p">,</span>
-                        <span class="s2">&quot;message&quot;</span><span class="p">:</span> <span class="n">new_msg</span><span class="o">.</span><span class="n">asDisplay</span><span class="p">()</span><span class="o">.</span><span class="fm">__repr__</span><span class="p">(),</span>
-                    <span class="p">}</span>
-                <span class="p">)</span>
+            <span class="n">event</span><span class="p">:</span> <span class="n">ActiveFriendMessage</span> <span class="o">=</span> <span class="n">ActiveFriendMessage</span><span class="p">(</span>
+                <span class="n">messageChain</span><span class="o">=</span><span class="n">MessageChain</span><span class="p">([</span><span class="n">Source</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="n">result</span><span class="p">[</span><span class="s2">&quot;messageId&quot;</span><span class="p">],</span> <span class="n">time</span><span class="o">=</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">())])</span> <span class="o">+</span> <span class="n">message</span><span class="p">,</span>
+                <span class="n">subject</span><span class="o">=</span><span class="p">(</span><span class="k">await</span> <span class="n">RelationshipMixin</span><span class="o">.</span><span class="n">getFriend</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">target</span><span class="p">))),</span>
             <span class="p">)</span>
+            <span class="k">with</span> <span class="n">enter_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">broadcast</span><span class="o">.</span><span class="n">postEvent</span><span class="p">(</span><span class="n">event</span><span class="p">)</span>
             <span class="k">return</span> <span class="n">BotMessage</span><span class="p">(</span><span class="n">messageId</span><span class="o">=</span><span class="n">result</span><span class="p">[</span><span class="s2">&quot;messageId&quot;</span><span class="p">],</span> <span class="n">origin</span><span class="o">=</span><span class="n">message</span><span class="p">)</span>
 
     <span class="nd">@app_ctx_manager</span>
     <span class="k">async</span> <span class="k">def</span> <span class="nf">sendGroupMessage</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">target</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Group</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span>
+        <span class="n">target</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Group</span><span class="p">,</span> <span class="n">Member</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span>
         <span class="n">message</span><span class="p">:</span> <span class="n">MessageChain</span><span class="p">,</span>
         <span class="o">*</span><span class="p">,</span>
         <span class="n">quote</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">Source</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -426,13 +430,18 @@
         <span class="sd">&quot;&quot;&quot;发送消息到群组内, 可以指定回复的消息.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            target (Union[Group, int]): 指定的群组, 可以是群组的 ID 也可以是 Group 实例.</span>
+<span class="sd">            target (Union[Group, Member, int]): 指定的群组, 可以是群组的 ID 也可以是 Group 或 Member 实例.</span>
 <span class="sd">            message (MessageChain): 有效的, 可发送的(Sendable)消息链.</span>
 <span class="sd">            quote (Optional[Union[Source, int]], optional): 需要回复的消息, 不要忽视我啊喂?!!, 默认为 None.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            BotMessage: 即当前会话账号所发出消息的元数据, 内包含有一 `messageId` 属性, 可用于回复.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="kn">from</span> <span class="nn">.event.message</span> <span class="kn">import</span> <span class="n">ActiveGroupMessage</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">Member</span><span class="p">):</span>
+            <span class="n">target</span> <span class="o">=</span> <span class="n">target</span><span class="o">.</span><span class="n">group</span>
+
         <span class="k">with</span> <span class="n">enter_message_send_context</span><span class="p">(</span><span class="n">UploadMethod</span><span class="o">.</span><span class="n">Group</span><span class="p">):</span>
             <span class="n">new_msg</span> <span class="o">=</span> <span class="n">message</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
             <span class="n">new_msg</span><span class="o">.</span><span class="n">prepare</span><span class="p">()</span>
@@ -441,20 +450,17 @@
                 <span class="n">CallMethod</span><span class="o">.</span><span class="n">POST</span><span class="p">,</span>
                 <span class="p">{</span>
                     <span class="s2">&quot;sessionKey&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">session_key</span><span class="p">,</span>
-                    <span class="s2">&quot;target&quot;</span><span class="p">:</span> <span class="n">target</span><span class="o">.</span><span class="n">id</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">Group</span><span class="p">)</span> <span class="k">else</span> <span class="n">target</span><span class="p">,</span>
+                    <span class="s2">&quot;target&quot;</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">target</span><span class="p">),</span>
                     <span class="s2">&quot;messageChain&quot;</span><span class="p">:</span> <span class="n">new_msg</span><span class="o">.</span><span class="n">dict</span><span class="p">()[</span><span class="s2">&quot;__root__&quot;</span><span class="p">],</span>
                     <span class="o">**</span><span class="p">({</span><span class="s2">&quot;quote&quot;</span><span class="p">:</span> <span class="n">quote</span><span class="o">.</span><span class="n">id</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">quote</span><span class="p">,</span> <span class="n">Source</span><span class="p">)</span> <span class="k">else</span> <span class="n">quote</span><span class="p">}</span> <span class="k">if</span> <span class="n">quote</span> <span class="k">else</span> <span class="p">{}),</span>
                 <span class="p">},</span>
             <span class="p">)</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
-                <span class="s2">&quot;</span><span class="si">{bot_id}</span><span class="s2">: [Group(</span><span class="si">{group_id}</span><span class="s2">)] &lt;- </span><span class="si">{message}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format_map</span><span class="p">(</span>
-                    <span class="p">{</span>
-                        <span class="s2">&quot;bot_id&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">mirai_session</span><span class="o">.</span><span class="n">account</span><span class="p">,</span>
-                        <span class="s2">&quot;group_id&quot;</span><span class="p">:</span> <span class="n">target</span><span class="o">.</span><span class="n">id</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">Group</span><span class="p">)</span> <span class="k">else</span> <span class="n">target</span><span class="p">,</span>
-                        <span class="s2">&quot;message&quot;</span><span class="p">:</span> <span class="n">new_msg</span><span class="o">.</span><span class="n">asDisplay</span><span class="p">()</span><span class="o">.</span><span class="fm">__repr__</span><span class="p">(),</span>
-                    <span class="p">}</span>
-                <span class="p">)</span>
+            <span class="n">event</span><span class="p">:</span> <span class="n">ActiveGroupMessage</span> <span class="o">=</span> <span class="n">ActiveGroupMessage</span><span class="p">(</span>
+                <span class="n">messageChain</span><span class="o">=</span><span class="n">MessageChain</span><span class="p">([</span><span class="n">Source</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="n">result</span><span class="p">[</span><span class="s2">&quot;messageId&quot;</span><span class="p">],</span> <span class="n">time</span><span class="o">=</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">())])</span> <span class="o">+</span> <span class="n">message</span><span class="p">,</span>
+                <span class="n">subject</span><span class="o">=</span><span class="p">(</span><span class="k">await</span> <span class="n">RelationshipMixin</span><span class="o">.</span><span class="n">getGroup</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">target</span><span class="p">))),</span>
             <span class="p">)</span>
+            <span class="k">with</span> <span class="n">enter_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">broadcast</span><span class="o">.</span><span class="n">postEvent</span><span class="p">(</span><span class="n">event</span><span class="p">)</span>
             <span class="k">return</span> <span class="n">BotMessage</span><span class="p">(</span><span class="n">messageId</span><span class="o">=</span><span class="n">result</span><span class="p">[</span><span class="s2">&quot;messageId&quot;</span><span class="p">],</span> <span class="n">origin</span><span class="o">=</span><span class="n">message</span><span class="p">)</span>
 
     <span class="nd">@app_ctx_manager</span>
@@ -477,6 +483,8 @@
 <span class="sd">        Returns:</span>
 <span class="sd">            BotMessage: 即当前会话账号所发出消息的元数据, 内包含有一 `messageId` 属性, 可用于回复.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="kn">from</span> <span class="nn">.event.message</span> <span class="kn">import</span> <span class="n">ActiveTempMessage</span>
+
         <span class="n">new_msg</span> <span class="o">=</span> <span class="n">message</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
         <span class="n">new_msg</span><span class="o">.</span><span class="n">prepare</span><span class="p">()</span>
         <span class="n">group</span> <span class="o">=</span> <span class="n">target</span><span class="o">.</span><span class="n">group</span> <span class="k">if</span> <span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">Member</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">group</span><span class="p">)</span> <span class="k">else</span> <span class="n">group</span>
@@ -488,22 +496,18 @@
                 <span class="n">CallMethod</span><span class="o">.</span><span class="n">POST</span><span class="p">,</span>
                 <span class="p">{</span>
                     <span class="s2">&quot;sessionKey&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">session_key</span><span class="p">,</span>
-                    <span class="s2">&quot;group&quot;</span><span class="p">:</span> <span class="n">group</span><span class="o">.</span><span class="n">id</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">group</span><span class="p">,</span> <span class="n">Group</span><span class="p">)</span> <span class="k">else</span> <span class="n">group</span><span class="p">,</span>
-                    <span class="s2">&quot;qq&quot;</span><span class="p">:</span> <span class="n">target</span><span class="o">.</span><span class="n">id</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">Member</span><span class="p">)</span> <span class="k">else</span> <span class="n">target</span><span class="p">,</span>
+                    <span class="s2">&quot;group&quot;</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">group</span><span class="p">),</span>
+                    <span class="s2">&quot;qq&quot;</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">target</span><span class="p">),</span>
                     <span class="s2">&quot;messageChain&quot;</span><span class="p">:</span> <span class="n">new_msg</span><span class="o">.</span><span class="n">dict</span><span class="p">()[</span><span class="s2">&quot;__root__&quot;</span><span class="p">],</span>
                     <span class="o">**</span><span class="p">({</span><span class="s2">&quot;quote&quot;</span><span class="p">:</span> <span class="n">quote</span><span class="o">.</span><span class="n">id</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">quote</span><span class="p">,</span> <span class="n">Source</span><span class="p">)</span> <span class="k">else</span> <span class="n">quote</span><span class="p">}</span> <span class="k">if</span> <span class="n">quote</span> <span class="k">else</span> <span class="p">{}),</span>
                 <span class="p">},</span>
             <span class="p">)</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
-                <span class="s2">&quot;</span><span class="si">{bot_id}</span><span class="s2">: [Member(</span><span class="si">{member_id}</span><span class="s2">) of Group(</span><span class="si">{group_id}</span><span class="s2">)] &lt;- </span><span class="si">{message}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format_map</span><span class="p">(</span>
-                    <span class="p">{</span>
-                        <span class="s2">&quot;bot_id&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">mirai_session</span><span class="o">.</span><span class="n">account</span><span class="p">,</span>
-                        <span class="s2">&quot;member_id&quot;</span><span class="p">:</span> <span class="n">target</span><span class="o">.</span><span class="n">id</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">Member</span><span class="p">)</span> <span class="k">else</span> <span class="n">target</span><span class="p">,</span>
-                        <span class="s2">&quot;group_id&quot;</span><span class="p">:</span> <span class="n">group</span><span class="o">.</span><span class="n">id</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">group</span><span class="p">,</span> <span class="n">Group</span><span class="p">)</span> <span class="k">else</span> <span class="n">group</span><span class="p">,</span>
-                        <span class="s2">&quot;message&quot;</span><span class="p">:</span> <span class="n">new_msg</span><span class="o">.</span><span class="n">asDisplay</span><span class="p">()</span><span class="o">.</span><span class="fm">__repr__</span><span class="p">(),</span>
-                    <span class="p">}</span>
-                <span class="p">)</span>
+            <span class="n">event</span><span class="p">:</span> <span class="n">ActiveTempMessage</span> <span class="o">=</span> <span class="n">ActiveTempMessage</span><span class="p">(</span>
+                <span class="n">messageChain</span><span class="o">=</span><span class="n">MessageChain</span><span class="p">([</span><span class="n">Source</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="n">result</span><span class="p">[</span><span class="s2">&quot;messageId&quot;</span><span class="p">],</span> <span class="n">time</span><span class="o">=</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">())])</span> <span class="o">+</span> <span class="n">message</span><span class="p">,</span>
+                <span class="n">subject</span><span class="o">=</span><span class="p">(</span><span class="k">await</span> <span class="n">RelationshipMixin</span><span class="o">.</span><span class="n">getMember</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">group</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">target</span><span class="p">))),</span>
             <span class="p">)</span>
+            <span class="k">with</span> <span class="n">enter_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">broadcast</span><span class="o">.</span><span class="n">postEvent</span><span class="p">(</span><span class="n">event</span><span class="p">)</span>
             <span class="k">return</span> <span class="n">BotMessage</span><span class="p">(</span><span class="n">messageId</span><span class="o">=</span><span class="n">result</span><span class="p">[</span><span class="s2">&quot;messageId&quot;</span><span class="p">],</span> <span class="n">origin</span><span class="o">=</span><span class="n">message</span><span class="p">)</span>
 
     <span class="nd">@app_ctx_manager</span>
@@ -734,6 +738,26 @@
         <span class="k">return</span> <span class="n">Profile</span><span class="o">.</span><span class="n">parse_obj</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
 
     <span class="nd">@app_ctx_manager</span>
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">getUserProfile</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">target</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Friend</span><span class="p">,</span> <span class="n">Member</span><span class="p">,</span> <span class="n">Stranger</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Profile</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;获取任意 QQ 用户的 Profile.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            target (Union[int, Friend, Member, Stranger]): 任意 QQ 用户.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Profile: 找到的 Profile.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">adapter</span><span class="o">.</span><span class="n">call_api</span><span class="p">(</span>
+            <span class="s2">&quot;userProfile&quot;</span><span class="p">,</span>
+            <span class="n">CallMethod</span><span class="o">.</span><span class="n">GET</span><span class="p">,</span>
+            <span class="p">{</span>
+                <span class="s2">&quot;sessionKey&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">session_key</span><span class="p">,</span>
+                <span class="s2">&quot;userId&quot;</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">target</span><span class="p">),</span>
+            <span class="p">},</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">Profile</span><span class="o">.</span><span class="n">parse_obj</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+
+    <span class="nd">@app_ctx_manager</span>
     <span class="k">async</span> <span class="k">def</span> <span class="nf">getFriendProfile</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">friend</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Friend</span><span class="p">,</span> <span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Profile</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;获取好友的 Profile.</span>
 
@@ -748,7 +772,7 @@
             <span class="n">CallMethod</span><span class="o">.</span><span class="n">GET</span><span class="p">,</span>
             <span class="p">{</span>
                 <span class="s2">&quot;sessionKey&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">session_key</span><span class="p">,</span>
-                <span class="s2">&quot;target&quot;</span><span class="p">:</span> <span class="n">friend</span><span class="o">.</span><span class="n">id</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">friend</span><span class="p">,</span> <span class="n">Friend</span><span class="p">)</span> <span class="k">else</span> <span class="n">friend</span><span class="p">,</span>
+                <span class="s2">&quot;target&quot;</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">friend</span><span class="p">),</span>
             <span class="p">},</span>
         <span class="p">)</span>
         <span class="k">return</span> <span class="n">Profile</span><span class="o">.</span><span class="n">parse_obj</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
@@ -1907,6 +1931,8 @@
 <span class="sd">        Returns:</span>
 <span class="sd">            BotMessage: 即当前会话账号所发出消息的元数据, 内包含有一 `messageId` 属性, 可用于回复.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="kn">from</span> <span class="nn">.event.message</span> <span class="kn">import</span> <span class="n">ActiveFriendMessage</span>
+
         <span class="k">with</span> <span class="n">enter_message_send_context</span><span class="p">(</span><span class="n">UploadMethod</span><span class="o">.</span><span class="n">Friend</span><span class="p">):</span>
             <span class="n">new_msg</span> <span class="o">=</span> <span class="n">message</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
             <span class="n">new_msg</span><span class="o">.</span><span class="n">prepare</span><span class="p">()</span>
@@ -1915,26 +1941,23 @@
                 <span class="n">CallMethod</span><span class="o">.</span><span class="n">POST</span><span class="p">,</span>
                 <span class="p">{</span>
                     <span class="s2">&quot;sessionKey&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">session_key</span><span class="p">,</span>
-                    <span class="s2">&quot;target&quot;</span><span class="p">:</span> <span class="n">target</span><span class="o">.</span><span class="n">id</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">Friend</span><span class="p">)</span> <span class="k">else</span> <span class="n">target</span><span class="p">,</span>
+                    <span class="s2">&quot;target&quot;</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">target</span><span class="p">),</span>
                     <span class="s2">&quot;messageChain&quot;</span><span class="p">:</span> <span class="n">new_msg</span><span class="o">.</span><span class="n">dict</span><span class="p">()[</span><span class="s2">&quot;__root__&quot;</span><span class="p">],</span>
                     <span class="o">**</span><span class="p">({</span><span class="s2">&quot;quote&quot;</span><span class="p">:</span> <span class="n">quote</span><span class="o">.</span><span class="n">id</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">quote</span><span class="p">,</span> <span class="n">Source</span><span class="p">)</span> <span class="k">else</span> <span class="n">quote</span><span class="p">}</span> <span class="k">if</span> <span class="n">quote</span> <span class="k">else</span> <span class="p">{}),</span>
                 <span class="p">},</span>
             <span class="p">)</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
-                <span class="s2">&quot;</span><span class="si">{bot_id}</span><span class="s2">: [Friend(</span><span class="si">{friend_id}</span><span class="s2">)] &lt;- </span><span class="si">{message}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format_map</span><span class="p">(</span>
-                    <span class="p">{</span>
-                        <span class="s2">&quot;bot_id&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">mirai_session</span><span class="o">.</span><span class="n">account</span><span class="p">,</span>
-                        <span class="s2">&quot;friend_id&quot;</span><span class="p">:</span> <span class="n">target</span><span class="o">.</span><span class="n">id</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">Friend</span><span class="p">)</span> <span class="k">else</span> <span class="n">target</span><span class="p">,</span>
-                        <span class="s2">&quot;message&quot;</span><span class="p">:</span> <span class="n">new_msg</span><span class="o">.</span><span class="n">asDisplay</span><span class="p">()</span><span class="o">.</span><span class="fm">__repr__</span><span class="p">(),</span>
-                    <span class="p">}</span>
-                <span class="p">)</span>
+            <span class="n">event</span><span class="p">:</span> <span class="n">ActiveFriendMessage</span> <span class="o">=</span> <span class="n">ActiveFriendMessage</span><span class="p">(</span>
+                <span class="n">messageChain</span><span class="o">=</span><span class="n">MessageChain</span><span class="p">([</span><span class="n">Source</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="n">result</span><span class="p">[</span><span class="s2">&quot;messageId&quot;</span><span class="p">],</span> <span class="n">time</span><span class="o">=</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">())])</span> <span class="o">+</span> <span class="n">message</span><span class="p">,</span>
+                <span class="n">subject</span><span class="o">=</span><span class="p">(</span><span class="k">await</span> <span class="n">RelationshipMixin</span><span class="o">.</span><span class="n">getFriend</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">target</span><span class="p">))),</span>
             <span class="p">)</span>
+            <span class="k">with</span> <span class="n">enter_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">broadcast</span><span class="o">.</span><span class="n">postEvent</span><span class="p">(</span><span class="n">event</span><span class="p">)</span>
             <span class="k">return</span> <span class="n">BotMessage</span><span class="p">(</span><span class="n">messageId</span><span class="o">=</span><span class="n">result</span><span class="p">[</span><span class="s2">&quot;messageId&quot;</span><span class="p">],</span> <span class="n">origin</span><span class="o">=</span><span class="n">message</span><span class="p">)</span>
 
     <span class="nd">@app_ctx_manager</span>
     <span class="k">async</span> <span class="k">def</span> <span class="nf">sendGroupMessage</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">target</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Group</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span>
+        <span class="n">target</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Group</span><span class="p">,</span> <span class="n">Member</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span>
         <span class="n">message</span><span class="p">:</span> <span class="n">MessageChain</span><span class="p">,</span>
         <span class="o">*</span><span class="p">,</span>
         <span class="n">quote</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">Source</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -1942,13 +1965,18 @@
         <span class="sd">&quot;&quot;&quot;发送消息到群组内, 可以指定回复的消息.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            target (Union[Group, int]): 指定的群组, 可以是群组的 ID 也可以是 Group 实例.</span>
+<span class="sd">            target (Union[Group, Member, int]): 指定的群组, 可以是群组的 ID 也可以是 Group 或 Member 实例.</span>
 <span class="sd">            message (MessageChain): 有效的, 可发送的(Sendable)消息链.</span>
 <span class="sd">            quote (Optional[Union[Source, int]], optional): 需要回复的消息, 不要忽视我啊喂?!!, 默认为 None.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            BotMessage: 即当前会话账号所发出消息的元数据, 内包含有一 `messageId` 属性, 可用于回复.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="kn">from</span> <span class="nn">.event.message</span> <span class="kn">import</span> <span class="n">ActiveGroupMessage</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">Member</span><span class="p">):</span>
+            <span class="n">target</span> <span class="o">=</span> <span class="n">target</span><span class="o">.</span><span class="n">group</span>
+
         <span class="k">with</span> <span class="n">enter_message_send_context</span><span class="p">(</span><span class="n">UploadMethod</span><span class="o">.</span><span class="n">Group</span><span class="p">):</span>
             <span class="n">new_msg</span> <span class="o">=</span> <span class="n">message</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
             <span class="n">new_msg</span><span class="o">.</span><span class="n">prepare</span><span class="p">()</span>
@@ -1957,20 +1985,17 @@
                 <span class="n">CallMethod</span><span class="o">.</span><span class="n">POST</span><span class="p">,</span>
                 <span class="p">{</span>
                     <span class="s2">&quot;sessionKey&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">session_key</span><span class="p">,</span>
-                    <span class="s2">&quot;target&quot;</span><span class="p">:</span> <span class="n">target</span><span class="o">.</span><span class="n">id</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">Group</span><span class="p">)</span> <span class="k">else</span> <span class="n">target</span><span class="p">,</span>
+                    <span class="s2">&quot;target&quot;</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">target</span><span class="p">),</span>
                     <span class="s2">&quot;messageChain&quot;</span><span class="p">:</span> <span class="n">new_msg</span><span class="o">.</span><span class="n">dict</span><span class="p">()[</span><span class="s2">&quot;__root__&quot;</span><span class="p">],</span>
                     <span class="o">**</span><span class="p">({</span><span class="s2">&quot;quote&quot;</span><span class="p">:</span> <span class="n">quote</span><span class="o">.</span><span class="n">id</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">quote</span><span class="p">,</span> <span class="n">Source</span><span class="p">)</span> <span class="k">else</span> <span class="n">quote</span><span class="p">}</span> <span class="k">if</span> <span class="n">quote</span> <span class="k">else</span> <span class="p">{}),</span>
                 <span class="p">},</span>
             <span class="p">)</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
-                <span class="s2">&quot;</span><span class="si">{bot_id}</span><span class="s2">: [Group(</span><span class="si">{group_id}</span><span class="s2">)] &lt;- </span><span class="si">{message}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format_map</span><span class="p">(</span>
-                    <span class="p">{</span>
-                        <span class="s2">&quot;bot_id&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">mirai_session</span><span class="o">.</span><span class="n">account</span><span class="p">,</span>
-                        <span class="s2">&quot;group_id&quot;</span><span class="p">:</span> <span class="n">target</span><span class="o">.</span><span class="n">id</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">Group</span><span class="p">)</span> <span class="k">else</span> <span class="n">target</span><span class="p">,</span>
-                        <span class="s2">&quot;message&quot;</span><span class="p">:</span> <span class="n">new_msg</span><span class="o">.</span><span class="n">asDisplay</span><span class="p">()</span><span class="o">.</span><span class="fm">__repr__</span><span class="p">(),</span>
-                    <span class="p">}</span>
-                <span class="p">)</span>
+            <span class="n">event</span><span class="p">:</span> <span class="n">ActiveGroupMessage</span> <span class="o">=</span> <span class="n">ActiveGroupMessage</span><span class="p">(</span>
+                <span class="n">messageChain</span><span class="o">=</span><span class="n">MessageChain</span><span class="p">([</span><span class="n">Source</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="n">result</span><span class="p">[</span><span class="s2">&quot;messageId&quot;</span><span class="p">],</span> <span class="n">time</span><span class="o">=</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">())])</span> <span class="o">+</span> <span class="n">message</span><span class="p">,</span>
+                <span class="n">subject</span><span class="o">=</span><span class="p">(</span><span class="k">await</span> <span class="n">RelationshipMixin</span><span class="o">.</span><span class="n">getGroup</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">target</span><span class="p">))),</span>
             <span class="p">)</span>
+            <span class="k">with</span> <span class="n">enter_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">broadcast</span><span class="o">.</span><span class="n">postEvent</span><span class="p">(</span><span class="n">event</span><span class="p">)</span>
             <span class="k">return</span> <span class="n">BotMessage</span><span class="p">(</span><span class="n">messageId</span><span class="o">=</span><span class="n">result</span><span class="p">[</span><span class="s2">&quot;messageId&quot;</span><span class="p">],</span> <span class="n">origin</span><span class="o">=</span><span class="n">message</span><span class="p">)</span>
 
     <span class="nd">@app_ctx_manager</span>
@@ -1993,6 +2018,8 @@
 <span class="sd">        Returns:</span>
 <span class="sd">            BotMessage: 即当前会话账号所发出消息的元数据, 内包含有一 `messageId` 属性, 可用于回复.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="kn">from</span> <span class="nn">.event.message</span> <span class="kn">import</span> <span class="n">ActiveTempMessage</span>
+
         <span class="n">new_msg</span> <span class="o">=</span> <span class="n">message</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
         <span class="n">new_msg</span><span class="o">.</span><span class="n">prepare</span><span class="p">()</span>
         <span class="n">group</span> <span class="o">=</span> <span class="n">target</span><span class="o">.</span><span class="n">group</span> <span class="k">if</span> <span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">Member</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">group</span><span class="p">)</span> <span class="k">else</span> <span class="n">group</span>
@@ -2004,22 +2031,18 @@
                 <span class="n">CallMethod</span><span class="o">.</span><span class="n">POST</span><span class="p">,</span>
                 <span class="p">{</span>
                     <span class="s2">&quot;sessionKey&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">session_key</span><span class="p">,</span>
-                    <span class="s2">&quot;group&quot;</span><span class="p">:</span> <span class="n">group</span><span class="o">.</span><span class="n">id</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">group</span><span class="p">,</span> <span class="n">Group</span><span class="p">)</span> <span class="k">else</span> <span class="n">group</span><span class="p">,</span>
-                    <span class="s2">&quot;qq&quot;</span><span class="p">:</span> <span class="n">target</span><span class="o">.</span><span class="n">id</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">Member</span><span class="p">)</span> <span class="k">else</span> <span class="n">target</span><span class="p">,</span>
+                    <span class="s2">&quot;group&quot;</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">group</span><span class="p">),</span>
+                    <span class="s2">&quot;qq&quot;</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">target</span><span class="p">),</span>
                     <span class="s2">&quot;messageChain&quot;</span><span class="p">:</span> <span class="n">new_msg</span><span class="o">.</span><span class="n">dict</span><span class="p">()[</span><span class="s2">&quot;__root__&quot;</span><span class="p">],</span>
                     <span class="o">**</span><span class="p">({</span><span class="s2">&quot;quote&quot;</span><span class="p">:</span> <span class="n">quote</span><span class="o">.</span><span class="n">id</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">quote</span><span class="p">,</span> <span class="n">Source</span><span class="p">)</span> <span class="k">else</span> <span class="n">quote</span><span class="p">}</span> <span class="k">if</span> <span class="n">quote</span> <span class="k">else</span> <span class="p">{}),</span>
                 <span class="p">},</span>
             <span class="p">)</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
-                <span class="s2">&quot;</span><span class="si">{bot_id}</span><span class="s2">: [Member(</span><span class="si">{member_id}</span><span class="s2">) of Group(</span><span class="si">{group_id}</span><span class="s2">)] &lt;- </span><span class="si">{message}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format_map</span><span class="p">(</span>
-                    <span class="p">{</span>
-                        <span class="s2">&quot;bot_id&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">mirai_session</span><span class="o">.</span><span class="n">account</span><span class="p">,</span>
-                        <span class="s2">&quot;member_id&quot;</span><span class="p">:</span> <span class="n">target</span><span class="o">.</span><span class="n">id</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">Member</span><span class="p">)</span> <span class="k">else</span> <span class="n">target</span><span class="p">,</span>
-                        <span class="s2">&quot;group_id&quot;</span><span class="p">:</span> <span class="n">group</span><span class="o">.</span><span class="n">id</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">group</span><span class="p">,</span> <span class="n">Group</span><span class="p">)</span> <span class="k">else</span> <span class="n">group</span><span class="p">,</span>
-                        <span class="s2">&quot;message&quot;</span><span class="p">:</span> <span class="n">new_msg</span><span class="o">.</span><span class="n">asDisplay</span><span class="p">()</span><span class="o">.</span><span class="fm">__repr__</span><span class="p">(),</span>
-                    <span class="p">}</span>
-                <span class="p">)</span>
+            <span class="n">event</span><span class="p">:</span> <span class="n">ActiveTempMessage</span> <span class="o">=</span> <span class="n">ActiveTempMessage</span><span class="p">(</span>
+                <span class="n">messageChain</span><span class="o">=</span><span class="n">MessageChain</span><span class="p">([</span><span class="n">Source</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="n">result</span><span class="p">[</span><span class="s2">&quot;messageId&quot;</span><span class="p">],</span> <span class="n">time</span><span class="o">=</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">())])</span> <span class="o">+</span> <span class="n">message</span><span class="p">,</span>
+                <span class="n">subject</span><span class="o">=</span><span class="p">(</span><span class="k">await</span> <span class="n">RelationshipMixin</span><span class="o">.</span><span class="n">getMember</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">group</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">target</span><span class="p">))),</span>
             <span class="p">)</span>
+            <span class="k">with</span> <span class="n">enter_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">broadcast</span><span class="o">.</span><span class="n">postEvent</span><span class="p">(</span><span class="n">event</span><span class="p">)</span>
             <span class="k">return</span> <span class="n">BotMessage</span><span class="p">(</span><span class="n">messageId</span><span class="o">=</span><span class="n">result</span><span class="p">[</span><span class="s2">&quot;messageId&quot;</span><span class="p">],</span> <span class="n">origin</span><span class="o">=</span><span class="n">message</span><span class="p">)</span>
 
     <span class="nd">@app_ctx_manager</span>
@@ -2235,6 +2258,8 @@
 <span class="sd">        Returns:</span>
 <span class="sd">            BotMessage: 即当前会话账号所发出消息的元数据, 内包含有一 `messageId` 属性, 可用于回复.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="kn">from</span> <span class="nn">.event.message</span> <span class="kn">import</span> <span class="n">ActiveFriendMessage</span>
+
         <span class="k">with</span> <span class="n">enter_message_send_context</span><span class="p">(</span><span class="n">UploadMethod</span><span class="o">.</span><span class="n">Friend</span><span class="p">):</span>
             <span class="n">new_msg</span> <span class="o">=</span> <span class="n">message</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
             <span class="n">new_msg</span><span class="o">.</span><span class="n">prepare</span><span class="p">()</span>
@@ -2243,20 +2268,17 @@
                 <span class="n">CallMethod</span><span class="o">.</span><span class="n">POST</span><span class="p">,</span>
                 <span class="p">{</span>
                     <span class="s2">&quot;sessionKey&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">session_key</span><span class="p">,</span>
-                    <span class="s2">&quot;target&quot;</span><span class="p">:</span> <span class="n">target</span><span class="o">.</span><span class="n">id</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">Friend</span><span class="p">)</span> <span class="k">else</span> <span class="n">target</span><span class="p">,</span>
+                    <span class="s2">&quot;target&quot;</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">target</span><span class="p">),</span>
                     <span class="s2">&quot;messageChain&quot;</span><span class="p">:</span> <span class="n">new_msg</span><span class="o">.</span><span class="n">dict</span><span class="p">()[</span><span class="s2">&quot;__root__&quot;</span><span class="p">],</span>
                     <span class="o">**</span><span class="p">({</span><span class="s2">&quot;quote&quot;</span><span class="p">:</span> <span class="n">quote</span><span class="o">.</span><span class="n">id</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">quote</span><span class="p">,</span> <span class="n">Source</span><span class="p">)</span> <span class="k">else</span> <span class="n">quote</span><span class="p">}</span> <span class="k">if</span> <span class="n">quote</span> <span class="k">else</span> <span class="p">{}),</span>
                 <span class="p">},</span>
             <span class="p">)</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
-                <span class="s2">&quot;</span><span class="si">{bot_id}</span><span class="s2">: [Friend(</span><span class="si">{friend_id}</span><span class="s2">)] &lt;- </span><span class="si">{message}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format_map</span><span class="p">(</span>
-                    <span class="p">{</span>
-                        <span class="s2">&quot;bot_id&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">mirai_session</span><span class="o">.</span><span class="n">account</span><span class="p">,</span>
-                        <span class="s2">&quot;friend_id&quot;</span><span class="p">:</span> <span class="n">target</span><span class="o">.</span><span class="n">id</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">Friend</span><span class="p">)</span> <span class="k">else</span> <span class="n">target</span><span class="p">,</span>
-                        <span class="s2">&quot;message&quot;</span><span class="p">:</span> <span class="n">new_msg</span><span class="o">.</span><span class="n">asDisplay</span><span class="p">()</span><span class="o">.</span><span class="fm">__repr__</span><span class="p">(),</span>
-                    <span class="p">}</span>
-                <span class="p">)</span>
+            <span class="n">event</span><span class="p">:</span> <span class="n">ActiveFriendMessage</span> <span class="o">=</span> <span class="n">ActiveFriendMessage</span><span class="p">(</span>
+                <span class="n">messageChain</span><span class="o">=</span><span class="n">MessageChain</span><span class="p">([</span><span class="n">Source</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="n">result</span><span class="p">[</span><span class="s2">&quot;messageId&quot;</span><span class="p">],</span> <span class="n">time</span><span class="o">=</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">())])</span> <span class="o">+</span> <span class="n">message</span><span class="p">,</span>
+                <span class="n">subject</span><span class="o">=</span><span class="p">(</span><span class="k">await</span> <span class="n">RelationshipMixin</span><span class="o">.</span><span class="n">getFriend</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">target</span><span class="p">))),</span>
             <span class="p">)</span>
+            <span class="k">with</span> <span class="n">enter_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">broadcast</span><span class="o">.</span><span class="n">postEvent</span><span class="p">(</span><span class="n">event</span><span class="p">)</span>
             <span class="k">return</span> <span class="n">BotMessage</span><span class="p">(</span><span class="n">messageId</span><span class="o">=</span><span class="n">result</span><span class="p">[</span><span class="s2">&quot;messageId&quot;</span><span class="p">],</span> <span class="n">origin</span><span class="o">=</span><span class="n">message</span><span class="p">)</span>
 </pre></div>
 
@@ -2289,7 +2311,7 @@
             <span class="def">async def</span>
             <span class="name">sendGroupMessage</span><span class="signature">(
     self,
-    target: Union[<a href="model.html#Group">ariadne.model.Group</a>, int],
+    target: Union[<a href="model.html#Group">ariadne.model.Group</a>, <a href="model.html#Member">ariadne.model.Member</a>, int],
     message: <a href="message/chain.html#MessageChain">ariadne.message.chain.MessageChain</a>,
     *,
     quote: Union[<a href="message/element.html#Source">ariadne.message.element.Source</a>, int, NoneType] = None
@@ -2301,7 +2323,7 @@
             <div class="codehilite"><pre><span></span>    <span class="nd">@app_ctx_manager</span>
     <span class="k">async</span> <span class="k">def</span> <span class="nf">sendGroupMessage</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">target</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Group</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span>
+        <span class="n">target</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Group</span><span class="p">,</span> <span class="n">Member</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span>
         <span class="n">message</span><span class="p">:</span> <span class="n">MessageChain</span><span class="p">,</span>
         <span class="o">*</span><span class="p">,</span>
         <span class="n">quote</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">Source</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -2309,13 +2331,18 @@
         <span class="sd">&quot;&quot;&quot;发送消息到群组内, 可以指定回复的消息.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            target (Union[Group, int]): 指定的群组, 可以是群组的 ID 也可以是 Group 实例.</span>
+<span class="sd">            target (Union[Group, Member, int]): 指定的群组, 可以是群组的 ID 也可以是 Group 或 Member 实例.</span>
 <span class="sd">            message (MessageChain): 有效的, 可发送的(Sendable)消息链.</span>
 <span class="sd">            quote (Optional[Union[Source, int]], optional): 需要回复的消息, 不要忽视我啊喂?!!, 默认为 None.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            BotMessage: 即当前会话账号所发出消息的元数据, 内包含有一 `messageId` 属性, 可用于回复.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="kn">from</span> <span class="nn">.event.message</span> <span class="kn">import</span> <span class="n">ActiveGroupMessage</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">Member</span><span class="p">):</span>
+            <span class="n">target</span> <span class="o">=</span> <span class="n">target</span><span class="o">.</span><span class="n">group</span>
+
         <span class="k">with</span> <span class="n">enter_message_send_context</span><span class="p">(</span><span class="n">UploadMethod</span><span class="o">.</span><span class="n">Group</span><span class="p">):</span>
             <span class="n">new_msg</span> <span class="o">=</span> <span class="n">message</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
             <span class="n">new_msg</span><span class="o">.</span><span class="n">prepare</span><span class="p">()</span>
@@ -2324,20 +2351,17 @@
                 <span class="n">CallMethod</span><span class="o">.</span><span class="n">POST</span><span class="p">,</span>
                 <span class="p">{</span>
                     <span class="s2">&quot;sessionKey&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">session_key</span><span class="p">,</span>
-                    <span class="s2">&quot;target&quot;</span><span class="p">:</span> <span class="n">target</span><span class="o">.</span><span class="n">id</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">Group</span><span class="p">)</span> <span class="k">else</span> <span class="n">target</span><span class="p">,</span>
+                    <span class="s2">&quot;target&quot;</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">target</span><span class="p">),</span>
                     <span class="s2">&quot;messageChain&quot;</span><span class="p">:</span> <span class="n">new_msg</span><span class="o">.</span><span class="n">dict</span><span class="p">()[</span><span class="s2">&quot;__root__&quot;</span><span class="p">],</span>
                     <span class="o">**</span><span class="p">({</span><span class="s2">&quot;quote&quot;</span><span class="p">:</span> <span class="n">quote</span><span class="o">.</span><span class="n">id</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">quote</span><span class="p">,</span> <span class="n">Source</span><span class="p">)</span> <span class="k">else</span> <span class="n">quote</span><span class="p">}</span> <span class="k">if</span> <span class="n">quote</span> <span class="k">else</span> <span class="p">{}),</span>
                 <span class="p">},</span>
             <span class="p">)</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
-                <span class="s2">&quot;</span><span class="si">{bot_id}</span><span class="s2">: [Group(</span><span class="si">{group_id}</span><span class="s2">)] &lt;- </span><span class="si">{message}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format_map</span><span class="p">(</span>
-                    <span class="p">{</span>
-                        <span class="s2">&quot;bot_id&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">mirai_session</span><span class="o">.</span><span class="n">account</span><span class="p">,</span>
-                        <span class="s2">&quot;group_id&quot;</span><span class="p">:</span> <span class="n">target</span><span class="o">.</span><span class="n">id</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">Group</span><span class="p">)</span> <span class="k">else</span> <span class="n">target</span><span class="p">,</span>
-                        <span class="s2">&quot;message&quot;</span><span class="p">:</span> <span class="n">new_msg</span><span class="o">.</span><span class="n">asDisplay</span><span class="p">()</span><span class="o">.</span><span class="fm">__repr__</span><span class="p">(),</span>
-                    <span class="p">}</span>
-                <span class="p">)</span>
+            <span class="n">event</span><span class="p">:</span> <span class="n">ActiveGroupMessage</span> <span class="o">=</span> <span class="n">ActiveGroupMessage</span><span class="p">(</span>
+                <span class="n">messageChain</span><span class="o">=</span><span class="n">MessageChain</span><span class="p">([</span><span class="n">Source</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="n">result</span><span class="p">[</span><span class="s2">&quot;messageId&quot;</span><span class="p">],</span> <span class="n">time</span><span class="o">=</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">())])</span> <span class="o">+</span> <span class="n">message</span><span class="p">,</span>
+                <span class="n">subject</span><span class="o">=</span><span class="p">(</span><span class="k">await</span> <span class="n">RelationshipMixin</span><span class="o">.</span><span class="n">getGroup</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">target</span><span class="p">))),</span>
             <span class="p">)</span>
+            <span class="k">with</span> <span class="n">enter_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">broadcast</span><span class="o">.</span><span class="n">postEvent</span><span class="p">(</span><span class="n">event</span><span class="p">)</span>
             <span class="k">return</span> <span class="n">BotMessage</span><span class="p">(</span><span class="n">messageId</span><span class="o">=</span><span class="n">result</span><span class="p">[</span><span class="s2">&quot;messageId&quot;</span><span class="p">],</span> <span class="n">origin</span><span class="o">=</span><span class="n">message</span><span class="p">)</span>
 </pre></div>
 
@@ -2348,7 +2372,7 @@
 <h6 id="args">Args</h6>
 
 <ul>
-<li><strong>target (Union[Group, int]):</strong>  指定的群组, 可以是群组的 ID 也可以是 Group 实例.</li>
+<li><strong>target (Union[Group, Member, int]):</strong>  指定的群组, 可以是群组的 ID 也可以是 Group 或 Member 实例.</li>
 <li><strong>message (MessageChain):</strong>  有效的, 可发送的(Sendable)消息链.</li>
 <li><strong>quote (Optional[Union[Source, int]], optional):</strong>  需要回复的消息, 不要忽视我啊喂?!!, 默认为 None.</li>
 </ul>
@@ -2400,6 +2424,8 @@
 <span class="sd">        Returns:</span>
 <span class="sd">            BotMessage: 即当前会话账号所发出消息的元数据, 内包含有一 `messageId` 属性, 可用于回复.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="kn">from</span> <span class="nn">.event.message</span> <span class="kn">import</span> <span class="n">ActiveTempMessage</span>
+
         <span class="n">new_msg</span> <span class="o">=</span> <span class="n">message</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
         <span class="n">new_msg</span><span class="o">.</span><span class="n">prepare</span><span class="p">()</span>
         <span class="n">group</span> <span class="o">=</span> <span class="n">target</span><span class="o">.</span><span class="n">group</span> <span class="k">if</span> <span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">Member</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">group</span><span class="p">)</span> <span class="k">else</span> <span class="n">group</span>
@@ -2411,22 +2437,18 @@
                 <span class="n">CallMethod</span><span class="o">.</span><span class="n">POST</span><span class="p">,</span>
                 <span class="p">{</span>
                     <span class="s2">&quot;sessionKey&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">session_key</span><span class="p">,</span>
-                    <span class="s2">&quot;group&quot;</span><span class="p">:</span> <span class="n">group</span><span class="o">.</span><span class="n">id</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">group</span><span class="p">,</span> <span class="n">Group</span><span class="p">)</span> <span class="k">else</span> <span class="n">group</span><span class="p">,</span>
-                    <span class="s2">&quot;qq&quot;</span><span class="p">:</span> <span class="n">target</span><span class="o">.</span><span class="n">id</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">Member</span><span class="p">)</span> <span class="k">else</span> <span class="n">target</span><span class="p">,</span>
+                    <span class="s2">&quot;group&quot;</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">group</span><span class="p">),</span>
+                    <span class="s2">&quot;qq&quot;</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">target</span><span class="p">),</span>
                     <span class="s2">&quot;messageChain&quot;</span><span class="p">:</span> <span class="n">new_msg</span><span class="o">.</span><span class="n">dict</span><span class="p">()[</span><span class="s2">&quot;__root__&quot;</span><span class="p">],</span>
                     <span class="o">**</span><span class="p">({</span><span class="s2">&quot;quote&quot;</span><span class="p">:</span> <span class="n">quote</span><span class="o">.</span><span class="n">id</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">quote</span><span class="p">,</span> <span class="n">Source</span><span class="p">)</span> <span class="k">else</span> <span class="n">quote</span><span class="p">}</span> <span class="k">if</span> <span class="n">quote</span> <span class="k">else</span> <span class="p">{}),</span>
                 <span class="p">},</span>
             <span class="p">)</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
-                <span class="s2">&quot;</span><span class="si">{bot_id}</span><span class="s2">: [Member(</span><span class="si">{member_id}</span><span class="s2">) of Group(</span><span class="si">{group_id}</span><span class="s2">)] &lt;- </span><span class="si">{message}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format_map</span><span class="p">(</span>
-                    <span class="p">{</span>
-                        <span class="s2">&quot;bot_id&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">mirai_session</span><span class="o">.</span><span class="n">account</span><span class="p">,</span>
-                        <span class="s2">&quot;member_id&quot;</span><span class="p">:</span> <span class="n">target</span><span class="o">.</span><span class="n">id</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">Member</span><span class="p">)</span> <span class="k">else</span> <span class="n">target</span><span class="p">,</span>
-                        <span class="s2">&quot;group_id&quot;</span><span class="p">:</span> <span class="n">group</span><span class="o">.</span><span class="n">id</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">group</span><span class="p">,</span> <span class="n">Group</span><span class="p">)</span> <span class="k">else</span> <span class="n">group</span><span class="p">,</span>
-                        <span class="s2">&quot;message&quot;</span><span class="p">:</span> <span class="n">new_msg</span><span class="o">.</span><span class="n">asDisplay</span><span class="p">()</span><span class="o">.</span><span class="fm">__repr__</span><span class="p">(),</span>
-                    <span class="p">}</span>
-                <span class="p">)</span>
+            <span class="n">event</span><span class="p">:</span> <span class="n">ActiveTempMessage</span> <span class="o">=</span> <span class="n">ActiveTempMessage</span><span class="p">(</span>
+                <span class="n">messageChain</span><span class="o">=</span><span class="n">MessageChain</span><span class="p">([</span><span class="n">Source</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="n">result</span><span class="p">[</span><span class="s2">&quot;messageId&quot;</span><span class="p">],</span> <span class="n">time</span><span class="o">=</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">())])</span> <span class="o">+</span> <span class="n">message</span><span class="p">,</span>
+                <span class="n">subject</span><span class="o">=</span><span class="p">(</span><span class="k">await</span> <span class="n">RelationshipMixin</span><span class="o">.</span><span class="n">getMember</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">group</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">target</span><span class="p">))),</span>
             <span class="p">)</span>
+            <span class="k">with</span> <span class="n">enter_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">broadcast</span><span class="o">.</span><span class="n">postEvent</span><span class="p">(</span><span class="n">event</span><span class="p">)</span>
             <span class="k">return</span> <span class="n">BotMessage</span><span class="p">(</span><span class="n">messageId</span><span class="o">=</span><span class="n">result</span><span class="p">[</span><span class="s2">&quot;messageId&quot;</span><span class="p">],</span> <span class="n">origin</span><span class="o">=</span><span class="n">message</span><span class="p">)</span>
 </pre></div>
 
@@ -2815,6 +2837,26 @@
         <span class="k">return</span> <span class="n">Profile</span><span class="o">.</span><span class="n">parse_obj</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
 
     <span class="nd">@app_ctx_manager</span>
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">getUserProfile</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">target</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Friend</span><span class="p">,</span> <span class="n">Member</span><span class="p">,</span> <span class="n">Stranger</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Profile</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;获取任意 QQ 用户的 Profile.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            target (Union[int, Friend, Member, Stranger]): 任意 QQ 用户.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Profile: 找到的 Profile.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">adapter</span><span class="o">.</span><span class="n">call_api</span><span class="p">(</span>
+            <span class="s2">&quot;userProfile&quot;</span><span class="p">,</span>
+            <span class="n">CallMethod</span><span class="o">.</span><span class="n">GET</span><span class="p">,</span>
+            <span class="p">{</span>
+                <span class="s2">&quot;sessionKey&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">session_key</span><span class="p">,</span>
+                <span class="s2">&quot;userId&quot;</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">target</span><span class="p">),</span>
+            <span class="p">},</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">Profile</span><span class="o">.</span><span class="n">parse_obj</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+
+    <span class="nd">@app_ctx_manager</span>
     <span class="k">async</span> <span class="k">def</span> <span class="nf">getFriendProfile</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">friend</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Friend</span><span class="p">,</span> <span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Profile</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;获取好友的 Profile.</span>
 
@@ -2829,7 +2871,7 @@
             <span class="n">CallMethod</span><span class="o">.</span><span class="n">GET</span><span class="p">,</span>
             <span class="p">{</span>
                 <span class="s2">&quot;sessionKey&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">session_key</span><span class="p">,</span>
-                <span class="s2">&quot;target&quot;</span><span class="p">:</span> <span class="n">friend</span><span class="o">.</span><span class="n">id</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">friend</span><span class="p">,</span> <span class="n">Friend</span><span class="p">)</span> <span class="k">else</span> <span class="n">friend</span><span class="p">,</span>
+                <span class="s2">&quot;target&quot;</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">friend</span><span class="p">),</span>
             <span class="p">},</span>
         <span class="p">)</span>
         <span class="k">return</span> <span class="n">Profile</span><span class="o">.</span><span class="n">parse_obj</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
@@ -3201,6 +3243,60 @@
 
 
                             </div>
+                            <div id="RelationshipMixin.getUserProfile" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#RelationshipMixin.getUserProfile">#&nbsp;&nbsp</a>
+
+                <div class="decorator">@app_ctx_manager</div>
+
+            <span class="def">async def</span>
+            <span class="name">getUserProfile</span><span class="signature">(
+    self,
+    target: Union[int, <a href="model.html#Friend">ariadne.model.Friend</a>, <a href="model.html#Member">ariadne.model.Member</a>, <a href="model.html#Stranger">ariadne.model.Stranger</a>]
+) -&gt; <a href="model.html#Profile">ariadne.model.Profile</a></span>:
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span>    <span class="nd">@app_ctx_manager</span>
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">getUserProfile</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">target</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Friend</span><span class="p">,</span> <span class="n">Member</span><span class="p">,</span> <span class="n">Stranger</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Profile</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;获取任意 QQ 用户的 Profile.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            target (Union[int, Friend, Member, Stranger]): 任意 QQ 用户.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Profile: 找到的 Profile.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">adapter</span><span class="o">.</span><span class="n">call_api</span><span class="p">(</span>
+            <span class="s2">&quot;userProfile&quot;</span><span class="p">,</span>
+            <span class="n">CallMethod</span><span class="o">.</span><span class="n">GET</span><span class="p">,</span>
+            <span class="p">{</span>
+                <span class="s2">&quot;sessionKey&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">session_key</span><span class="p">,</span>
+                <span class="s2">&quot;userId&quot;</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">target</span><span class="p">),</span>
+            <span class="p">},</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">Profile</span><span class="o">.</span><span class="n">parse_obj</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+</pre></div>
+
+        </details>
+
+            <div class="docstring"><p>获取任意 QQ 用户的 Profile.</p>
+
+<h6 id="args">Args</h6>
+
+<ul>
+<li><strong>target (Union[int, Friend, Member, Stranger]):</strong>  任意 QQ 用户.</li>
+</ul>
+
+<h6 id="returns">Returns</h6>
+
+<blockquote>
+  <p>Profile: 找到的 Profile.</p>
+</blockquote>
+</div>
+
+
+                            </div>
                             <div id="RelationshipMixin.getFriendProfile" class="classattr">
                                         <div class="attr function"><a class="headerlink" href="#RelationshipMixin.getFriendProfile">#&nbsp;&nbsp</a>
 
@@ -3230,7 +3326,7 @@
             <span class="n">CallMethod</span><span class="o">.</span><span class="n">GET</span><span class="p">,</span>
             <span class="p">{</span>
                 <span class="s2">&quot;sessionKey&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">session_key</span><span class="p">,</span>
-                <span class="s2">&quot;target&quot;</span><span class="p">:</span> <span class="n">friend</span><span class="o">.</span><span class="n">id</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">friend</span><span class="p">,</span> <span class="n">Friend</span><span class="p">)</span> <span class="k">else</span> <span class="n">friend</span><span class="p">,</span>
+                <span class="s2">&quot;target&quot;</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">friend</span><span class="p">),</span>
             <span class="p">},</span>
         <span class="p">)</span>
         <span class="k">return</span> <span class="n">Profile</span><span class="o">.</span><span class="n">parse_obj</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
@@ -6594,6 +6690,7 @@
                 <dd id="Ariadne.getMemberList" class="function"><a href="#RelationshipMixin.getMemberList">getMemberList</a></dd>
                 <dd id="Ariadne.getMember" class="function"><a href="#RelationshipMixin.getMember">getMember</a></dd>
                 <dd id="Ariadne.getBotProfile" class="function"><a href="#RelationshipMixin.getBotProfile">getBotProfile</a></dd>
+                <dd id="Ariadne.getUserProfile" class="function"><a href="#RelationshipMixin.getUserProfile">getUserProfile</a></dd>
                 <dd id="Ariadne.getFriendProfile" class="function"><a href="#RelationshipMixin.getFriendProfile">getFriendProfile</a></dd>
                 <dd id="Ariadne.getMemberProfile" class="function"><a href="#RelationshipMixin.getMemberProfile">getMemberProfile</a></dd>
 
