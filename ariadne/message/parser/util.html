@@ -128,11 +128,13 @@
 <span class="kn">import</span> <span class="nn">inspect</span>
 <span class="kn">import</span> <span class="nn">re</span>
 <span class="kn">from</span> <span class="nn">contextvars</span> <span class="kn">import</span> <span class="n">ContextVar</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Literal</span><span class="p">,</span> <span class="n">NoReturn</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Type</span><span class="p">,</span> <span class="n">Union</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Literal</span><span class="p">,</span> <span class="n">NoReturn</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Type</span><span class="p">,</span> <span class="n">Union</span>
+
+<span class="kn">from</span> <span class="nn">graia.ariadne.message.element</span> <span class="kn">import</span> <span class="n">Element</span>
 
 <span class="kn">from</span> <span class="nn">..chain</span> <span class="kn">import</span> <span class="n">Element_T</span><span class="p">,</span> <span class="n">MessageChain</span>
 
-<span class="n">elem_mapping_ctx</span><span class="p">:</span> <span class="n">ContextVar</span><span class="p">[</span><span class="s2">&quot;MessageChain&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ContextVar</span><span class="p">(</span><span class="s2">&quot;elem_mapping_ctx&quot;</span><span class="p">)</span>
+<span class="n">elem_mapping_ctx</span><span class="p">:</span> <span class="n">ContextVar</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Element</span><span class="p">]]</span> <span class="o">=</span> <span class="n">ContextVar</span><span class="p">(</span><span class="s2">&quot;elem_mapping_ctx&quot;</span><span class="p">)</span>
 
 <span class="n">L_PAREN</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;{&quot;</span><span class="p">,</span> <span class="s2">&quot;[&quot;</span><span class="p">)</span>
 <span class="n">R_PAREN</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;}&quot;</span><span class="p">,</span> <span class="s2">&quot;]&quot;</span><span class="p">)</span>
@@ -272,11 +274,12 @@
     <span class="k">return</span> <span class="n">token</span>
 
 
-<span class="k">def</span> <span class="nf">split</span><span class="p">(</span><span class="n">string</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="k">def</span> <span class="nf">split</span><span class="p">(</span><span class="n">string</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">keep_quote</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
     <span class="sd">&quot;&quot;&quot;尊重引号与转义的字符串切分</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        string (str): 要切割的字符串</span>
+<span class="sd">        keep_quote (bool): 是否保留引号, 默认 False.</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        List[str]: 切割后的字符串, 可能含有空格</span>
@@ -291,6 +294,9 @@
             <span class="k">elif</span> <span class="n">char</span> <span class="o">==</span> <span class="n">quote</span> <span class="ow">and</span> <span class="n">index</span> <span class="ow">and</span> <span class="n">string</span><span class="p">[</span><span class="n">index</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="s2">&quot;</span><span class="se">\\</span><span class="s2">&quot;</span><span class="p">:</span>  <span class="c1"># is current quote, not transfigured</span>
                 <span class="n">quote</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
             <span class="k">else</span><span class="p">:</span>
+                <span class="n">cache</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">char</span><span class="p">)</span>
+                <span class="k">continue</span>
+            <span class="k">if</span> <span class="n">keep_quote</span><span class="p">:</span>
                 <span class="n">cache</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">char</span><span class="p">)</span>
         <span class="k">elif</span> <span class="ow">not</span> <span class="n">quote</span> <span class="ow">and</span> <span class="n">char</span> <span class="o">==</span> <span class="s2">&quot; &quot;</span><span class="p">:</span>
             <span class="n">result</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">cache</span><span class="p">))</span>
@@ -351,12 +357,8 @@
 <span class="k">class</span> <span class="nc">MessageChainType</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;用于标记类型为消息链, 在 ArgumentMatch 上使用&quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">regex</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">re</span><span class="o">.</span><span class="n">Pattern</span><span class="p">]):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">regex</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">re</span><span class="o">.</span><span class="n">Pattern</span><span class="p">]</span> <span class="o">=</span> <span class="n">regex</span>
-
-    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">string</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">MessageChain</span><span class="p">:</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">regex</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">regex</span><span class="o">.</span><span class="n">fullmatch</span><span class="p">(</span><span class="n">string</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">string</span><span class="si">}</span><span class="s2"> not matching </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">regex</span><span class="o">.</span><span class="n">pattern</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="n">string</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">MessageChain</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">MessageChain</span><span class="o">.</span><span class="n">fromMappingString</span><span class="p">(</span><span class="n">string</span><span class="p">,</span> <span class="n">elem_mapping_ctx</span><span class="o">.</span><span class="n">get</span><span class="p">())</span>
 
 
@@ -409,7 +411,7 @@
                 <section id="elem_mapping_ctx">
                                 <div class="attr variable"><a class="headerlink" href="#elem_mapping_ctx">#&nbsp;&nbsp</a>
 
-        <span class="name">elem_mapping_ctx</span><span class="annotation">: ContextVar[<a href="../chain.html#MessageChain">ariadne.message.chain.MessageChain</a>]</span><span class="default_value"> = &lt;ContextVar name=&#39;elem_mapping_ctx&#39;&gt;</span>
+        <span class="name">elem_mapping_ctx</span><span class="annotation">: ContextVar[typing.Dict[str, graia.ariadne.message.element.Element]]</span><span class="default_value"> = &lt;ContextVar name=&#39;elem_mapping_ctx&#39;&gt;</span>
     </div>
 
     
@@ -692,16 +694,17 @@
 
         
             <span class="def">def</span>
-            <span class="name">split</span><span class="signature">(string: str) -&gt; List[str]</span>:
+            <span class="name">split</span><span class="signature">(string: str, keep_quote: bool = False) -&gt; List[str]</span>:
     </div>
 
                 <details>
             <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span><span class="k">def</span> <span class="nf">split</span><span class="p">(</span><span class="n">string</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+            <div class="codehilite"><pre><span></span><span class="k">def</span> <span class="nf">split</span><span class="p">(</span><span class="n">string</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">keep_quote</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
     <span class="sd">&quot;&quot;&quot;尊重引号与转义的字符串切分</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        string (str): 要切割的字符串</span>
+<span class="sd">        keep_quote (bool): 是否保留引号, 默认 False.</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        List[str]: 切割后的字符串, 可能含有空格</span>
@@ -716,6 +719,9 @@
             <span class="k">elif</span> <span class="n">char</span> <span class="o">==</span> <span class="n">quote</span> <span class="ow">and</span> <span class="n">index</span> <span class="ow">and</span> <span class="n">string</span><span class="p">[</span><span class="n">index</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="s2">&quot;</span><span class="se">\\</span><span class="s2">&quot;</span><span class="p">:</span>  <span class="c1"># is current quote, not transfigured</span>
                 <span class="n">quote</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
             <span class="k">else</span><span class="p">:</span>
+                <span class="n">cache</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">char</span><span class="p">)</span>
+                <span class="k">continue</span>
+            <span class="k">if</span> <span class="n">keep_quote</span><span class="p">:</span>
                 <span class="n">cache</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">char</span><span class="p">)</span>
         <span class="k">elif</span> <span class="ow">not</span> <span class="n">quote</span> <span class="ow">and</span> <span class="n">char</span> <span class="o">==</span> <span class="s2">&quot; &quot;</span><span class="p">:</span>
             <span class="n">result</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">cache</span><span class="p">))</span>
@@ -735,6 +741,7 @@
 
 <ul>
 <li><strong>string (str):</strong>  要切割的字符串</li>
+<li><strong>keep_quote (bool):</strong>  是否保留引号, 默认 False.</li>
 </ul>
 
 <h6 id="returns">Returns</h6>
@@ -865,12 +872,8 @@
             <div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">MessageChainType</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;用于标记类型为消息链, 在 ArgumentMatch 上使用&quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">regex</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">re</span><span class="o">.</span><span class="n">Pattern</span><span class="p">]):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">regex</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">re</span><span class="o">.</span><span class="n">Pattern</span><span class="p">]</span> <span class="o">=</span> <span class="n">regex</span>
-
-    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">string</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">MessageChain</span><span class="p">:</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">regex</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">regex</span><span class="o">.</span><span class="n">fullmatch</span><span class="p">(</span><span class="n">string</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">string</span><span class="si">}</span><span class="s2"> not matching </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">regex</span><span class="o">.</span><span class="n">pattern</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="n">string</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">MessageChain</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">MessageChain</span><span class="o">.</span><span class="n">fromMappingString</span><span class="p">(</span><span class="n">string</span><span class="p">,</span> <span class="n">elem_mapping_ctx</span><span class="o">.</span><span class="n">get</span><span class="p">())</span>
 </pre></div>
 
@@ -884,17 +887,10 @@
                                         <div class="attr function"><a class="headerlink" href="#MessageChainType.__init__">#&nbsp;&nbsp</a>
 
         
-            <span class="name">MessageChainType</span><span class="signature">(regex: Optional[re.Pattern])</span>
+            <span class="name">MessageChainType</span><span class="signature">()</span>
     </div>
 
-                <details>
-            <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">regex</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">re</span><span class="o">.</span><span class="n">Pattern</span><span class="p">]):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">regex</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">re</span><span class="o">.</span><span class="n">Pattern</span><span class="p">]</span> <span class="o">=</span> <span class="n">regex</span>
-</pre></div>
-
-        </details>
-
+        
     
 
                             </div>
