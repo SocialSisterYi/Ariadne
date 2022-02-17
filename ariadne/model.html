@@ -599,7 +599,7 @@
             <span class="n">TempMessage</span><span class="p">,</span>
         <span class="p">)</span>
 
-        <span class="nd">@app</span><span class="o">.</span><span class="n">broadcast</span><span class="o">.</span><span class="n">receiver</span><span class="p">(</span><span class="n">GroupMessage</span><span class="p">)</span>
+        <span class="nd">@app</span><span class="o">.</span><span class="n">broadcast</span><span class="o">.</span><span class="n">receiver</span><span class="p">(</span><span class="n">GroupMessage</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
         <span class="k">def</span> <span class="nf">log_group_message</span><span class="p">(</span><span class="n">event</span><span class="p">:</span> <span class="n">GroupMessage</span><span class="p">):</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">log_level</span><span class="p">,</span>
@@ -614,7 +614,7 @@
                 <span class="p">),</span>
             <span class="p">)</span>
 
-        <span class="nd">@app</span><span class="o">.</span><span class="n">broadcast</span><span class="o">.</span><span class="n">receiver</span><span class="p">(</span><span class="n">FriendMessage</span><span class="p">)</span>
+        <span class="nd">@app</span><span class="o">.</span><span class="n">broadcast</span><span class="o">.</span><span class="n">receiver</span><span class="p">(</span><span class="n">FriendMessage</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
         <span class="k">def</span> <span class="nf">log_friend_message</span><span class="p">(</span><span class="n">event</span><span class="p">:</span> <span class="n">FriendMessage</span><span class="p">):</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">log_level</span><span class="p">,</span>
@@ -626,7 +626,7 @@
                 <span class="p">),</span>
             <span class="p">)</span>
 
-        <span class="nd">@app</span><span class="o">.</span><span class="n">broadcast</span><span class="o">.</span><span class="n">receiver</span><span class="p">(</span><span class="n">TempMessage</span><span class="p">)</span>
+        <span class="nd">@app</span><span class="o">.</span><span class="n">broadcast</span><span class="o">.</span><span class="n">receiver</span><span class="p">(</span><span class="n">TempMessage</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
         <span class="k">def</span> <span class="nf">log_temp_message</span><span class="p">(</span><span class="n">event</span><span class="p">:</span> <span class="n">TempMessage</span><span class="p">):</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">log_level</span><span class="p">,</span>
@@ -641,7 +641,7 @@
                 <span class="p">),</span>
             <span class="p">)</span>
 
-        <span class="nd">@app</span><span class="o">.</span><span class="n">broadcast</span><span class="o">.</span><span class="n">receiver</span><span class="p">(</span><span class="n">StrangerMessage</span><span class="p">)</span>
+        <span class="nd">@app</span><span class="o">.</span><span class="n">broadcast</span><span class="o">.</span><span class="n">receiver</span><span class="p">(</span><span class="n">StrangerMessage</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
         <span class="k">def</span> <span class="nf">log_stranger_message</span><span class="p">(</span><span class="n">event</span><span class="p">:</span> <span class="n">StrangerMessage</span><span class="p">):</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">log_level</span><span class="p">,</span>
@@ -653,7 +653,7 @@
                 <span class="p">),</span>
             <span class="p">)</span>
 
-        <span class="nd">@app</span><span class="o">.</span><span class="n">broadcast</span><span class="o">.</span><span class="n">receiver</span><span class="p">(</span><span class="n">OtherClientMessage</span><span class="p">)</span>
+        <span class="nd">@app</span><span class="o">.</span><span class="n">broadcast</span><span class="o">.</span><span class="n">receiver</span><span class="p">(</span><span class="n">OtherClientMessage</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
         <span class="k">def</span> <span class="nf">log_other_client_message</span><span class="p">(</span><span class="n">event</span><span class="p">:</span> <span class="n">OtherClientMessage</span><span class="p">):</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">log_level</span><span class="p">,</span>
@@ -678,7 +678,10 @@
 
         <span class="n">app</span><span class="o">.</span><span class="n">broadcast</span><span class="o">.</span><span class="n">listeners</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
             <span class="n">Listener</span><span class="p">(</span>
-                <span class="n">log_active_message</span><span class="p">,</span> <span class="n">app</span><span class="o">.</span><span class="n">broadcast</span><span class="o">.</span><span class="n">getDefaultNamespace</span><span class="p">(),</span> <span class="nb">list</span><span class="p">(</span><span class="n">gen_subclass</span><span class="p">(</span><span class="n">ActiveMessage</span><span class="p">))</span>
+                <span class="n">log_active_message</span><span class="p">,</span>
+                <span class="n">app</span><span class="o">.</span><span class="n">broadcast</span><span class="o">.</span><span class="n">getDefaultNamespace</span><span class="p">(),</span>
+                <span class="nb">list</span><span class="p">(</span><span class="n">gen_subclass</span><span class="p">(</span><span class="n">ActiveMessage</span><span class="p">)),</span>
+                <span class="n">priority</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span>
             <span class="p">)</span>
         <span class="p">)</span>
 
@@ -1479,7 +1482,7 @@ implement default like this::</p>
                             <div id="AriadneBaseModel.Config.json_encoders" class="classattr">
                                             <div class="attr variable"><a class="headerlink" href="#AriadneBaseModel.Config.json_encoders">#&nbsp;&nbsp</a>
 
-        <span class="name">json_encoders</span><span class="default_value"> = {&lt;class &#39;datetime.datetime&#39;&gt;: &lt;function datetime_encoder at 0x7f5f98c55700&gt;}</span>
+        <span class="name">json_encoders</span><span class="default_value"> = {&lt;class &#39;datetime.datetime&#39;&gt;: &lt;function datetime_encoder at 0x7f96b5dc5700&gt;}</span>
     </div>
 
     
@@ -1574,7 +1577,7 @@ implement default like this::</p>
             <span class="n">TempMessage</span><span class="p">,</span>
         <span class="p">)</span>
 
-        <span class="nd">@app</span><span class="o">.</span><span class="n">broadcast</span><span class="o">.</span><span class="n">receiver</span><span class="p">(</span><span class="n">GroupMessage</span><span class="p">)</span>
+        <span class="nd">@app</span><span class="o">.</span><span class="n">broadcast</span><span class="o">.</span><span class="n">receiver</span><span class="p">(</span><span class="n">GroupMessage</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
         <span class="k">def</span> <span class="nf">log_group_message</span><span class="p">(</span><span class="n">event</span><span class="p">:</span> <span class="n">GroupMessage</span><span class="p">):</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">log_level</span><span class="p">,</span>
@@ -1589,7 +1592,7 @@ implement default like this::</p>
                 <span class="p">),</span>
             <span class="p">)</span>
 
-        <span class="nd">@app</span><span class="o">.</span><span class="n">broadcast</span><span class="o">.</span><span class="n">receiver</span><span class="p">(</span><span class="n">FriendMessage</span><span class="p">)</span>
+        <span class="nd">@app</span><span class="o">.</span><span class="n">broadcast</span><span class="o">.</span><span class="n">receiver</span><span class="p">(</span><span class="n">FriendMessage</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
         <span class="k">def</span> <span class="nf">log_friend_message</span><span class="p">(</span><span class="n">event</span><span class="p">:</span> <span class="n">FriendMessage</span><span class="p">):</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">log_level</span><span class="p">,</span>
@@ -1601,7 +1604,7 @@ implement default like this::</p>
                 <span class="p">),</span>
             <span class="p">)</span>
 
-        <span class="nd">@app</span><span class="o">.</span><span class="n">broadcast</span><span class="o">.</span><span class="n">receiver</span><span class="p">(</span><span class="n">TempMessage</span><span class="p">)</span>
+        <span class="nd">@app</span><span class="o">.</span><span class="n">broadcast</span><span class="o">.</span><span class="n">receiver</span><span class="p">(</span><span class="n">TempMessage</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
         <span class="k">def</span> <span class="nf">log_temp_message</span><span class="p">(</span><span class="n">event</span><span class="p">:</span> <span class="n">TempMessage</span><span class="p">):</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">log_level</span><span class="p">,</span>
@@ -1616,7 +1619,7 @@ implement default like this::</p>
                 <span class="p">),</span>
             <span class="p">)</span>
 
-        <span class="nd">@app</span><span class="o">.</span><span class="n">broadcast</span><span class="o">.</span><span class="n">receiver</span><span class="p">(</span><span class="n">StrangerMessage</span><span class="p">)</span>
+        <span class="nd">@app</span><span class="o">.</span><span class="n">broadcast</span><span class="o">.</span><span class="n">receiver</span><span class="p">(</span><span class="n">StrangerMessage</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
         <span class="k">def</span> <span class="nf">log_stranger_message</span><span class="p">(</span><span class="n">event</span><span class="p">:</span> <span class="n">StrangerMessage</span><span class="p">):</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">log_level</span><span class="p">,</span>
@@ -1628,7 +1631,7 @@ implement default like this::</p>
                 <span class="p">),</span>
             <span class="p">)</span>
 
-        <span class="nd">@app</span><span class="o">.</span><span class="n">broadcast</span><span class="o">.</span><span class="n">receiver</span><span class="p">(</span><span class="n">OtherClientMessage</span><span class="p">)</span>
+        <span class="nd">@app</span><span class="o">.</span><span class="n">broadcast</span><span class="o">.</span><span class="n">receiver</span><span class="p">(</span><span class="n">OtherClientMessage</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
         <span class="k">def</span> <span class="nf">log_other_client_message</span><span class="p">(</span><span class="n">event</span><span class="p">:</span> <span class="n">OtherClientMessage</span><span class="p">):</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">log_level</span><span class="p">,</span>
@@ -1653,7 +1656,10 @@ implement default like this::</p>
 
         <span class="n">app</span><span class="o">.</span><span class="n">broadcast</span><span class="o">.</span><span class="n">listeners</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
             <span class="n">Listener</span><span class="p">(</span>
-                <span class="n">log_active_message</span><span class="p">,</span> <span class="n">app</span><span class="o">.</span><span class="n">broadcast</span><span class="o">.</span><span class="n">getDefaultNamespace</span><span class="p">(),</span> <span class="nb">list</span><span class="p">(</span><span class="n">gen_subclass</span><span class="p">(</span><span class="n">ActiveMessage</span><span class="p">))</span>
+                <span class="n">log_active_message</span><span class="p">,</span>
+                <span class="n">app</span><span class="o">.</span><span class="n">broadcast</span><span class="o">.</span><span class="n">getDefaultNamespace</span><span class="p">(),</span>
+                <span class="nb">list</span><span class="p">(</span><span class="n">gen_subclass</span><span class="p">(</span><span class="n">ActiveMessage</span><span class="p">)),</span>
+                <span class="n">priority</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span>
             <span class="p">)</span>
         <span class="p">)</span>
 </pre></div>
@@ -1791,7 +1797,7 @@ implement default like this::</p>
             <span class="n">TempMessage</span><span class="p">,</span>
         <span class="p">)</span>
 
-        <span class="nd">@app</span><span class="o">.</span><span class="n">broadcast</span><span class="o">.</span><span class="n">receiver</span><span class="p">(</span><span class="n">GroupMessage</span><span class="p">)</span>
+        <span class="nd">@app</span><span class="o">.</span><span class="n">broadcast</span><span class="o">.</span><span class="n">receiver</span><span class="p">(</span><span class="n">GroupMessage</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
         <span class="k">def</span> <span class="nf">log_group_message</span><span class="p">(</span><span class="n">event</span><span class="p">:</span> <span class="n">GroupMessage</span><span class="p">):</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">log_level</span><span class="p">,</span>
@@ -1806,7 +1812,7 @@ implement default like this::</p>
                 <span class="p">),</span>
             <span class="p">)</span>
 
-        <span class="nd">@app</span><span class="o">.</span><span class="n">broadcast</span><span class="o">.</span><span class="n">receiver</span><span class="p">(</span><span class="n">FriendMessage</span><span class="p">)</span>
+        <span class="nd">@app</span><span class="o">.</span><span class="n">broadcast</span><span class="o">.</span><span class="n">receiver</span><span class="p">(</span><span class="n">FriendMessage</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
         <span class="k">def</span> <span class="nf">log_friend_message</span><span class="p">(</span><span class="n">event</span><span class="p">:</span> <span class="n">FriendMessage</span><span class="p">):</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">log_level</span><span class="p">,</span>
@@ -1818,7 +1824,7 @@ implement default like this::</p>
                 <span class="p">),</span>
             <span class="p">)</span>
 
-        <span class="nd">@app</span><span class="o">.</span><span class="n">broadcast</span><span class="o">.</span><span class="n">receiver</span><span class="p">(</span><span class="n">TempMessage</span><span class="p">)</span>
+        <span class="nd">@app</span><span class="o">.</span><span class="n">broadcast</span><span class="o">.</span><span class="n">receiver</span><span class="p">(</span><span class="n">TempMessage</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
         <span class="k">def</span> <span class="nf">log_temp_message</span><span class="p">(</span><span class="n">event</span><span class="p">:</span> <span class="n">TempMessage</span><span class="p">):</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">log_level</span><span class="p">,</span>
@@ -1833,7 +1839,7 @@ implement default like this::</p>
                 <span class="p">),</span>
             <span class="p">)</span>
 
-        <span class="nd">@app</span><span class="o">.</span><span class="n">broadcast</span><span class="o">.</span><span class="n">receiver</span><span class="p">(</span><span class="n">StrangerMessage</span><span class="p">)</span>
+        <span class="nd">@app</span><span class="o">.</span><span class="n">broadcast</span><span class="o">.</span><span class="n">receiver</span><span class="p">(</span><span class="n">StrangerMessage</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
         <span class="k">def</span> <span class="nf">log_stranger_message</span><span class="p">(</span><span class="n">event</span><span class="p">:</span> <span class="n">StrangerMessage</span><span class="p">):</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">log_level</span><span class="p">,</span>
@@ -1845,7 +1851,7 @@ implement default like this::</p>
                 <span class="p">),</span>
             <span class="p">)</span>
 
-        <span class="nd">@app</span><span class="o">.</span><span class="n">broadcast</span><span class="o">.</span><span class="n">receiver</span><span class="p">(</span><span class="n">OtherClientMessage</span><span class="p">)</span>
+        <span class="nd">@app</span><span class="o">.</span><span class="n">broadcast</span><span class="o">.</span><span class="n">receiver</span><span class="p">(</span><span class="n">OtherClientMessage</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
         <span class="k">def</span> <span class="nf">log_other_client_message</span><span class="p">(</span><span class="n">event</span><span class="p">:</span> <span class="n">OtherClientMessage</span><span class="p">):</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">log_level</span><span class="p">,</span>
@@ -1870,7 +1876,10 @@ implement default like this::</p>
 
         <span class="n">app</span><span class="o">.</span><span class="n">broadcast</span><span class="o">.</span><span class="n">listeners</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
             <span class="n">Listener</span><span class="p">(</span>
-                <span class="n">log_active_message</span><span class="p">,</span> <span class="n">app</span><span class="o">.</span><span class="n">broadcast</span><span class="o">.</span><span class="n">getDefaultNamespace</span><span class="p">(),</span> <span class="nb">list</span><span class="p">(</span><span class="n">gen_subclass</span><span class="p">(</span><span class="n">ActiveMessage</span><span class="p">))</span>
+                <span class="n">log_active_message</span><span class="p">,</span>
+                <span class="n">app</span><span class="o">.</span><span class="n">broadcast</span><span class="o">.</span><span class="n">getDefaultNamespace</span><span class="p">(),</span>
+                <span class="nb">list</span><span class="p">(</span><span class="n">gen_subclass</span><span class="p">(</span><span class="n">ActiveMessage</span><span class="p">)),</span>
+                <span class="n">priority</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span>
             <span class="p">)</span>
         <span class="p">)</span>
 </pre></div>
