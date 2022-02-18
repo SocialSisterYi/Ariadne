@@ -319,6 +319,30 @@
 
             </li>
             <li>
+                    <a class="class" href="#Announcement">Announcement</a>
+                            <ul class="memberlist">
+                        <li>
+                                <a class="variable" href="#Announcement.group">group</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#Announcement.senderId">senderId</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#Announcement.fid">fid</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#Announcement.allConfirmed">allConfirmed</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#Announcement.confirmedMembersCount">confirmedMembersCount</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#Announcement.publicationTime">publicationTime</a>
+                        </li>
+                </ul>
+
+            </li>
+            <li>
                     <a class="class" href="#FileInfo">FileInfo</a>
                             <ul class="memberlist">
                         <li>
@@ -1052,6 +1076,28 @@
     <span class="sd">&quot;&quot;&quot;下载 url&quot;&quot;&quot;</span>
 
 
+<span class="k">class</span> <span class="nc">Announcement</span><span class="p">(</span><span class="n">AriadneBaseModel</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;群公告&quot;&quot;&quot;</span>
+
+    <span class="n">group</span><span class="p">:</span> <span class="n">Group</span>
+    <span class="sd">&quot;&quot;&quot;公告所在的群&quot;&quot;&quot;</span>
+
+    <span class="n">senderId</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="sd">&quot;&quot;&quot;发送者QQ号&quot;&quot;&quot;</span>
+
+    <span class="n">fid</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="sd">&quot;&quot;&quot;公告唯一标识ID&quot;&quot;&quot;</span>
+
+    <span class="n">allConfirmed</span><span class="p">:</span> <span class="nb">bool</span>
+    <span class="sd">&quot;&quot;&quot;群成员是否已全部确认&quot;&quot;&quot;</span>
+
+    <span class="n">confirmedMembersCount</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="sd">&quot;&quot;&quot;已确认群成员人数&quot;&quot;&quot;</span>
+
+    <span class="n">publicationTime</span><span class="p">:</span> <span class="n">datetime</span>
+    <span class="sd">&quot;&quot;&quot;公告发布时间&quot;&quot;&quot;</span>
+
+
 <span class="k">class</span> <span class="nc">FileInfo</span><span class="p">(</span><span class="n">AriadneBaseModel</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;群组文件详细信息&quot;&quot;&quot;</span>
 
@@ -1482,7 +1528,7 @@ implement default like this::</p>
                             <div id="AriadneBaseModel.Config.json_encoders" class="classattr">
                                             <div class="attr variable"><a class="headerlink" href="#AriadneBaseModel.Config.json_encoders">#&nbsp;&nbsp</a>
 
-        <span class="name">json_encoders</span><span class="default_value"> = {&lt;class &#39;datetime.datetime&#39;&gt;: &lt;function datetime_encoder at 0x7f96b5dc5700&gt;}</span>
+        <span class="name">json_encoders</span><span class="default_value"> = {&lt;class &#39;datetime.datetime&#39;&gt;: &lt;function datetime_encoder at 0x7ffaae7c09d0&gt;}</span>
     </div>
 
     
@@ -3592,6 +3638,137 @@ implement default like this::</p>
             <div><dt><a href="#AriadneBaseModel">AriadneBaseModel</a></dt>
                                 <dd id="DownloadInfo.dict" class="function"><a href="#AriadneBaseModel.dict">dict</a></dd>
                 <dd id="DownloadInfo.Config" class="class"><a href="#AriadneBaseModel.Config">Config</a></dd>
+
+            </div>
+                                </dl>
+                            </div>
+                </section>
+                <section id="Announcement">
+                                <div class="attr class">
+        <a class="headerlink" href="#Announcement">#&nbsp;&nbsp</a>
+
+        
+        <span class="def">class</span>
+        <span class="name">Announcement</span><wbr>(<span class="base"><a href="#AriadneBaseModel">AriadneBaseModel</a></span>):
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">Announcement</span><span class="p">(</span><span class="n">AriadneBaseModel</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;群公告&quot;&quot;&quot;</span>
+
+    <span class="n">group</span><span class="p">:</span> <span class="n">Group</span>
+    <span class="sd">&quot;&quot;&quot;公告所在的群&quot;&quot;&quot;</span>
+
+    <span class="n">senderId</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="sd">&quot;&quot;&quot;发送者QQ号&quot;&quot;&quot;</span>
+
+    <span class="n">fid</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="sd">&quot;&quot;&quot;公告唯一标识ID&quot;&quot;&quot;</span>
+
+    <span class="n">allConfirmed</span><span class="p">:</span> <span class="nb">bool</span>
+    <span class="sd">&quot;&quot;&quot;群成员是否已全部确认&quot;&quot;&quot;</span>
+
+    <span class="n">confirmedMembersCount</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="sd">&quot;&quot;&quot;已确认群成员人数&quot;&quot;&quot;</span>
+
+    <span class="n">publicationTime</span><span class="p">:</span> <span class="n">datetime</span>
+    <span class="sd">&quot;&quot;&quot;公告发布时间&quot;&quot;&quot;</span>
+</pre></div>
+
+        </details>
+
+            <div class="docstring"><p>群公告</p>
+</div>
+
+
+                            <div id="Announcement.group" class="classattr">
+                                            <div class="attr variable"><a class="headerlink" href="#Announcement.group">#&nbsp;&nbsp</a>
+
+        <span class="name">group</span><span class="annotation">: <a href="#Group">ariadne.model.Group</a></span>
+    </div>
+
+            <div class="docstring"><p>公告所在的群</p>
+</div>
+
+
+                            </div>
+                            <div id="Announcement.senderId" class="classattr">
+                                            <div class="attr variable"><a class="headerlink" href="#Announcement.senderId">#&nbsp;&nbsp</a>
+
+        <span class="name">senderId</span><span class="annotation">: int</span>
+    </div>
+
+            <div class="docstring"><p>发送者QQ号</p>
+</div>
+
+
+                            </div>
+                            <div id="Announcement.fid" class="classattr">
+                                            <div class="attr variable"><a class="headerlink" href="#Announcement.fid">#&nbsp;&nbsp</a>
+
+        <span class="name">fid</span><span class="annotation">: str</span>
+    </div>
+
+            <div class="docstring"><p>公告唯一标识ID</p>
+</div>
+
+
+                            </div>
+                            <div id="Announcement.allConfirmed" class="classattr">
+                                            <div class="attr variable"><a class="headerlink" href="#Announcement.allConfirmed">#&nbsp;&nbsp</a>
+
+        <span class="name">allConfirmed</span><span class="annotation">: bool</span>
+    </div>
+
+            <div class="docstring"><p>群成员是否已全部确认</p>
+</div>
+
+
+                            </div>
+                            <div id="Announcement.confirmedMembersCount" class="classattr">
+                                            <div class="attr variable"><a class="headerlink" href="#Announcement.confirmedMembersCount">#&nbsp;&nbsp</a>
+
+        <span class="name">confirmedMembersCount</span><span class="annotation">: int</span>
+    </div>
+
+            <div class="docstring"><p>已确认群成员人数</p>
+</div>
+
+
+                            </div>
+                            <div id="Announcement.publicationTime" class="classattr">
+                                            <div class="attr variable"><a class="headerlink" href="#Announcement.publicationTime">#&nbsp;&nbsp</a>
+
+        <span class="name">publicationTime</span><span class="annotation">: datetime.datetime</span>
+    </div>
+
+            <div class="docstring"><p>公告发布时间</p>
+</div>
+
+
+                            </div>
+                            <div class="inherited">
+                                <h5>Inherited Members</h5>
+                                <dl>
+                                    <div><dt>pydantic.main.BaseModel</dt>
+                                <dd id="Announcement.__init__" class="function">BaseModel</dd>
+                <dd id="Announcement.json" class="function">json</dd>
+                <dd id="Announcement.parse_obj" class="function">parse_obj</dd>
+                <dd id="Announcement.parse_raw" class="function">parse_raw</dd>
+                <dd id="Announcement.parse_file" class="function">parse_file</dd>
+                <dd id="Announcement.from_orm" class="function">from_orm</dd>
+                <dd id="Announcement.construct" class="function">construct</dd>
+                <dd id="Announcement.copy" class="function">copy</dd>
+                <dd id="Announcement.schema" class="function">schema</dd>
+                <dd id="Announcement.schema_json" class="function">schema_json</dd>
+                <dd id="Announcement.validate" class="function">validate</dd>
+                <dd id="Announcement.update_forward_refs" class="function">update_forward_refs</dd>
+
+            </div>
+            <div><dt><a href="#AriadneBaseModel">AriadneBaseModel</a></dt>
+                                <dd id="Announcement.dict" class="function"><a href="#AriadneBaseModel.dict">dict</a></dd>
+                <dd id="Announcement.Config" class="class"><a href="#AriadneBaseModel.Config">Config</a></dd>
 
             </div>
                                 </dl>

@@ -476,6 +476,20 @@
     <span class="p">):</span>
         <span class="o">...</span>
 
+    <span class="nd">@overload</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="o">*</span><span class="n">pattern</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">action</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Type</span><span class="p">[</span><span class="n">Action</span><span class="p">]]</span> <span class="o">=</span> <span class="o">...</span><span class="p">,</span>
+        <span class="n">nargs</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="o">...</span><span class="p">,</span>
+        <span class="n">const</span><span class="p">:</span> <span class="n">T</span> <span class="o">=</span> <span class="o">...</span><span class="p">,</span>
+        <span class="n">default</span><span class="p">:</span> <span class="n">T</span> <span class="o">=</span> <span class="o">...</span><span class="p">,</span>
+        <span class="nb">type</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="nb">str</span><span class="p">],</span> <span class="n">T</span><span class="p">]</span> <span class="o">=</span> <span class="o">...</span><span class="p">,</span>
+        <span class="n">choices</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">T</span><span class="p">]</span> <span class="o">=</span> <span class="o">...</span><span class="p">,</span>
+        <span class="n">optional</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="o">...</span>
+
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">pattern</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">pattern</span><span class="p">:</span>
@@ -515,11 +529,9 @@
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">match_result</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">MatchResult</span><span class="p">]):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">res</span> <span class="o">=</span> <span class="n">match_result</span>
 
-    <span class="nd">@overload</span>
     <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">MatchResult</span><span class="p">:</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
 
-    <span class="nd">@overload</span>
     <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">MatchResult</span><span class="p">:</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">res</span><span class="p">[</span><span class="n">item</span><span class="p">]</span>
 
@@ -538,7 +550,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_dest_map</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">ArgumentMatch</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_group_map</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">RegexMatch</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">dispatch_ref</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Match</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">match_ref</span><span class="p">:</span> <span class="n">DefaultDict</span><span class="p">[</span><span class="n">Type</span><span class="p">[</span><span class="n">T_Match</span><span class="p">],</span> <span class="n">List</span><span class="p">[</span><span class="n">T_Match</span><span class="p">]]</span> <span class="o">=</span> <span class="n">DefaultDict</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">match_ref</span><span class="p">:</span> <span class="n">DefaultDict</span><span class="p">[</span><span class="n">Type</span><span class="p">[</span><span class="n">Match</span><span class="p">],</span> <span class="n">List</span><span class="p">[</span><span class="n">Match</span><span class="p">]]</span> <span class="o">=</span> <span class="n">DefaultDict</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>
 
         <span class="n">regex_str_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">regex_group_cnt</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>
@@ -549,7 +561,8 @@
             <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">i</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">match_ref</span><span class="p">[</span><span class="nb">type</span><span class="p">(</span><span class="n">m</span><span class="p">)]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">m</span><span class="p">)</span>
                 <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">RegexMatch</span><span class="p">):</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">_group_map</span><span class="p">[</span><span class="n">regex_group_cnt</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">m</span>
+                    <span class="k">if</span> <span class="n">m</span><span class="o">.</span><span class="n">dest</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_group_map</span><span class="p">[</span><span class="n">regex_group_cnt</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">m</span>
                     <span class="n">regex_str_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">_regex_str</span><span class="p">)</span>
                     <span class="n">regex_group_cnt</span> <span class="o">+=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">_regex_str</span><span class="p">)</span><span class="o">.</span><span class="n">groups</span>
 
@@ -558,7 +571,8 @@
                         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parser</span><span class="o">.</span><span class="n">accept_type</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">arg_data</span><span class="p">[</span><span class="s2">&quot;action&quot;</span><span class="p">]):</span>
                             <span class="k">del</span> <span class="n">m</span><span class="o">.</span><span class="n">arg_data</span><span class="p">[</span><span class="s2">&quot;type&quot;</span><span class="p">]</span>
                     <span class="n">action</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="o">*</span><span class="n">m</span><span class="o">.</span><span class="n">pattern</span><span class="p">,</span> <span class="o">**</span><span class="n">m</span><span class="o">.</span><span class="n">arg_data</span><span class="p">)</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">_dest_map</span><span class="p">[</span><span class="n">action</span><span class="o">.</span><span class="n">dest</span><span class="p">]</span> <span class="o">=</span> <span class="n">m</span>
+                    <span class="k">if</span> <span class="n">m</span><span class="o">.</span><span class="n">dest</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_dest_map</span><span class="p">[</span><span class="n">action</span><span class="o">.</span><span class="n">dest</span><span class="p">]</span> <span class="o">=</span> <span class="n">m</span>
 
                 <span class="k">if</span> <span class="n">m</span><span class="o">.</span><span class="n">dest</span><span class="p">:</span>
                     <span class="k">if</span> <span class="n">m</span><span class="o">.</span><span class="n">dest</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">dispatch_ref</span><span class="p">:</span>
@@ -581,8 +595,7 @@
             <span class="n">namespace</span><span class="p">,</span> <span class="n">arguments</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parser</span><span class="o">.</span><span class="n">parse_known_args</span><span class="p">(</span><span class="n">arguments</span><span class="p">)</span>
             <span class="n">nbsp_dict</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="n">namespace</span><span class="o">.</span><span class="vm">__dict__</span>
             <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dest_map</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-                <span class="k">if</span> <span class="n">v</span><span class="o">.</span><span class="n">dest</span><span class="p">:</span>
-                    <span class="n">result</span><span class="p">[</span><span class="n">v</span><span class="o">.</span><span class="n">dest</span><span class="p">]</span> <span class="o">=</span> <span class="n">MatchResult</span><span class="p">(</span><span class="n">k</span> <span class="ow">in</span> <span class="n">nbsp_dict</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">nbsp_dict</span><span class="p">[</span><span class="n">k</span><span class="p">])</span>
+                <span class="n">result</span><span class="p">[</span><span class="n">v</span><span class="o">.</span><span class="n">dest</span><span class="p">]</span> <span class="o">=</span> <span class="n">MatchResult</span><span class="p">(</span><span class="n">k</span> <span class="ow">in</span> <span class="n">nbsp_dict</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">nbsp_dict</span><span class="p">[</span><span class="n">k</span><span class="p">])</span>
         <span class="k">if</span> <span class="n">total_match</span> <span class="o">:=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_regex_pattern</span><span class="o">.</span><span class="n">fullmatch</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">arguments</span><span class="p">)):</span>
             <span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">match</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_group_map</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
                 <span class="n">group</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">total_match</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
@@ -636,14 +649,14 @@
         <span class="k">return</span> <span class="n">formatter</span><span class="o">.</span><span class="n">format_help</span><span class="p">()</span>
 
     <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;&lt;TwilightMatcher </span><span class="si">{</span><span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_group_map</span><span class="o">.</span><span class="n">values</span><span class="p">())</span> <span class="o">+</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_dest_map</span><span class="o">.</span><span class="n">values</span><span class="p">())</span><span class="si">!r}</span><span class="s2">&gt;&quot;</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;&lt;Matcher </span><span class="si">{</span><span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_group_map</span><span class="o">.</span><span class="n">values</span><span class="p">())</span> <span class="o">+</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_dest_map</span><span class="o">.</span><span class="n">values</span><span class="p">())</span><span class="si">!r}</span><span class="s2">&gt;&quot;</span>  <span class="c1"># type: ignore</span>
 
     <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="k">return</span> <span class="nb">repr</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_group_map</span><span class="o">.</span><span class="n">values</span><span class="p">())</span> <span class="o">+</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_dest_map</span><span class="o">.</span><span class="n">values</span><span class="p">()))</span>
+        <span class="k">return</span> <span class="nb">repr</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_group_map</span><span class="o">.</span><span class="n">values</span><span class="p">())</span> <span class="o">+</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_dest_map</span><span class="o">.</span><span class="n">values</span><span class="p">()))</span>  <span class="c1"># type: ignore</span>
 
 
 <span class="k">class</span> <span class="nc">_TwilightLocalStorage</span><span class="p">(</span><span class="n">TypedDict</span><span class="p">):</span>
-    <span class="n">result</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Sparkle</span><span class="p">]</span>
+    <span class="n">result</span><span class="p">:</span> <span class="n">Sparkle</span>
 
 
 <span class="k">class</span> <span class="nc">Twilight</span><span class="p">(</span><span class="n">Generic</span><span class="p">[</span><span class="n">T_Sparkle</span><span class="p">],</span> <span class="n">BaseDispatcher</span><span class="p">):</span>
@@ -680,7 +693,7 @@
         <span class="n">arguments</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">split</span><span class="p">(</span><span class="n">mapping_str</span><span class="p">,</span> <span class="n">keep_quote</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="n">res</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">matcher</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">arguments</span><span class="p">,</span> <span class="n">elem_mapping</span><span class="p">)</span>
         <span class="n">elem_mapping_ctx</span><span class="o">.</span><span class="n">reset</span><span class="p">(</span><span class="n">token</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">Sparkle</span><span class="p">(</span><span class="n">res</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">Sparkle</span><span class="p">(</span><span class="n">res</span><span class="p">)</span>  <span class="c1"># type: ignore</span>
 
     <span class="k">def</span> <span class="nf">get_help</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">usage</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">description</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">epilog</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;利用 Match 中的信息生成帮助字符串.</span>
@@ -704,15 +717,15 @@
 <span class="sd">        Raises:</span>
 <span class="sd">            ExecutionStop: 匹配以任意方式失败</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">local_storage</span><span class="p">:</span> <span class="n">_TwilightLocalStorage</span> <span class="o">=</span> <span class="n">interface</span><span class="o">.</span><span class="n">local_storage</span>
+        <span class="n">local_storage</span><span class="p">:</span> <span class="n">_TwilightLocalStorage</span> <span class="o">=</span> <span class="n">interface</span><span class="o">.</span><span class="n">local_storage</span>  <span class="c1"># type: ignore</span>
         <span class="n">chain</span><span class="p">:</span> <span class="n">MessageChain</span> <span class="o">=</span> <span class="k">await</span> <span class="n">interface</span><span class="o">.</span><span class="n">lookup_param</span><span class="p">(</span><span class="s2">&quot;message_chain&quot;</span><span class="p">,</span> <span class="n">MessageChain</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">local_storage</span><span class="p">[</span><span class="s2">&quot;result&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">generate</span><span class="p">(</span><span class="n">chain</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">ExecutionStop</span> <span class="kn">from</span> <span class="nn">e</span>
 
-    <span class="k">async</span> <span class="k">def</span> <span class="nf">catch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">interface</span><span class="p">:</span> <span class="n">DispatcherInterface</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="s2">&quot;Twilight&quot;</span><span class="p">,</span> <span class="n">T_Sparkle</span><span class="p">,</span> <span class="n">Match</span><span class="p">]]:</span>
-        <span class="n">local_storage</span><span class="p">:</span> <span class="n">_TwilightLocalStorage</span> <span class="o">=</span> <span class="n">interface</span><span class="o">.</span><span class="n">local_storage</span>
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">catch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">interface</span><span class="p">:</span> <span class="n">DispatcherInterface</span><span class="p">):</span>
+        <span class="n">local_storage</span><span class="p">:</span> <span class="n">_TwilightLocalStorage</span> <span class="o">=</span> <span class="n">interface</span><span class="o">.</span><span class="n">local_storage</span>  <span class="c1"># type: ignore</span>
         <span class="n">sparkle</span> <span class="o">=</span> <span class="n">local_storage</span><span class="p">[</span><span class="s2">&quot;result&quot;</span><span class="p">]</span>
         <span class="k">if</span> <span class="nb">issubclass</span><span class="p">(</span><span class="n">interface</span><span class="o">.</span><span class="n">annotation</span><span class="p">,</span> <span class="n">Sparkle</span><span class="p">):</span>
             <span class="k">return</span> <span class="n">sparkle</span>
@@ -1577,6 +1590,20 @@
     <span class="p">):</span>
         <span class="o">...</span>
 
+    <span class="nd">@overload</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="o">*</span><span class="n">pattern</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">action</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Type</span><span class="p">[</span><span class="n">Action</span><span class="p">]]</span> <span class="o">=</span> <span class="o">...</span><span class="p">,</span>
+        <span class="n">nargs</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="o">...</span><span class="p">,</span>
+        <span class="n">const</span><span class="p">:</span> <span class="n">T</span> <span class="o">=</span> <span class="o">...</span><span class="p">,</span>
+        <span class="n">default</span><span class="p">:</span> <span class="n">T</span> <span class="o">=</span> <span class="o">...</span><span class="p">,</span>
+        <span class="nb">type</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="nb">str</span><span class="p">],</span> <span class="n">T</span><span class="p">]</span> <span class="o">=</span> <span class="o">...</span><span class="p">,</span>
+        <span class="n">choices</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">T</span><span class="p">]</span> <span class="o">=</span> <span class="o">...</span><span class="p">,</span>
+        <span class="n">optional</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="o">...</span>
+
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">pattern</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">pattern</span><span class="p">:</span>
@@ -1703,11 +1730,9 @@
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">match_result</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">MatchResult</span><span class="p">]):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">res</span> <span class="o">=</span> <span class="n">match_result</span>
 
-    <span class="nd">@overload</span>
     <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">MatchResult</span><span class="p">:</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
 
-    <span class="nd">@overload</span>
     <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">MatchResult</span><span class="p">:</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">res</span><span class="p">[</span><span class="n">item</span><span class="p">]</span>
 
@@ -1753,25 +1778,18 @@
 
         
             <span class="def">def</span>
-            <span class="name">get</span><span class="signature">(*args, **kwds)</span>:
+            <span class="name">get</span><span class="signature">(self, item: str) -&gt; <a href="#MatchResult">ariadne.message.parser.twilight.MatchResult</a></span>:
     </div>
 
                 <details>
             <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span><span class="k">def</span> <span class="nf">_overload_dummy</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwds</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Helper for @overload to raise when called.&quot;&quot;&quot;</span>
-    <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span>
-        <span class="s2">&quot;You should not call an overloaded function. &quot;</span>
-        <span class="s2">&quot;A series of @overload-decorated functions &quot;</span>
-        <span class="s2">&quot;outside a stub module should always be followed &quot;</span>
-        <span class="s2">&quot;by an implementation that is not @overload-ed.&quot;</span><span class="p">)</span>
+            <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">MatchResult</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">res</span><span class="p">[</span><span class="n">item</span><span class="p">]</span>
 </pre></div>
 
         </details>
 
-            <div class="docstring"><p>Helper for @overload to raise when called.</p>
-</div>
-
+    
 
                             </div>
                 </section>
@@ -1794,7 +1812,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_dest_map</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">ArgumentMatch</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_group_map</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">RegexMatch</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">dispatch_ref</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Match</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">match_ref</span><span class="p">:</span> <span class="n">DefaultDict</span><span class="p">[</span><span class="n">Type</span><span class="p">[</span><span class="n">T_Match</span><span class="p">],</span> <span class="n">List</span><span class="p">[</span><span class="n">T_Match</span><span class="p">]]</span> <span class="o">=</span> <span class="n">DefaultDict</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">match_ref</span><span class="p">:</span> <span class="n">DefaultDict</span><span class="p">[</span><span class="n">Type</span><span class="p">[</span><span class="n">Match</span><span class="p">],</span> <span class="n">List</span><span class="p">[</span><span class="n">Match</span><span class="p">]]</span> <span class="o">=</span> <span class="n">DefaultDict</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>
 
         <span class="n">regex_str_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">regex_group_cnt</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>
@@ -1805,7 +1823,8 @@
             <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">i</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">match_ref</span><span class="p">[</span><span class="nb">type</span><span class="p">(</span><span class="n">m</span><span class="p">)]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">m</span><span class="p">)</span>
                 <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">RegexMatch</span><span class="p">):</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">_group_map</span><span class="p">[</span><span class="n">regex_group_cnt</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">m</span>
+                    <span class="k">if</span> <span class="n">m</span><span class="o">.</span><span class="n">dest</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_group_map</span><span class="p">[</span><span class="n">regex_group_cnt</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">m</span>
                     <span class="n">regex_str_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">_regex_str</span><span class="p">)</span>
                     <span class="n">regex_group_cnt</span> <span class="o">+=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">_regex_str</span><span class="p">)</span><span class="o">.</span><span class="n">groups</span>
 
@@ -1814,7 +1833,8 @@
                         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parser</span><span class="o">.</span><span class="n">accept_type</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">arg_data</span><span class="p">[</span><span class="s2">&quot;action&quot;</span><span class="p">]):</span>
                             <span class="k">del</span> <span class="n">m</span><span class="o">.</span><span class="n">arg_data</span><span class="p">[</span><span class="s2">&quot;type&quot;</span><span class="p">]</span>
                     <span class="n">action</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="o">*</span><span class="n">m</span><span class="o">.</span><span class="n">pattern</span><span class="p">,</span> <span class="o">**</span><span class="n">m</span><span class="o">.</span><span class="n">arg_data</span><span class="p">)</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">_dest_map</span><span class="p">[</span><span class="n">action</span><span class="o">.</span><span class="n">dest</span><span class="p">]</span> <span class="o">=</span> <span class="n">m</span>
+                    <span class="k">if</span> <span class="n">m</span><span class="o">.</span><span class="n">dest</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_dest_map</span><span class="p">[</span><span class="n">action</span><span class="o">.</span><span class="n">dest</span><span class="p">]</span> <span class="o">=</span> <span class="n">m</span>
 
                 <span class="k">if</span> <span class="n">m</span><span class="o">.</span><span class="n">dest</span><span class="p">:</span>
                     <span class="k">if</span> <span class="n">m</span><span class="o">.</span><span class="n">dest</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">dispatch_ref</span><span class="p">:</span>
@@ -1837,8 +1857,7 @@
             <span class="n">namespace</span><span class="p">,</span> <span class="n">arguments</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parser</span><span class="o">.</span><span class="n">parse_known_args</span><span class="p">(</span><span class="n">arguments</span><span class="p">)</span>
             <span class="n">nbsp_dict</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="n">namespace</span><span class="o">.</span><span class="vm">__dict__</span>
             <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dest_map</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-                <span class="k">if</span> <span class="n">v</span><span class="o">.</span><span class="n">dest</span><span class="p">:</span>
-                    <span class="n">result</span><span class="p">[</span><span class="n">v</span><span class="o">.</span><span class="n">dest</span><span class="p">]</span> <span class="o">=</span> <span class="n">MatchResult</span><span class="p">(</span><span class="n">k</span> <span class="ow">in</span> <span class="n">nbsp_dict</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">nbsp_dict</span><span class="p">[</span><span class="n">k</span><span class="p">])</span>
+                <span class="n">result</span><span class="p">[</span><span class="n">v</span><span class="o">.</span><span class="n">dest</span><span class="p">]</span> <span class="o">=</span> <span class="n">MatchResult</span><span class="p">(</span><span class="n">k</span> <span class="ow">in</span> <span class="n">nbsp_dict</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">nbsp_dict</span><span class="p">[</span><span class="n">k</span><span class="p">])</span>
         <span class="k">if</span> <span class="n">total_match</span> <span class="o">:=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_regex_pattern</span><span class="o">.</span><span class="n">fullmatch</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">arguments</span><span class="p">)):</span>
             <span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">match</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_group_map</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
                 <span class="n">group</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">total_match</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
@@ -1892,10 +1911,10 @@
         <span class="k">return</span> <span class="n">formatter</span><span class="o">.</span><span class="n">format_help</span><span class="p">()</span>
 
     <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;&lt;TwilightMatcher </span><span class="si">{</span><span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_group_map</span><span class="o">.</span><span class="n">values</span><span class="p">())</span> <span class="o">+</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_dest_map</span><span class="o">.</span><span class="n">values</span><span class="p">())</span><span class="si">!r}</span><span class="s2">&gt;&quot;</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;&lt;Matcher </span><span class="si">{</span><span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_group_map</span><span class="o">.</span><span class="n">values</span><span class="p">())</span> <span class="o">+</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_dest_map</span><span class="o">.</span><span class="n">values</span><span class="p">())</span><span class="si">!r}</span><span class="s2">&gt;&quot;</span>  <span class="c1"># type: ignore</span>
 
     <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="k">return</span> <span class="nb">repr</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_group_map</span><span class="o">.</span><span class="n">values</span><span class="p">())</span> <span class="o">+</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_dest_map</span><span class="o">.</span><span class="n">values</span><span class="p">()))</span>
+        <span class="k">return</span> <span class="nb">repr</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_group_map</span><span class="o">.</span><span class="n">values</span><span class="p">())</span> <span class="o">+</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_dest_map</span><span class="o">.</span><span class="n">values</span><span class="p">()))</span>  <span class="c1"># type: ignore</span>
 </pre></div>
 
         </details>
@@ -1920,7 +1939,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_dest_map</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">ArgumentMatch</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_group_map</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">RegexMatch</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">dispatch_ref</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Match</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">match_ref</span><span class="p">:</span> <span class="n">DefaultDict</span><span class="p">[</span><span class="n">Type</span><span class="p">[</span><span class="n">T_Match</span><span class="p">],</span> <span class="n">List</span><span class="p">[</span><span class="n">T_Match</span><span class="p">]]</span> <span class="o">=</span> <span class="n">DefaultDict</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">match_ref</span><span class="p">:</span> <span class="n">DefaultDict</span><span class="p">[</span><span class="n">Type</span><span class="p">[</span><span class="n">Match</span><span class="p">],</span> <span class="n">List</span><span class="p">[</span><span class="n">Match</span><span class="p">]]</span> <span class="o">=</span> <span class="n">DefaultDict</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>
 
         <span class="n">regex_str_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">regex_group_cnt</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>
@@ -1931,7 +1950,8 @@
             <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">i</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">match_ref</span><span class="p">[</span><span class="nb">type</span><span class="p">(</span><span class="n">m</span><span class="p">)]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">m</span><span class="p">)</span>
                 <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">RegexMatch</span><span class="p">):</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">_group_map</span><span class="p">[</span><span class="n">regex_group_cnt</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">m</span>
+                    <span class="k">if</span> <span class="n">m</span><span class="o">.</span><span class="n">dest</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_group_map</span><span class="p">[</span><span class="n">regex_group_cnt</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">m</span>
                     <span class="n">regex_str_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">_regex_str</span><span class="p">)</span>
                     <span class="n">regex_group_cnt</span> <span class="o">+=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">_regex_str</span><span class="p">)</span><span class="o">.</span><span class="n">groups</span>
 
@@ -1940,7 +1960,8 @@
                         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parser</span><span class="o">.</span><span class="n">accept_type</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">arg_data</span><span class="p">[</span><span class="s2">&quot;action&quot;</span><span class="p">]):</span>
                             <span class="k">del</span> <span class="n">m</span><span class="o">.</span><span class="n">arg_data</span><span class="p">[</span><span class="s2">&quot;type&quot;</span><span class="p">]</span>
                     <span class="n">action</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="o">*</span><span class="n">m</span><span class="o">.</span><span class="n">pattern</span><span class="p">,</span> <span class="o">**</span><span class="n">m</span><span class="o">.</span><span class="n">arg_data</span><span class="p">)</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">_dest_map</span><span class="p">[</span><span class="n">action</span><span class="o">.</span><span class="n">dest</span><span class="p">]</span> <span class="o">=</span> <span class="n">m</span>
+                    <span class="k">if</span> <span class="n">m</span><span class="o">.</span><span class="n">dest</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_dest_map</span><span class="p">[</span><span class="n">action</span><span class="o">.</span><span class="n">dest</span><span class="p">]</span> <span class="o">=</span> <span class="n">m</span>
 
                 <span class="k">if</span> <span class="n">m</span><span class="o">.</span><span class="n">dest</span><span class="p">:</span>
                     <span class="k">if</span> <span class="n">m</span><span class="o">.</span><span class="n">dest</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">dispatch_ref</span><span class="p">:</span>
@@ -1983,8 +2004,7 @@
             <span class="n">namespace</span><span class="p">,</span> <span class="n">arguments</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parser</span><span class="o">.</span><span class="n">parse_known_args</span><span class="p">(</span><span class="n">arguments</span><span class="p">)</span>
             <span class="n">nbsp_dict</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="n">namespace</span><span class="o">.</span><span class="vm">__dict__</span>
             <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dest_map</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-                <span class="k">if</span> <span class="n">v</span><span class="o">.</span><span class="n">dest</span><span class="p">:</span>
-                    <span class="n">result</span><span class="p">[</span><span class="n">v</span><span class="o">.</span><span class="n">dest</span><span class="p">]</span> <span class="o">=</span> <span class="n">MatchResult</span><span class="p">(</span><span class="n">k</span> <span class="ow">in</span> <span class="n">nbsp_dict</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">nbsp_dict</span><span class="p">[</span><span class="n">k</span><span class="p">])</span>
+                <span class="n">result</span><span class="p">[</span><span class="n">v</span><span class="o">.</span><span class="n">dest</span><span class="p">]</span> <span class="o">=</span> <span class="n">MatchResult</span><span class="p">(</span><span class="n">k</span> <span class="ow">in</span> <span class="n">nbsp_dict</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">nbsp_dict</span><span class="p">[</span><span class="n">k</span><span class="p">])</span>
         <span class="k">if</span> <span class="n">total_match</span> <span class="o">:=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_regex_pattern</span><span class="o">.</span><span class="n">fullmatch</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">arguments</span><span class="p">)):</span>
             <span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">match</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_group_map</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
                 <span class="n">group</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">total_match</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
@@ -2141,7 +2161,7 @@
         <span class="n">arguments</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">split</span><span class="p">(</span><span class="n">mapping_str</span><span class="p">,</span> <span class="n">keep_quote</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="n">res</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">matcher</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">arguments</span><span class="p">,</span> <span class="n">elem_mapping</span><span class="p">)</span>
         <span class="n">elem_mapping_ctx</span><span class="o">.</span><span class="n">reset</span><span class="p">(</span><span class="n">token</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">Sparkle</span><span class="p">(</span><span class="n">res</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">Sparkle</span><span class="p">(</span><span class="n">res</span><span class="p">)</span>  <span class="c1"># type: ignore</span>
 
     <span class="k">def</span> <span class="nf">get_help</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">usage</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">description</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">epilog</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;利用 Match 中的信息生成帮助字符串.</span>
@@ -2165,15 +2185,15 @@
 <span class="sd">        Raises:</span>
 <span class="sd">            ExecutionStop: 匹配以任意方式失败</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">local_storage</span><span class="p">:</span> <span class="n">_TwilightLocalStorage</span> <span class="o">=</span> <span class="n">interface</span><span class="o">.</span><span class="n">local_storage</span>
+        <span class="n">local_storage</span><span class="p">:</span> <span class="n">_TwilightLocalStorage</span> <span class="o">=</span> <span class="n">interface</span><span class="o">.</span><span class="n">local_storage</span>  <span class="c1"># type: ignore</span>
         <span class="n">chain</span><span class="p">:</span> <span class="n">MessageChain</span> <span class="o">=</span> <span class="k">await</span> <span class="n">interface</span><span class="o">.</span><span class="n">lookup_param</span><span class="p">(</span><span class="s2">&quot;message_chain&quot;</span><span class="p">,</span> <span class="n">MessageChain</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">local_storage</span><span class="p">[</span><span class="s2">&quot;result&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">generate</span><span class="p">(</span><span class="n">chain</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">ExecutionStop</span> <span class="kn">from</span> <span class="nn">e</span>
 
-    <span class="k">async</span> <span class="k">def</span> <span class="nf">catch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">interface</span><span class="p">:</span> <span class="n">DispatcherInterface</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="s2">&quot;Twilight&quot;</span><span class="p">,</span> <span class="n">T_Sparkle</span><span class="p">,</span> <span class="n">Match</span><span class="p">]]:</span>
-        <span class="n">local_storage</span><span class="p">:</span> <span class="n">_TwilightLocalStorage</span> <span class="o">=</span> <span class="n">interface</span><span class="o">.</span><span class="n">local_storage</span>
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">catch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">interface</span><span class="p">:</span> <span class="n">DispatcherInterface</span><span class="p">):</span>
+        <span class="n">local_storage</span><span class="p">:</span> <span class="n">_TwilightLocalStorage</span> <span class="o">=</span> <span class="n">interface</span><span class="o">.</span><span class="n">local_storage</span>  <span class="c1"># type: ignore</span>
         <span class="n">sparkle</span> <span class="o">=</span> <span class="n">local_storage</span><span class="p">[</span><span class="s2">&quot;result&quot;</span><span class="p">]</span>
         <span class="k">if</span> <span class="nb">issubclass</span><span class="p">(</span><span class="n">interface</span><span class="o">.</span><span class="n">annotation</span><span class="p">,</span> <span class="n">Sparkle</span><span class="p">):</span>
             <span class="k">return</span> <span class="n">sparkle</span>
@@ -2258,7 +2278,7 @@
         <span class="n">arguments</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">split</span><span class="p">(</span><span class="n">mapping_str</span><span class="p">,</span> <span class="n">keep_quote</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="n">res</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">matcher</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">arguments</span><span class="p">,</span> <span class="n">elem_mapping</span><span class="p">)</span>
         <span class="n">elem_mapping_ctx</span><span class="o">.</span><span class="n">reset</span><span class="p">(</span><span class="n">token</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">Sparkle</span><span class="p">(</span><span class="n">res</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">Sparkle</span><span class="p">(</span><span class="n">res</span><span class="p">)</span>  <span class="c1"># type: ignore</span>
 </pre></div>
 
         </details>
@@ -2352,7 +2372,7 @@
 <span class="sd">        Raises:</span>
 <span class="sd">            ExecutionStop: 匹配以任意方式失败</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">local_storage</span><span class="p">:</span> <span class="n">_TwilightLocalStorage</span> <span class="o">=</span> <span class="n">interface</span><span class="o">.</span><span class="n">local_storage</span>
+        <span class="n">local_storage</span><span class="p">:</span> <span class="n">_TwilightLocalStorage</span> <span class="o">=</span> <span class="n">interface</span><span class="o">.</span><span class="n">local_storage</span>  <span class="c1"># type: ignore</span>
         <span class="n">chain</span><span class="p">:</span> <span class="n">MessageChain</span> <span class="o">=</span> <span class="k">await</span> <span class="n">interface</span><span class="o">.</span><span class="n">lookup_param</span><span class="p">(</span><span class="s2">&quot;message_chain&quot;</span><span class="p">,</span> <span class="n">MessageChain</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">local_storage</span><span class="p">[</span><span class="s2">&quot;result&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">generate</span><span class="p">(</span><span class="n">chain</span><span class="p">)</span>
@@ -2387,13 +2407,13 @@
             <span class="name">catch</span><span class="signature">(
     self,
     interface: graia.broadcast.interfaces.dispatcher.DispatcherInterface
-) -&gt; Union[<a href="#Twilight">ariadne.message.parser.twilight.Twilight</a>, ~T_Sparkle, <a href="#Match">ariadne.message.parser.twilight.Match</a>, NoneType]</span>:
+)</span>:
     </div>
 
                 <details>
             <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span>    <span class="k">async</span> <span class="k">def</span> <span class="nf">catch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">interface</span><span class="p">:</span> <span class="n">DispatcherInterface</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="s2">&quot;Twilight&quot;</span><span class="p">,</span> <span class="n">T_Sparkle</span><span class="p">,</span> <span class="n">Match</span><span class="p">]]:</span>
-        <span class="n">local_storage</span><span class="p">:</span> <span class="n">_TwilightLocalStorage</span> <span class="o">=</span> <span class="n">interface</span><span class="o">.</span><span class="n">local_storage</span>
+            <div class="codehilite"><pre><span></span>    <span class="k">async</span> <span class="k">def</span> <span class="nf">catch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">interface</span><span class="p">:</span> <span class="n">DispatcherInterface</span><span class="p">):</span>
+        <span class="n">local_storage</span><span class="p">:</span> <span class="n">_TwilightLocalStorage</span> <span class="o">=</span> <span class="n">interface</span><span class="o">.</span><span class="n">local_storage</span>  <span class="c1"># type: ignore</span>
         <span class="n">sparkle</span> <span class="o">=</span> <span class="n">local_storage</span><span class="p">[</span><span class="s2">&quot;result&quot;</span><span class="p">]</span>
         <span class="k">if</span> <span class="nb">issubclass</span><span class="p">(</span><span class="n">interface</span><span class="o">.</span><span class="n">annotation</span><span class="p">,</span> <span class="n">Sparkle</span><span class="p">):</span>
             <span class="k">return</span> <span class="n">sparkle</span>

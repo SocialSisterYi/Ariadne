@@ -90,7 +90,7 @@
 <span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
     <span class="n">ArpamarProperty</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="s2">&quot;ArpamarProperty&quot;</span><span class="p">,</span> <span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">MessageChain</span><span class="p">),</span> <span class="p">{})</span>
 <span class="k">else</span><span class="p">:</span>
-    <span class="n">ArpamarProperty</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="s2">&quot;ArpamarProperty&quot;</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">(),</span> <span class="p">{})</span>
+    <span class="n">ArpamarProperty</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="s2">&quot;ArpamarProperty&quot;</span><span class="p">,</span> <span class="p">(),</span> <span class="p">{})</span>
 
 
 <span class="k">class</span> <span class="nc">AlconnaDispatcher</span><span class="p">(</span><span class="n">BaseDispatcher</span><span class="p">):</span>
@@ -104,12 +104,12 @@
 
     <span class="k">async</span> <span class="k">def</span> <span class="nf">beforeExecution</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">interface</span><span class="p">:</span> <span class="s2">&quot;DispatcherInterface[MessageEvent]&quot;</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;预处理消息链并存入 local_storage&quot;&quot;&quot;</span>
-        <span class="n">local_storage</span> <span class="o">=</span> <span class="n">interface</span><span class="o">.</span><span class="n">interface</span><span class="o">.</span><span class="n">local_storage</span>
+        <span class="n">local_storage</span> <span class="o">=</span> <span class="n">interface</span><span class="o">.</span><span class="n">local_storage</span>
         <span class="n">chain</span><span class="p">:</span> <span class="n">MessageChain</span> <span class="o">=</span> <span class="k">await</span> <span class="n">interface</span><span class="o">.</span><span class="n">lookup_param</span><span class="p">(</span><span class="s2">&quot;message_chain&quot;</span><span class="p">,</span> <span class="n">MessageChain</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
         <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">alconna</span><span class="o">.</span><span class="n">analyse_message</span><span class="p">(</span><span class="n">chain</span><span class="p">)</span>
         <span class="n">local_storage</span><span class="p">[</span><span class="s2">&quot;arpamar&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">result</span>
 
-    <span class="k">async</span> <span class="k">def</span> <span class="nf">catch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">interface</span><span class="p">:</span> <span class="n">DispatcherInterface</span><span class="p">[</span><span class="n">MessageEvent</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Arpamar</span><span class="p">:</span>
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">catch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">interface</span><span class="p">:</span> <span class="n">DispatcherInterface</span><span class="p">[</span><span class="n">MessageEvent</span><span class="p">]):</span>
         <span class="n">local_storage</span> <span class="o">=</span> <span class="n">interface</span><span class="o">.</span><span class="n">local_storage</span>
         <span class="n">arpamar</span><span class="p">:</span> <span class="n">Arpamar</span> <span class="o">=</span> <span class="n">local_storage</span><span class="p">[</span><span class="s2">&quot;arpamar&quot;</span><span class="p">]</span>
         <span class="k">if</span> <span class="nb">issubclass</span><span class="p">(</span><span class="n">interface</span><span class="o">.</span><span class="n">annotation</span><span class="p">,</span> <span class="n">ArpamarProperty</span><span class="p">):</span>
@@ -145,12 +145,12 @@
 
     <span class="k">async</span> <span class="k">def</span> <span class="nf">beforeExecution</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">interface</span><span class="p">:</span> <span class="s2">&quot;DispatcherInterface[MessageEvent]&quot;</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;预处理消息链并存入 local_storage&quot;&quot;&quot;</span>
-        <span class="n">local_storage</span> <span class="o">=</span> <span class="n">interface</span><span class="o">.</span><span class="n">interface</span><span class="o">.</span><span class="n">local_storage</span>
+        <span class="n">local_storage</span> <span class="o">=</span> <span class="n">interface</span><span class="o">.</span><span class="n">local_storage</span>
         <span class="n">chain</span><span class="p">:</span> <span class="n">MessageChain</span> <span class="o">=</span> <span class="k">await</span> <span class="n">interface</span><span class="o">.</span><span class="n">lookup_param</span><span class="p">(</span><span class="s2">&quot;message_chain&quot;</span><span class="p">,</span> <span class="n">MessageChain</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
         <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">alconna</span><span class="o">.</span><span class="n">analyse_message</span><span class="p">(</span><span class="n">chain</span><span class="p">)</span>
         <span class="n">local_storage</span><span class="p">[</span><span class="s2">&quot;arpamar&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">result</span>
 
-    <span class="k">async</span> <span class="k">def</span> <span class="nf">catch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">interface</span><span class="p">:</span> <span class="n">DispatcherInterface</span><span class="p">[</span><span class="n">MessageEvent</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Arpamar</span><span class="p">:</span>
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">catch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">interface</span><span class="p">:</span> <span class="n">DispatcherInterface</span><span class="p">[</span><span class="n">MessageEvent</span><span class="p">]):</span>
         <span class="n">local_storage</span> <span class="o">=</span> <span class="n">interface</span><span class="o">.</span><span class="n">local_storage</span>
         <span class="n">arpamar</span><span class="p">:</span> <span class="n">Arpamar</span> <span class="o">=</span> <span class="n">local_storage</span><span class="p">[</span><span class="s2">&quot;arpamar&quot;</span><span class="p">]</span>
         <span class="k">if</span> <span class="nb">issubclass</span><span class="p">(</span><span class="n">interface</span><span class="o">.</span><span class="n">annotation</span><span class="p">,</span> <span class="n">ArpamarProperty</span><span class="p">):</span>
@@ -171,7 +171,7 @@
                                         <div class="attr function"><a class="headerlink" href="#AlconnaDispatcher.__init__">#&nbsp;&nbsp</a>
 
         
-            <span class="name">AlconnaDispatcher</span><span class="signature">(*, alconna: arclet.alconna.Alconna)</span>
+            <span class="name">AlconnaDispatcher</span><span class="signature">(*, alconna: arclet.alconna.main.Alconna)</span>
     </div>
 
                 <details>
@@ -201,7 +201,7 @@
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span>    <span class="k">async</span> <span class="k">def</span> <span class="nf">beforeExecution</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">interface</span><span class="p">:</span> <span class="s2">&quot;DispatcherInterface[MessageEvent]&quot;</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;预处理消息链并存入 local_storage&quot;&quot;&quot;</span>
-        <span class="n">local_storage</span> <span class="o">=</span> <span class="n">interface</span><span class="o">.</span><span class="n">interface</span><span class="o">.</span><span class="n">local_storage</span>
+        <span class="n">local_storage</span> <span class="o">=</span> <span class="n">interface</span><span class="o">.</span><span class="n">local_storage</span>
         <span class="n">chain</span><span class="p">:</span> <span class="n">MessageChain</span> <span class="o">=</span> <span class="k">await</span> <span class="n">interface</span><span class="o">.</span><span class="n">lookup_param</span><span class="p">(</span><span class="s2">&quot;message_chain&quot;</span><span class="p">,</span> <span class="n">MessageChain</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
         <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">alconna</span><span class="o">.</span><span class="n">analyse_message</span><span class="p">(</span><span class="n">chain</span><span class="p">)</span>
         <span class="n">local_storage</span><span class="p">[</span><span class="s2">&quot;arpamar&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">result</span>
@@ -222,12 +222,12 @@
             <span class="name">catch</span><span class="signature">(
     self,
     interface: graia.broadcast.interfaces.dispatcher.DispatcherInterface[<a href="../../event/message.html#MessageEvent">ariadne.event.message.MessageEvent</a>]
-) -&gt; arclet.alconna.component.Arpamar</span>:
+)</span>:
     </div>
 
                 <details>
             <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span>    <span class="k">async</span> <span class="k">def</span> <span class="nf">catch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">interface</span><span class="p">:</span> <span class="n">DispatcherInterface</span><span class="p">[</span><span class="n">MessageEvent</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Arpamar</span><span class="p">:</span>
+            <div class="codehilite"><pre><span></span>    <span class="k">async</span> <span class="k">def</span> <span class="nf">catch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">interface</span><span class="p">:</span> <span class="n">DispatcherInterface</span><span class="p">[</span><span class="n">MessageEvent</span><span class="p">]):</span>
         <span class="n">local_storage</span> <span class="o">=</span> <span class="n">interface</span><span class="o">.</span><span class="n">local_storage</span>
         <span class="n">arpamar</span><span class="p">:</span> <span class="n">Arpamar</span> <span class="o">=</span> <span class="n">local_storage</span><span class="p">[</span><span class="s2">&quot;arpamar&quot;</span><span class="p">]</span>
         <span class="k">if</span> <span class="nb">issubclass</span><span class="p">(</span><span class="n">interface</span><span class="o">.</span><span class="n">annotation</span><span class="p">,</span> <span class="n">ArpamarProperty</span><span class="p">):</span>

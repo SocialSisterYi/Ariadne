@@ -843,6 +843,7 @@
         <span class="k">for</span> <span class="n">elem</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__root__</span><span class="p">:</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">elem</span><span class="p">,</span> <span class="n">MultimediaElement</span><span class="p">):</span>
                 <span class="k">await</span> <span class="n">elem</span><span class="o">.</span><span class="n">get_bytes</span><span class="p">()</span>
+        <span class="k">return</span> <span class="bp">self</span>
 
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">fromPersistentString</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">string</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;MessageChain&quot;</span><span class="p">:</span>
@@ -1704,6 +1705,7 @@
         <span class="k">for</span> <span class="n">elem</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__root__</span><span class="p">:</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">elem</span><span class="p">,</span> <span class="n">MultimediaElement</span><span class="p">):</span>
                 <span class="k">await</span> <span class="n">elem</span><span class="o">.</span><span class="n">get_bytes</span><span class="p">()</span>
+        <span class="k">return</span> <span class="bp">self</span>
 
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">fromPersistentString</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">string</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;MessageChain&quot;</span><span class="p">:</span>
@@ -3293,6 +3295,7 @@
         <span class="k">for</span> <span class="n">elem</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__root__</span><span class="p">:</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">elem</span><span class="p">,</span> <span class="n">MultimediaElement</span><span class="p">):</span>
                 <span class="k">await</span> <span class="n">elem</span><span class="o">.</span><span class="n">get_bytes</span><span class="p">()</span>
+        <span class="k">return</span> <span class="bp">self</span>
 </pre></div>
 
         </details>
