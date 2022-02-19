@@ -669,6 +669,28 @@
     <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">asDisplay</span><span class="p">()</span>
 
+    <span class="k">def</span> <span class="fm">__add__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">content</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="s2">&quot;MessageChain&quot;</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="s2">&quot;Element&quot;</span><span class="p">],</span> <span class="s2">&quot;Element&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="s2">&quot;MessageChain&quot;</span><span class="p">:</span>
+        <span class="kn">from</span> <span class="nn">.chain</span> <span class="kn">import</span> <span class="n">MessageChain</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">content</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="n">content</span> <span class="o">=</span> <span class="n">Plain</span><span class="p">(</span><span class="n">content</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">content</span><span class="p">,</span> <span class="n">Element</span><span class="p">):</span>
+            <span class="n">content</span> <span class="o">=</span> <span class="p">[</span><span class="n">content</span><span class="p">]</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">content</span><span class="p">,</span> <span class="n">MessageChain</span><span class="p">):</span>
+            <span class="n">content</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Element</span><span class="p">]</span> <span class="o">=</span> <span class="n">content</span><span class="o">.</span><span class="n">__root__</span>
+        <span class="k">return</span> <span class="n">MessageChain</span><span class="p">(</span><span class="n">content</span> <span class="o">+</span> <span class="p">[</span><span class="bp">self</span><span class="p">],</span> <span class="n">inline</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__radd__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">content</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="s2">&quot;MessageChain&quot;</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="s2">&quot;Element&quot;</span><span class="p">],</span> <span class="s2">&quot;Element&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="s2">&quot;MessageChain&quot;</span><span class="p">:</span>
+        <span class="kn">from</span> <span class="nn">.chain</span> <span class="kn">import</span> <span class="n">MessageChain</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">content</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="n">content</span> <span class="o">=</span> <span class="n">Plain</span><span class="p">(</span><span class="n">content</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">content</span><span class="p">,</span> <span class="n">Element</span><span class="p">):</span>
+            <span class="n">content</span> <span class="o">=</span> <span class="p">[</span><span class="n">content</span><span class="p">]</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">content</span><span class="p">,</span> <span class="n">MessageChain</span><span class="p">):</span>
+            <span class="n">content</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Element</span><span class="p">]</span> <span class="o">=</span> <span class="n">content</span><span class="o">.</span><span class="n">__root__</span>
+        <span class="k">return</span> <span class="n">MessageChain</span><span class="p">([</span><span class="bp">self</span><span class="p">]</span> <span class="o">+</span> <span class="n">content</span><span class="p">,</span> <span class="n">inline</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
 
 <span class="k">class</span> <span class="nc">Plain</span><span class="p">(</span><span class="n">Element</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;代表消息中的文本元素&quot;&quot;&quot;</span>
@@ -1250,13 +1272,13 @@
 <span class="sd">        Returns:</span>
 <span class="sd">            bytes: 元素原始数据</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="kn">from</span> <span class="nn">..app</span> <span class="kn">import</span> <span class="n">Ariadne</span>
+        <span class="kn">from</span> <span class="nn">..</span> <span class="kn">import</span> <span class="n">get_running</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">base64</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">b64decode</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">base64</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">url</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;you should offer a url.&quot;</span><span class="p">)</span>
-        <span class="n">session</span> <span class="o">=</span> <span class="n">Ariadne</span><span class="o">.</span><span class="n">get_running</span><span class="p">(</span><span class="n">Ariadne</span><span class="p">)</span><span class="o">.</span><span class="n">adapter</span><span class="o">.</span><span class="n">session</span>
+        <span class="n">session</span> <span class="o">=</span> <span class="n">get_running</span><span class="p">()</span><span class="o">.</span><span class="n">adapter</span><span class="o">.</span><span class="n">session</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">session</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;Unable to get session!&quot;</span><span class="p">)</span>
         <span class="k">async</span> <span class="k">with</span> <span class="n">session</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">url</span><span class="p">)</span> <span class="k">as</span> <span class="n">response</span><span class="p">:</span>
@@ -1487,6 +1509,28 @@
 
     <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">asDisplay</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="fm">__add__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">content</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="s2">&quot;MessageChain&quot;</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="s2">&quot;Element&quot;</span><span class="p">],</span> <span class="s2">&quot;Element&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="s2">&quot;MessageChain&quot;</span><span class="p">:</span>
+        <span class="kn">from</span> <span class="nn">.chain</span> <span class="kn">import</span> <span class="n">MessageChain</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">content</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="n">content</span> <span class="o">=</span> <span class="n">Plain</span><span class="p">(</span><span class="n">content</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">content</span><span class="p">,</span> <span class="n">Element</span><span class="p">):</span>
+            <span class="n">content</span> <span class="o">=</span> <span class="p">[</span><span class="n">content</span><span class="p">]</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">content</span><span class="p">,</span> <span class="n">MessageChain</span><span class="p">):</span>
+            <span class="n">content</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Element</span><span class="p">]</span> <span class="o">=</span> <span class="n">content</span><span class="o">.</span><span class="n">__root__</span>
+        <span class="k">return</span> <span class="n">MessageChain</span><span class="p">(</span><span class="n">content</span> <span class="o">+</span> <span class="p">[</span><span class="bp">self</span><span class="p">],</span> <span class="n">inline</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__radd__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">content</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="s2">&quot;MessageChain&quot;</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="s2">&quot;Element&quot;</span><span class="p">],</span> <span class="s2">&quot;Element&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="s2">&quot;MessageChain&quot;</span><span class="p">:</span>
+        <span class="kn">from</span> <span class="nn">.chain</span> <span class="kn">import</span> <span class="n">MessageChain</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">content</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="n">content</span> <span class="o">=</span> <span class="n">Plain</span><span class="p">(</span><span class="n">content</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">content</span><span class="p">,</span> <span class="n">Element</span><span class="p">):</span>
+            <span class="n">content</span> <span class="o">=</span> <span class="p">[</span><span class="n">content</span><span class="p">]</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">content</span><span class="p">,</span> <span class="n">MessageChain</span><span class="p">):</span>
+            <span class="n">content</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Element</span><span class="p">]</span> <span class="o">=</span> <span class="n">content</span><span class="o">.</span><span class="n">__root__</span>
+        <span class="k">return</span> <span class="n">MessageChain</span><span class="p">([</span><span class="bp">self</span><span class="p">]</span> <span class="o">+</span> <span class="n">content</span><span class="p">,</span> <span class="n">inline</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 
         </details>
@@ -5007,13 +5051,13 @@ type (str): 元素类型</p>
 <span class="sd">        Returns:</span>
 <span class="sd">            bytes: 元素原始数据</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="kn">from</span> <span class="nn">..app</span> <span class="kn">import</span> <span class="n">Ariadne</span>
+        <span class="kn">from</span> <span class="nn">..</span> <span class="kn">import</span> <span class="n">get_running</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">base64</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">b64decode</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">base64</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">url</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;you should offer a url.&quot;</span><span class="p">)</span>
-        <span class="n">session</span> <span class="o">=</span> <span class="n">Ariadne</span><span class="o">.</span><span class="n">get_running</span><span class="p">(</span><span class="n">Ariadne</span><span class="p">)</span><span class="o">.</span><span class="n">adapter</span><span class="o">.</span><span class="n">session</span>
+        <span class="n">session</span> <span class="o">=</span> <span class="n">get_running</span><span class="p">()</span><span class="o">.</span><span class="n">adapter</span><span class="o">.</span><span class="n">session</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">session</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;Unable to get session!&quot;</span><span class="p">)</span>
         <span class="k">async</span> <span class="k">with</span> <span class="n">session</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">url</span><span class="p">)</span> <span class="k">as</span> <span class="n">response</span><span class="p">:</span>
@@ -5177,13 +5221,13 @@ type (str): 元素类型</p>
 <span class="sd">        Returns:</span>
 <span class="sd">            bytes: 元素原始数据</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="kn">from</span> <span class="nn">..app</span> <span class="kn">import</span> <span class="n">Ariadne</span>
+        <span class="kn">from</span> <span class="nn">..</span> <span class="kn">import</span> <span class="n">get_running</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">base64</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">b64decode</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">base64</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">url</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;you should offer a url.&quot;</span><span class="p">)</span>
-        <span class="n">session</span> <span class="o">=</span> <span class="n">Ariadne</span><span class="o">.</span><span class="n">get_running</span><span class="p">(</span><span class="n">Ariadne</span><span class="p">)</span><span class="o">.</span><span class="n">adapter</span><span class="o">.</span><span class="n">session</span>
+        <span class="n">session</span> <span class="o">=</span> <span class="n">get_running</span><span class="p">()</span><span class="o">.</span><span class="n">adapter</span><span class="o">.</span><span class="n">session</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">session</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;Unable to get session!&quot;</span><span class="p">)</span>
         <span class="k">async</span> <span class="k">with</span> <span class="n">session</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">url</span><span class="p">)</span> <span class="k">as</span> <span class="n">response</span><span class="p">:</span>

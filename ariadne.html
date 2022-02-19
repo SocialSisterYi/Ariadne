@@ -45,6 +45,13 @@
                             <li><a href="ariadne/util.html">ariadne.util</a></li>
                     </ul>
 
+                    <h2>API Documentation</h2>
+                        <ul class="memberlist">
+            <li>
+                    <a class="function" href="#get_running">get_running</a>
+            </li>
+    </ul>
+
 
                     <footer>Copyright © Graia Project 2021-2022</footer>
 
@@ -70,28 +77,92 @@ ariadne    </h1>
             <div class="codehilite"><pre><span></span><span class="sd">&quot;&quot;&quot;Ariadne</span>
 <span class="sd">一个优雅的 QQ Bot 框架.</span>
 <span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Type</span>
+
 <span class="kn">import</span> <span class="nn">graia.ariadne.event.lifecycle</span>  <span class="c1"># noqa: F401</span>
 <span class="kn">import</span> <span class="nn">graia.ariadne.event.message</span>  <span class="c1"># noqa: F401</span>
 <span class="kn">import</span> <span class="nn">graia.ariadne.event.mirai</span>  <span class="c1"># noqa: F401</span>
 
+<span class="kn">from</span> <span class="nn">.app</span> <span class="kn">import</span> <span class="n">Ariadne</span>
+<span class="kn">from</span> <span class="nn">.typing</span> <span class="kn">import</span> <span class="n">T</span>
+
 <span class="c1"># init event</span>
 
-<span class="n">ARIADNE_ASCII_LOGO</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
-    <span class="p">(</span>
-        <span class="sa">r</span><span class="s2">&quot;                _           _             &quot;</span><span class="p">,</span>
-        <span class="sa">r</span><span class="s2">&quot;     /\        (_)         | |            &quot;</span><span class="p">,</span>
-        <span class="sa">r</span><span class="s2">&quot;    /  \   _ __ _  __ _  __| |_ __   ___  &quot;</span><span class="p">,</span>
-        <span class="sa">r</span><span class="s2">&quot;   / /\ \ | &#39;__| |/ _` |/ _` | &#39;_ \ / _ \ &quot;</span><span class="p">,</span>
-        <span class="sa">r</span><span class="s2">&quot;  / ____ \| |  | | (_| | (_| | | | |  __/ &quot;</span><span class="p">,</span>
-        <span class="sa">r</span><span class="s2">&quot; /_/    \_\_|  |_|\__,_|\__,_|_| |_|\___| &quot;</span><span class="p">,</span>
-        <span class="sa">r</span><span class="s2">&quot;&quot;</span><span class="p">,</span>
-    <span class="p">)</span>
-<span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">get_running</span><span class="p">(</span><span class="nb">type</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="n">T</span><span class="p">]</span> <span class="o">=</span> <span class="n">Ariadne</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">T</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;获取正在运行的 实例</span>
+<span class="sd">    Args:</span>
+<span class="sd">    type (Type[T]): 实例类型</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        T: 对应类型实例</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="kn">from</span> <span class="nn">asyncio</span> <span class="kn">import</span> <span class="n">AbstractEventLoop</span>
+
+    <span class="kn">from</span> <span class="nn">graia.broadcast</span> <span class="kn">import</span> <span class="n">Broadcast</span>
+
+    <span class="kn">from</span> <span class="nn">.adapter</span> <span class="kn">import</span> <span class="n">Adapter</span>
+    <span class="kn">from</span> <span class="nn">.context</span> <span class="kn">import</span> <span class="n">context_map</span>
+
+    <span class="k">if</span> <span class="nb">type</span> <span class="ow">in</span> <span class="p">{</span><span class="n">Adapter</span><span class="p">,</span> <span class="n">Ariadne</span><span class="p">,</span> <span class="n">Broadcast</span><span class="p">,</span> <span class="n">AbstractEventLoop</span><span class="p">}:</span>
+        <span class="k">if</span> <span class="n">val</span> <span class="o">:=</span> <span class="n">context_map</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="nb">type</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="kc">None</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">val</span>
+    <span class="k">for</span> <span class="n">ariadne_inst</span> <span class="ow">in</span> <span class="n">Ariadne</span><span class="o">.</span><span class="n">running</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">type</span> <span class="ow">in</span> <span class="n">ariadne_inst</span><span class="o">.</span><span class="n">info</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">ariadne_inst</span><span class="o">.</span><span class="n">info</span><span class="p">[</span><span class="nb">type</span><span class="p">]</span>
 </pre></div>
 
         </details>
 
             </section>
+                <section id="get_running">
+                            <div class="attr function"><a class="headerlink" href="#get_running">#&nbsp;&nbsp</a>
+
+        
+            <span class="def">def</span>
+            <span class="name">get_running</span><span class="signature">(type: Type[~T] = &lt;class &#39;<a href="ariadne/app.html#Ariadne">ariadne.app.Ariadne</a>&#39;&gt;) -&gt; ~T</span>:
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span><span class="k">def</span> <span class="nf">get_running</span><span class="p">(</span><span class="nb">type</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="n">T</span><span class="p">]</span> <span class="o">=</span> <span class="n">Ariadne</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">T</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;获取正在运行的 实例</span>
+<span class="sd">    Args:</span>
+<span class="sd">    type (Type[T]): 实例类型</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        T: 对应类型实例</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="kn">from</span> <span class="nn">asyncio</span> <span class="kn">import</span> <span class="n">AbstractEventLoop</span>
+
+    <span class="kn">from</span> <span class="nn">graia.broadcast</span> <span class="kn">import</span> <span class="n">Broadcast</span>
+
+    <span class="kn">from</span> <span class="nn">.adapter</span> <span class="kn">import</span> <span class="n">Adapter</span>
+    <span class="kn">from</span> <span class="nn">.context</span> <span class="kn">import</span> <span class="n">context_map</span>
+
+    <span class="k">if</span> <span class="nb">type</span> <span class="ow">in</span> <span class="p">{</span><span class="n">Adapter</span><span class="p">,</span> <span class="n">Ariadne</span><span class="p">,</span> <span class="n">Broadcast</span><span class="p">,</span> <span class="n">AbstractEventLoop</span><span class="p">}:</span>
+        <span class="k">if</span> <span class="n">val</span> <span class="o">:=</span> <span class="n">context_map</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="nb">type</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="kc">None</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">val</span>
+    <span class="k">for</span> <span class="n">ariadne_inst</span> <span class="ow">in</span> <span class="n">Ariadne</span><span class="o">.</span><span class="n">running</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">type</span> <span class="ow">in</span> <span class="n">ariadne_inst</span><span class="o">.</span><span class="n">info</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">ariadne_inst</span><span class="o">.</span><span class="n">info</span><span class="p">[</span><span class="nb">type</span><span class="p">]</span>
+</pre></div>
+
+        </details>
+
+            <div class="docstring"><p>获取正在运行的 实例
+Args:
+type (Type[T]): 实例类型</p>
+
+<h6 id="returns">Returns</h6>
+
+<blockquote>
+  <p>T: 对应类型实例</p>
+</blockquote>
+</div>
+
+
+                </section>
     </main>
 <script>
     function escapeHTML(html) {

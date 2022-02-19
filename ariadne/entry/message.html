@@ -57,7 +57,6 @@
 <span class="kn">from</span> <span class="nn">..message.commander</span> <span class="kn">import</span> <span class="n">Arg</span> <span class="k">as</span> <span class="n">Arg</span>
 <span class="kn">from</span> <span class="nn">..message.commander</span> <span class="kn">import</span> <span class="n">Commander</span> <span class="k">as</span> <span class="n">Commander</span>
 <span class="kn">from</span> <span class="nn">..message.commander</span> <span class="kn">import</span> <span class="n">Slot</span> <span class="k">as</span> <span class="n">Slot</span>
-<span class="kn">from</span> <span class="nn">..message.component</span> <span class="kn">import</span> <span class="n">Component</span> <span class="k">as</span> <span class="n">Component</span>
 <span class="kn">from</span> <span class="nn">..message.element</span> <span class="kn">import</span> <span class="n">App</span> <span class="k">as</span> <span class="n">App</span>
 <span class="kn">from</span> <span class="nn">..message.element</span> <span class="kn">import</span> <span class="n">At</span> <span class="k">as</span> <span class="n">At</span>
 <span class="kn">from</span> <span class="nn">..message.element</span> <span class="kn">import</span> <span class="n">AtAll</span> <span class="k">as</span> <span class="n">AtAll</span>
@@ -80,12 +79,13 @@
 <span class="kn">from</span> <span class="nn">..message.element</span> <span class="kn">import</span> <span class="n">Source</span> <span class="k">as</span> <span class="n">Source</span>
 <span class="kn">from</span> <span class="nn">..message.element</span> <span class="kn">import</span> <span class="n">Voice</span> <span class="k">as</span> <span class="n">Voice</span>
 <span class="kn">from</span> <span class="nn">..message.formatter</span> <span class="kn">import</span> <span class="n">Formatter</span> <span class="k">as</span> <span class="n">Formatter</span>
+<span class="kn">from</span> <span class="nn">..message.parser.base</span> <span class="kn">import</span> <span class="n">ContainKeyword</span> <span class="k">as</span> <span class="n">ContainKeyword</span>
 <span class="kn">from</span> <span class="nn">..message.parser.base</span> <span class="kn">import</span> <span class="n">DetectPrefix</span> <span class="k">as</span> <span class="n">DetectPrefix</span>
 <span class="kn">from</span> <span class="nn">..message.parser.base</span> <span class="kn">import</span> <span class="n">DetectSuffix</span> <span class="k">as</span> <span class="n">DetectSuffix</span>
-<span class="kn">from</span> <span class="nn">..message.parser.literature</span> <span class="kn">import</span> <span class="n">BoxParameter</span> <span class="k">as</span> <span class="n">BoxParameter</span>
-<span class="kn">from</span> <span class="nn">..message.parser.literature</span> <span class="kn">import</span> <span class="n">Literature</span> <span class="k">as</span> <span class="n">Literature</span>
-<span class="kn">from</span> <span class="nn">..message.parser.literature</span> <span class="kn">import</span> <span class="n">ParamPattern</span> <span class="k">as</span> <span class="n">ParamPattern</span>
-<span class="kn">from</span> <span class="nn">..message.parser.literature</span> <span class="kn">import</span> <span class="n">SwitchParameter</span> <span class="k">as</span> <span class="n">SwitchParameter</span>
+<span class="kn">from</span> <span class="nn">..message.parser.base</span> <span class="kn">import</span> <span class="n">MatchContent</span> <span class="k">as</span> <span class="n">MatchContent</span>
+<span class="kn">from</span> <span class="nn">..message.parser.base</span> <span class="kn">import</span> <span class="n">MatchRegex</span> <span class="k">as</span> <span class="n">MatchRegex</span>
+<span class="kn">from</span> <span class="nn">..message.parser.base</span> <span class="kn">import</span> <span class="n">Mention</span> <span class="k">as</span> <span class="n">Mention</span>
+<span class="kn">from</span> <span class="nn">..message.parser.base</span> <span class="kn">import</span> <span class="n">MentionMe</span> <span class="k">as</span> <span class="n">MentionMe</span>
 <span class="kn">from</span> <span class="nn">..message.parser.twilight</span> <span class="kn">import</span> <span class="n">FORCE</span> <span class="k">as</span> <span class="n">FORCE</span>
 <span class="kn">from</span> <span class="nn">..message.parser.twilight</span> <span class="kn">import</span> <span class="n">NOSPACE</span> <span class="k">as</span> <span class="n">NOSPACE</span>
 <span class="kn">from</span> <span class="nn">..message.parser.twilight</span> <span class="kn">import</span> <span class="n">PRESERVE</span> <span class="k">as</span> <span class="n">PRESERVE</span>
