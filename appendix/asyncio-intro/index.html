@@ -1,0 +1,2364 @@
+
+<!doctype html>
+<html lang="zh" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      <link rel="icon" href="../../images/favicon.png">
+      <meta name="generator" content="mkdocs-1.2.3, mkdocs-material-8.2.1">
+    
+    
+      
+        <title>异步教程 - Graia Ariadne 文档</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.e8d9bf0c.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.e6a45f82.min.css">
+        
+      
+    
+    
+    
+      
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Noto+Sans+Simplified+Chinese:300,400,400i,700%7CJetBrains+Mono&display=fallback">
+        <style>:root{--md-text-font:"Noto Sans Simplified Chinese";--md-code-font:"JetBrains Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/_mkdocstrings.css">
+    
+      <link rel="stylesheet" href="../../assets/chat.css">
+    
+      <link rel="stylesheet" href="../../assets/extra.css">
+    
+      <link rel="stylesheet" href="../../assets/curtain.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="" data-md-color-accent="">
+  
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&"object"==typeof palette.color)for(var key of Object.keys(palette.color))document.body.setAttribute("data-md-color-"+key,palette.color[key])</script>
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#asyncio" class="md-skip">
+          跳转至
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--lifted" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="页眉">
+    <a href="../.." title="Graia Ariadne 文档" class="md-header__button md-logo" aria-label="Graia Ariadne 文档" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M16 0H8C6.9 0 6 .9 6 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V6l-6-6m4 18H8V2h7v5h5v11M4 4v18h16v2H4c-1.1 0-2-.9-2-2V4h2m6 6v2h8v-2h-8m0 4v2h5v-2h-5z"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Graia Ariadne 文档
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              异步教程
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      <form class="md-header__option" data-md-component="palette">
+        
+          
+          
+          <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="" data-md-color-accent=""  aria-label="黑暗模式"  type="radio" name="__palette" id="__palette_1">
+          
+            <label class="md-header__button md-icon" title="黑暗模式" for="__palette_2" hidden>
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 6H7c-3.31 0-6 2.69-6 6s2.69 6 6 6h10c3.31 0 6-2.69 6-6s-2.69-6-6-6zm0 10H7c-2.21 0-4-1.79-4-4s1.79-4 4-4h10c2.21 0 4 1.79 4 4s-1.79 4-4 4zM7 9c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
+            </label>
+          
+        
+          
+          
+          <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="" data-md-color-accent=""  aria-label="明亮模式"  type="radio" name="__palette" id="__palette_2">
+          
+            <label class="md-header__button md-icon" title="明亮模式" for="__palette_1" hidden>
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 7H7a5 5 0 0 0-5 5 5 5 0 0 0 5 5h10a5 5 0 0 0 5-5 5 5 0 0 0-5-5m0 8a3 3 0 0 1-3-3 3 3 0 0 1 3-3 3 3 0 0 1 3 3 3 3 0 0 1-3 3z"/></svg>
+            </label>
+          
+        
+      </form>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="搜索" placeholder="搜索" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="查找">
+        
+        <button type="reset" class="md-search__icon md-icon" aria-label="清空当前内容" tabindex="-1">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            正在初始化搜索引擎
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/GraiaProject/Ariadne/" title="前往仓库" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.0.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GraiaProject/Ariadne
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+    
+      
+<nav class="md-tabs" aria-label="标签" data-md-component="tabs">
+  <div class="md-tabs__inner md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+    
+  
+
+
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../.." class="md-tabs__link md-tabs__link--active">
+        文档
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+
+
+  
+  
+  
+    
+
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../refs/graia/ariadne/" class="md-tabs__link">
+        API 文档
+      </a>
+    </li>
+  
+
+  
+
+      
+        
+  
+  
+
+
+  <li class="md-tabs__item">
+    <a href="../../blog/" class="md-tabs__link">
+      开发博客
+    </a>
+  </li>
+
+      
+        
+  
+  
+
+
+  <li class="md-tabs__item">
+    <a href="https://graiax.cn" class="md-tabs__link">
+      社区文档
+    </a>
+  </li>
+
+      
+    </ul>
+  </div>
+</nav>
+    
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="导航栏" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Graia Ariadne 文档" class="md-nav__button md-logo" aria-label="Graia Ariadne 文档" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M16 0H8C6.9 0 6 .9 6 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V6l-6-6m4 18H8V2h7v5h5v11M4 4v18h16v2H4c-1.1 0-2-.9-2-2V4h2m6 6v2h8v-2h-8m0 4v2h5v-2h-5z"/></svg>
+
+    </a>
+    Graia Ariadne 文档
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/GraiaProject/Ariadne/" title="前往仓库" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.0.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GraiaProject/Ariadne
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+  
+  
+    
+  
+  
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_1" type="checkbox" id="__nav_1" checked>
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_1">
+          文档
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="文档" data-md-level="1">
+        <label class="md-nav__title" for="__nav_1">
+          <span class="md-nav__icon md-icon"></span>
+          文档
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        项目概览
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../quickstart/" class="md-nav__link">
+        快速开始
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_1_3" data-md-state="indeterminate" type="checkbox" id="__nav_1_3" checked>
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_1_3">
+          基础
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="基础" data-md-level="2">
+        <label class="md-nav__title" for="__nav_1_3">
+          <span class="md-nav__icon md-icon"></span>
+          基础
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../basic/params/" class="md-nav__link">
+        参数传递
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../basic/msg-chain/" class="md-nav__link">
+        消息链
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../basic/base-parser/" class="md-nav__link">
+        消息处理器
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../basic/configuration/" class="md-nav__link">
+        配置
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../basic/overview/" class="md-nav__link">
+        总览
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../basic/background/" class="md-nav__link">
+        后台任务
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_1_4" data-md-state="indeterminate" type="checkbox" id="__nav_1_4" checked>
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_1_4">
+          进阶
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="进阶" data-md-level="2">
+        <label class="md-nav__title" for="__nav_1_4">
+          <span class="md-nav__icon md-icon"></span>
+          进阶
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_1_4_1" data-md-state="indeterminate" type="checkbox" id="__nav_1_4_1" checked>
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_1_4_1">
+          Broadcast 介绍
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Broadcast 介绍" data-md-level="3">
+        <label class="md-nav__title" for="__nav_1_4_1">
+          <span class="md-nav__icon md-icon"></span>
+          Broadcast 介绍
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../advance/broadcast/depend/" class="md-nav__link">
+        依赖注入
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../advance/broadcast/interrupt/" class="md-nav__link">
+        中断
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../advance/msg-chain/" class="md-nav__link">
+        消息链
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../advance/commander/" class="md-nav__link">
+        Commander
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../advance/twilight/" class="md-nav__link">
+        Twilight
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../advance/twilight-old/" class="md-nav__link">
+        Twilight 旧版文档
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_1_4_6" data-md-state="indeterminate" type="checkbox" id="__nav_1_4_6" checked>
+      
+      
+      
+      
+        
+        
+        <div class="md-nav__link md-nav__link--index ">
+          <a href="../../advance/alconna/quickstart/">Alconna</a>
+          
+        </div>
+      
+      <nav class="md-nav" aria-label="Alconna" data-md-level="3">
+        <label class="md-nav__title" for="__nav_1_4_6">
+          <span class="md-nav__icon md-icon"></span>
+          Alconna
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="https://arcletproject.github.io/docs/alconna/tutorial" class="md-nav__link">
+        官方文档
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_1_5" data-md-state="indeterminate" type="checkbox" id="__nav_1_5" checked>
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_1_5">
+          额外内容
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="额外内容" data-md-level="2">
+        <label class="md-nav__title" for="__nav_1_5">
+          <span class="md-nav__icon md-icon"></span>
+          额外内容
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_1_5_1" data-md-state="indeterminate" type="checkbox" id="__nav_1_5_1" checked>
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_1_5_1">
+          Saya
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Saya" data-md-level="3">
+        <label class="md-nav__title" for="__nav_1_5_1">
+          <span class="md-nav__icon md-icon"></span>
+          Saya
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../extra/saya/start/" class="md-nav__link">
+        开始
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../extra/saya/channel/" class="md-nav__link">
+        使用 Channel
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../extra/saya/cross-module/" class="md-nav__link">
+        跨模块
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../extra/scheduler/" class="md-nav__link">
+        计划任务
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../extra/log/" class="md-nav__link">
+        日志记录
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../extra/msg-chain-tool/" class="md-nav__link">
+        消息链工具
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../extra/async-exec/" class="md-nav__link">
+        函数异步化
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../extra/console/" class="md-nav__link">
+        实时控制台
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_1_6" data-md-state="indeterminate" type="checkbox" id="__nav_1_6" checked>
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_1_6">
+          迁移
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="迁移" data-md-level="2">
+        <label class="md-nav__title" for="__nav_1_6">
+          <span class="md-nav__icon md-icon"></span>
+          迁移
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../migrate/guide/" class="md-nav__link">
+        概览
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../migrate/cheatsheet/" class="md-nav__link">
+        变动一览
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+    
+  
+  
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_1_7" type="checkbox" id="__nav_1_7" checked>
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_1_7">
+          附录
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="附录" data-md-level="2">
+        <label class="md-nav__title" for="__nav_1_7">
+          <span class="md-nav__icon md-icon"></span>
+          附录
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../CHANGELOG/" class="md-nav__link">
+        更新日志
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../faq/" class="md-nav__link">
+        常见问题
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+    
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          异步教程
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        异步教程
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#_1" class="md-nav__link">
+    什么是异步？
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    锁的“困境”
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_3" class="md-nav__link">
+    从回调到协程（上）
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_4" class="md-nav__link">
+    从回调到协程（下）
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#async-await" class="md-nav__link">
+    async 和 await
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_5" class="md-nav__link">
+    使用协程
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../mah-install/" class="md-nav__link">
+        Mirai API HTTP 安装
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../credits/" class="md-nav__link">
+        鸣谢
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../terms/" class="md-nav__link">
+        术语
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../funding/" class="md-nav__link">
+        赞助
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_2" data-md-state="indeterminate" type="checkbox" id="__nav_2" checked>
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_2">
+          API 文档
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="API 文档" data-md-level="1">
+        <label class="md-nav__title" for="__nav_2">
+          <span class="md-nav__icon md-icon"></span>
+          API 文档
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_2_1" data-md-state="indeterminate" type="checkbox" id="__nav_2_1" checked>
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_2_1">
+          graia
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="graia" data-md-level="2">
+        <label class="md-nav__title" for="__nav_2_1">
+          <span class="md-nav__icon md-icon"></span>
+          graia
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_2_1_1" data-md-state="indeterminate" type="checkbox" id="__nav_2_1_1" checked>
+      
+      
+      
+      
+        
+        
+        <div class="md-nav__link md-nav__link--index ">
+          <a href="../../refs/graia/ariadne/">ariadne</a>
+          
+            <label for="__nav_2_1_1">
+              <span class="md-nav__icon md-icon"></span>
+            </label>
+          
+        </div>
+      
+      <nav class="md-nav" aria-label="ariadne" data-md-level="3">
+        <label class="md-nav__title" for="__nav_2_1_1">
+          <span class="md-nav__icon md-icon"></span>
+          ariadne
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../refs/graia/ariadne/adapter/" class="md-nav__link">
+        adapter
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../refs/graia/ariadne/app/" class="md-nav__link">
+        app
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_2_1_1_3" data-md-state="indeterminate" type="checkbox" id="__nav_2_1_1_3" checked>
+      
+      
+      
+      
+        
+        
+        <div class="md-nav__link md-nav__link--index ">
+          <a href="../../refs/graia/ariadne/console/">console</a>
+          
+        </div>
+      
+      <nav class="md-nav" aria-label="console" data-md-level="4">
+        <label class="md-nav__title" for="__nav_2_1_1_3">
+          <span class="md-nav__icon md-icon"></span>
+          console
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../refs/graia/ariadne/console/saya/" class="md-nav__link">
+        saya
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../refs/graia/ariadne/context/" class="md-nav__link">
+        context
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../refs/graia/ariadne/dispatcher/" class="md-nav__link">
+        dispatcher
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_2_1_1_6" data-md-state="indeterminate" type="checkbox" id="__nav_2_1_1_6" checked>
+      
+      
+      
+      
+        
+        
+        <div class="md-nav__link md-nav__link--index ">
+          <a href="../../refs/graia/ariadne/entry/">entry</a>
+          
+            <label for="__nav_2_1_1_6">
+              <span class="md-nav__icon md-icon"></span>
+            </label>
+          
+        </div>
+      
+      <nav class="md-nav" aria-label="entry" data-md-level="4">
+        <label class="md-nav__title" for="__nav_2_1_1_6">
+          <span class="md-nav__icon md-icon"></span>
+          entry
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../refs/graia/ariadne/entry/event/" class="md-nav__link">
+        event
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../refs/graia/ariadne/entry/message/" class="md-nav__link">
+        message
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_2_1_1_7" data-md-state="indeterminate" type="checkbox" id="__nav_2_1_1_7" checked>
+      
+      
+      
+      
+        
+        
+        <div class="md-nav__link md-nav__link--index ">
+          <a href="../../refs/graia/ariadne/event/">event</a>
+          
+            <label for="__nav_2_1_1_7">
+              <span class="md-nav__icon md-icon"></span>
+            </label>
+          
+        </div>
+      
+      <nav class="md-nav" aria-label="event" data-md-level="4">
+        <label class="md-nav__title" for="__nav_2_1_1_7">
+          <span class="md-nav__icon md-icon"></span>
+          event
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../refs/graia/ariadne/event/lifecycle/" class="md-nav__link">
+        lifecycle
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../refs/graia/ariadne/event/message/" class="md-nav__link">
+        message
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../refs/graia/ariadne/event/mirai/" class="md-nav__link">
+        mirai
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../refs/graia/ariadne/exception/" class="md-nav__link">
+        exception
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_2_1_1_9" data-md-state="indeterminate" type="checkbox" id="__nav_2_1_1_9" checked>
+      
+      
+      
+      
+        
+        
+        <div class="md-nav__link md-nav__link--index ">
+          <a href="../../refs/graia/ariadne/message/">message</a>
+          
+            <label for="__nav_2_1_1_9">
+              <span class="md-nav__icon md-icon"></span>
+            </label>
+          
+        </div>
+      
+      <nav class="md-nav" aria-label="message" data-md-level="4">
+        <label class="md-nav__title" for="__nav_2_1_1_9">
+          <span class="md-nav__icon md-icon"></span>
+          message
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../refs/graia/ariadne/message/chain/" class="md-nav__link">
+        chain
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_2_1_1_9_2" data-md-state="indeterminate" type="checkbox" id="__nav_2_1_1_9_2" checked>
+      
+      
+      
+      
+        
+        
+        <div class="md-nav__link md-nav__link--index ">
+          <a href="../../refs/graia/ariadne/message/commander/">commander</a>
+          
+        </div>
+      
+      <nav class="md-nav" aria-label="commander" data-md-level="5">
+        <label class="md-nav__title" for="__nav_2_1_1_9_2">
+          <span class="md-nav__icon md-icon"></span>
+          commander
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../refs/graia/ariadne/message/commander/saya/" class="md-nav__link">
+        saya
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../refs/graia/ariadne/message/element/" class="md-nav__link">
+        element
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../refs/graia/ariadne/message/formatter/" class="md-nav__link">
+        formatter
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_2_1_1_9_5" data-md-state="indeterminate" type="checkbox" id="__nav_2_1_1_9_5" checked>
+      
+      
+      
+      
+        
+        
+        <div class="md-nav__link md-nav__link--index ">
+          <a href="../../refs/graia/ariadne/message/parser/">parser</a>
+          
+            <label for="__nav_2_1_1_9_5">
+              <span class="md-nav__icon md-icon"></span>
+            </label>
+          
+        </div>
+      
+      <nav class="md-nav" aria-label="parser" data-md-level="5">
+        <label class="md-nav__title" for="__nav_2_1_1_9_5">
+          <span class="md-nav__icon md-icon"></span>
+          parser
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../refs/graia/ariadne/message/parser/alconna/" class="md-nav__link">
+        alconna
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../refs/graia/ariadne/message/parser/base/" class="md-nav__link">
+        base
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../refs/graia/ariadne/message/parser/twilight/" class="md-nav__link">
+        twilight
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../refs/graia/ariadne/message/parser/util/" class="md-nav__link">
+        util
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../refs/graia/ariadne/model/" class="md-nav__link">
+        model
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../refs/graia/ariadne/typing/" class="md-nav__link">
+        typing
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_2_1_1_12" data-md-state="indeterminate" type="checkbox" id="__nav_2_1_1_12" checked>
+      
+      
+      
+      
+        
+        
+        <div class="md-nav__link md-nav__link--index ">
+          <a href="../../refs/graia/ariadne/util/">util</a>
+          
+            <label for="__nav_2_1_1_12">
+              <span class="md-nav__icon md-icon"></span>
+            </label>
+          
+        </div>
+      
+      <nav class="md-nav" aria-label="util" data-md-level="4">
+        <label class="md-nav__title" for="__nav_2_1_1_12">
+          <span class="md-nav__icon md-icon"></span>
+          util
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../refs/graia/ariadne/util/async_exec/" class="md-nav__link">
+        async_exec
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../refs/graia/ariadne/util/send/" class="md-nav__link">
+        send
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3" data-md-state="indeterminate" type="checkbox" id="__nav_3" checked>
+      
+      
+      
+      
+        
+        
+        <div class="md-nav__link md-nav__link--index ">
+          <a href="../../blog/">开发博客</a>
+          
+            <label for="__nav_3">
+              <span class="md-nav__icon md-icon"></span>
+            </label>
+          
+        </div>
+      
+      <nav class="md-nav" aria-label="开发博客" data-md-level="1">
+        <label class="md-nav__title" for="__nav_3">
+          <span class="md-nav__icon md-icon"></span>
+          开发博客
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../blog/history/" class="md-nav__link">
+        历史
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../blog/twilight/" class="md-nav__link">
+        谈谈 Twilight
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="https://graiax.cn" class="md-nav__link">
+        社区文档
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#_1" class="md-nav__link">
+    什么是异步？
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    锁的“困境”
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_3" class="md-nav__link">
+    从回调到协程（上）
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_4" class="md-nav__link">
+    从回调到协程（下）
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#async-await" class="md-nav__link">
+    async 和 await
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_5" class="md-nav__link">
+    使用协程
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          <div class="md-content" data-md-component="content">
+            <article class="md-content__inner md-typeset">
+              
+                
+<a href="https://github.com/GraiaProject/Ariadne/blob/master/document/docs/appendix/asyncio-intro.md" title="编辑此页" class="md-content__button md-icon">
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.71 7.04c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.37-.39-1.02-.39-1.41 0l-1.84 1.83 3.75 3.75M3 17.25V21h3.75L17.81 9.93l-3.75-3.75L3 17.25z"/></svg>
+</a>
+
+
+
+<h1 id="asyncio">asyncio 教程<a class="headerlink" href="#asyncio" title="Permanent link">&para;</a></h1>
+<blockquote>
+<p>本章摘自 YiriMirai 的文档。</p>
+<p>YiriMirai 是一个轻量, 低耦合的 Python QQ Bot 框架.</p>
+</blockquote>
+<p>Python 从 3.4 开始引入了 asyncio 库，提供异步协程支持，从 Python 3.4 到 3.7，对异步的支持一直在不断地进步。可以说，异步就是 Python 未来的趋势之一。</p>
+<p>在了解异步之前，你可能已经接触过或听说过很多类似的概念，比如“并发”“并行”“多线程”等等，这么多名词，再加上一个“异步”，让人有些混乱。</p>
+<p>不过，虽然看起来很复杂，但是，通过这篇教程，我相信你能够对“异步”和“协程”有一个清晰的把握。</p>
+<p>以下是这篇教程涵盖的内容：</p>
+<ul>
+<li>异步：一种编程范式，独立于编程语言，可以具有多种语言的不同实现。</li>
+<li>async/await：两个新的 Python 关键字，用于规定异步逻辑。</li>
+<li>asyncio：一个 Python 内置的包，提供协程的基础功能和管理协程的方法。</li>
+</ul>
+<div class="admonition info">
+<p class="admonition-title">如果你心急了，请直接跳到 <a href="./#_5">使用协程</a> </p>
+</div>
+<h2 id="_1">什么是异步？<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h2>
+<p>在讲异步之前，需要先知道一个与之相对的概念：同步。</p>
+<p>其实同步对我们而言并不陌生。在接触到异步之前，我们认知的一切都是同步的。我们可以想象代码一句一句地执行，遇到函数就进入，执行完函数再执行函数后面的东西，所有的执行顺序都严格地和代码书写的顺序一致——这就是同步。</p>
+<p>比如这样的代码：</p>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">time</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+</code></pre></div>
+<p>我们可以清晰地预知它的行为：先打印 1，然后等待 10 秒，最后打印 2。</p>
+<p>同步最大的优点是 <strong>思路清晰</strong> 。 <strong>你永远可以知道你的程序是按照怎样的顺序执行的，不用担心任何意料之外的情况</strong> 。</p>
+<p>但同时，同步也有不可避免的缺点：在某些情境下，它会带来性能的浪费。</p>
+<p>以一个生活中的场景为例：你在网上下载一个文件，但是文件很大，需要很长时间才能下完。这时候，你肯定不会盯着进度条一点点走，而是去做点别的事情，读一会书，看一会电影，之类的。</p>
+<p>但如果有一个完全“同步”的人，他为自己设定的程序是下载这个文件，然后运行它，这样的话，他为了不让自己的运行逻辑乱掉，就会一直守在电脑前，直到文件下载完成才做下一步的工作。正常人肯定不能忍受这样无聊的等待，也不会希望自己的程序在这种无聊的事上浪费时间。</p>
+<p>为了能充分利用这些可能被浪费掉的时间，人们想出过很多方法，比如 <strong>多线程</strong> ，比如 <strong>回调</strong> 。</p>
+<p>多线程是最容易想到的一种方式了。我们可以创建多个线程，每个线程内部是同步的，再让这些线程同时运行。这样，在一个线程等待的时候，其余的线程可以继续运行，不会因此停止。</p>
+<p>这看上去十分美好，然而现实并不像我们想象得那么简单。虽然线程各自内部的代码是同步的，但不同线程之间的代码执行顺序已经无从确定。换言之，我们引入了“异步”。 <strong>代码的执行顺序与书写顺序不一致的现象就是异步</strong> 。</p>
+<p>熟悉多线程的人应该了解过“锁”的各种花样。两个线程共享资源时，如果同时对同一个变量进行修改，就有可能导致出乎预料的情况。所以人们发明了“锁”，来保证同一时刻只有唯一的线程对某一个变量进行修改。可以说，“锁”是为了制服异步而发明的。</p>
+<pre class="mermaid"><code>graph TD;
+    subgraph 执行顺序
+    H{{b = 1}} --&gt; F[a = 1]
+    F --&gt; G{{a += b}}
+    G --&gt; I["print(a)"]
+    end
+    subgraph Thread1
+    A[a = 1] --&gt; B["print(a)"]
+    B --&gt; E([Output: 2])
+    end
+    subgraph Thread2
+    C{{b = 1}} --&gt; D{{a += b}}
+    D -.-&gt;|Breaking!| E
+    end</code></pre>
+<p>如此看来，异步似乎是一件不太好的事情。它让程序的运行平添了一种不可控的随意性，我们不再能看到代码就直接推演出结果，因为即使是相邻书写的僵局代码，之间也可能会有别的代码执行。</p>
+<p>但是 <strong>异步相较于同步而言，带来的性能提升实在是太诱人了</strong> 。一个网站的服务器，如果是同步的，那么它同时只能让一个用户访问——这简直是不可理喻的事情。异步就像几万年前蹲踞在草原清冷的月光下，用锐利的眼神眺望人类营地篝火的一只秀美的狼，而猎手们则思考着如何给它套上项圈，变成自己忠实的猎犬。</p>
+<p>所以，多线程、回调，包括协程，这一系列设计，与其说是为了充分利用计算资源，不如说是为了 <strong>在人类可理解的范畴内，更好地制服异步</strong> 。</p>
+<h2 id="_2">锁的“困境”<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h2>
+<p>多线程和锁的结合，至今仍然是异步编程的最佳选择之一。因此，怎么加锁、在何处加锁，就成为了一门重要的学问。</p>
+<p>锁是个好东西，但是不能有太多。一方面，反复地获取锁释放锁会占用运行时间；另一方面，当一个线程长时间持有某个锁时，其他的线程如果想要访问这个资源，也必须在原地等待， <strong>极端情况下，同一时间只有一个线程在执行！</strong></p>
+<p>人们在优化锁的使用上花了很大工夫，从中衍生出的各种理论此处不再赘述。随着锁的使用方式逐渐变得复杂，人们发现，如果想要完美地控制锁的粒度，就不得不对花大量的代码去精细地控制每一个锁，这让编写代码的难度大大提高了。</p>
+<p>有的时候，控制锁带来的复杂度已经超出了人能忍受的范围。于是我们经常见到许多简单粗暴的操作——比如在 CPython 中臭名昭著的 GIL。它将整个 Python 解释器加锁，来彻底解决 Python 代码内的线程冲突问题；后果就是， <strong>所有的 Python 线程都必须等待这个锁，硬生生地让多线程程序几乎退化成了单线程</strong> 。</p>
+<p>当然，GIL 的存在也没有完全把多线程的优点抹消掉。比如一个线程在 <code>sleep</code> 的时候，或者在等待网络请求返回的时候，还是会乖乖地释放掉 GIL 锁，让其他线程运行的。不过这时候，释放 GIL 的线程实际上只是在等着，什么都不干，最后还是只有一个线程在运行。</p>
+<p><strong>既然还是只有一个线程在运行，那么为什么不干脆用单线程实现呢？</strong></p>
+<p><strong>答案是：当然可以</strong>。对于这个问题，人们给出了许多答案，其中最著名的是两种：<strong>回调和协程</strong> 。</p>
+<h2 id="_3">从回调到协程（上）<a class="headerlink" href="#_3" title="Permanent link">&para;</a></h2>
+<p>介绍了这么多，我们终于第一次提到了“协程”这个词。不过先不要着急，要想理解协程的概念，我们还需要一些基础的东西。</p>
+<p>回到上面刚刚提出的问题，不过这里要换个说法：<strong>怎样在单线程中实现异步</strong> ？</p>
+<p>其实在刚才的讨论中我们已经知道了问题的答案，那就是，像带着 GIL 的多线程一样，在某个地方需要等待时，就立马切换到别的任务，等待完成之后，再继续刚才的任务。</p>
+<pre class="mermaid"><code>graph LR;
+    A["任务1(发起请求)"] -.-&gt; C{{等待}}
+    A ---&gt;|切换到| D[任务2]
+    C -..-&gt; E{{等待完成}}
+    E -.-&gt; F["任务3(需要请求结果)"]
+    D ---&gt;|继续执行| F</code></pre>
+<p>单线程异步的逻辑看起来就是这么简单，也十分容易理解。但是，易于理解不代表易于实现。当人们真的开始动手写一段单线程异步的代码时，就发现有许多显而易见却难以说明的问题。</p>
+<p><strong>“需要等待”是什么？“切换”是怎么完成的？“等待完成”指的是什么？“继续”又是怎么实现的？</strong></p>
+<p>这些问题说复杂也复杂，说简单也简单。为了不浪费大家的思考时间，我在这里直接公布答案：</p>
+<p>第一个问题的答案其实很直白。哪些任务需要等待，在程序运行之前就能看出来。简单如 <code>sleep</code>，复杂如网络请求，这些消耗时间，但不怎么消耗 CPU 的任务，就是需要等待的任务。</p>
+<p>第二个问题的答案有两种，对这个问题的回答的不同也正是回调与协程最初的分歧之处。协程式的答案稍后会说，暂且不表，先看看回调式的答案，非常简单粗暴：<strong>不要切换</strong> 。</p>
+<p>举个例子：</p>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">requests</span>
+<span class="c1"># job 1</span>
+<span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;http://example.org/very_large_file.txt&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="s1">&#39;e&#39;</span><span class="p">))</span>
+<span class="c1"># job 2</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+</code></pre></div>
+<p>我们有两个任务，一个是抓取网络上的文件，一个是打印数字。网络上的文件非常大，需要很长时间来加载，这时候，我们希望可以在等待文件下载的时候，去执行打印数字的任务。但是问题来了：前两行代码写的严丝合缝，该怎么把打印数字的任务插进去？</p>
+<p>实际上，我们知道，一切问题的根源都出在 <code>requests.get</code> 的调用上。这是一个同步的调用，不等到下载完成就不会返回。因此，我们需要的是一个异步的方法，能够在下载完成之前就返回。</p>
+<div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">get_async</span><span class="p">():</span> <span class="o">...</span>
+<span class="c1"># job 1</span>
+<span class="n">get_async</span><span class="p">(</span><span class="s1">&#39;http://example.org/very_large_file.txt&#39;</span><span class="p">)</span>
+<span class="c1"># print(response.text.count(&#39;e&#39;))</span>
+<span class="c1"># job 2</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+</code></pre></div>
+<p>虽然实际上 Python 并没有哪一个库提供这样的一个 <code>get_async</code>，但在这里我们不妨做一次迷人的假设。<strong>我们希望能有一个异步的 <code>get_async</code>，调用后会发起一次网络请求，然后立刻返回，这样，程序的流程就顺理成章地走到了打印数字的地方</strong> 。</p>
+<p>只是有一个问题还没有解决——从哪里读取下载的文件呢？</p>
+<p>好像有点尴尬。<code>get_async</code> 创建了下载任务之后，就把它丢到一边不管了，下载完的东西也没有办法拿到。我们当然不允许这种买椟还珠的行为，所以还需要一点点的处理，让我们能够以某种方式，拿到下载的文件。</p>
+<p>这就涉及到刚才提出的第三和第四个问题的答案了。“等待完成”自然是指文件下载完成，而“继续”的方式才是重头戏—— <strong>回调</strong> 。</p>
+<p>回调（callback）是将程序的一部分以函数的形式传递出去，供外部调用的一种模式。这么说有点抽象，我们结合刚才的例子来说明。</p>
+<p>在刚才，我们遇到了没办法拿到下载的文件的问题。其实换个角度来看，我们需要的，是一个 <strong>能够在下载完成之后，执行一段利用下载的文件中的内容的代码的方法</strong> 。</p>
+<p>利用回调，我们可以轻松地完成这一点。</p>
+<div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">get_async</span><span class="p">():</span> <span class="o">...</span>
+<span class="c1"># job 1</span>
+<span class="n">get_async</span><span class="p">(</span><span class="s1">&#39;http://example.org/very_large_file.txt&#39;</span><span class="p">,</span> <span class="n">callback</span><span class="o">=</span><span class="n">job1_continuation</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">job1_continuation</span><span class="p">(</span><span class="n">response</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="s1">&#39;e&#39;</span><span class="p">))</span>
+
+<span class="c1"># job 2</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+</code></pre></div>
+<p>把第一个任务的剩余部分写到回调函数里，然后传给 <code>get_async</code>。当文件下载完成后，回调函数就会以下载的文件的内容作为参数，调用回调函数。这就成功地将一段同步的代码改造成了异步。可喜可贺，可喜可贺。</p>
+<p>不过，好像忘了点什么？</p>
+<p>我们并没有说这个要怎么实现，实际上，像 <code>Go</code> <code>Kotlin</code> 等语言都使用基于线程的协程，并没有 <code>JavaScript</code> <code>Python</code> 式的基于回调与IO复用的协程。</p>
+<p>等下，我刚刚是不是提到了 <strong>I/O 复用</strong> ？</p>
+<p>没错，这就是 Python 中网络回调的底层实现 <code>select</code> 模块与 <code>selectors</code> 模块，对异步操作提供了最基本的支持。</p>
+<p>比如，这是一个简单的异步网络服务器：</p>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">selectors</span>
+<span class="kn">import</span> <span class="nn">socket</span>
+
+<span class="n">sel</span> <span class="o">=</span> <span class="n">selectors</span><span class="o">.</span><span class="n">DefaultSelector</span><span class="p">()</span>
+
+<span class="k">def</span> <span class="nf">accept</span><span class="p">(</span><span class="n">sock</span><span class="p">,</span> <span class="n">mask</span><span class="p">):</span>
+    <span class="n">conn</span><span class="p">,</span> <span class="n">addr</span> <span class="o">=</span> <span class="n">sock</span><span class="o">.</span><span class="n">accept</span><span class="p">()</span>  <span class="c1"># Should be ready</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;accepted&#39;</span><span class="p">,</span> <span class="n">conn</span><span class="p">,</span> <span class="s1">&#39;from&#39;</span><span class="p">,</span> <span class="n">addr</span><span class="p">)</span>
+    <span class="n">conn</span><span class="o">.</span><span class="n">setblocking</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">sel</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">conn</span><span class="p">,</span> <span class="n">selectors</span><span class="o">.</span><span class="n">EVENT_READ</span><span class="p">,</span> <span class="n">read</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">read</span><span class="p">(</span><span class="n">conn</span><span class="p">,</span> <span class="n">mask</span><span class="p">):</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">conn</span><span class="o">.</span><span class="n">recv</span><span class="p">(</span><span class="mi">1000</span><span class="p">)</span>  <span class="c1"># Should be ready</span>
+    <span class="k">if</span> <span class="n">data</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;echoing&#39;</span><span class="p">,</span> <span class="nb">repr</span><span class="p">(</span><span class="n">data</span><span class="p">),</span> <span class="s1">&#39;to&#39;</span><span class="p">,</span> <span class="n">conn</span><span class="p">)</span>
+        <span class="n">conn</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>  <span class="c1"># Hope it won&#39;t block</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;closing&#39;</span><span class="p">,</span> <span class="n">conn</span><span class="p">)</span>
+        <span class="n">sel</span><span class="o">.</span><span class="n">unregister</span><span class="p">(</span><span class="n">conn</span><span class="p">)</span>
+        <span class="n">conn</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+<span class="n">sock</span> <span class="o">=</span> <span class="n">socket</span><span class="o">.</span><span class="n">socket</span><span class="p">()</span>
+<span class="n">sock</span><span class="o">.</span><span class="n">bind</span><span class="p">((</span><span class="s1">&#39;localhost&#39;</span><span class="p">,</span> <span class="mi">1234</span><span class="p">))</span>
+<span class="n">sock</span><span class="o">.</span><span class="n">listen</span><span class="p">(</span><span class="mi">100</span><span class="p">)</span>
+<span class="n">sock</span><span class="o">.</span><span class="n">setblocking</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">sel</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">sock</span><span class="p">,</span> <span class="n">selectors</span><span class="o">.</span><span class="n">EVENT_READ</span><span class="p">,</span> <span class="n">accept</span><span class="p">)</span>
+
+<span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+    <span class="n">events</span> <span class="o">=</span> <span class="n">sel</span><span class="o">.</span><span class="n">select</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">mask</span> <span class="ow">in</span> <span class="n">events</span><span class="p">:</span>
+        <span class="n">callback</span> <span class="o">=</span> <span class="n">key</span><span class="o">.</span><span class="n">data</span>
+        <span class="n">callback</span><span class="p">(</span><span class="n">key</span><span class="o">.</span><span class="n">fileobj</span><span class="p">,</span> <span class="n">mask</span><span class="p">)</span>
+</code></pre></div>
+<p>在 Windows 下基于 <code>I/O Completion Port</code> 的模型比基于 <code>Selector</code> 的模型更可拓展（支持子进程等），当然这是题外话了。</p>
+<h2 id="_4">从回调到协程（下）<a class="headerlink" href="#_4" title="Permanent link">&para;</a></h2>
+<p>上一节中，我们已经简单说了基于底层 <code>selector</code> 的回调协程，它都需要通过 <code>socket</code> 创建的原始套接字进行操作，非常笨拙且不友好。</p>
+<p>回调的本质，是将一个任务分成两部分，在耗时操作之前的部分，和耗时操作之后的部分，后者是前者的继续，或者叫做续体（continuation）。回调式就是把续体写成回调函数的形式，传递到其他地方，这种操作又叫做 <strong>续体传递（continuation-passing）</strong> 。从这个层面上看，回调是续体传递风格（Continuation-Passing Style, CPS）的一种。</p>
+<p>CPS 其实是很早就被研究过的东西，它最初的应用不是在异步，而是在函数式编程中。用 CPS 书写的 IR 可以方便地实现惰性求值，而且因为续体天生就是 Monad，所以顺便可以解决求值顺序的问题。（话说，为什么到处都是 Monad 呢？）上一句话大可不必理解，毕竟我们不是在讲函数式编程，不过是借用一下 CPS 的术语，提供一个新的视角而已。</p>
+<p>从 CPS 的角度看，续体到底是什么形式并不重要，只要他能包含任务中尚未完成的部分就可以。于是我们有了一个大胆的想法：<strong>续体能不能是这个任务自身呢</strong> ？</p>
+<p>这是一个回调式的任务，它被拆成了两半：</p>
+<div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">job1</span><span class="p">(</span><span class="n">url</span><span class="p">):</span>
+    <span class="n">get_async</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">callback</span><span class="o">=</span><span class="n">continuation</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">continuation</span><span class="p">(</span><span class="n">response</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="s1">&#39;e&#39;</span><span class="p">))</span>
+</code></pre></div>
+<p>现在我们要把它拼回去：</p>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">partial</span>
+
+<span class="k">def</span> <span class="nf">job1</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">cont</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">cont</span><span class="p">:</span>
+        <span class="n">get_async</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">callback</span><span class="o">=</span><span class="n">partial</span><span class="p">(</span><span class="n">job1</span><span class="p">,</span> <span class="n">cont</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="n">url</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="s1">&#39;e&#39;</span><span class="p">))</span>
+</code></pre></div>
+<p>看起来怪怪的。这里用了一个参数 <code>cont</code> 来指示调用时进入的是任务的前半部分，还是后半部分。回调函数传入是就是这个函数本身，只是用 <code>partial</code> 规定了一下参数，让回调能进入续体部分。</p>
+<p>这种奇怪的写法说不上好，可读性也不是很高。他只是把回调和任务本身强行拼在一起而已。</p>
+<p>可是有一点优势，至少 <strong>在写代码的顺序上，他看起来和同步代码更像了</strong> 。这个优点说大也大，说小也小。如果一个函数中，要有很多次异步调用，如果一个一个全部拆分到回调函数里，就会显得特别杂乱（尤其是在 Python 的匿名函数特别丑陋的情况下）。如果我们能找到一个良好的写法，既能把破碎的回调函数拼回去，又能保持异步的优点，那就再好不过了。</p>
+<p>问题的关键在哪里？上面这个函数写的很奇怪，原因是它要 <strong>实现同一个函数的两次调用执行不同的代码</strong> 。</p>
+<p>……确实是个很奇怪的需求。不过换一个角度是不是就容易理解了呢？表面看是两次调用执行不同的代码，实际上是 <strong>第一次调用后，在某一处暂停，然后第二次调用，就从这个地方继续</strong> 。</p>
+<p>如果有两个神秘的函数 <code>pause</code> 和 <code>resume</code>，能让我们实现这一功能，我们立马可以把代码写得十分优雅：</p>
+<div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">job1</span><span class="p">(</span><span class="n">url</span><span class="p">):</span>
+    <span class="n">get_async</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">callback</span><span class="o">=</span><span class="n">resume</span><span class="p">)</span>
+    <span class="n">response</span> <span class="o">=</span> <span class="n">pause</span><span class="p">()</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="s1">&#39;e&#39;</span><span class="p">))</span>
+</code></pre></div>
+<p>执行到 <code>pause</code> 的时候，这个函数暂停，等到 <code>resume</code> 被调用时，才继续执行。</p>
+<p>非常好，现在问题只有一个了：<strong>怎么才能实现暂停的功能呢</strong>？</p>
+<p><strong>答案就是：协程</strong>。</p>
+<h2 id="async-await">async 和 await<a class="headerlink" href="#async-await" title="Permanent link">&para;</a></h2>
+<p>按照最简单的方式来理解，<strong>协程就是可以暂停的函数</strong>。</p>
+<p>如果你对 Python 的其他部分有一定了解，你一定会想到—— <strong>生成器 （Generator）</strong>。</p>
+<p>实际上，asyncio 刚刚被引入时，协程就是通过 <code>@asyncio.coroutine</code> 包装生成器而成的。</p>
+<p>在 <code>yield</code> 时，函数暂停执行且保留本地变量，直到在其上执行 <code>send()</code> 或 <code>next()</code> .</p>
+<p>对于以下 Python 代码：</p>
+<div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">generator</span><span class="p">():</span>
+    <span class="k">yield</span> <span class="s2">&quot;start&quot;</span>
+    <span class="k">return</span> <span class="s2">&quot;end&quot;</span>
+<span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
+    <span class="n">gen</span> <span class="o">=</span> <span class="n">generator</span><span class="p">()</span>
+    <span class="n">start</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">gen</span><span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="nb">next</span><span class="p">(</span><span class="n">gen</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">StopIteration</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="n">end</span> <span class="o">=</span> <span class="n">e</span><span class="o">.</span><span class="n">value</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">)</span>
+<span class="n">main</span><span class="p">()</span> <span class="c1"># 输出 start end</span>
+</code></pre></div>
+<p>它的执行流程如下 (箭头反映了控制权的交换）：</p>
+<pre class="mermaid"><code>flowchart TD;
+    subgraph main
+    A["gen = generator()"] --&gt; B["start = next(gen)"]
+    C["next(gen)"]
+    D["end = e.value"]
+    D --&gt; E["输出 start, end"]
+    end
+    subgraph gen
+    B --&gt; Q["gen 执行到 yield，返回 'start'"]
+    Q --&gt;|"返回的 'start' 赋值给 start"| C
+    C --&gt; R["gen 执行到 return"] --&gt; S["抛出 StopIteration"]
+    Q --&gt;|"gen 挂起"| R
+    S --&gt;|"返回的 'end' 赋值给 end"| D
+    end</code></pre>
+<p>Python 的协程就是使用了这个思路，只不过这样创建的协程，控制权不会直接移交给调用者，而是 <strong>事件循环</strong> 。</p>
+<p>那协程怎么互相调用呢？没关系，通过 <code>yield from</code> 语法，可以进一步转交控制权给下层生成器，也就是协程。</p>
+<p>没过多久 (Python 3.5)，<code>async</code> 与 <code>await</code> 就被加入 Python 了。</p>
+<h2 id="_5">使用协程<a class="headerlink" href="#_5" title="Permanent link">&para;</a></h2>
+<p>通过 <code>async</code> 关键字可以将一个函数变为 <strong>定义上</strong> 的异步函数，通过 <code>await</code> 关键字调用其他的异步函数。</p>
+<p>要在协程内部并发多个协程，我们需要 <strong>创建任务（Task）</strong> 。</p>
+<p>我们可以通过 <code>asyncio.create_task()</code> 函数来创建一个任务。</p>
+<p>有一个几乎等效的函数，叫做 <code>asyncio.ensure_future()</code>。</p>
+<p>等一下，<code>Future</code> 是什么？</p>
+<p><code>Future</code> 是用于表示 <strong>异步运算结果</strong> 的对象，它用于将回调式异步编程与 <code>async</code> <code>await</code> 联系在一起。</p>
+<p>通过 <code>Future.result()</code> 方法通知事件循环异步运算完成（无论成功还是失败），事件循环便会将结果传递给正在等待的协程。</p>
+<p><code>Task</code> 对象将协程包裹在 <code>Future</code> 中，用于控制协程执行。</p>
+<p>再等等，<code>Future</code> 既然可以表示异步运算结果，那么......</p>
+<p>通过 <code>AbstractEventLoop.run_in_executor()</code> ，可以将同步函数在线程/进程内执行，再包装成可以被等待的 <code>Future</code> 对象。</p>
+<p><code>async for</code> <code>async with</code> 则是通过实现 <code>__aiter__()</code> <code>__anext__()</code> <code>__aenter__()</code> <code>__aexit__()</code> 等 dunder 方法实现的。</p>
+
+              
+            </article>
+          </div>
+        </div>
+        
+          <a href="#" class="md-top md-icon" data-md-component="top" data-md-state="hidden">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"/></svg>
+            回到页面顶部
+          </a>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    <nav class="md-footer__inner md-grid" aria-label="页脚">
+      
+        
+        <a href="../faq/" class="md-footer__link md-footer__link--prev" aria-label="上一页: 常见问题" rel="prev">
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+          </div>
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                上一页
+              </span>
+              常见问题
+            </div>
+          </div>
+        </a>
+      
+      
+        
+        <a href="../mah-install/" class="md-footer__link md-footer__link--next" aria-label="下一页: Mirai API HTTP 安装" rel="next">
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                下一页
+              </span>
+              Mirai API HTTP 安装
+            </div>
+          </div>
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4z"/></svg>
+          </div>
+        </a>
+      
+    </nav>
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+    
+      <div class="md-copyright__highlight">
+        Copyright &copy; Graia Project 2021-2022.
+      </div>
+    
+    
+      使用
+      <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+        Material for MkDocs
+      </a>
+      生成
+    
+  </div>
+      
+        
+<div class="md-social">
+    
+        
+        
+        <a href="https://jq.qq.com/?_wv=1027&k=VXp6plBD" target="_blank" rel="noopener" title="QQ 群" class="md-social__link">
+        <ul class="clear-list">
+            <li>
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.0.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="M433.754 420.445c-11.526 1.393-44.86-52.741-44.86-52.741 0 31.345-16.136 72.247-51.051 101.786 16.842 5.192 54.843 19.167 45.803 34.421-7.316 12.343-125.51 7.881-159.632 4.037-34.122 3.844-152.316 8.306-159.632-4.037-9.045-15.25 28.918-29.214 45.783-34.415-34.92-29.539-51.059-70.445-51.059-101.792 0 0-33.334 54.134-44.859 52.741-5.37-.65-12.424-29.644 9.347-99.704 10.261-33.024 21.995-60.478 40.144-105.779C60.683 98.063 108.982.006 224 0c113.737.006 163.156 96.133 160.264 214.963 18.118 45.223 29.912 72.85 40.144 105.778 21.768 70.06 14.716 99.053 9.346 99.704z"/></svg>
+            </li>
+            <li>
+                QQ 群
+            </li>
+        </ul>
+        </a>
+    
+        
+        
+        <a href="https://graiax.cn/" target="_blank" rel="noopener" title="Graiax 社区" class="md-social__link">
+        <ul class="clear-list">
+            <li>
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M14.19 14.19 6 18l3.81-8.19L18 6m-6-4A10 10 0 0 0 2 12a10 10 0 0 0 10 10 10 10 0 0 0 10-10A10 10 0 0 0 12 2m0 8.9a1.1 1.1 0 0 0-1.1 1.1 1.1 1.1 0 0 0 1.1 1.1 1.1 1.1 0 0 0 1.1-1.1 1.1 1.1 0 0 0-1.1-1.1z"/></svg>
+            </li>
+            <li>
+                Graiax 社区
+            </li>
+        </ul>
+        </a>
+    
+        
+        
+        <a href="https://github.com/GraiaProject" target="_blank" rel="noopener" title="GitHub 组织" class="md-social__link">
+        <ul class="clear-list">
+            <li>
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.0.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg>
+            </li>
+            <li>
+                GitHub 组织
+            </li>
+        </ul>
+        </a>
+    
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs", "navigation.tabs.sticky", "navigation.expand", "navigation.top"], "translations": {"clipboard.copy": "\u590d\u5236", "clipboard.copied": "\u5df2\u590d\u5236", "search.config.lang": "ja", "search.config.pipeline": "trimmer, stemmer", "search.config.separator": "[\\uff0c\\u3002]+", "search.placeholder": "\u641c\u7d22", "search.result.placeholder": "\u952e\u5165\u4ee5\u5f00\u59cb\u641c\u7d22", "search.result.none": "\u6ca1\u6709\u627e\u5230\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.one": "\u627e\u5230 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.other": "# \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.more.one": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.more.other": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 # \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.term.missing": "\u7f3a\u5c11", "select.version.title": "\u9009\u62e9\u5f53\u524d\u7248\u672c"}, "search": "../../assets/javascripts/workers/search.bd0b6b67.min.js"}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.8aa65030.min.js"></script>
+      
+        <script src="../../assets/admonition.js"></script>
+      
+    
+  </body>
+</html>
