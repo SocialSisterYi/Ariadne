@@ -1913,35 +1913,30 @@
 <p>本模块由 <code>RF-Tar-Railt</code> 维护,
 <code>BlueGlassBlock</code> 仅进行了针对 <code>Ariadne</code> 的封装, 本模块余下部分从 <code>Alconna wiki</code> 复制并修改而来.</p>
 </div>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">arclet.alconna</span> <span class="kn">import</span> <span class="n">Args</span><span class="p">,</span> <span class="n">Option</span>
-<span class="kn">from</span> <span class="nn">graia.ariadne.message.parser.alconna</span> <span class="kn">import</span> <span class="p">(</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">graia.ariadne.message.parser.alconna</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">AlconnaDispatcher</span><span class="p">,</span>
-    <span class="n">Alconna</span><span class="p">,</span>
-    <span class="n">Arpamar</span>
+    <span class="n">Alconna</span>
 <span class="p">)</span>
-<span class="c1"># example: !点歌 &lt;歌名&gt; --歌手 &lt;歌手名&gt;</span>
-<span class="c1">#</span>
-<span class="c1">#                                  主参数: &lt;歌名&gt;      选项名: --歌手  选项别名: -s  选项参数: &lt;歌手名&gt;     </span>
-<span class="n">music</span> <span class="o">=</span> <span class="n">Alconna</span><span class="o">.</span><span class="n">from_string</span><span class="p">(</span><span class="s2">&quot;!点歌 &lt;song_name:str&gt;&quot;</span><span class="p">,</span> <span class="s2">&quot;--歌手|-s &lt;singer_name:str&gt;&quot;</span><span class="p">)</span>
+<span class="c1"># example: !点歌 &lt;歌名&gt; --歌手 &lt;歌手名&gt;                       </span>
+<span class="n">music</span> <span class="o">=</span> <span class="n">Alconna</span><span class="o">.</span><span class="n">from_string</span><span class="p">(</span>
+    <span class="s2">&quot;!点歌 &lt;song_name:str&gt;  #在XXX中搜索歌名&quot;</span><span class="p">,</span> <span class="c1"># 主参数: &lt;歌名&gt;</span>
+    <span class="s2">&quot;--歌手|-s &lt;singer_name:str&gt; #指定歌手&quot;</span>  <span class="c1"># 选项名: --歌手  选项别名: -s  选项参数: &lt;歌手名&gt;   </span>
+<span class="p">)</span>
 
-<span class="nd">@app</span><span class="o">.</span><span class="n">broadcast</span><span class="o">.</span><span class="n">receiver</span><span class="p">(</span><span class="n">FriendMessage</span><span class="p">,</span> <span class="n">dispatchers</span><span class="o">=</span><span class="p">[</span><span class="n">AlconnaDispatcher</span><span class="p">(</span><span class="n">alconna</span><span class="o">=</span><span class="n">music</span><span class="p">)])</span>
-<span class="k">async</span> <span class="k">def</span> <span class="nf">friend_message_listener</span><span class="p">(</span><span class="n">app</span><span class="p">:</span> <span class="n">Ariadne</span><span class="p">,</span> <span class="n">friend</span><span class="p">:</span> <span class="n">Friend</span><span class="p">,</span> <span class="n">arpamar</span><span class="p">:</span> <span class="n">Arpamar</span><span class="p">):</span>
-    <span class="k">if</span> <span class="n">arpamar</span><span class="o">.</span><span class="n">matched</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">arpamar</span><span class="o">.</span><span class="n">has</span><span class="p">(</span><span class="s2">&quot;song_name&quot;</span><span class="p">):</span>
-            <span class="k">await</span> <span class="n">app</span><span class="o">.</span><span class="n">sendFriendMessage</span><span class="p">(</span>
-                <span class="n">friend</span><span class="p">,</span> <span class="n">MessageChain</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="s2">&quot;歌名是 &quot;</span><span class="p">,</span> <span class="n">arpamar</span><span class="o">.</span><span class="n">song_name</span><span class="p">)</span> <span class="c1"># or use arpamar.get(&quot;song_name&quot;)</span>
-            <span class="p">)</span>
-        <span class="k">if</span> <span class="n">arpamar</span><span class="o">.</span><span class="n">has</span><span class="p">(</span><span class="s2">&quot;singer_name&quot;</span><span class="p">):</span>
-            <span class="k">await</span> <span class="n">app</span><span class="o">.</span><span class="n">sendFriendMessage</span><span class="p">(</span>
-                <span class="n">friend</span><span class="p">,</span> <span class="n">MessageChain</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="s2">&quot;歌手是 &quot;</span><span class="p">,</span> <span class="n">arpamar</span><span class="o">.</span><span class="n">singer_name</span><span class="p">)</span> <span class="c1"># or use arpamar.get(&quot;singer_name&quot;)</span>
-            <span class="p">)</span>
+<span class="nd">@app</span><span class="o">.</span><span class="n">broadcast</span><span class="o">.</span><span class="n">receiver</span><span class="p">(</span><span class="n">FriendMessage</span><span class="p">,</span> <span class="n">dispatchers</span><span class="o">=</span><span class="p">[</span><span class="n">AlconnaDispatcher</span><span class="p">(</span><span class="n">alconna</span><span class="o">=</span><span class="n">music</span><span class="p">,</span> <span class="n">reply_help</span><span class="o">=</span><span class="kc">True</span><span class="p">)])</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">friend_message_listener</span><span class="p">(</span><span class="n">app</span><span class="p">:</span> <span class="n">Ariadne</span><span class="p">,</span> <span class="n">friend</span><span class="p">:</span> <span class="n">Friend</span><span class="p">,</span> <span class="n">song_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">singer_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+    <span class="k">await</span> <span class="n">app</span><span class="o">.</span><span class="n">sendFriendMessage</span><span class="p">(</span><span class="n">friend</span><span class="p">,</span> <span class="n">MessageChain</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="s2">&quot;歌名是 &quot;</span><span class="p">,</span> <span class="n">song_name</span><span class="p">))</span>
+    <span class="k">if</span> <span class="n">singer_name</span><span class="p">:</span>
+        <span class="k">await</span> <span class="n">app</span><span class="o">.</span><span class="n">sendFriendMessage</span><span class="p">(</span><span class="n">friend</span><span class="p">,</span> <span class="n">MessageChain</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="s2">&quot;歌手是 &quot;</span><span class="p">,</span> <span class="n">singer_name</span><span class="p">))</span>
 </code></pre></div>
-<p>执行这段代码后，向你的 bot 发送 <code>!点歌 歌名 大地 歌手 Beyond</code> 试试.</p>
+<p>执行这段代码后，向你的 bot 发送 <code>!点歌 大地 -s Beyond</code> 试试.</p>
 <div>
 <ul>
- <li class="chat right">!点歌 歌名 大地 歌手 Beyond</li>
+ <li class="chat right">!点歌 大地 -s Beyond</li>
  <li class="chat left">歌名是 大地</li>
  <li class="chat left">歌手是 Beyond</li>
+ <li class="chat right">!点歌 --help</li>
+ <li class="chat left">!点歌 &lt;song_name&gt;&#13;在XXX中搜索歌名&#13;可用的选项有:&#13;# 指定歌手\n  -s, --歌手 &lt;singer_name&gt;</li>
 </ul>
 </div>
 
@@ -1982,6 +1977,8 @@
 <li><code>Alconna</code>: 使用的 <code>Alconna</code> 对象.</li>
 <li><code>Arpamar</code>: <code>Alconna</code> 生成的数据容器.</li>
 <li><code>AlconnaProperty</code>: 在 <code>name</code> 上进行此标注等价于进行 <code>arpamar.get(name)</code>.</li>
+<li><code>dict</code>: 当<code>name</code>代表<code>Alconna</code>内的选项, 并且确实解析到数据时返回对应的字典对象; 未解析时为None</li>
+<li>其他类型: 在 <code>name</code> 上进行此标注等价于<code>arpamar.all_matched_args.get(name)</code>; 未解析时为None</li>
 </ul>
 <h2 id="twilight">与 Twilight 对比<a class="headerlink" href="#twilight" title="Permanent link">🔗</a></h2>
 <p><code>Twilight</code> 偏重于对消息链的正则化处理,</p>
@@ -1989,7 +1986,7 @@
 <p>另一点, <code>Alconna</code>的功能相对复杂, 不太适合初识消息解析的用户.</p>
 <p>如果你想要 <code>argparse</code> 中各种特别 <code>Action</code> (如 <code>append</code>) 的原生支持, 可能 <code>Twilight</code> 会更好编写.</p>
 <p>同时, <code>Twilight</code> 是基于对象的参数处理器, 在类型补全上更完备.</p>
-<p>但是 <code>Alconna</code> 有子命令的支持, 且性能占优.</p>
+<p>但是 <code>Alconna</code> 有子命令的支持, 且性能占优, 魔法较多(迫真).</p>
 <p>总之, 根据自己的需要, 选择合适的工具.</p>
 <h2 id="_4">下一步<a class="headerlink" href="#_4" title="Permanent link">🔗</a></h2>
 <p><code>Ariadne</code> 只对 <code>Alconna</code> 进行了简单的封装, 接下来你可以访问其 <a href="https://arcletproject.github.io/docs/alconna/tutorial">文档</a> 进一步了解用法.</p>
