@@ -1917,7 +1917,7 @@
 
 
 <h2 id="graia.ariadne.get_running" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">get_running</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="n">Ariadne</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">get_running</span><span class="p">(</span><span class="nb">type</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="n">T</span><span class="p">]</span> <span class="o">=</span> <span class="n">Ariadne</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">T</span></code>
 
 
 <a href="#graia.ariadne.get_running" class="headerlink" title="Permanent link">&para;</a></h2>
@@ -1925,8 +1925,31 @@
 
     <div class="doc doc-contents ">
 
-      <p>获取正在运行的 实例</p>
-      <p>type (Type[T]): 实例类型</p>
+      <p>获取正在运行的实例</p>
+
+  <p><strong>Parameters:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Description</th>
+        <th>Default</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td><code>type</code></td>
+          <td>
+                <code><a title="typing.Type" href="https://docs.python.org/zh-cn/3/library/typing.html#typing.Type">Type</a>[<span title="graia.ariadne.typing.T">T</span>]</code>
+          </td>
+          <td><p>实例类型</p></td>
+          <td>
+                <code>Ariadne</code>
+          </td>
+        </tr>
+    </tbody>
+  </table>
 
   <p><strong>Returns:</strong></p>
   <table>
@@ -1948,7 +1971,9 @@
 
         <details class="quote">
           <summary>Source code in <code>graia/ariadne/__init__.py</code></summary>
-          <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">16</span>
+          <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
 <span class="normal">17</span>
 <span class="normal">18</span>
 <span class="normal">19</span>
@@ -1967,11 +1992,11 @@
 <span class="normal">32</span>
 <span class="normal">33</span>
 <span class="normal">34</span>
-<span class="normal">35</span>
-<span class="normal">36</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">get_running</span><span class="p">(</span><span class="nb">type</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="n">T</span><span class="p">]</span> <span class="o">=</span> <span class="n">Ariadne</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">T</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;获取正在运行的 实例</span>
+<span class="normal">35</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">get_running</span><span class="p">(</span><span class="nb">type</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="n">T</span><span class="p">]</span> <span class="o">=</span> <span class="n">Ariadne</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">T</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;获取正在运行的实例</span>
+
 <span class="sd">    Args:</span>
-<span class="sd">    type (Type[T]): 实例类型</span>
+<span class="sd">        type (Type[T]): 实例类型</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        T: 对应类型实例</span>

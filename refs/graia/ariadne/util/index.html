@@ -2052,7 +2052,7 @@
 
 
 <h2 id="graia.ariadne.util.ConstantDispatcher" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">ConstantDispatcher</span><span class="p">(</span><span class="n">context</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">ConstantDispatcher</span><span class="p">(</span><span class="n">context</span><span class="p">:</span> <span class="n">ContextVar</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="kc">None</span></code>
 
 
 <a href="#graia.ariadne.util.ConstantDispatcher" class="headerlink" title="Permanent link">&para;</a></h2>
@@ -2068,8 +2068,8 @@
 
             <details class="quote">
               <summary>Source code in <code>graia/ariadne/util/__init__.py</code></summary>
-              <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">370</span>
-<span class="normal">371</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="n">ContextVar</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+              <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">371</span>
+<span class="normal">372</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="n">ContextVar</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">ctx_var</span> <span class="o">=</span> <span class="n">context</span>
 </code></pre></div>
 </td></tr></table>
@@ -2117,9 +2117,9 @@
 
             <details class="quote">
               <summary>Source code in <code>graia/ariadne/util/__init__.py</code></summary>
-              <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">381</span>
-<span class="normal">382</span>
-<span class="normal">383</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwds</span><span class="p">):</span>
+              <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">382</span>
+<span class="normal">383</span>
+<span class="normal">384</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwds</span><span class="p">):</span>
     <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">kwds</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
         <span class="bp">self</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span>
 </code></pre></div>
@@ -2156,7 +2156,7 @@
 
 
 <h2 id="graia.ariadne.util.app_ctx_manager" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">app_ctx_manager</span><span class="p">(</span><span class="n">func</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">app_ctx_manager</span><span class="p">(</span><span class="n">func</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[</span><span class="n">P</span><span class="p">,</span> <span class="n">R</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">[</span><span class="n">P</span><span class="p">,</span> <span class="n">R</span><span class="p">]</span></code>
 
 
 <a href="#graia.ariadne.util.app_ctx_manager" class="headerlink" title="Permanent link">&para;</a></h2>
@@ -2210,8 +2210,7 @@
 
         <details class="quote">
           <summary>Source code in <code>graia/ariadne/util/__init__.py</code></summary>
-          <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">167</span>
-<span class="normal">168</span>
+          <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">168</span>
 <span class="normal">169</span>
 <span class="normal">170</span>
 <span class="normal">171</span>
@@ -2229,7 +2228,8 @@
 <span class="normal">183</span>
 <span class="normal">184</span>
 <span class="normal">185</span>
-<span class="normal">186</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">app_ctx_manager</span><span class="p">(</span><span class="n">func</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[</span><span class="n">P</span><span class="p">,</span> <span class="n">R</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">[</span><span class="n">P</span><span class="p">,</span> <span class="n">R</span><span class="p">]:</span>
+<span class="normal">186</span>
+<span class="normal">187</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">app_ctx_manager</span><span class="p">(</span><span class="n">func</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[</span><span class="n">P</span><span class="p">,</span> <span class="n">R</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">[</span><span class="n">P</span><span class="p">,</span> <span class="n">R</span><span class="p">]:</span>
     <span class="sd">&quot;&quot;&quot;包装声明需要在 Ariadne Context 中执行的函数</span>
 
 <span class="sd">    Args:</span>
@@ -2263,7 +2263,7 @@
 
 
 <h2 id="graia.ariadne.util.assert_" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">assert_</span><span class="p">(</span><span class="n">condition</span><span class="p">,</span> <span class="o">*</span><span class="n">message</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">assert_</span><span class="p">(</span><span class="n">condition</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span> <span class="o">*</span><span class="n">message</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="n">NoReturn</span><span class="p">]</span></code>
 
 
 <a href="#graia.ariadne.util.assert_" class="headerlink" title="Permanent link">&para;</a></h2>
@@ -2327,8 +2327,7 @@
 
         <details class="quote">
           <summary>Source code in <code>graia/ariadne/util/__init__.py</code></summary>
-          <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">238</span>
-<span class="normal">239</span>
+          <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">239</span>
 <span class="normal">240</span>
 <span class="normal">241</span>
 <span class="normal">242</span>
@@ -2338,7 +2337,8 @@
 <span class="normal">246</span>
 <span class="normal">247</span>
 <span class="normal">248</span>
-<span class="normal">249</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">assert_</span><span class="p">(</span><span class="n">condition</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span> <span class="o">*</span><span class="n">message</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="n">NoReturn</span><span class="p">]:</span>
+<span class="normal">249</span>
+<span class="normal">250</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">assert_</span><span class="p">(</span><span class="n">condition</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span> <span class="o">*</span><span class="n">message</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="n">NoReturn</span><span class="p">]:</span>
     <span class="sd">&quot;&quot;&quot;引发 ValueError 的断言</span>
 
 <span class="sd">    Args:</span>
@@ -2364,7 +2364,7 @@
 
 
 <h2 id="graia.ariadne.util.assert_not_" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">assert_not_</span><span class="p">(</span><span class="n">condition</span><span class="p">,</span> <span class="o">*</span><span class="n">message</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">assert_not_</span><span class="p">(</span><span class="n">condition</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span> <span class="o">*</span><span class="n">message</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="n">NoReturn</span><span class="p">]</span></code>
 
 
 <a href="#graia.ariadne.util.assert_not_" class="headerlink" title="Permanent link">&para;</a></h2>
@@ -2428,8 +2428,7 @@
 
         <details class="quote">
           <summary>Source code in <code>graia/ariadne/util/__init__.py</code></summary>
-          <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">252</span>
-<span class="normal">253</span>
+          <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">253</span>
 <span class="normal">254</span>
 <span class="normal">255</span>
 <span class="normal">256</span>
@@ -2439,7 +2438,8 @@
 <span class="normal">260</span>
 <span class="normal">261</span>
 <span class="normal">262</span>
-<span class="normal">263</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">assert_not_</span><span class="p">(</span><span class="n">condition</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span> <span class="o">*</span><span class="n">message</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="n">NoReturn</span><span class="p">]:</span>
+<span class="normal">263</span>
+<span class="normal">264</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">assert_not_</span><span class="p">(</span><span class="n">condition</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span> <span class="o">*</span><span class="n">message</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="n">NoReturn</span><span class="p">]:</span>
     <span class="sd">&quot;&quot;&quot;检查条件是否成立, 如果不成立则抛出 ValueError</span>
 
 <span class="sd">    Args:</span>
@@ -2465,7 +2465,7 @@
 
 
 <h2 id="graia.ariadne.util.assert_on_" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">assert_on_</span><span class="p">(</span><span class="n">pre_condition</span><span class="p">,</span> <span class="n">condition</span><span class="p">,</span> <span class="o">*</span><span class="n">message</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">assert_on_</span><span class="p">(</span><span class="n">pre_condition</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span> <span class="n">condition</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span> <span class="o">*</span><span class="n">message</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="n">NoReturn</span><span class="p">]</span></code>
 
 
 <a href="#graia.ariadne.util.assert_on_" class="headerlink" title="Permanent link">&para;</a></h2>
@@ -2538,8 +2538,7 @@
 
         <details class="quote">
           <summary>Source code in <code>graia/ariadne/util/__init__.py</code></summary>
-          <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">222</span>
-<span class="normal">223</span>
+          <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">223</span>
 <span class="normal">224</span>
 <span class="normal">225</span>
 <span class="normal">226</span>
@@ -2551,7 +2550,8 @@
 <span class="normal">232</span>
 <span class="normal">233</span>
 <span class="normal">234</span>
-<span class="normal">235</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">assert_on_</span><span class="p">(</span><span class="n">pre_condition</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span> <span class="n">condition</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span> <span class="o">*</span><span class="n">message</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="n">NoReturn</span><span class="p">]:</span>
+<span class="normal">235</span>
+<span class="normal">236</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">assert_on_</span><span class="p">(</span><span class="n">pre_condition</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span> <span class="n">condition</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span> <span class="o">*</span><span class="n">message</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="n">NoReturn</span><span class="p">]:</span>
     <span class="sd">&quot;&quot;&quot;检查条件是否成立, 如果不成立则抛出 ValueError</span>
 
 <span class="sd">    Args:</span>
@@ -2579,7 +2579,7 @@
 
 
 <h2 id="graia.ariadne.util.await_predicate" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">await_predicate</span><span class="p">(</span><span class="n">predicate</span><span class="p">,</span> <span class="n">interval</span><span class="o">=</span><span class="mf">0.01</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">await_predicate</span><span class="p">(</span><span class="n">predicate</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[],</span> <span class="nb">bool</span><span class="p">],</span> <span class="n">interval</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.01</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span></code>
 
   <span class="doc doc-properties">
       <small class="doc doc-label doc-label-async"><code>async</code></small>
@@ -2628,15 +2628,15 @@
 
         <details class="quote">
           <summary>Source code in <code>graia/ariadne/util/__init__.py</code></summary>
-          <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">289</span>
-<span class="normal">290</span>
+          <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">290</span>
 <span class="normal">291</span>
 <span class="normal">292</span>
 <span class="normal">293</span>
 <span class="normal">294</span>
 <span class="normal">295</span>
 <span class="normal">296</span>
-<span class="normal">297</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">await_predicate</span><span class="p">(</span><span class="n">predicate</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[],</span> <span class="nb">bool</span><span class="p">],</span> <span class="n">interval</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.01</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="normal">297</span>
+<span class="normal">298</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">await_predicate</span><span class="p">(</span><span class="n">predicate</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[],</span> <span class="nb">bool</span><span class="p">],</span> <span class="n">interval</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.01</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;异步阻塞至满足 predicate 为 True</span>
 
 <span class="sd">    Args:</span>
@@ -2659,7 +2659,7 @@
 
 
 <h2 id="graia.ariadne.util.const_call" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">const_call</span><span class="p">(</span><span class="n">val</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">const_call</span><span class="p">(</span><span class="n">val</span><span class="p">:</span> <span class="n">T</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">[[],</span> <span class="n">T</span><span class="p">]</span></code>
 
 
 <a href="#graia.ariadne.util.const_call" class="headerlink" title="Permanent link">&para;</a></h2>
@@ -2713,8 +2713,7 @@
 
         <details class="quote">
           <summary>Source code in <code>graia/ariadne/util/__init__.py</code></summary>
-          <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">210</span>
-<span class="normal">211</span>
+          <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">211</span>
 <span class="normal">212</span>
 <span class="normal">213</span>
 <span class="normal">214</span>
@@ -2722,7 +2721,8 @@
 <span class="normal">216</span>
 <span class="normal">217</span>
 <span class="normal">218</span>
-<span class="normal">219</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">const_call</span><span class="p">(</span><span class="n">val</span><span class="p">:</span> <span class="n">T</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">[[],</span> <span class="n">T</span><span class="p">]:</span>
+<span class="normal">219</span>
+<span class="normal">220</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">const_call</span><span class="p">(</span><span class="n">val</span><span class="p">:</span> <span class="n">T</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">[[],</span> <span class="n">T</span><span class="p">]:</span>
     <span class="sd">&quot;&quot;&quot;生成一个返回常量的 Callable</span>
 
 <span class="sd">    Args:</span>
@@ -2746,7 +2746,7 @@
 
 
 <h2 id="graia.ariadne.util.deprecated" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">deprecated</span><span class="p">(</span><span class="n">remove_ver</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">deprecated</span><span class="p">(</span><span class="n">remove_ver</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">Callable</span><span class="p">[</span><span class="n">P</span><span class="p">,</span> <span class="n">R</span><span class="p">]],</span> <span class="n">Callable</span><span class="p">[</span><span class="n">P</span><span class="p">,</span> <span class="n">R</span><span class="p">]]</span></code>
 
 
 <a href="#graia.ariadne.util.deprecated" class="headerlink" title="Permanent link">&para;</a></h2>
@@ -2800,8 +2800,7 @@
 
         <details class="quote">
           <summary>Source code in <code>graia/ariadne/util/__init__.py</code></summary>
-          <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">329</span>
-<span class="normal">330</span>
+          <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">330</span>
 <span class="normal">331</span>
 <span class="normal">332</span>
 <span class="normal">333</span>
@@ -2820,7 +2819,8 @@
 <span class="normal">346</span>
 <span class="normal">347</span>
 <span class="normal">348</span>
-<span class="normal">349</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">deprecated</span><span class="p">(</span><span class="n">remove_ver</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">Callable</span><span class="p">[</span><span class="n">P</span><span class="p">,</span> <span class="n">R</span><span class="p">]],</span> <span class="n">Callable</span><span class="p">[</span><span class="n">P</span><span class="p">,</span> <span class="n">R</span><span class="p">]]:</span>
+<span class="normal">349</span>
+<span class="normal">350</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">deprecated</span><span class="p">(</span><span class="n">remove_ver</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">Callable</span><span class="p">[</span><span class="n">P</span><span class="p">,</span> <span class="n">R</span><span class="p">]],</span> <span class="n">Callable</span><span class="p">[</span><span class="n">P</span><span class="p">,</span> <span class="n">R</span><span class="p">]]:</span>
     <span class="sd">&quot;&quot;&quot;标注一个方法 / 函数已被弃用</span>
 
 <span class="sd">    Args:</span>
@@ -2855,7 +2855,7 @@
 
 
 <h2 id="graia.ariadne.util.eval_ctx" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">eval_ctx</span><span class="p">(</span><span class="n">layer</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">globals_</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">locals_</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">eval_ctx</span><span class="p">(</span><span class="n">layer</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">globals_</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">DictStrAny</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">locals_</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">DictStrAny</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">DictStrAny</span><span class="p">,</span> <span class="n">DictStrAny</span><span class="p">]</span></code>
 
 
 <a href="#graia.ariadne.util.eval_ctx" class="headerlink" title="Permanent link">&para;</a></h2>
@@ -2929,8 +2929,7 @@
 
         <details class="quote">
           <summary>Source code in <code>graia/ariadne/util/__init__.py</code></summary>
-          <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">266</span>
-<span class="normal">267</span>
+          <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">267</span>
 <span class="normal">268</span>
 <span class="normal">269</span>
 <span class="normal">270</span>
@@ -2946,7 +2945,8 @@
 <span class="normal">280</span>
 <span class="normal">281</span>
 <span class="normal">282</span>
-<span class="normal">283</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">eval_ctx</span><span class="p">(</span>
+<span class="normal">283</span>
+<span class="normal">284</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">eval_ctx</span><span class="p">(</span>
     <span class="n">layer</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">globals_</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">DictStrAny</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">locals_</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">DictStrAny</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">DictStrAny</span><span class="p">,</span> <span class="n">DictStrAny</span><span class="p">]:</span>
     <span class="sd">&quot;&quot;&quot;获取一个上下文的全局和局部变量</span>
@@ -2978,7 +2978,7 @@
 
 
 <h2 id="graia.ariadne.util.gen_subclass" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">gen_subclass</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">gen_subclass</span><span class="p">(</span><span class="bp">cls</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="n">T</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Generator</span><span class="p">[</span><span class="n">Type</span><span class="p">[</span><span class="n">T</span><span class="p">],</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span></code>
 
 
 <a href="#graia.ariadne.util.gen_subclass" class="headerlink" title="Permanent link">&para;</a></h2>
@@ -3032,8 +3032,7 @@
 
         <details class="quote">
           <summary>Source code in <code>graia/ariadne/util/__init__.py</code></summary>
-          <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">189</span>
-<span class="normal">190</span>
+          <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">190</span>
 <span class="normal">191</span>
 <span class="normal">192</span>
 <span class="normal">193</span>
@@ -3045,7 +3044,8 @@
 <span class="normal">199</span>
 <span class="normal">200</span>
 <span class="normal">201</span>
-<span class="normal">202</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">gen_subclass</span><span class="p">(</span><span class="bp">cls</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="n">T</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Generator</span><span class="p">[</span><span class="n">Type</span><span class="p">[</span><span class="n">T</span><span class="p">],</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
+<span class="normal">202</span>
+<span class="normal">203</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">gen_subclass</span><span class="p">(</span><span class="bp">cls</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="n">T</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Generator</span><span class="p">[</span><span class="n">Type</span><span class="p">[</span><span class="n">T</span><span class="p">],</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
     <span class="sd">&quot;&quot;&quot;生成某个类的所有子类 (包括其自身)</span>
 
 <span class="sd">    Args:</span>
@@ -3068,12 +3068,13 @@
 
 
 
+
   <div class="doc doc-object doc-function">
 
 
 
 <h2 id="graia.ariadne.util.inject_bypass_listener" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">inject_bypass_listener</span><span class="p">(</span><span class="n">broadcast</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">inject_bypass_listener</span><span class="p">(</span><span class="n">broadcast</span><span class="p">:</span> <span class="n">Broadcast</span><span class="p">)</span></code>
 
 
 <a href="#graia.ariadne.util.inject_bypass_listener" class="headerlink" title="Permanent link">&para;</a></h2>
@@ -3109,8 +3110,7 @@
 
         <details class="quote">
           <summary>Source code in <code>graia/ariadne/util/__init__.py</code></summary>
-          <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">123</span>
-<span class="normal">124</span>
+          <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">124</span>
 <span class="normal">125</span>
 <span class="normal">126</span>
 <span class="normal">127</span>
@@ -3150,7 +3150,8 @@
 <span class="normal">161</span>
 <span class="normal">162</span>
 <span class="normal">163</span>
-<span class="normal">164</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">inject_bypass_listener</span><span class="p">(</span><span class="n">broadcast</span><span class="p">:</span> <span class="n">Broadcast</span><span class="p">):</span>
+<span class="normal">164</span>
+<span class="normal">165</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">inject_bypass_listener</span><span class="p">(</span><span class="n">broadcast</span><span class="p">:</span> <span class="n">Broadcast</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;注入 BypassListener 以享受子事件解析.</span>
 
 <span class="sd">    Args:</span>
@@ -3206,7 +3207,7 @@
 
 
 <h2 id="graia.ariadne.util.inject_loguru_traceback" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">inject_loguru_traceback</span><span class="p">(</span><span class="n">loop</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">inject_loguru_traceback</span><span class="p">(</span><span class="n">loop</span><span class="p">:</span> <span class="n">AbstractEventLoop</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span></code>
 
 
 <a href="#graia.ariadne.util.inject_loguru_traceback" class="headerlink" title="Permanent link">&para;</a></h2>
@@ -3218,12 +3219,12 @@
 
         <details class="quote">
           <summary>Source code in <code>graia/ariadne/util/__init__.py</code></summary>
-          <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">115</span>
-<span class="normal">116</span>
+          <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">116</span>
 <span class="normal">117</span>
 <span class="normal">118</span>
 <span class="normal">119</span>
-<span class="normal">120</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">inject_loguru_traceback</span><span class="p">(</span><span class="n">loop</span><span class="p">:</span> <span class="n">AbstractEventLoop</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+<span class="normal">120</span>
+<span class="normal">121</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">inject_loguru_traceback</span><span class="p">(</span><span class="n">loop</span><span class="p">:</span> <span class="n">AbstractEventLoop</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;使用 loguru 模块替换默认的 traceback.print_exception 与 sys.excepthook&quot;&quot;&quot;</span>
     <span class="n">traceback</span><span class="o">.</span><span class="n">print_exception</span> <span class="o">=</span> <span class="n">loguru_excepthook</span>
     <span class="n">sys</span><span class="o">.</span><span class="n">excepthook</span> <span class="o">=</span> <span class="n">loguru_excepthook</span>
@@ -3243,7 +3244,7 @@
 
 
 <h2 id="graia.ariadne.util.loguru_async_handler" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">loguru_async_handler</span><span class="p">(</span><span class="n">_</span><span class="p">,</span> <span class="n">ctx</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">loguru_async_handler</span><span class="p">(</span><span class="n">_</span><span class="p">,</span> <span class="n">ctx</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span></code>
 
 
 <a href="#graia.ariadne.util.loguru_async_handler" class="headerlink" title="Permanent link">&para;</a></h2>
@@ -3289,8 +3290,7 @@
 
         <details class="quote">
           <summary>Source code in <code>graia/ariadne/util/__init__.py</code></summary>
-          <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">102</span>
-<span class="normal">103</span>
+          <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">103</span>
 <span class="normal">104</span>
 <span class="normal">105</span>
 <span class="normal">106</span>
@@ -3299,7 +3299,8 @@
 <span class="normal">109</span>
 <span class="normal">110</span>
 <span class="normal">111</span>
-<span class="normal">112</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">loguru_async_handler</span><span class="p">(</span><span class="n">_</span><span class="p">,</span> <span class="n">ctx</span><span class="p">:</span> <span class="nb">dict</span><span class="p">):</span>
+<span class="normal">112</span>
+<span class="normal">113</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">loguru_async_handler</span><span class="p">(</span><span class="n">_</span><span class="p">,</span> <span class="n">ctx</span><span class="p">:</span> <span class="nb">dict</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;loguru 异步异常回调</span>
 
 <span class="sd">    Args:</span>
@@ -3380,15 +3381,15 @@
 
         <details class="quote">
           <summary>Source code in <code>graia/ariadne/util/__init__.py</code></summary>
-          <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">91</span>
-<span class="normal">92</span>
-<span class="normal">93</span>
-<span class="normal">94</span>
-<span class="normal">95</span>
-<span class="normal">96</span>
-<span class="normal">97</span>
-<span class="normal">98</span>
-<span class="normal">99</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">loguru_excepthook</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">val</span><span class="p">,</span> <span class="n">tb</span><span class="p">,</span> <span class="o">*</span><span class="n">_</span><span class="p">,</span> <span class="o">**</span><span class="n">__</span><span class="p">):</span>
+          <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 92</span>
+<span class="normal"> 93</span>
+<span class="normal"> 94</span>
+<span class="normal"> 95</span>
+<span class="normal"> 96</span>
+<span class="normal"> 97</span>
+<span class="normal"> 98</span>
+<span class="normal"> 99</span>
+<span class="normal">100</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">loguru_excepthook</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">val</span><span class="p">,</span> <span class="n">tb</span><span class="p">,</span> <span class="o">*</span><span class="n">_</span><span class="p">,</span> <span class="o">**</span><span class="n">__</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;loguru 异常回调</span>
 
 <span class="sd">    Args:</span>
@@ -3411,7 +3412,7 @@
 
 
 <h2 id="graia.ariadne.util.resolve_dispatchers_mixin" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">resolve_dispatchers_mixin</span><span class="p">(</span><span class="n">dispatchers</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">resolve_dispatchers_mixin</span><span class="p">(</span><span class="n">dispatchers</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">T_Dispatcher</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">T_Dispatcher</span><span class="p">]</span></code>
 
 
 <a href="#graia.ariadne.util.resolve_dispatchers_mixin" class="headerlink" title="Permanent link">&para;</a></h2>
@@ -3465,8 +3466,7 @@
 
         <details class="quote">
           <summary>Source code in <code>graia/ariadne/util/__init__.py</code></summary>
-          <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">352</span>
-<span class="normal">353</span>
+          <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">353</span>
 <span class="normal">354</span>
 <span class="normal">355</span>
 <span class="normal">356</span>
@@ -3477,7 +3477,8 @@
 <span class="normal">361</span>
 <span class="normal">362</span>
 <span class="normal">363</span>
-<span class="normal">364</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">resolve_dispatchers_mixin</span><span class="p">(</span><span class="n">dispatchers</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">T_Dispatcher</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">T_Dispatcher</span><span class="p">]:</span>
+<span class="normal">364</span>
+<span class="normal">365</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">resolve_dispatchers_mixin</span><span class="p">(</span><span class="n">dispatchers</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">T_Dispatcher</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">T_Dispatcher</span><span class="p">]:</span>
     <span class="sd">&quot;&quot;&quot;解析 dispatcher list 的 mixin</span>
 
 <span class="sd">    Args:</span>
@@ -3504,7 +3505,7 @@
 
 
 <h2 id="graia.ariadne.util.signal_handler" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">signal_handler</span><span class="p">(</span><span class="n">callback</span><span class="p">,</span> <span class="n">one_time</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">signal_handler</span><span class="p">(</span><span class="n">callback</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[],</span> <span class="kc">None</span><span class="p">],</span> <span class="n">one_time</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span></code>
 
 
 <a href="#graia.ariadne.util.signal_handler" class="headerlink" title="Permanent link">&para;</a></h2>
@@ -3568,8 +3569,7 @@
 
         <details class="quote">
           <summary>Source code in <code>graia/ariadne/util/__init__.py</code></summary>
-          <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">396</span>
-<span class="normal">397</span>
+          <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">397</span>
 <span class="normal">398</span>
 <span class="normal">399</span>
 <span class="normal">400</span>
@@ -3594,7 +3594,8 @@
 <span class="normal">419</span>
 <span class="normal">420</span>
 <span class="normal">421</span>
-<span class="normal">422</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">signal_handler</span><span class="p">(</span><span class="n">callback</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[],</span> <span class="kc">None</span><span class="p">],</span> <span class="n">one_time</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="normal">422</span>
+<span class="normal">423</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">signal_handler</span><span class="p">(</span><span class="n">callback</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[],</span> <span class="kc">None</span><span class="p">],</span> <span class="n">one_time</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;注册信号处理器</span>
 <span class="sd">    Args:</span>
 <span class="sd">        callback (Callable[[], None]): 信号处理器</span>
@@ -3635,7 +3636,7 @@
 
 
 <h2 id="graia.ariadne.util.validate_response" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">validate_response</span><span class="p">(</span><span class="n">code</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">validate_response</span><span class="p">(</span><span class="n">code</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Any</span><span class="p">]],</span> <span class="nb">int</span><span class="p">])</span></code>
 
 
 <a href="#graia.ariadne.util.validate_response" class="headerlink" title="Permanent link">&para;</a></h2>
@@ -3689,8 +3690,7 @@
 
         <details class="quote">
           <summary>Source code in <code>graia/ariadne/util/__init__.py</code></summary>
-          <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">70</span>
-<span class="normal">71</span>
+          <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">71</span>
 <span class="normal">72</span>
 <span class="normal">73</span>
 <span class="normal">74</span>
@@ -3707,7 +3707,8 @@
 <span class="normal">85</span>
 <span class="normal">86</span>
 <span class="normal">87</span>
-<span class="normal">88</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">validate_response</span><span class="p">(</span><span class="n">code</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Any</span><span class="p">]],</span> <span class="nb">int</span><span class="p">]):</span>
+<span class="normal">88</span>
+<span class="normal">89</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">validate_response</span><span class="p">(</span><span class="n">code</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Any</span><span class="p">]],</span> <span class="nb">int</span><span class="p">]):</span>
     <span class="sd">&quot;&quot;&quot;验证远程服务器的返回值</span>
 
 <span class="sd">    Args:</span>
@@ -3740,7 +3741,7 @@
 
 
 <h2 id="graia.ariadne.util.wrap_bracket" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">wrap_bracket</span><span class="p">(</span><span class="n">string</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">wrap_bracket</span><span class="p">(</span><span class="n">string</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span></code>
 
 
 <a href="#graia.ariadne.util.wrap_bracket" class="headerlink" title="Permanent link">&para;</a></h2>
@@ -3752,9 +3753,9 @@
 
         <details class="quote">
           <summary>Source code in <code>graia/ariadne/util/__init__.py</code></summary>
-          <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">205</span>
-<span class="normal">206</span>
-<span class="normal">207</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">wrap_bracket</span><span class="p">(</span><span class="n">string</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+          <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">206</span>
+<span class="normal">207</span>
+<span class="normal">208</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">wrap_bracket</span><span class="p">(</span><span class="n">string</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;在字符串中转义中括号括号&quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">string</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;[&quot;</span><span class="p">,</span> <span class="s2">&quot;</span><span class="se">\\</span><span class="s2">u005b&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;]&quot;</span><span class="p">,</span> <span class="s2">&quot;</span><span class="se">\\</span><span class="s2">u005d&quot;</span><span class="p">)</span>
 </code></pre></div>
@@ -3771,7 +3772,7 @@
 
 
 <h2 id="graia.ariadne.util.yield_with_timeout" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">yield_with_timeout</span><span class="p">(</span><span class="n">getter_coro</span><span class="p">,</span> <span class="n">predicate</span><span class="p">,</span> <span class="n">await_length</span><span class="o">=</span><span class="mf">0.2</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">yield_with_timeout</span><span class="p">(</span><span class="n">getter_coro</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[],</span> <span class="n">Coroutine</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">T</span><span class="p">]],</span> <span class="n">predicate</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[],</span> <span class="nb">bool</span><span class="p">],</span> <span class="n">await_length</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.2</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AsyncIterator</span><span class="p">[</span><span class="n">T</span><span class="p">]</span></code>
 
   <span class="doc doc-properties">
       <small class="doc doc-label doc-label-async"><code>async</code></small>
@@ -3848,8 +3849,7 @@
 
         <details class="quote">
           <summary>Source code in <code>graia/ariadne/util/__init__.py</code></summary>
-          <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">300</span>
-<span class="normal">301</span>
+          <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">301</span>
 <span class="normal">302</span>
 <span class="normal">303</span>
 <span class="normal">304</span>
@@ -3874,7 +3874,8 @@
 <span class="normal">323</span>
 <span class="normal">324</span>
 <span class="normal">325</span>
-<span class="normal">326</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">yield_with_timeout</span><span class="p">(</span>
+<span class="normal">326</span>
+<span class="normal">327</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">yield_with_timeout</span><span class="p">(</span>
     <span class="n">getter_coro</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[],</span> <span class="n">Coroutine</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">T</span><span class="p">]],</span>
     <span class="n">predicate</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[],</span> <span class="nb">bool</span><span class="p">],</span>
     <span class="n">await_length</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.2</span><span class="p">,</span>

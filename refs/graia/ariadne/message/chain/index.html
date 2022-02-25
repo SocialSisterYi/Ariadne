@@ -2493,7 +2493,7 @@
 
 
 <h2 id="graia.ariadne.message.chain.MessageChain" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">MessageChain</span><span class="p">(</span><span class="n">__root__</span><span class="p">,</span> <span class="n">inline</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">MessageChain</span><span class="p">(</span><span class="n">__root__</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">Element</span><span class="p">,</span> <span class="nb">str</span><span class="p">]],</span> <span class="n">inline</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span></code>
 
 
 <a href="#graia.ariadne.message.chain.MessageChain" class="headerlink" title="Permanent link">&para;</a></h2>
@@ -2570,7 +2570,7 @@
 
 
 <h3 id="graia.ariadne.message.chain.MessageChain.__contains__" class="doc doc-heading">
-<code class="highlight language-python"><span class="fm">__contains__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="fm">__contains__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="s1">&#39;MessageChain&#39;</span><span class="p">,</span> <span class="n">Type</span><span class="p">[</span><span class="n">Element_T</span><span class="p">],</span> <span class="n">Element_T</span><span class="p">,</span> <span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">bool</span></code>
 
 
 <a href="#graia.ariadne.message.chain.MessageChain.__contains__" class="headerlink" title="Permanent link">&para;</a></h3>
@@ -2606,7 +2606,7 @@
 
 
 <h3 id="graia.ariadne.message.chain.MessageChain.__getitem__" class="doc doc-heading">
-<code class="highlight language-python"><span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Type</span><span class="p">[</span><span class="n">Element_T</span><span class="p">],</span> <span class="nb">slice</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Type</span><span class="p">[</span><span class="n">Element_T</span><span class="p">],</span> <span class="nb">int</span><span class="p">],</span> <span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Element_T</span><span class="p">],</span> <span class="s1">&#39;MessageChain&#39;</span><span class="p">,</span> <span class="n">Element</span><span class="p">]</span></code>
 
 
 <a href="#graia.ariadne.message.chain.MessageChain.__getitem__" class="headerlink" title="Permanent link">&para;</a></h3>
@@ -2736,7 +2736,7 @@
 
 
 <h3 id="graia.ariadne.message.chain.MessageChain._from_mapping_string" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">_from_mapping_string</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">string</span><span class="p">,</span> <span class="n">mapping</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">_from_mapping_string</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">string</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">mapping</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Element</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="s1">&#39;MessageChain&#39;</span></code>
 
 
 <a href="#graia.ariadne.message.chain.MessageChain._from_mapping_string" class="headerlink" title="Permanent link">&para;</a></h3>
@@ -2861,7 +2861,7 @@
 
 
 <h3 id="graia.ariadne.message.chain.MessageChain._to_mapping_str" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">_to_mapping_str</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">remove_source</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">remove_quote</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">remove_extra_space</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">_to_mapping_str</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">remove_source</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">remove_quote</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">remove_extra_space</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Element</span><span class="p">]]</span></code>
 
 
 <a href="#graia.ariadne.message.chain.MessageChain._to_mapping_str" class="headerlink" title="Permanent link">&para;</a></h3>
@@ -3028,7 +3028,7 @@
 
 
 <h3 id="graia.ariadne.message.chain.MessageChain.append" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">element</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">element</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Element</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span> <span class="n">copy</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;MessageChain&#39;</span></code>
 
 
 <a href="#graia.ariadne.message.chain.MessageChain.append" class="headerlink" title="Permanent link">&para;</a></h3>
@@ -3137,7 +3137,7 @@
 
 
 <h3 id="graia.ariadne.message.chain.MessageChain.asDisplay" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">asDisplay</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">asDisplay</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span></code>
 
 
 <a href="#graia.ariadne.message.chain.MessageChain.asDisplay" class="headerlink" title="Permanent link">&para;</a></h3>
@@ -3196,7 +3196,7 @@
 
 
 <h3 id="graia.ariadne.message.chain.MessageChain.asPersistentString" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">asPersistentString</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">binary</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">include</span><span class="o">=</span><span class="p">(),</span> <span class="n">exclude</span><span class="o">=</span><span class="p">())</span></code>
+<code class="highlight language-python"><span class="n">asPersistentString</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">binary</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">include</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Iterable</span><span class="p">[</span><span class="n">Type</span><span class="p">[</span><span class="n">Element</span><span class="p">]]]</span> <span class="o">=</span> <span class="p">(),</span> <span class="n">exclude</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Iterable</span><span class="p">[</span><span class="n">Type</span><span class="p">[</span><span class="n">Element</span><span class="p">]]]</span> <span class="o">=</span> <span class="p">())</span> <span class="o">-&gt;</span> <span class="nb">str</span></code>
 
 
 <a href="#graia.ariadne.message.chain.MessageChain.asPersistentString" class="headerlink" title="Permanent link">&para;</a></h3>
@@ -3377,7 +3377,7 @@
 
 
 <h3 id="graia.ariadne.message.chain.MessageChain.asSendable" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">asSendable</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">asSendable</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;MessageChain&#39;</span></code>
 
 
 <a href="#graia.ariadne.message.chain.MessageChain.asSendable" class="headerlink" title="Permanent link">&para;</a></h3>
@@ -3434,7 +3434,7 @@
 
 
 <h3 id="graia.ariadne.message.chain.MessageChain.build_chain" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">build_chain</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">build_chain</span><span class="p">(</span><span class="n">obj</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">dict</span><span class="p">,</span> <span class="n">Element</span><span class="p">,</span> <span class="nb">str</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Element</span><span class="p">]</span></code>
 
 
 <a href="#graia.ariadne.message.chain.MessageChain.build_chain" class="headerlink" title="Permanent link">&para;</a></h3>
@@ -3545,7 +3545,7 @@
 
 
 <h3 id="graia.ariadne.message.chain.MessageChain.copy" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;MessageChain&#39;</span></code>
 
 
 <a href="#graia.ariadne.message.chain.MessageChain.copy" class="headerlink" title="Permanent link">&para;</a></h3>
@@ -3604,7 +3604,7 @@
 
 
 <h3 id="graia.ariadne.message.chain.MessageChain.count" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">count</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">element</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">count</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">element</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Type</span><span class="p">[</span><span class="n">Element_T</span><span class="p">],</span> <span class="n">Element_T</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">int</span></code>
 
 
 <a href="#graia.ariadne.message.chain.MessageChain.count" class="headerlink" title="Permanent link">&para;</a></h3>
@@ -3697,7 +3697,7 @@
 
 
 <h3 id="graia.ariadne.message.chain.MessageChain.create" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">create</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="o">*</span><span class="n">elements</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">create</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="o">*</span><span class="n">elements</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Iterable</span><span class="p">[</span><span class="n">Element</span><span class="p">],</span> <span class="n">Element</span><span class="p">,</span> <span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="s1">&#39;MessageChain&#39;</span></code>
 
 
 <a href="#graia.ariadne.message.chain.MessageChain.create" class="headerlink" title="Permanent link">&para;</a></h3>
@@ -3811,7 +3811,7 @@
 
 
 <h3 id="graia.ariadne.message.chain.MessageChain.download_binary" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">download_binary</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">download_binary</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span></code>
 
   <span class="doc doc-properties">
       <small class="doc doc-label doc-label-async"><code>async</code></small>
@@ -3851,7 +3851,7 @@
 
 
 <h3 id="graia.ariadne.message.chain.MessageChain.endswith" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">endswith</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">string</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">endswith</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">string</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span></code>
 
 
 <a href="#graia.ariadne.message.chain.MessageChain.endswith" class="headerlink" title="Permanent link">&para;</a></h3>
@@ -3948,7 +3948,7 @@
 
 
 <h3 id="graia.ariadne.message.chain.MessageChain.exclude" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">exclude</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">types</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">exclude</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">types</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="n">Element</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="s1">&#39;MessageChain&#39;</span></code>
 
 
 <a href="#graia.ariadne.message.chain.MessageChain.exclude" class="headerlink" title="Permanent link">&para;</a></h3>
@@ -4035,7 +4035,7 @@
 
 
 <h3 id="graia.ariadne.message.chain.MessageChain.extend" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">extend</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">content</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">extend</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">content</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="s1">&#39;MessageChain&#39;</span><span class="p">,</span> <span class="n">Element</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">Element</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]],</span> <span class="n">copy</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;MessageChain&#39;</span></code>
 
 
 <a href="#graia.ariadne.message.chain.MessageChain.extend" class="headerlink" title="Permanent link">&para;</a></h3>
@@ -4178,7 +4178,7 @@
 
 
 <h3 id="graia.ariadne.message.chain.MessageChain.findSubChain" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">findSubChain</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">subchain</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">findSubChain</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">subchain</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="s1">&#39;MessageChain&#39;</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">Element</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span></code>
 
 
 <a href="#graia.ariadne.message.chain.MessageChain.findSubChain" class="headerlink" title="Permanent link">&para;</a></h3>
@@ -4317,7 +4317,7 @@
 
 
 <h3 id="graia.ariadne.message.chain.MessageChain.fromPersistentString" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">fromPersistentString</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">string</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">fromPersistentString</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">string</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;MessageChain&#39;</span></code>
 
 
 <a href="#graia.ariadne.message.chain.MessageChain.fromPersistentString" class="headerlink" title="Permanent link">&para;</a></h3>
@@ -4394,7 +4394,7 @@
 
 
 <h3 id="graia.ariadne.message.chain.MessageChain.get" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">element_class</span><span class="p">,</span> <span class="n">count</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">element_class</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="n">Element_T</span><span class="p">],</span> <span class="n">count</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Element_T</span><span class="p">]</span></code>
 
 
 <a href="#graia.ariadne.message.chain.MessageChain.get" class="headerlink" title="Permanent link">&para;</a></h3>
@@ -4487,7 +4487,7 @@
 
 
 <h3 id="graia.ariadne.message.chain.MessageChain.getFirst" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">getFirst</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">element_class</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">getFirst</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">element_class</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="n">Element_T</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Element_T</span></code>
 
 
 <a href="#graia.ariadne.message.chain.MessageChain.getFirst" class="headerlink" title="Permanent link">&para;</a></h3>
@@ -4576,7 +4576,7 @@
 
 
 <h3 id="graia.ariadne.message.chain.MessageChain.getOne" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">getOne</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">element_class</span><span class="p">,</span> <span class="n">index</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">getOne</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">element_class</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="n">Element_T</span><span class="p">],</span> <span class="n">index</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Element_T</span></code>
 
 
 <a href="#graia.ariadne.message.chain.MessageChain.getOne" class="headerlink" title="Permanent link">&para;</a></h3>
@@ -4677,7 +4677,7 @@
 
 
 <h3 id="graia.ariadne.message.chain.MessageChain.has" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">has</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">has</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Element</span><span class="p">,</span> <span class="n">Type</span><span class="p">[</span><span class="n">Element</span><span class="p">],</span> <span class="s1">&#39;MessageChain&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">bool</span></code>
 
 
 <a href="#graia.ariadne.message.chain.MessageChain.has" class="headerlink" title="Permanent link">&para;</a></h3>
@@ -4782,7 +4782,7 @@
 
 
 <h3 id="graia.ariadne.message.chain.MessageChain.include" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">include</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">types</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">include</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">types</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="n">Element</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="s1">&#39;MessageChain&#39;</span></code>
 
 
 <a href="#graia.ariadne.message.chain.MessageChain.include" class="headerlink" title="Permanent link">&para;</a></h3>
@@ -4869,7 +4869,7 @@
 
 
 <h3 id="graia.ariadne.message.chain.MessageChain.index" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">index</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">element_type</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">index</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">element_type</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="n">Element_T</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span></code>
 
 
 <a href="#graia.ariadne.message.chain.MessageChain.index" class="headerlink" title="Permanent link">&para;</a></h3>
@@ -4966,7 +4966,7 @@
 
 
 <h3 id="graia.ariadne.message.chain.MessageChain.join" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">chains</span><span class="p">,</span> <span class="n">merge</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">chains</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="s1">&#39;MessageChain&#39;</span><span class="p">],</span> <span class="n">merge</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;MessageChain&#39;</span></code>
 
 
 <a href="#graia.ariadne.message.chain.MessageChain.join" class="headerlink" title="Permanent link">&para;</a></h3>
@@ -5075,7 +5075,7 @@
 
 
 <h3 id="graia.ariadne.message.chain.MessageChain.merge" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">merge</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">merge</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">copy</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;MessageChain&#39;</span></code>
 
 
 <a href="#graia.ariadne.message.chain.MessageChain.merge" class="headerlink" title="Permanent link">&para;</a></h3>
@@ -5177,7 +5177,7 @@
 
 
 <h3 id="graia.ariadne.message.chain.MessageChain.onlyContains" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">onlyContains</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">types</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">onlyContains</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">types</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="n">Element</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">bool</span></code>
 
 
 <a href="#graia.ariadne.message.chain.MessageChain.onlyContains" class="headerlink" title="Permanent link">&para;</a></h3>
@@ -5234,7 +5234,7 @@
 
 
 <h3 id="graia.ariadne.message.chain.MessageChain.parse_obj" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">parse_obj</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">obj</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">parse_obj</span><span class="p">(</span><span class="bp">cls</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="s1">&#39;MessageChain&#39;</span><span class="p">],</span> <span class="n">obj</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">dict</span><span class="p">,</span> <span class="n">Element</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="s1">&#39;MessageChain&#39;</span></code>
 
 
 <a href="#graia.ariadne.message.chain.MessageChain.parse_obj" class="headerlink" title="Permanent link">&para;</a></h3>
@@ -5323,7 +5323,7 @@
 
 
 <h3 id="graia.ariadne.message.chain.MessageChain.prepare" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">copy</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;MessageChain&#39;</span></code>
 
 
 <a href="#graia.ariadne.message.chain.MessageChain.prepare" class="headerlink" title="Permanent link">&para;</a></h3>
@@ -5396,7 +5396,7 @@
 
 
 <h3 id="graia.ariadne.message.chain.MessageChain.removeprefix" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">removeprefix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">prefix</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">skip_header</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">removeprefix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">prefix</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">copy</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">skip_header</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;MessageChain&#39;</span></code>
 
 
 <a href="#graia.ariadne.message.chain.MessageChain.removeprefix" class="headerlink" title="Permanent link">&para;</a></h3>
@@ -5547,7 +5547,7 @@
 
 
 <h3 id="graia.ariadne.message.chain.MessageChain.removesuffix" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">removesuffix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">suffix</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">removesuffix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">suffix</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">copy</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;MessageChain&#39;</span></code>
 
 
 <a href="#graia.ariadne.message.chain.MessageChain.removesuffix" class="headerlink" title="Permanent link">&para;</a></h3>
@@ -5670,7 +5670,7 @@
 
 
 <h3 id="graia.ariadne.message.chain.MessageChain.replace" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">replace</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">old</span><span class="p">,</span> <span class="n">new</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">replace</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">old</span><span class="p">:</span> <span class="s1">&#39;MessageChain | Iterable[Element] | Element&#39;</span><span class="p">,</span> <span class="n">new</span><span class="p">:</span> <span class="s1">&#39;MessageChain | Iterable[Element] | Element&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;MessageChain&#39;</span></code>
 
 
 <a href="#graia.ariadne.message.chain.MessageChain.replace" class="headerlink" title="Permanent link">&para;</a></h3>
@@ -5831,7 +5831,7 @@
 
 
 <h3 id="graia.ariadne.message.chain.MessageChain.split" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">split</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pattern</span><span class="o">=</span><span class="s1">&#39; &#39;</span><span class="p">,</span> <span class="n">raw_string</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">split</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pattern</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39; &#39;</span><span class="p">,</span> <span class="n">raw_string</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="s1">&#39;MessageChain&#39;</span><span class="p">]</span></code>
 
 
 <a href="#graia.ariadne.message.chain.MessageChain.split" class="headerlink" title="Permanent link">&para;</a></h3>
@@ -5968,7 +5968,7 @@
 
 
 <h3 id="graia.ariadne.message.chain.MessageChain.startswith" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">startswith</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">string</span><span class="p">,</span> <span class="n">ignore_header</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">startswith</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">string</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">ignore_header</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span></code>
 
 
 <a href="#graia.ariadne.message.chain.MessageChain.startswith" class="headerlink" title="Permanent link">&para;</a></h3>
@@ -6078,7 +6078,7 @@
 
 
 <h3 id="graia.ariadne.message.chain.MessageChain.subchain" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">subchain</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">,</span> <span class="n">ignore_text_index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">subchain</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">:</span> <span class="s1">&#39;Slice[Optional[MessageIndex], Optional[MessageIndex]]&#39;</span><span class="p">,</span> <span class="n">ignore_text_index</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;MessageChain&#39;</span></code>
 
 
 <a href="#graia.ariadne.message.chain.MessageChain.subchain" class="headerlink" title="Permanent link">&para;</a></h3>
@@ -6289,7 +6289,7 @@
 
 
 <h3 id="graia.ariadne.message.chain.MessageChain.unzip" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">unzip</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">unzip</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Element</span><span class="p">]]</span></code>
 
 
 <a href="#graia.ariadne.message.chain.MessageChain.unzip" class="headerlink" title="Permanent link">&para;</a></h3>

@@ -2478,7 +2478,7 @@
 
 
 <h2 id="graia.ariadne.message.parser.twilight.ArgumentMatch" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">ArgumentMatch</span><span class="p">(</span><span class="o">*</span><span class="n">pattern</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">ArgumentMatch</span><span class="p">(</span><span class="o">*</span><span class="n">pattern</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span></code>
 
 
 <a href="#graia.ariadne.message.parser.twilight.ArgumentMatch" class="headerlink" title="Permanent link">&para;</a></h2>
@@ -2571,7 +2571,7 @@
 
 
 <h2 id="graia.ariadne.message.parser.twilight.ElementMatch" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">ElementMatch</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="bp">Ellipsis</span><span class="p">,</span> <span class="n">optional</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">ElementMatch</span><span class="p">(</span><span class="nb">type</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="n">Element</span><span class="p">]</span> <span class="o">=</span> <span class="bp">Ellipsis</span><span class="p">,</span> <span class="n">optional</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span></code>
 
 
 <a href="#graia.ariadne.message.parser.twilight.ElementMatch" class="headerlink" title="Permanent link">&para;</a></h2>
@@ -2686,7 +2686,7 @@
 
 
 <h2 id="graia.ariadne.message.parser.twilight.Match" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">Match</span><span class="p">()</span></code>
+<code class="highlight language-python"><span class="n">Match</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span></code>
 
 
 <a href="#graia.ariadne.message.parser.twilight.Match" class="headerlink" title="Permanent link">&para;</a></h2>
@@ -2731,7 +2731,7 @@
 
 
 <h3 id="graia.ariadne.message.parser.twilight.Match.help" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">help</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">help</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Self</span></code>
 
 
 <a href="#graia.ariadne.message.parser.twilight.Match.help" class="headerlink" title="Permanent link">&para;</a></h3>
@@ -2764,7 +2764,7 @@
 
 
 <h3 id="graia.ariadne.message.parser.twilight.Match.param" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">param</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">target</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">param</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">target</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Self</span></code>
 
 
 <a href="#graia.ariadne.message.parser.twilight.Match.param" class="headerlink" title="Permanent link">&para;</a></h3>
@@ -2807,7 +2807,7 @@
 
 
 <h2 id="graia.ariadne.message.parser.twilight.MatchResult" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">MatchResult</span><span class="p">(</span><span class="n">matched</span><span class="p">,</span> <span class="n">origin</span><span class="p">,</span> <span class="n">result</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">MatchResult</span><span class="p">(</span><span class="n">matched</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span> <span class="n">origin</span><span class="p">:</span> <span class="n">T_Match</span><span class="p">,</span> <span class="n">result</span><span class="p">:</span> <span class="n">T</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span></code>
 
 
 <a href="#graia.ariadne.message.parser.twilight.MatchResult" class="headerlink" title="Permanent link">&para;</a></h2>
@@ -2864,7 +2864,7 @@
 
 
 <h2 id="graia.ariadne.message.parser.twilight.ParamMatch" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">ParamMatch</span><span class="p">(</span><span class="n">optional</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">ParamMatch</span><span class="p">(</span><span class="n">optional</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span></code>
 
 
 <a href="#graia.ariadne.message.parser.twilight.ParamMatch" class="headerlink" title="Permanent link">&para;</a></h2>
@@ -2920,7 +2920,7 @@
 
 
 <h2 id="graia.ariadne.message.parser.twilight.RegexMatch" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">RegexMatch</span><span class="p">(</span><span class="n">pattern</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">optional</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">RegexMatch</span><span class="p">(</span><span class="n">pattern</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">optional</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span></code>
 
 
 <a href="#graia.ariadne.message.parser.twilight.RegexMatch" class="headerlink" title="Permanent link">&para;</a></h2>
@@ -2972,7 +2972,7 @@
 
 
 <h3 id="graia.ariadne.message.parser.twilight.RegexMatch._regex_str" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">_regex_str</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">_regex_str</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span></code>
 
 
 <a href="#graia.ariadne.message.parser.twilight.RegexMatch._regex_str" class="headerlink" title="Permanent link">&para;</a></h3>
@@ -3013,7 +3013,7 @@
 
 
 <h3 id="graia.ariadne.message.parser.twilight.RegexMatch._src" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">_src</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">_src</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span></code>
 
 
 <a href="#graia.ariadne.message.parser.twilight.RegexMatch._src" class="headerlink" title="Permanent link">&para;</a></h3>
@@ -3046,7 +3046,7 @@
 
 
 <h3 id="graia.ariadne.message.parser.twilight.RegexMatch.flags" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">flags</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">flags</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">flags</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">flags</span><span class="p">:</span> <span class="n">re</span><span class="o">.</span><span class="n">RegexFlag</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Self</span></code>
 
 
 <a href="#graia.ariadne.message.parser.twilight.RegexMatch.flags" class="headerlink" title="Permanent link">&para;</a></h3>
@@ -3079,7 +3079,7 @@
 
 
 <h3 id="graia.ariadne.message.parser.twilight.RegexMatch.space" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">space</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">space</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">space</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">space</span><span class="p">:</span> <span class="n">SpacePolicy</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Self</span></code>
 
 
 <a href="#graia.ariadne.message.parser.twilight.RegexMatch.space" class="headerlink" title="Permanent link">&para;</a></h3>
@@ -3306,7 +3306,7 @@
 
 
 <h2 id="graia.ariadne.message.parser.twilight.Sparkle" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">Sparkle</span><span class="p">(</span><span class="n">match_result</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">Sparkle</span><span class="p">(</span><span class="n">match_result</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">MatchResult</span><span class="p">])</span></code>
 
 
 <a href="#graia.ariadne.message.parser.twilight.Sparkle" class="headerlink" title="Permanent link">&para;</a></h2>
@@ -3360,7 +3360,7 @@
 
 
 <h2 id="graia.ariadne.message.parser.twilight.Twilight" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">Twilight</span><span class="p">(</span><span class="o">*</span><span class="n">root</span><span class="p">,</span> <span class="n">map_param</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">Twilight</span><span class="p">(</span><span class="o">*</span><span class="n">root</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Iterable</span><span class="p">[</span><span class="n">Match</span><span class="p">],</span> <span class="n">Match</span><span class="p">],</span> <span class="n">map_param</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">bool</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span></code>
 
 
 <a href="#graia.ariadne.message.parser.twilight.Twilight" class="headerlink" title="Permanent link">&para;</a></h2>
@@ -3459,7 +3459,7 @@
 
 
 <h3 id="graia.ariadne.message.parser.twilight.Twilight.beforeExecution" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">beforeExecution</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">interface</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">beforeExecution</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">interface</span><span class="p">:</span> <span class="n">DispatcherInterface</span><span class="p">)</span></code>
 
   <span class="doc doc-properties">
       <small class="doc doc-label doc-label-async"><code>async</code></small>
@@ -3560,7 +3560,7 @@
 
 
 <h3 id="graia.ariadne.message.parser.twilight.Twilight.from_command" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">from_command</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">command</span><span class="p">,</span> <span class="n">extra_args</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">from_command</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">command</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">extra_args</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Match</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Twilight&#39;</span></code>
 
 
 <a href="#graia.ariadne.message.parser.twilight.Twilight.from_command" class="headerlink" title="Permanent link">&para;</a></h3>
@@ -3707,7 +3707,7 @@
 
 
 <h3 id="graia.ariadne.message.parser.twilight.Twilight.generate" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">generate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">chain</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">generate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">chain</span><span class="p">:</span> <span class="n">MessageChain</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">T_Sparkle</span></code>
 
 
 <a href="#graia.ariadne.message.parser.twilight.Twilight.generate" class="headerlink" title="Permanent link">&para;</a></h3>
@@ -3804,7 +3804,7 @@
 
 
 <h3 id="graia.ariadne.message.parser.twilight.Twilight.get_help" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">get_help</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">usage</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">epilog</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">get_help</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">usage</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">description</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">epilog</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span></code>
 
 
 <a href="#graia.ariadne.message.parser.twilight.Twilight.get_help" class="headerlink" title="Permanent link">&para;</a></h3>
@@ -3925,7 +3925,7 @@
 
 
 <h2 id="graia.ariadne.message.parser.twilight.TwilightMatcher" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">TwilightMatcher</span><span class="p">(</span><span class="o">*</span><span class="n">root</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">TwilightMatcher</span><span class="p">(</span><span class="o">*</span><span class="n">root</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Iterable</span><span class="p">[</span><span class="n">Match</span><span class="p">],</span> <span class="n">Match</span><span class="p">])</span></code>
 
 
 <a href="#graia.ariadne.message.parser.twilight.TwilightMatcher" class="headerlink" title="Permanent link">&para;</a></h2>
@@ -4036,7 +4036,7 @@
 
 
 <h3 id="graia.ariadne.message.parser.twilight.TwilightMatcher.get_help" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">get_help</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">usage</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">epilog</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">get_help</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">usage</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">description</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">epilog</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span></code>
 
 
 <a href="#graia.ariadne.message.parser.twilight.TwilightMatcher.get_help" class="headerlink" title="Permanent link">&para;</a></h3>
@@ -4193,7 +4193,7 @@
 
 
 <h3 id="graia.ariadne.message.parser.twilight.TwilightMatcher.match" class="doc doc-heading">
-<code class="highlight language-python"><span class="k">match</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">arguments</span><span class="p">,</span> <span class="n">elem_mapping</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="k">match</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">arguments</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">elem_mapping</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Element</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">MatchResult</span><span class="p">]</span></code>
 
 
 <a href="#graia.ariadne.message.parser.twilight.TwilightMatcher.match" class="headerlink" title="Permanent link">&para;</a></h3>
@@ -4340,7 +4340,7 @@
 
 
 <h2 id="graia.ariadne.message.parser.twilight.UnionMatch" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">UnionMatch</span><span class="p">(</span><span class="o">*</span><span class="n">pattern</span><span class="p">,</span> <span class="n">optional</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">UnionMatch</span><span class="p">(</span><span class="o">*</span><span class="n">pattern</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">optional</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span></code>
 
 
 <a href="#graia.ariadne.message.parser.twilight.UnionMatch" class="headerlink" title="Permanent link">&para;</a></h2>
@@ -4368,7 +4368,7 @@
     <span class="o">*</span><span class="n">pattern</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="n">optional</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-    <span class="nb">super</span><span class="p">(</span><span class="n">RegexMatch</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+    <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">optional</span><span class="p">)</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">pattern</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">pattern</span><span class="p">)</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">optional</span> <span class="o">=</span> <span class="n">optional</span>
 </code></pre></div>
@@ -4404,7 +4404,7 @@
 
 
 <h2 id="graia.ariadne.message.parser.twilight.WildcardMatch" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">WildcardMatch</span><span class="p">(</span><span class="n">greed</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">optional</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">WildcardMatch</span><span class="p">(</span><span class="n">greed</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">optional</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span></code>
 
 
 <a href="#graia.ariadne.message.parser.twilight.WildcardMatch" class="headerlink" title="Permanent link">&para;</a></h2>

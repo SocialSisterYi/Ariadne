@@ -2167,7 +2167,7 @@
 
 
 <h2 id="graia.ariadne.message.parser.util.ElementType" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">ElementType</span><span class="p">(</span><span class="n">pattern</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">ElementType</span><span class="p">(</span><span class="n">pattern</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="n">Element_T</span><span class="p">])</span></code>
 
 
 <a href="#graia.ariadne.message.parser.util.ElementType" class="headerlink" title="Permanent link">&para;</a></h2>
@@ -2290,7 +2290,7 @@
 
 
 <h3 id="graia.ariadne.message.parser.util.TwilightParser.accept_type" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">accept_type</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">action</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">accept_type</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">action</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">type</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">bool</span></code>
 
 
 <a href="#graia.ariadne.message.parser.util.TwilightParser.accept_type" class="headerlink" title="Permanent link">&para;</a></h3>
@@ -2411,7 +2411,7 @@
 
 
 <h2 id="graia.ariadne.message.parser.util.escape" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">escape</span><span class="p">(</span><span class="n">string</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">escape</span><span class="p">(</span><span class="n">string</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span></code>
 
 
 <a href="#graia.ariadne.message.parser.util.escape" class="headerlink" title="Permanent link">&para;</a></h2>
@@ -2503,7 +2503,7 @@
 
 
 <h2 id="graia.ariadne.message.parser.util.gen_flags_repr" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">gen_flags_repr</span><span class="p">(</span><span class="n">flags</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">gen_flags_repr</span><span class="p">(</span><span class="n">flags</span><span class="p">:</span> <span class="n">re</span><span class="o">.</span><span class="n">RegexFlag</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span></code>
 
 
 <a href="#graia.ariadne.message.parser.util.gen_flags_repr" class="headerlink" title="Permanent link">&para;</a></h2>
@@ -2624,7 +2624,7 @@
 
 
 <h2 id="graia.ariadne.message.parser.util.split" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">split</span><span class="p">(</span><span class="n">string</span><span class="p">,</span> <span class="n">keep_quote</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">split</span><span class="p">(</span><span class="n">string</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">keep_quote</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span></code>
 
 
 <a href="#graia.ariadne.message.parser.util.split" class="headerlink" title="Permanent link">&para;</a></h2>
@@ -2765,7 +2765,7 @@
 
 
 <h2 id="graia.ariadne.message.parser.util.tokenize_command" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">tokenize_command</span><span class="p">(</span><span class="n">string</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">tokenize_command</span><span class="p">(</span><span class="n">string</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">CommandTokenTuple</span><span class="p">]</span></code>
 
 
 <a href="#graia.ariadne.message.parser.util.tokenize_command" class="headerlink" title="Permanent link">&para;</a></h2>
@@ -2990,7 +2990,7 @@
 
 
 <h2 id="graia.ariadne.message.parser.util.transform_regex" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">transform_regex</span><span class="p">(</span><span class="n">flag</span><span class="p">,</span> <span class="n">regex_pattern</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">transform_regex</span><span class="p">(</span><span class="n">flag</span><span class="p">:</span> <span class="n">re</span><span class="o">.</span><span class="n">RegexFlag</span><span class="p">,</span> <span class="n">regex_pattern</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span></code>
 
 
 <a href="#graia.ariadne.message.parser.util.transform_regex" class="headerlink" title="Permanent link">&para;</a></h2>
@@ -3097,7 +3097,7 @@
 
 
 <h2 id="graia.ariadne.message.parser.util.unescape" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">unescape</span><span class="p">(</span><span class="n">string</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">unescape</span><span class="p">(</span><span class="n">string</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span></code>
 
 
 <a href="#graia.ariadne.message.parser.util.unescape" class="headerlink" title="Permanent link">&para;</a></h2>

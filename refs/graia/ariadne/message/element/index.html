@@ -3692,7 +3692,7 @@
 
 
 <h2 id="graia.ariadne.message.element.App" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">App</span><span class="p">(</span><span class="n">content</span><span class="p">,</span> <span class="o">**</span><span class="n">_</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">App</span><span class="p">(</span><span class="n">content</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">**</span><span class="n">_</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span></code>
 
 
 <a href="#graia.ariadne.message.element.App" class="headerlink" title="Permanent link">&para;</a></h2>
@@ -3766,7 +3766,7 @@
 
 
 <h2 id="graia.ariadne.message.element.At" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">At</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="bp">Ellipsis</span><span class="p">,</span> <span class="o">**</span><span class="n">data</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">At</span><span class="p">(</span><span class="n">target</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Member</span><span class="p">]</span> <span class="o">=</span> <span class="bp">Ellipsis</span><span class="p">,</span> <span class="o">**</span><span class="n">data</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span></code>
 
 
 <a href="#graia.ariadne.message.element.At" class="headerlink" title="Permanent link">&para;</a></h2>
@@ -3910,7 +3910,7 @@
 
 
 <h2 id="graia.ariadne.message.element.AtAll" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">AtAll</span><span class="p">(</span><span class="o">*</span><span class="n">_</span><span class="p">,</span> <span class="o">**</span><span class="n">__</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">AtAll</span><span class="p">(</span><span class="o">*</span><span class="n">_</span><span class="p">,</span> <span class="o">**</span><span class="n">__</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span></code>
 
 
 <a href="#graia.ariadne.message.element.AtAll" class="headerlink" title="Permanent link">&para;</a></h2>
@@ -3962,7 +3962,7 @@
 
 
 <h2 id="graia.ariadne.message.element.Dice" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">Dice</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="o">*</span><span class="n">_</span><span class="p">,</span> <span class="o">**</span><span class="n">__</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">Dice</span><span class="p">(</span><span class="n">value</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="o">*</span><span class="n">_</span><span class="p">,</span> <span class="o">**</span><span class="n">__</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span></code>
 
 
 <a href="#graia.ariadne.message.element.Dice" class="headerlink" title="Permanent link">&para;</a></h2>
@@ -4097,7 +4097,7 @@ type (str): 元素类型</p>
 
 
 <h3 id="graia.ariadne.message.element.Element.asDisplay" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">asDisplay</span><span class="p">()</span></code>
+<code class="highlight language-python"><span class="n">asDisplay</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">str</span></code>
 
 
 <a href="#graia.ariadne.message.element.Element.asDisplay" class="headerlink" title="Permanent link">&para;</a></h3>
@@ -4156,7 +4156,7 @@ type (str): 元素类型</p>
 
 
 <h3 id="graia.ariadne.message.element.Element.asPersistentString" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">asPersistentString</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">asPersistentString</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span></code>
 
 
 <a href="#graia.ariadne.message.element.Element.asPersistentString" class="headerlink" title="Permanent link">&para;</a></h3>
@@ -4231,7 +4231,7 @@ type (str): 元素类型</p>
 
 
 <h3 id="graia.ariadne.message.element.Element.prepare" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span></code>
 
 
 <a href="#graia.ariadne.message.element.Element.prepare" class="headerlink" title="Permanent link">&para;</a></h3>
@@ -4287,7 +4287,7 @@ type (str): 元素类型</p>
 
 
 <h2 id="graia.ariadne.message.element.Face" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">Face</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="bp">Ellipsis</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="bp">Ellipsis</span><span class="p">,</span> <span class="o">**</span><span class="n">data</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">Face</span><span class="p">(</span><span class="nb">id</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="bp">Ellipsis</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="bp">Ellipsis</span><span class="p">,</span> <span class="o">**</span><span class="n">data</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span></code>
 
 
 <a href="#graia.ariadne.message.element.Face" class="headerlink" title="Permanent link">&para;</a></h2>
@@ -4542,7 +4542,7 @@ type (str): 元素类型</p>
 
 
 <h3 id="graia.ariadne.message.element.FlashImage.fromImage" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">fromImage</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">image</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">fromImage</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">image</span><span class="p">:</span> <span class="s1">&#39;Image&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;FlashImage&#39;</span></code>
 
 
 <a href="#graia.ariadne.message.element.FlashImage.fromImage" class="headerlink" title="Permanent link">&para;</a></h3>
@@ -4601,7 +4601,7 @@ type (str): 元素类型</p>
 
 
 <h3 id="graia.ariadne.message.element.FlashImage.toImage" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">toImage</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">toImage</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Image&#39;</span></code>
 
 
 <a href="#graia.ariadne.message.element.FlashImage.toImage" class="headerlink" title="Permanent link">&para;</a></h3>
@@ -4668,7 +4668,7 @@ type (str): 元素类型</p>
 
 
 <h2 id="graia.ariadne.message.element.Forward" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">Forward</span><span class="p">(</span><span class="o">*</span><span class="n">nodes</span><span class="p">,</span> <span class="o">**</span><span class="n">data</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">Forward</span><span class="p">(</span><span class="o">*</span><span class="n">nodes</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Iterable</span><span class="p">[</span><span class="n">ForwardNode</span><span class="p">],</span> <span class="n">ForwardNode</span><span class="p">],</span> <span class="o">**</span><span class="n">data</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span></code>
 
 
 <a href="#graia.ariadne.message.element.Forward" class="headerlink" title="Permanent link">&para;</a></h2>
@@ -4760,7 +4760,7 @@ type (str): 元素类型</p>
 
 
 <h2 id="graia.ariadne.message.element.ForwardNode" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">ForwardNode</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="bp">Ellipsis</span><span class="p">,</span> <span class="n">time</span><span class="o">=</span><span class="bp">Ellipsis</span><span class="p">,</span> <span class="n">message</span><span class="o">=</span><span class="bp">Ellipsis</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="bp">Ellipsis</span><span class="p">,</span> <span class="o">**</span><span class="n">data</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">ForwardNode</span><span class="p">(</span><span class="n">target</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Friend</span><span class="p">,</span> <span class="n">Member</span><span class="p">,</span> <span class="n">Stranger</span><span class="p">]</span> <span class="o">=</span> <span class="bp">Ellipsis</span><span class="p">,</span> <span class="n">time</span><span class="p">:</span> <span class="n">datetime</span> <span class="o">=</span> <span class="bp">Ellipsis</span><span class="p">,</span> <span class="n">message</span><span class="p">:</span> <span class="s1">&#39;MessageChain&#39;</span> <span class="o">=</span> <span class="bp">Ellipsis</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="bp">Ellipsis</span><span class="p">,</span> <span class="o">**</span><span class="n">data</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span></code>
 
 
 <a href="#graia.ariadne.message.element.ForwardNode" class="headerlink" title="Permanent link">&para;</a></h2>
@@ -5003,7 +5003,7 @@ type (str): 元素类型</p>
 
 
 <h3 id="graia.ariadne.message.element.Image.fromFlashImage" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">fromFlashImage</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">flash</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">fromFlashImage</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">flash</span><span class="p">:</span> <span class="s1">&#39;FlashImage&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Image&#39;</span></code>
 
 
 <a href="#graia.ariadne.message.element.Image.fromFlashImage" class="headerlink" title="Permanent link">&para;</a></h3>
@@ -5062,7 +5062,7 @@ type (str): 元素类型</p>
 
 
 <h3 id="graia.ariadne.message.element.Image.toFlashImage" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">toFlashImage</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">toFlashImage</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;FlashImage&#39;</span></code>
 
 
 <a href="#graia.ariadne.message.element.Image.toFlashImage" class="headerlink" title="Permanent link">&para;</a></h3>
@@ -5263,7 +5263,7 @@ type (str): 元素类型</p>
 
 
 <h2 id="graia.ariadne.message.element.Json" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">Json</span><span class="p">(</span><span class="n">json</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">Json</span><span class="p">(</span><span class="n">json</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">dict</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span></code>
 
 
 <a href="#graia.ariadne.message.element.Json" class="headerlink" title="Permanent link">&para;</a></h2>
@@ -5500,7 +5500,7 @@ type (str): 元素类型</p>
 
 
 <h2 id="graia.ariadne.message.element.MultimediaElement" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">MultimediaElement</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">url</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">base64</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">data_bytes</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">MultimediaElement</span><span class="p">(</span><span class="nb">id</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">url</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">Path</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">base64</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">data_bytes</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bytes</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span></code>
 
 
 <a href="#graia.ariadne.message.element.MultimediaElement" class="headerlink" title="Permanent link">&para;</a></h2>
@@ -5671,7 +5671,7 @@ type (str): 元素类型</p>
 
 
 <h3 id="graia.ariadne.message.element.MultimediaElement.asNoBinaryPersistentString" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">asNoBinaryPersistentString</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">asNoBinaryPersistentString</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span></code>
 
 
 <a href="#graia.ariadne.message.element.MultimediaElement.asNoBinaryPersistentString" class="headerlink" title="Permanent link">&para;</a></h3>
@@ -5746,7 +5746,7 @@ type (str): 元素类型</p>
 
 
 <h3 id="graia.ariadne.message.element.MultimediaElement.get_bytes" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">get_bytes</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">get_bytes</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bytes</span></code>
 
   <span class="doc doc-properties">
       <small class="doc doc-label doc-label-async"><code>async</code></small>
@@ -5903,7 +5903,7 @@ type (str): 元素类型</p>
 
 
 <h2 id="graia.ariadne.message.element.MusicShare" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">MusicShare</span><span class="p">(</span><span class="n">kind</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">summary</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">jumpUrl</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">pictureUrl</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">musicUrl</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">brief</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="n">_</span><span class="p">,</span> <span class="o">**</span><span class="n">__</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">MusicShare</span><span class="p">(</span><span class="n">kind</span><span class="p">:</span> <span class="n">MusicShareKind</span><span class="p">,</span> <span class="n">title</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">summary</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">jumpUrl</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">pictureUrl</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">musicUrl</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">brief</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="n">_</span><span class="p">,</span> <span class="o">**</span><span class="n">__</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span></code>
 
 
 <a href="#graia.ariadne.message.element.MusicShare" class="headerlink" title="Permanent link">&para;</a></h2>
@@ -6338,7 +6338,7 @@ type (str): 元素类型</p>
 
 
 <h2 id="graia.ariadne.message.element.Plain" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">Plain</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">Plain</span><span class="p">(</span><span class="n">text</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span></code>
 
 
 <a href="#graia.ariadne.message.element.Plain" class="headerlink" title="Permanent link">&para;</a></h2>
@@ -6448,7 +6448,7 @@ type (str): 元素类型</p>
 
 
 <h2 id="graia.ariadne.message.element.Poke" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">Poke</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="o">*</span><span class="n">_</span><span class="p">,</span> <span class="o">**</span><span class="n">__</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">Poke</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="n">PokeMethods</span><span class="p">,</span> <span class="o">*</span><span class="n">_</span><span class="p">,</span> <span class="o">**</span><span class="n">__</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span></code>
 
 
 <a href="#graia.ariadne.message.element.Poke" class="headerlink" title="Permanent link">&para;</a></h2>
@@ -7173,7 +7173,7 @@ type (str): 元素类型</p>
 
 
 <h3 id="graia.ariadne.message.element.Source.fetchOriginal" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">fetchOriginal</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">fetchOriginal</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;MessageChain&#39;</span></code>
 
   <span class="doc doc-properties">
       <small class="doc doc-label doc-label-async"><code>async</code></small>
@@ -7320,7 +7320,7 @@ type (str): 元素类型</p>
 
 
 <h2 id="graia.ariadne.message.element.Xml" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">Xml</span><span class="p">(</span><span class="n">xml</span><span class="p">,</span> <span class="o">**</span><span class="n">_</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">Xml</span><span class="p">(</span><span class="n">xml</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">**</span><span class="n">_</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span></code>
 
 
 <a href="#graia.ariadne.message.element.Xml" class="headerlink" title="Permanent link">&para;</a></h2>
