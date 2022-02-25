@@ -2143,7 +2143,7 @@
 
 
 
-<h1 id="twilight-">Twilight - 混合式消息链处理器 (旧版文档)<a class="headerlink" href="#twilight-" title="Permanent link">&para;</a></h1>
+<h1 id="twilight-">Twilight - 混合式消息链处理器 (旧版文档)<a class="headerlink" href="#twilight-" title="Permanent link">🔗</a></h1>
 <blockquote>
 <p>本模块名字取自 <a href="https://mlp.fandom.com/wiki/My_Little_Pony_Friendship_is_Magic_Wiki"><code>My Little Pony</code></a> 中的 <a href="https://mlp.fandom.com/wiki/Twilight_Sparkle"><code>Twilight Sparkle</code></a>.</p>
 <p>Friendship is magic!</p>
@@ -2151,10 +2151,10 @@
 <div class="admonition error">
 <p class="admonition-title">本文档仅供 0.6.0 以前版本使用</p>
 </div>
-<h2 id="_1">缘起<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h2>
+<h2 id="_1">缘起<a class="headerlink" href="#_1" title="Permanent link">🔗</a></h2>
 <p>想必 <a href="../../appendix/terms/#v4"><code>v4</code></a> 用户都或多或少的知道 <code>Kanata</code> 吧.</p>
 <p>其介绍的 正则表达式 参数提取/关键字匹配 非常的有趣, 而 <code>Twilight</code> 在其基础上增加了对 <code>argparse</code> 中部分功能的支持.</p>
-<h2 id="sparkle">创建 Sparkle 类<a class="headerlink" href="#sparkle" title="Permanent link">&para;</a></h2>
+<h2 id="sparkle">创建 Sparkle 类<a class="headerlink" href="#sparkle" title="Permanent link">🔗</a></h2>
 <p><code>Twilight</code> 的最佳使用方式为继承 <code>Sparkle</code> 类并通过 <strong>类变量</strong> 的形式定义匹配项.</p>
 <p>之后在实例化 <code>Sparkle</code> 时添加命令头.</p>
 <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">FooSparkle</span><span class="p">(</span><span class="n">Sparkle</span><span class="p">):</span>
@@ -2165,7 +2165,7 @@
 
 <span class="n">twilight</span> <span class="o">=</span> <span class="n">Twilight</span><span class="p">(</span><span class="n">FooSparkle</span><span class="p">([</span><span class="n">RegexMatch</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;[./!]header&quot;</span><span class="p">)]))</span>
 </code></pre></div>
-<h2 id="_2">手动生成<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h2>
+<h2 id="_2">手动生成<a class="headerlink" href="#_2" title="Permanent link">🔗</a></h2>
 <p>在 <code>Twilight</code> 对象上调用 <code>generate(message_chain)</code> 即可手动生成 <code>Sparkle</code> 而无需配合 <code>Broadcast</code>.</p>
 <div class="admonition info">
 <p class="admonition-title">提示</p>
@@ -2183,7 +2183,7 @@
 </code></pre></div>
 </details>
 </div>
-<h2 id="match">Match<a class="headerlink" href="#match" title="Permanent link">&para;</a></h2>
+<h2 id="match">Match<a class="headerlink" href="#match" title="Permanent link">🔗</a></h2>
 <p><code>Match</code> 本身仅为 抽象基类, 无法被直接实例化, 有以下几种变体:</p>
 <ul>
 <li><code>RegexMatch</code> : 正则表达式匹配, 支持传入 <code>re.Flag</code>.</li>
@@ -2208,7 +2208,7 @@
 <li><code>result</code> : 匹配结果.</li>
 <li><code>regex_match</code> : 仅 <code>RegexMatch</code> 及其子类拥有, 为原来的 <code>re.Match</code> 对象.</li>
 </ul>
-<h3 id="spacepolicy">SpacePolicy 对象<a class="headerlink" href="#spacepolicy" title="Permanent link">&para;</a></h3>
+<h3 id="spacepolicy">SpacePolicy 对象<a class="headerlink" href="#spacepolicy" title="Permanent link">🔗</a></h3>
 <p><code>SpacePolicy</code> 是一个 <a href="https://docs.python.org/zh-cn/3/library/enum.html#enum.Enum"><code>enum.Enum</code></a> 类, 有如下常量:</p>
 <ul>
 <li><code>NOSPACE</code>: 不附带尾随空格.</li>
@@ -2216,7 +2216,7 @@
 <li><code>FORCE</code>: 强制需要尾随空格.</li>
 </ul>
 <p>它们应被作为 <strong>不透明对象</strong> 使用.</p>
-<h2 id="twilight-sparkle">Twilight 与 Sparkle 的实例化<a class="headerlink" href="#twilight-sparkle" title="Permanent link">&para;</a></h2>
+<h2 id="twilight-sparkle">Twilight 与 Sparkle 的实例化<a class="headerlink" href="#twilight-sparkle" title="Permanent link">🔗</a></h2>
 <p><code>Sparkle</code> 在实例化时, 可接受一个 额外 <strong>可迭代对象</strong> <code>check</code> 与 额外字典 <code>match</code>, 作用如下：</p>
 <ul>
 <li>
@@ -2293,7 +2293,7 @@
 <li>epilog (str, optional): 本 Sparkle 的后置描述, 在 <code>add_help</code> 中用到.</li>
 </ul>
 <p><code>Twilight</code> 可传入 <code>map_params</code> 字典用于控制 <code>MessageChain.asMappingString</code> 的行为.</p>
-<h3 id="from_command">from_command<a class="headerlink" href="#from_command" title="Permanent link">&para;</a></h3>
+<h3 id="from_command">from_command<a class="headerlink" href="#from_command" title="Permanent link">🔗</a></h3>
 <p>本 <strong>类方法</strong> 在 <code>Twilight</code> 与 <code>Sparkle</code> 类上均可使用, <span class="curtain">不过请不要在 Sparkle 子类上使用</span></p>
 <p>通过 <code>command {0} {1}</code> 的类 <code>shell</code> 形式定义参数, 它可以快速地生成指令处理器.</p>
 <p><code>[a|b]</code> 的形式允许你定义选择性参数. (<code>a</code> 或 <code>b</code>)</p>
@@ -2334,7 +2334,7 @@
 </div>
 <p>这二者等价.</p>
 <p>你可以通过 <code>param_1, param_2 = sparkle[ParamMatch]</code> 的形式获取 <code>ParamMatch</code>. 详见下一节.</p>
-<h2 id="match_1">提取 Match 对象<a class="headerlink" href="#match_1" title="Permanent link">&para;</a></h2>
+<h2 id="match_1">提取 Match 对象<a class="headerlink" href="#match_1" title="Permanent link">🔗</a></h2>
 <p><code>Match</code> 对象可以通过以下几种方式提取:</p>
 <ul>
 <li>若是在实例化 <code>Sparkle</code> 时添加的, 那只能通过 <code>Sparkle[int]</code> 的形式提取.</li>
@@ -2346,7 +2346,7 @@
 <p>还可以通过 <code>Sparkle[match_class, index]</code> 提取第 <code>index</code> 个 <code>match_class</code> 类型的 <code>Match</code> 对象 (从 0 计数).</p>
 <p>这几种方式与调用 <code>Sparkle.get_match(...)</code> 等价.</p>
 </div>
-<h2 id="broadcast">配合 Broadcast 使用<a class="headerlink" href="#broadcast" title="Permanent link">&para;</a></h2>
+<h2 id="broadcast">配合 Broadcast 使用<a class="headerlink" href="#broadcast" title="Permanent link">🔗</a></h2>
 <p><code>Twilight</code> 应作为 <code>dispatcher</code> 传入 <code>broadcast.receiver</code> / <code>ListenerSchema</code> 中.</p>
 <p>在 <code>receiver</code> 函数的类型标注中, 通过 标注参数为 <code>Sparkle</code> 获取当前 <code>Sparkle</code>, 通过 <code>name: Match</code> 的形式获取 <code>name</code> 对应的匹配对象.</p>
 <p>像这样:</p>
@@ -2363,7 +2363,7 @@
 <p class="admonition-title">使用 <code>Sparkle</code> 与 <code>Match</code> 的子类进行标注也是可以的.</p>
 </div>
 <p>一旦匹配失败 (<code>generate</code> 抛出异常), <code>Broadcast</code> 的本次执行就会被取消.</p>
-<h2 id="_3">创建帮助<a class="headerlink" href="#_3" title="Permanent link">&para;</a></h2>
+<h2 id="_3">创建帮助<a class="headerlink" href="#_3" title="Permanent link">🔗</a></h2>
 <p>通过 <code>Sparkle.get_help</code> 方法可以方便的获取帮助.</p>
 <details class="example" open="open">
 <summary>示例</summary>
@@ -2387,7 +2387,7 @@
   --help, -h  显示本帮助.
 </code></pre></div>
 </details>
-<h3 id="description-epilog-alt_help">使用 description, epilog 与 alt_help 控制帮助生成<a class="headerlink" href="#description-epilog-alt_help" title="Permanent link">&para;</a></h3>
+<h3 id="description-epilog-alt_help">使用 description, epilog 与 alt_help 控制帮助生成<a class="headerlink" href="#description-epilog-alt_help" title="Permanent link">🔗</a></h3>
 <p>回到刚才的示例.</p>
 <p>我们可以通过 <code>description</code> 与 <code>epilog</code> 控制在帮助内容前后添加的文本.</p>
 <div class="tabbed-set tabbed-alternate" data-tabs="4:3"><input checked="checked" id="__tabbed_4_1" name="__tabbed_4" type="radio" /><input id="__tabbed_4_2" name="__tabbed_4" type="radio" /><input id="__tabbed_4_3" name="__tabbed_4" type="radio" /><div class="tabbed-labels"><label for="__tabbed_4_1">在定义类时传入</label><label for="__tabbed_4_2">在实例化时传入</label><label for="__tabbed_4_3">在调用 get_help 时传入</label></div>
@@ -2438,17 +2438,17 @@
 </div>
 </details>
 <p>你还可以通过 <code>header</code> 参数控制是否要显示 "使用方法" 一行.</p>
-<h2 id="sparkle_1">Sparkle 的解析过程<a class="headerlink" href="#sparkle_1" title="Permanent link">&para;</a></h2>
+<h2 id="sparkle_1">Sparkle 的解析过程<a class="headerlink" href="#sparkle_1" title="Permanent link">🔗</a></h2>
 <p>在解析消息链时, <code>Sparkle.generate</code> 会依照如下流程解析:</p>
 <ul>
 <li>使用 <code>Sparkle.populate_check_match</code> 解析 <code>Twilight</code> 的 <code>check_args</code>, 并返回剩下部分的列表. (使用 <code>split</code> 方法)</li>
 <li>使用 <code>Sparkle.populate_arg_match</code> 解析 <code>ArgumentMatch</code> 并从 <code>argparse.Namespace</code> 提取结果, 向 <code>ArgumentMatch.result</code> 赋值.</li>
 <li>使用 <code>Sparkle.populate_regex_match</code> 解析并赋值剩下的 <code>Match</code> 对象.</li>
 </ul>
-<h2 id="_4">最佳实践<a class="headerlink" href="#_4" title="Permanent link">&para;</a></h2>
+<h2 id="_4">最佳实践<a class="headerlink" href="#_4" title="Permanent link">🔗</a></h2>
 <p>对于复杂的命令, 继承一个 <code>Sparkle</code> 类是最好的.</p>
 <p>无论是简单还是复杂的命令, 你应该且仅仅只应该把命令头放到 <code>check</code> 参数中, 任何程序应访问的 <code>Match</code> 对象都应放在 <strong>类变量</strong> 或 <strong><code>match</code> 字典</strong> 里.</p>
-<h2 id="_5">性能考量<a class="headerlink" href="#_5" title="Permanent link">&para;</a></h2>
+<h2 id="_5">性能考量<a class="headerlink" href="#_5" title="Permanent link">🔗</a></h2>
 <p>你可以通过运行 <code>test/parser_performance.py</code> 来测试 <code>Twilight</code> 的性能.</p>
 <p>在 <code>i5-10500</code> 处理器上, <code>Twilight</code> 的性能大约为 <code>6000 ~ 10000 msg/s</code>, 取决于 <code>Twilight</code> 的复杂程度.</p>
 <div class="admonition graiax">

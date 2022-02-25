@@ -1925,7 +1925,7 @@
 
 
 
-<h1 id="_1">日志记录<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h1>
+<h1 id="_1">日志记录<a class="headerlink" href="#_1" title="Permanent link">🔗</a></h1>
 <p><code>Ariadne</code> 没有使用内置 <code>logging</code> 模块, 而是使用 <a href="https://github.com/Delgan/loguru"><code>loguru</code></a> 进行日志记录.</p>
 <p>因为这并非重点, 所以只讲讲最重要的几个方法.</p>
 <div class="admonition info">
@@ -1938,7 +1938,7 @@
 <div class="highlight"><pre><span></span><code><span class="n">logger</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s2">&quot;{time: YYYY-MM-DD}.log&quot;</span><span class="p">,</span> <span class="n">rotation</span><span class="o">=</span><span class="s2">&quot;00:00&quot;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span>
 </code></pre></div>
 <p>这些都不是很重要, 放在这里只是顺口一提.</p>
-<h2 id="adapter-log">Adapter log 配置<a class="headerlink" href="#adapter-log" title="Permanent link">&para;</a></h2>
+<h2 id="adapter-log">Adapter log 配置<a class="headerlink" href="#adapter-log" title="Permanent link">🔗</a></h2>
 <p>在传入 <code>connect_info</code> 时, 可以传入一个自定义的 <code>Adapter</code>, 在此处使用 <code>log=False</code> 可以关闭 <code>Adapter</code> 的心跳记录.</p>
 
               

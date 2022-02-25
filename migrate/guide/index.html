@@ -1979,9 +1979,9 @@
 
 
 
-<h1 id="_1">概述<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h1>
+<h1 id="_1">概述<a class="headerlink" href="#_1" title="Permanent link">🔗</a></h1>
 <p>最大的更改: <code>graia.application</code> -&gt; <code>graia.ariadne</code></p>
-<h2 id="_2">导入<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h2>
+<h2 id="_2">导入<a class="headerlink" href="#_2" title="Permanent link">🔗</a></h2>
 <p>你仍然可以从 <code>graia.ariadne.entry</code> 导入所有东西, 但是有所不同:</p>
 <ul>
 <li>
@@ -1992,18 +1992,18 @@
 </li>
 </ul>
 <p>此外, <code>Ariadne</code> 的模块名都是单数形式的 (<code>utilles -&gt; util</code>, <code>elements -&gt; element</code>)</p>
-<h2 id="_3">消息相关<a class="headerlink" href="#_3" title="Permanent link">&para;</a></h2>
+<h2 id="_3">消息相关<a class="headerlink" href="#_3" title="Permanent link">🔗</a></h2>
 <p>没有 <code>InternalElement</code>, <code>ExternalElement</code>, <code>ShadowElement</code> 之分, 现在所有元素都继承自 <code>Element</code>.</p>
 <p><code>MessageChain</code> 均为可变对象.</p>
 <p>无法将消息链转换成 <code>Mirai Code</code>, 取而代之的是持久化字符串 <code>PersistentString</code>.</p>
 <p><code>MessageChain</code> 的方法得到极大的拓展 (更好的 <code>create</code>, <code>__add__</code> 与 <code>__mul__</code> 支持等)</p>
 <p>此外, <code>__contains__</code> (<code>has</code>) 支持子消息链检测.</p>
 <p><code>Kanata</code> 被 <code>Twilight</code> 取代了, <code>Template</code> 被用法稍有不同的 <code>Formatter</code> 替代.</p>
-<h3 id="_4">消息元素<a class="headerlink" href="#_4" title="Permanent link">&para;</a></h3>
+<h3 id="_4">消息元素<a class="headerlink" href="#_4" title="Permanent link">🔗</a></h3>
 <p>元素不再分为 <code>Internal</code> <code>External</code> 与 <code>Shadow</code> 三态. 对应的, <code>Image_LocalFile</code> <code>Voice_LocalFile</code> <strong>等</strong> 类型被删除了.</p>
 <p>多媒体元素实例化签名更丰富, 可接受 <code>bytes</code> <code>url</code> <code>path</code> <code>id</code> <code>base64</code> 等.</p>
 <p>所以对于 <code>Image.fromLocalFile</code> 等类方法, 直接实例化即可.</p>
-<h2 id="_5">与主实例交互<a class="headerlink" href="#_5" title="Permanent link">&para;</a></h2>
+<h2 id="_5">与主实例交互<a class="headerlink" href="#_5" title="Permanent link">🔗</a></h2>
 <p>统一所有方法为 谓词 + 名词 形式 (如 <code>kick</code> -&gt; <code>kickMember</code>,<code>mute</code> -&gt; <code>muteMember</code>...)</p>
 <p><code>launch_blocking()</code> 会自动捕获一个 <code>KeyboardInterrupt</code> 并主动停止实例.</p>
 

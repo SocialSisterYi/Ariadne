@@ -1981,8 +1981,8 @@
 
 
 
-<h1 id="faq-">FAQ - 常见问答<a class="headerlink" href="#faq-" title="Permanent link">&para;</a></h1>
-<h2 id="_1">如何正确的截取日志？<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h2>
+<h1 id="faq-">FAQ - 常见问答<a class="headerlink" href="#faq-" title="Permanent link">🔗</a></h1>
+<h2 id="_1">如何正确的截取日志？<a class="headerlink" href="#_1" title="Permanent link">🔗</a></h2>
 <blockquote>
 <p>Ariadne 费尽心思用 loguru 的彩色日志不是没有理由的......</p>
 </blockquote>
@@ -1990,18 +1990,18 @@
 <p>第一行通常为 日期 + 时间 + 红色的 <code>ERROR</code> + 红色的异常说明.</p>
 <p>最后一行通常为 红色的 <code>XXXError</code> 或 <code>XXXException</code> 之类的, 再跟着白色的说明文字.</p>
 <p>如果能用长截图之类的同时截完当然最好, 如果做不到请优先最后一行 (及其之前的异常回溯).</p>
-<h2 id="xxx">为什么收不到 xxx 事件?<a class="headerlink" href="#xxx" title="Permanent link">&para;</a></h2>
+<h2 id="xxx">为什么收不到 xxx 事件?<a class="headerlink" href="#xxx" title="Permanent link">🔗</a></h2>
 <p>请检查 <code>Mirai Console</code> 的配置, 你账号的 <code>PROTOCOL</code> (登录协议) 影响接收事件的类型. 这不是 <code>Ariadne</code> 的问题.</p>
 <p><code>NugetEvent</code> 需要 <code>Mirai</code> 的登录协议是 <code>ANDROID_PHONE/IPAD/MACOS</code> 中的一种</p>
 <p><code>ANDROID_PAD/ANDROID_WATCH</code> 协议由于腾讯服务器原因并不能接受 <code>NugetEvent</code>.</p>
-<h2 id="application-mirai-code">为什么不像 Application 一样支持 Mirai Code?<a class="headerlink" href="#application-mirai-code" title="Permanent link">&para;</a></h2>
+<h2 id="application-mirai-code">为什么不像 Application 一样支持 Mirai Code?<a class="headerlink" href="#application-mirai-code" title="Permanent link">🔗</a></h2>
 <p><code>Ariadne</code> 只支持构造 <code>Mirai Code</code> 而无法转换, 是因为我们不想鼓励用户先转换成 <code>Mirai Code</code>, 之后再对文本化元素进行处理.</p>
 <p>如果你喜欢这种风格, <code>OneBot</code> 系列可能更适合你.</p>
-<h2 id="xxx_1">文档里怎么没有 xxx 的介绍?<a class="headerlink" href="#xxx_1" title="Permanent link">&para;</a></h2>
+<h2 id="xxx_1">文档里怎么没有 xxx 的介绍?<a class="headerlink" href="#xxx_1" title="Permanent link">🔗</a></h2>
 <p><code>Ariadne</code> 是一个非常庞大的框架, 有许许多多的方法与函数, 自然无法面面俱到.</p>
 <p>目前 <code>Ariadne</code> 的 <code>API 文档</code> 已经支持搜索功能, 你可以搜索自己想要的功能, 或者利用 <code>GitHub</code> 搜索源码.</p>
 <p>如果你说的是 <code>HTTPAdapter</code> 与 <code>WebsocketAdapter</code> 的话, 因为 <code>Ariadne</code> 重点目前不在这里, 所以并没有怎么动 (而且可能有潜在 bug)...</p>
-<h2 id="get_bytes-base64">多媒体元素的 get_bytes 方法为什么会存储 base64 属性?<a class="headerlink" href="#get_bytes-base64" title="Permanent link">&para;</a></h2>
+<h2 id="get_bytes-base64">多媒体元素的 get_bytes 方法为什么会存储 base64 属性?<a class="headerlink" href="#get_bytes-base64" title="Permanent link">🔗</a></h2>
 <p>你可能会有这个迷惑:</p>
 <div class="highlight"><pre><span></span><code><span class="n">img</span> <span class="o">=</span> <span class="n">Image</span><span class="p">(</span><span class="n">url</span><span class="o">=...</span><span class="p">)</span>
 <span class="k">await</span> <span class="n">img</span><span class="o">.</span><span class="n">get_bytes</span><span class="p">()</span>

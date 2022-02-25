@@ -2049,22 +2049,22 @@
 
 
 
-<h1 id="ariadne">Ariadne 总览<a class="headerlink" href="#ariadne" title="Permanent link">&para;</a></h1>
+<h1 id="ariadne">Ariadne 总览<a class="headerlink" href="#ariadne" title="Permanent link">🔗</a></h1>
 <div class="admonition note">
 <p class="admonition-title">引言</p>
 <p><code>Ariadne</code> 的实例方法大多继承自 <code>Mixin</code>.
 这允许 <code>Ariadne</code> 方便的拓展各种方法.
 当你不知道 <code>Ariadne</code> 为什么可以做到这些事时, 看看这些 <code>Mixin</code> 吧.</p>
 </div>
-<h2 id="_1">关于使用 "模型" 的提示<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h2>
+<h2 id="_1">关于使用 "模型" 的提示<a class="headerlink" href="#_1" title="Permanent link">🔗</a></h2>
 <p><code>Group</code> <code>Friend</code> <code>Member</code> <code>Stranger</code> 四个类型支持 <code>__int__</code> 协议获取其 <code>id</code> 属性.</p>
 <p>也就是说, <code>int(group)</code> 等价于 <code>group.id</code> .</p>
 <p><code>Group</code> <code>Friend</code> <code>Member</code> 上还有 <code>getInfo</code> <code>modifyInfo</code> <code>getProfile</code> <code>modifyAdmin</code> <code>getConfig</code> <code>modifyConfig</code> 等方便方法.</p>
 <p><code>MemberPerm</code> 支持富比较操作, 也就是说你可以通过 <code>Member.permission &gt;= MemberPerm.Administrator</code> 判断成员是否有管理权限.</p>
-<h2 id="_2">某些事件的额外方法<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h2>
+<h2 id="_2">某些事件的额外方法<a class="headerlink" href="#_2" title="Permanent link">🔗</a></h2>
 <p><a href="https://github.com/GraiaProject/Ariadne/blob/master/src/graia/ariadne/event/mirai.py#L773"><code>RequestEvent</code></a>
 带有一些额外方法, 如 <code>accept</code> <code>reject</code> <code>ignore</code> 等, 直接在其上使用 <code>await</code> 即可.</p>
-<h2 id="_3">生命周期管理<a class="headerlink" href="#_3" title="Permanent link">&para;</a></h2>
+<h2 id="_3">生命周期管理<a class="headerlink" href="#_3" title="Permanent link">🔗</a></h2>
 <p><code>launch()</code> 用于启动 <code>Ariadne</code> 实例, <code>stop()</code> 用于停止 <code>Ariadne</code> 实例.</p>
 <p><code>lifecycle()</code> 通过 <code>await self.daemon_task</code>, 即等待 <code>Adapter</code> 的守护任务, 达到封装 <code>launch()</code> 与 <code>wait_for_stop()</code> 的目的.</p>
 <p>如果你不需要额外的 <code>asyncio</code> 操作, 那么 <code>app.launch_blocking()</code> 应该足以满足你的需要, 因为它封装了 <code>launch()</code>, 并在捕获 <code>KeyboardInterrupt</code> 时自动 <code>wait_for_stop()</code>.</p>
@@ -2073,7 +2073,7 @@
 <p>其实 <code>Ariadne</code> 也可以作为 <code>async context manager</code> 使用.</p>
 <p>在 <code>__aenter__</code> 中执行 <code>launch()</code>, 在 <code>__aexit__</code> 中执行 <code>wait_for_stop()</code>.</p>
 </div>
-<h2 id="_4">交互方法<a class="headerlink" href="#_4" title="Permanent link">&para;</a></h2>
+<h2 id="_4">交互方法<a class="headerlink" href="#_4" title="Permanent link">🔗</a></h2>
 <p><code>Ariadne</code> 与 QQ 进行交互的方法遵循以下原则:</p>
 <ul>
 <li>使用 <code>camelCase</code> 驼峰命名.</li>
@@ -2085,21 +2085,21 @@
 <div class="admonition warning">
 <p class="admonition-title">API 文档指路: <a href="../../refs/graia/ariadne/#graia.ariadne">graia.ariadne</a></p>
 </div>
-<h2 id="_5">获取实例所管账号<a class="headerlink" href="#_5" title="Permanent link">&para;</a></h2>
+<h2 id="_5">获取实例所管账号<a class="headerlink" href="#_5" title="Permanent link">🔗</a></h2>
 <p><code>Ariadne</code> 通过一个只读属性 <code>account</code> 来帮助用户获取当前机器人实例的 QQ 号</p>
 <div class="highlight"><pre><span></span><code><span class="n">account</span> <span class="o">=</span> <span class="n">app</span><span class="o">.</span><span class="n">account</span>
 </code></pre></div>
-<h2 id="_6">停止实例<a class="headerlink" href="#_6" title="Permanent link">&para;</a></h2>
+<h2 id="_6">停止实例<a class="headerlink" href="#_6" title="Permanent link">🔗</a></h2>
 <p>现在你通过在监听器中 <code>await app.stop()</code> 并在主函数中 <code>await app.join()</code> 应该可以安全的关闭 <code>Ariadne</code>.</p>
 <p>当然, 在主函数中使用 <code>await app.lifecycle()</code> 或 <code>app.launch_blocking()</code> 永远是最佳实践.</p>
-<h2 id="-sendmessage">方便的消息发送方法 - sendMessage<a class="headerlink" href="#-sendmessage" title="Permanent link">&para;</a></h2>
+<h2 id="-sendmessage">方便的消息发送方法 - sendMessage<a class="headerlink" href="#-sendmessage" title="Permanent link">🔗</a></h2>
 <p><code>sendMessage</code> 有一个限制: 只能从传入对象推断 (不能直接传入 <code>int</code> 格式的 <code>target</code>)</p>
 <p>但是它可以智能地从传入对象推断: <code>Friend</code> <code>Group</code> <code>Member</code> <code>MessageEvent</code> 这四个都是合适的传入对象.</p>
 <p><code>Friend</code> 发送好友消息, <code>Group</code> 发送群组消息, <strong>而 <code>Member</code> 发送临时私聊消息</strong>.</p>
 <p><code>MessageEvent</code> 则会推断是 <code>GroupMessage</code>, <code>FriendMessage</code> 还是 <code>TempMessage</code>, 并自动发给对应的对象.</p>
 <p>同时, 在向 <code>target</code> 传入消息事件时, <code>quote</code> 可以简单地传入 <code>True</code> 以达到引用回复的效果.</p>
 <p><code>quote</code> 也接受 <code>Source</code> 元素.</p>
-<h3 id="sendmessage-action">sendMessage 的 action<a class="headerlink" href="#sendmessage-action" title="Permanent link">&para;</a></h3>
+<h3 id="sendmessage-action">sendMessage 的 action<a class="headerlink" href="#sendmessage-action" title="Permanent link">🔗</a></h3>
 <p><code>sendMessage</code> 可以携带一个 <code>action</code> 参数,
 它是一个 <code>graia.ariadne.typing.SendMessageAction</code> 对象, 需要实现以下方法:</p>
 <ul>
@@ -2137,7 +2137,7 @@
 
 <span class="k">await</span> <span class="n">app</span><span class="o">.</span><span class="n">sendMessage</span><span class="p">(</span><span class="n">origin</span><span class="p">,</span> <span class="n">message_chain</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="n">act</span><span class="p">)</span>
 </code></pre></div>
-<h3 id="action">设置默认 action<a class="headerlink" href="#action" title="Permanent link">&para;</a></h3>
+<h3 id="action">设置默认 action<a class="headerlink" href="#action" title="Permanent link">🔗</a></h3>
 <p><code>Ariadne</code> 实例的默认 <code>action</code> 是 <code>Strict</code>, 你可以通过 <code>Ariadne.default_send_action</code> 属性透明地修改.</p>
 
               

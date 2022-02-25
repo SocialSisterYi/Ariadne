@@ -1884,20 +1884,6 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#graia.ariadne.console.Console.join" class="md-nav__link">
-    join()
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#graia.ariadne.console.Console.loop" class="md-nav__link">
-    loop()
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
   <a href="#graia.ariadne.console.Console.prompt" class="md-nav__link">
     prompt()
   </a>
@@ -1905,8 +1891,8 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#graia.ariadne.console.Console.register" class="md-nav__link">
-    register()
+  <a href="#graia.ariadne.console.Console.loop" class="md-nav__link">
+    loop()
   </a>
   
 </li>
@@ -1921,6 +1907,20 @@
           <li class="md-nav__item">
   <a href="#graia.ariadne.console.Console.stop" class="md-nav__link">
     stop()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#graia.ariadne.console.Console.join" class="md-nav__link">
+    join()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#graia.ariadne.console.Console.register" class="md-nav__link">
+    register()
   </a>
   
 </li>
@@ -1976,7 +1976,7 @@
 <code class="highlight language-python"><span class="n">Console</span><span class="p">(</span><span class="n">broadcast</span><span class="p">:</span> <span class="n">Broadcast</span><span class="p">,</span> <span class="n">prompt</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Callable</span><span class="p">[[],</span> <span class="nb">str</span><span class="p">],</span> <span class="n">AnyFormattedText</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{library_name}</span><span class="s1"> </span><span class="si">{graia_ariadne_version}</span><span class="s1">&gt;&#39;</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">r_prompt</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Callable</span><span class="p">[[],</span> <span class="nb">str</span><span class="p">],</span> <span class="n">AnyFormattedText</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">style</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Style</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">extra_data_getter</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Callable</span><span class="p">[[],</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]]</span> <span class="o">=</span> <span class="p">(),</span> <span class="n">replace_logger</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">listen_launch</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">listen_shutdown</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span></code>
 
 
-<a href="#graia.ariadne.console.Console" class="headerlink" title="Permanent link">&para;</a></h2>
+<a href="#graia.ariadne.console.Console" class="headerlink" title="Permanent link">🔗</a></h2>
 
 
     <div class="doc doc-contents ">
@@ -2013,7 +2013,7 @@
           <td>
                 <code><span title="prompt_toolkit.formatted_text.AnyFormattedText">AnyFormattedText</span></code>
           </td>
-          <td><p>输入提示, 可使用 f-string 形式的格式化字符串.</p></td>
+          <td><p>输入提示, 可使用 f-string 形式的格式化字符串.             默认为 "{library_name} {graia_ariadne_version}&gt;".</p></td>
           <td>
                 <code>&#39;{library_name} {graia_ariadne_version}&gt;&#39;</code>
           </td>
@@ -2150,7 +2150,7 @@
 
 <span class="sd">    Args:</span>
 <span class="sd">        broadcast (Broadcast): 事件系统.</span>
-<span class="sd">        prompt (AnyFormattedText, optional): 输入提示, 可使用 f-string 形式的格式化字符串.</span>
+<span class="sd">        prompt (AnyFormattedText, optional): 输入提示, 可使用 f-string 形式的格式化字符串. \</span>
 <span class="sd">        默认为 &quot;{library_name} {graia_ariadne_version}&gt;&quot;.</span>
 <span class="sd">        r_prompt (AnyFormattedText, optional): 右侧提示, 可使用 f-string 形式的格式化字符串. 默认为空.</span>
 <span class="sd">        style (Style, optional): 输入提示的格式, 详见 prompt_toolkit 的介绍.</span>
@@ -2220,7 +2220,7 @@
 <code class="highlight language-python"><span class="n">data_getter</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span></code>
 
 
-<a href="#graia.ariadne.console.Console.data_getter" class="headerlink" title="Permanent link">&para;</a></h3>
+<a href="#graia.ariadne.console.Console.data_getter" class="headerlink" title="Permanent link">🔗</a></h3>
 
 
     <div class="doc doc-contents ">
@@ -2303,31 +2303,155 @@
 
 
 
-<h3 id="graia.ariadne.console.Console.join" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></code>
+<h3 id="graia.ariadne.console.Console.prompt" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">prompt</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">l_prompt</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">AnyFormattedText</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">r_prompt</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">AnyFormattedText</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">style</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Style</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span></code>
 
   <span class="doc doc-properties">
       <small class="doc doc-label doc-label-async"><code>async</code></small>
   </span>
 
-<a href="#graia.ariadne.console.Console.join" class="headerlink" title="Permanent link">&para;</a></h3>
+<a href="#graia.ariadne.console.Console.prompt" class="headerlink" title="Permanent link">🔗</a></h3>
 
 
     <div class="doc doc-contents ">
 
-      <p>等待 Console 结束, 异步, 幂等</p>
+      <p>向控制台发送一个输入请求, 异步</p>
+
+  <p><strong>Parameters:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Description</th>
+        <th>Default</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td><code>l_prompt</code></td>
+          <td>
+                <code><span title="prompt_toolkit.formatted_text.AnyFormattedText">AnyFormattedText</span></code>
+          </td>
+          <td><p>左输入提示, 可使用 f-string 形式的格式化字符串.             默认为 "{library_name} {graia_ariadne_version}&gt;". 注意为 l_prompt .</p></td>
+          <td>
+                <code>None</code>
+          </td>
+        </tr>
+        <tr>
+          <td><code>r_prompt</code></td>
+          <td>
+                <code><span title="prompt_toolkit.formatted_text.AnyFormattedText">AnyFormattedText</span></code>
+          </td>
+          <td><p>右侧提示, 可使用 f-string 形式的格式化字符串. 默认为空.</p></td>
+          <td>
+                <code>None</code>
+          </td>
+        </tr>
+        <tr>
+          <td><code>style</code></td>
+          <td>
+                <code><span title="prompt_toolkit.styles.Style">Style</span></code>
+          </td>
+          <td><p>输入提示的格式, 详见 prompt_toolkit 的介绍.</p></td>
+          <td>
+                <code>None</code>
+          </td>
+        </tr>
+    </tbody>
+  </table>
+
+  <p><strong>Returns:</strong></p>
+  <table>
+    <thead>
+      <tr>
+<th>Name</th>        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+<td><code>str</code></td>          <td>
+                <code><a href="https://docs.python.org/zh-cn/3/library/stdtypes.html#str">str</a></code>
+          </td>
+          <td><p>输入结果</p></td>
+        </tr>
+    </tbody>
+  </table>
 
         <details class="quote">
           <summary>Source code in <code>graia/ariadne/console/__init__.py</code></summary>
-          <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">221</span>
-<span class="normal">222</span>
-<span class="normal">223</span>
-<span class="normal">224</span>
-<span class="normal">225</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">join</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;等待 Console 结束, 异步, 幂等&quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">task</span><span class="p">:</span>
-        <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">task</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">task</span> <span class="o">=</span> <span class="kc">None</span>
+          <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">106</span>
+<span class="normal">107</span>
+<span class="normal">108</span>
+<span class="normal">109</span>
+<span class="normal">110</span>
+<span class="normal">111</span>
+<span class="normal">112</span>
+<span class="normal">113</span>
+<span class="normal">114</span>
+<span class="normal">115</span>
+<span class="normal">116</span>
+<span class="normal">117</span>
+<span class="normal">118</span>
+<span class="normal">119</span>
+<span class="normal">120</span>
+<span class="normal">121</span>
+<span class="normal">122</span>
+<span class="normal">123</span>
+<span class="normal">124</span>
+<span class="normal">125</span>
+<span class="normal">126</span>
+<span class="normal">127</span>
+<span class="normal">128</span>
+<span class="normal">129</span>
+<span class="normal">130</span>
+<span class="normal">131</span>
+<span class="normal">132</span>
+<span class="normal">133</span>
+<span class="normal">134</span>
+<span class="normal">135</span>
+<span class="normal">136</span>
+<span class="normal">137</span>
+<span class="normal">138</span>
+<span class="normal">139</span>
+<span class="normal">140</span>
+<span class="normal">141</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">prompt</span><span class="p">(</span>
+    <span class="bp">self</span><span class="p">,</span>
+    <span class="n">l_prompt</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">AnyFormattedText</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">r_prompt</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">AnyFormattedText</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">style</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Style</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;向控制台发送一个输入请求, 异步</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        l_prompt (AnyFormattedText, optional): 左输入提示, 可使用 f-string 形式的格式化字符串. \</span>
+<span class="sd">        默认为 &quot;{library_name} {graia_ariadne_version}&gt;&quot;. 注意为 l_prompt .</span>
+<span class="sd">        r_prompt (AnyFormattedText, optional): 右侧提示, 可使用 f-string 形式的格式化字符串. 默认为空.</span>
+<span class="sd">        style (Style, optional): 输入提示的格式, 详见 prompt_toolkit 的介绍.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        str: 输入结果</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">l_prompt</span> <span class="o">=</span> <span class="n">l_prompt</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">l_prompt</span>
+    <span class="n">r_prompt</span> <span class="o">=</span> <span class="n">r_prompt</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">r_prompt</span>
+    <span class="n">style</span> <span class="o">=</span> <span class="n">style</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">style</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">l_prompt</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="n">l_prompt</span> <span class="o">=</span> <span class="n">l_prompt</span><span class="o">.</span><span class="n">format_map</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data_getter</span><span class="p">())</span>
+
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">r_prompt</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="n">r_prompt</span> <span class="o">=</span> <span class="n">r_prompt</span><span class="o">.</span><span class="n">format_map</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data_getter</span><span class="p">())</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">return</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">prompt_async</span><span class="p">(</span>
+            <span class="n">message</span><span class="o">=</span><span class="n">l_prompt</span><span class="p">,</span>
+            <span class="n">rprompt</span><span class="o">=</span><span class="n">r_prompt</span><span class="p">,</span>
+            <span class="n">style</span><span class="o">=</span><span class="n">style</span><span class="p">,</span>
+            <span class="n">set_exception_handler</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="p">)</span>
+    <span class="k">except</span> <span class="ne">KeyboardInterrupt</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
+        <span class="k">raise</span>
 </code></pre></div>
 </td></tr></table>
         </details>
@@ -2348,7 +2472,7 @@
       <small class="doc doc-label doc-label-async"><code>async</code></small>
   </span>
 
-<a href="#graia.ariadne.console.Console.loop" class="headerlink" title="Permanent link">&para;</a></h3>
+<a href="#graia.ariadne.console.Console.loop" class="headerlink" title="Permanent link">🔗</a></h3>
 
 
     <div class="doc doc-contents ">
@@ -2469,155 +2593,131 @@
 
 
 
-<h3 id="graia.ariadne.console.Console.prompt" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">prompt</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">l_prompt</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">AnyFormattedText</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">r_prompt</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">AnyFormattedText</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">style</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Style</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span></code>
+<h3 id="graia.ariadne.console.Console.start" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">start</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></code>
+
+
+<a href="#graia.ariadne.console.Console.start" class="headerlink" title="Permanent link">🔗</a></h3>
+
+
+    <div class="doc doc-contents ">
+
+      <p>启动 Console, 幂等</p>
+
+        <details class="quote">
+          <summary>Source code in <code>graia/ariadne/console/__init__.py</code></summary>
+          <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">194</span>
+<span class="normal">195</span>
+<span class="normal">196</span>
+<span class="normal">197</span>
+<span class="normal">198</span>
+<span class="normal">199</span>
+<span class="normal">200</span>
+<span class="normal">201</span>
+<span class="normal">202</span>
+<span class="normal">203</span>
+<span class="normal">204</span>
+<span class="normal">205</span>
+<span class="normal">206</span>
+<span class="normal">207</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">start</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;启动 Console, 幂等&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">running</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">running</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">replace_logger</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+                <span class="k">pass</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">handler_id</span> <span class="o">=</span> <span class="n">logger</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">StdoutProxy</span><span class="p">(</span><span class="n">raw</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>  <span class="c1"># type: ignore</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">task</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">broadcast</span><span class="o">.</span><span class="n">loop</span><span class="o">.</span><span class="n">create_task</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">loop</span><span class="p">())</span>
+</code></pre></div>
+</td></tr></table>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-function">
+
+
+
+<h3 id="graia.ariadne.console.Console.stop" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">stop</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></code>
+
+
+<a href="#graia.ariadne.console.Console.stop" class="headerlink" title="Permanent link">🔗</a></h3>
+
+
+    <div class="doc doc-contents ">
+
+      <p>提示 Console 停止, 非异步, 幂等</p>
+
+        <details class="quote">
+          <summary>Source code in <code>graia/ariadne/console/__init__.py</code></summary>
+          <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">209</span>
+<span class="normal">210</span>
+<span class="normal">211</span>
+<span class="normal">212</span>
+<span class="normal">213</span>
+<span class="normal">214</span>
+<span class="normal">215</span>
+<span class="normal">216</span>
+<span class="normal">217</span>
+<span class="normal">218</span>
+<span class="normal">219</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">stop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;提示 Console 停止, 非异步, 幂等&quot;&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">running</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Stopping console...&quot;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">running</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">replace_logger</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">handler_id</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">handler_id</span> <span class="o">=</span> <span class="n">logger</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="p">)</span>
+</code></pre></div>
+</td></tr></table>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-function">
+
+
+
+<h3 id="graia.ariadne.console.Console.join" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></code>
 
   <span class="doc doc-properties">
       <small class="doc doc-label doc-label-async"><code>async</code></small>
   </span>
 
-<a href="#graia.ariadne.console.Console.prompt" class="headerlink" title="Permanent link">&para;</a></h3>
+<a href="#graia.ariadne.console.Console.join" class="headerlink" title="Permanent link">🔗</a></h3>
 
 
     <div class="doc doc-contents ">
 
-      <p>向控制台发送一个输入请求, 异步</p>
-
-  <p><strong>Parameters:</strong></p>
-  <table>
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Type</th>
-        <th>Description</th>
-        <th>Default</th>
-      </tr>
-    </thead>
-    <tbody>
-        <tr>
-          <td><code>l_prompt</code></td>
-          <td>
-                <code><span title="prompt_toolkit.formatted_text.AnyFormattedText">AnyFormattedText</span></code>
-          </td>
-          <td><p>左输入提示, 可使用 f-string 形式的格式化字符串.</p></td>
-          <td>
-                <code>None</code>
-          </td>
-        </tr>
-        <tr>
-          <td><code>r_prompt</code></td>
-          <td>
-                <code><span title="prompt_toolkit.formatted_text.AnyFormattedText">AnyFormattedText</span></code>
-          </td>
-          <td><p>右侧提示, 可使用 f-string 形式的格式化字符串. 默认为空.</p></td>
-          <td>
-                <code>None</code>
-          </td>
-        </tr>
-        <tr>
-          <td><code>style</code></td>
-          <td>
-                <code><span title="prompt_toolkit.styles.Style">Style</span></code>
-          </td>
-          <td><p>输入提示的格式, 详见 prompt_toolkit 的介绍.</p></td>
-          <td>
-                <code>None</code>
-          </td>
-        </tr>
-    </tbody>
-  </table>
-
-  <p><strong>Returns:</strong></p>
-  <table>
-    <thead>
-      <tr>
-<th>Name</th>        <th>Type</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-        <tr>
-<td><code>str</code></td>          <td>
-                <code><a href="https://docs.python.org/zh-cn/3/library/stdtypes.html#str">str</a></code>
-          </td>
-          <td><p>输入结果</p></td>
-        </tr>
-    </tbody>
-  </table>
+      <p>等待 Console 结束, 异步, 幂等</p>
 
         <details class="quote">
           <summary>Source code in <code>graia/ariadne/console/__init__.py</code></summary>
-          <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">106</span>
-<span class="normal">107</span>
-<span class="normal">108</span>
-<span class="normal">109</span>
-<span class="normal">110</span>
-<span class="normal">111</span>
-<span class="normal">112</span>
-<span class="normal">113</span>
-<span class="normal">114</span>
-<span class="normal">115</span>
-<span class="normal">116</span>
-<span class="normal">117</span>
-<span class="normal">118</span>
-<span class="normal">119</span>
-<span class="normal">120</span>
-<span class="normal">121</span>
-<span class="normal">122</span>
-<span class="normal">123</span>
-<span class="normal">124</span>
-<span class="normal">125</span>
-<span class="normal">126</span>
-<span class="normal">127</span>
-<span class="normal">128</span>
-<span class="normal">129</span>
-<span class="normal">130</span>
-<span class="normal">131</span>
-<span class="normal">132</span>
-<span class="normal">133</span>
-<span class="normal">134</span>
-<span class="normal">135</span>
-<span class="normal">136</span>
-<span class="normal">137</span>
-<span class="normal">138</span>
-<span class="normal">139</span>
-<span class="normal">140</span>
-<span class="normal">141</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">prompt</span><span class="p">(</span>
-    <span class="bp">self</span><span class="p">,</span>
-    <span class="n">l_prompt</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">AnyFormattedText</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="n">r_prompt</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">AnyFormattedText</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="n">style</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Style</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;向控制台发送一个输入请求, 异步</span>
-
-<span class="sd">    Args:</span>
-<span class="sd">        l_prompt (AnyFormattedText, optional): 左输入提示, 可使用 f-string 形式的格式化字符串.</span>
-<span class="sd">        默认为 &quot;{library_name} {graia_ariadne_version}&gt;&quot;. 注意为 l_prompt .</span>
-<span class="sd">        r_prompt (AnyFormattedText, optional): 右侧提示, 可使用 f-string 形式的格式化字符串. 默认为空.</span>
-<span class="sd">        style (Style, optional): 输入提示的格式, 详见 prompt_toolkit 的介绍.</span>
-
-<span class="sd">    Returns:</span>
-<span class="sd">        str: 输入结果</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">l_prompt</span> <span class="o">=</span> <span class="n">l_prompt</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">l_prompt</span>
-    <span class="n">r_prompt</span> <span class="o">=</span> <span class="n">r_prompt</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">r_prompt</span>
-    <span class="n">style</span> <span class="o">=</span> <span class="n">style</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">style</span>
-    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">l_prompt</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
-        <span class="n">l_prompt</span> <span class="o">=</span> <span class="n">l_prompt</span><span class="o">.</span><span class="n">format_map</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data_getter</span><span class="p">())</span>
-
-    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">r_prompt</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
-        <span class="n">r_prompt</span> <span class="o">=</span> <span class="n">r_prompt</span><span class="o">.</span><span class="n">format_map</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data_getter</span><span class="p">())</span>
-
-    <span class="k">try</span><span class="p">:</span>
-        <span class="k">return</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">prompt_async</span><span class="p">(</span>
-            <span class="n">message</span><span class="o">=</span><span class="n">l_prompt</span><span class="p">,</span>
-            <span class="n">rprompt</span><span class="o">=</span><span class="n">r_prompt</span><span class="p">,</span>
-            <span class="n">style</span><span class="o">=</span><span class="n">style</span><span class="p">,</span>
-            <span class="n">set_exception_handler</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-        <span class="p">)</span>
-    <span class="k">except</span> <span class="ne">KeyboardInterrupt</span><span class="p">:</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
-        <span class="k">raise</span>
+          <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">221</span>
+<span class="normal">222</span>
+<span class="normal">223</span>
+<span class="normal">224</span>
+<span class="normal">225</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">join</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;等待 Console 结束, 异步, 幂等&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">task</span><span class="p">:</span>
+        <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">task</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">task</span> <span class="o">=</span> <span class="kc">None</span>
 </code></pre></div>
 </td></tr></table>
         </details>
@@ -2635,7 +2735,7 @@
 <code class="highlight language-python"><span class="n">register</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dispatchers</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">BaseDispatcher</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">decorators</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Decorator</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span></code>
 
 
-<a href="#graia.ariadne.console.Console.register" class="headerlink" title="Permanent link">&para;</a></h3>
+<a href="#graia.ariadne.console.Console.register" class="headerlink" title="Permanent link">🔗</a></h3>
 
 
     <div class="doc doc-contents ">
@@ -2703,106 +2803,6 @@
         <span class="k">return</span> <span class="n">func</span>
 
     <span class="k">return</span> <span class="n">wrapper</span>
-</code></pre></div>
-</td></tr></table>
-        </details>
-    </div>
-
-  </div>
-
-
-
-  <div class="doc doc-object doc-function">
-
-
-
-<h3 id="graia.ariadne.console.Console.start" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">start</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></code>
-
-
-<a href="#graia.ariadne.console.Console.start" class="headerlink" title="Permanent link">&para;</a></h3>
-
-
-    <div class="doc doc-contents ">
-
-      <p>启动 Console, 幂等</p>
-
-        <details class="quote">
-          <summary>Source code in <code>graia/ariadne/console/__init__.py</code></summary>
-          <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">194</span>
-<span class="normal">195</span>
-<span class="normal">196</span>
-<span class="normal">197</span>
-<span class="normal">198</span>
-<span class="normal">199</span>
-<span class="normal">200</span>
-<span class="normal">201</span>
-<span class="normal">202</span>
-<span class="normal">203</span>
-<span class="normal">204</span>
-<span class="normal">205</span>
-<span class="normal">206</span>
-<span class="normal">207</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">start</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;启动 Console, 幂等&quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">running</span><span class="p">:</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">running</span> <span class="o">=</span> <span class="kc">True</span>
-
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">replace_logger</span><span class="p">:</span>
-            <span class="k">try</span><span class="p">:</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
-            <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
-                <span class="k">pass</span>
-
-            <span class="bp">self</span><span class="o">.</span><span class="n">handler_id</span> <span class="o">=</span> <span class="n">logger</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">StdoutProxy</span><span class="p">(</span><span class="n">raw</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>  <span class="c1"># type: ignore</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">task</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">broadcast</span><span class="o">.</span><span class="n">loop</span><span class="o">.</span><span class="n">create_task</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">loop</span><span class="p">())</span>
-</code></pre></div>
-</td></tr></table>
-        </details>
-    </div>
-
-  </div>
-
-
-
-  <div class="doc doc-object doc-function">
-
-
-
-<h3 id="graia.ariadne.console.Console.stop" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">stop</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></code>
-
-
-<a href="#graia.ariadne.console.Console.stop" class="headerlink" title="Permanent link">&para;</a></h3>
-
-
-    <div class="doc doc-contents ">
-
-      <p>提示 Console 停止, 非异步, 幂等</p>
-
-        <details class="quote">
-          <summary>Source code in <code>graia/ariadne/console/__init__.py</code></summary>
-          <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">209</span>
-<span class="normal">210</span>
-<span class="normal">211</span>
-<span class="normal">212</span>
-<span class="normal">213</span>
-<span class="normal">214</span>
-<span class="normal">215</span>
-<span class="normal">216</span>
-<span class="normal">217</span>
-<span class="normal">218</span>
-<span class="normal">219</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">stop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;提示 Console 停止, 非异步, 幂等&quot;&quot;&quot;</span>
-
-    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">running</span><span class="p">:</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Stopping console...&quot;</span><span class="p">)</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">running</span> <span class="o">=</span> <span class="kc">False</span>
-
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">replace_logger</span><span class="p">:</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">handler_id</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">handler_id</span> <span class="o">=</span> <span class="n">logger</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="p">)</span>
 </code></pre></div>
 </td></tr></table>
         </details>

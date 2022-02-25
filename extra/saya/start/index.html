@@ -1955,8 +1955,8 @@
 
 
 
-<h1 id="_1">开始使用<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h1>
-<h2 id="_2">简介<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h2>
+<h1 id="_1">开始使用<a class="headerlink" href="#_1" title="Permanent link">🔗</a></h1>
+<h2 id="_2">简介<a class="headerlink" href="#_2" title="Permanent link">🔗</a></h2>
 <blockquote>
 <p>Saya 的名称取自作品 魔女之旅 中的角色 "沙耶(Saya)", 愿所有人的心中都有一位活泼可爱的炭之魔女.</p>
 </blockquote>
@@ -1999,7 +1999,7 @@
 </code></pre></div>
 <p><code>Saya</code> 需要一个入口(<code>entry</code>), 用于创建 <code>Controller</code>, 并让 <code>Controller</code> 分配 <code>Channel</code> 给这之后被 <code>Saya.require</code> 方法引入的模块.</p>
 <p><code>main.py</code> 将作为入口文件, 被 Python 解释器首先执行.</p>
-<h2 id="_3">入口文件的编写<a class="headerlink" href="#_3" title="Permanent link">&para;</a></h2>
+<h2 id="_3">入口文件的编写<a class="headerlink" href="#_3" title="Permanent link">🔗</a></h2>
 <p>首先, 我们需要引入 <code>Saya</code>, <code>Broadcast</code>, 还有其内部集成的对 <code>Broadcast</code> 的支持:</p>
 <div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">graia.saya</span> <span class="kn">import</span> <span class="n">Saya</span>
 <span class="kn">from</span> <span class="nn">graia.broadcast</span> <span class="kn">import</span> <span class="n">Broadcast</span>
@@ -2073,7 +2073,7 @@
 从而可以使用 <code>Saya.current()</code> 获取当前 <code>Saya</code> 实例.</p>
 </div>
 <p>就这样, 一个入口文件就这样完成了, 现在主要是插件部分.</p>
-<h2 id="_4">第一次运行<a class="headerlink" href="#_4" title="Permanent link">&para;</a></h2>
+<h2 id="_4">第一次运行<a class="headerlink" href="#_4" title="Permanent link">🔗</a></h2>
 <p>来到 <code>module_as_file.py</code>:</p>
 <div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">graia.saya</span> <span class="kn">import</span> <span class="n">Saya</span><span class="p">,</span> <span class="n">Channel</span>
 <span class="n">saya</span> <span class="o">=</span> <span class="n">Saya</span><span class="o">.</span><span class="n">current</span><span class="p">()</span>

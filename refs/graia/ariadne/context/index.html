@@ -1265,15 +1265,15 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#graia.ariadne.context.enter_context" class="md-nav__link">
-    enter_context()
+  <a href="#graia.ariadne.context.enter_message_send_context" class="md-nav__link">
+    enter_message_send_context()
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#graia.ariadne.context.enter_message_send_context" class="md-nav__link">
-    enter_message_send_context()
+  <a href="#graia.ariadne.context.enter_context" class="md-nav__link">
+    enter_context()
   </a>
   
 </li>
@@ -1918,15 +1918,15 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#graia.ariadne.context.enter_context" class="md-nav__link">
-    enter_context()
+  <a href="#graia.ariadne.context.enter_message_send_context" class="md-nav__link">
+    enter_message_send_context()
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#graia.ariadne.context.enter_message_send_context" class="md-nav__link">
-    enter_message_send_context()
+  <a href="#graia.ariadne.context.enter_context" class="md-nav__link">
+    enter_context()
   </a>
   
 </li>
@@ -1980,11 +1980,80 @@
 
 
 
+<h2 id="graia.ariadne.context.enter_message_send_context" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">enter_message_send_context</span><span class="p">(</span><span class="n">method</span><span class="p">:</span> <span class="s1">&#39;UploadMethod&#39;</span><span class="p">)</span></code>
+
+
+<a href="#graia.ariadne.context.enter_message_send_context" class="headerlink" title="Permanent link">🔗</a></h2>
+
+
+    <div class="doc doc-contents ">
+
+      <p>进入消息发送上下文</p>
+
+  <p><strong>Parameters:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Description</th>
+        <th>Default</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td><code>method</code></td>
+          <td>
+                <code><a title="graia.ariadne.model.UploadMethod" href="../model/#graia.ariadne.model.UploadMethod">UploadMethod</a></code>
+          </td>
+          <td><p>消息上下文的枚举对象</p></td>
+          <td>
+              <em>required</em>
+          </td>
+        </tr>
+    </tbody>
+  </table>
+
+        <details class="quote">
+          <summary>Source code in <code>graia/ariadne/context.py</code></summary>
+          <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">40</span>
+<span class="normal">41</span>
+<span class="normal">42</span>
+<span class="normal">43</span>
+<span class="normal">44</span>
+<span class="normal">45</span>
+<span class="normal">46</span>
+<span class="normal">47</span>
+<span class="normal">48</span>
+<span class="normal">49</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="nd">@contextmanager</span>
+<span class="k">def</span> <span class="nf">enter_message_send_context</span><span class="p">(</span><span class="n">method</span><span class="p">:</span> <span class="s2">&quot;UploadMethod&quot;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;进入消息发送上下文</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        method (UploadMethod): 消息上下文的枚举对象</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">t</span> <span class="o">=</span> <span class="n">upload_method_ctx</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">method</span><span class="p">)</span>
+    <span class="k">yield</span>
+    <span class="n">upload_method_ctx</span><span class="o">.</span><span class="n">reset</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+</code></pre></div>
+</td></tr></table>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-function">
+
+
+
 <h2 id="graia.ariadne.context.enter_context" class="doc doc-heading">
 <code class="highlight language-python"><span class="n">enter_context</span><span class="p">(</span><span class="n">app</span><span class="p">:</span> <span class="s1">&#39;Ariadne&#39;</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">event</span><span class="p">:</span> <span class="s1">&#39;Dispatchable&#39;</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span></code>
 
 
-<a href="#graia.ariadne.context.enter_context" class="headerlink" title="Permanent link">&para;</a></h2>
+<a href="#graia.ariadne.context.enter_context" class="headerlink" title="Permanent link">🔗</a></h2>
 
 
     <div class="doc doc-contents ">
@@ -2100,75 +2169,6 @@
             <span class="n">broadcast_ctx</span><span class="o">.</span><span class="n">reset</span><span class="p">(</span><span class="n">token_bcc</span><span class="p">)</span>
     <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
         <span class="k">pass</span>
-</code></pre></div>
-</td></tr></table>
-        </details>
-    </div>
-
-  </div>
-
-
-
-  <div class="doc doc-object doc-function">
-
-
-
-<h2 id="graia.ariadne.context.enter_message_send_context" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">enter_message_send_context</span><span class="p">(</span><span class="n">method</span><span class="p">:</span> <span class="s1">&#39;UploadMethod&#39;</span><span class="p">)</span></code>
-
-
-<a href="#graia.ariadne.context.enter_message_send_context" class="headerlink" title="Permanent link">&para;</a></h2>
-
-
-    <div class="doc doc-contents ">
-
-      <p>进入消息发送上下文</p>
-
-  <p><strong>Parameters:</strong></p>
-  <table>
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Type</th>
-        <th>Description</th>
-        <th>Default</th>
-      </tr>
-    </thead>
-    <tbody>
-        <tr>
-          <td><code>method</code></td>
-          <td>
-                <code><a title="graia.ariadne.model.UploadMethod" href="../model/#graia.ariadne.model.UploadMethod">UploadMethod</a></code>
-          </td>
-          <td><p>消息上下文的枚举对象</p></td>
-          <td>
-              <em>required</em>
-          </td>
-        </tr>
-    </tbody>
-  </table>
-
-        <details class="quote">
-          <summary>Source code in <code>graia/ariadne/context.py</code></summary>
-          <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">40</span>
-<span class="normal">41</span>
-<span class="normal">42</span>
-<span class="normal">43</span>
-<span class="normal">44</span>
-<span class="normal">45</span>
-<span class="normal">46</span>
-<span class="normal">47</span>
-<span class="normal">48</span>
-<span class="normal">49</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="nd">@contextmanager</span>
-<span class="k">def</span> <span class="nf">enter_message_send_context</span><span class="p">(</span><span class="n">method</span><span class="p">:</span> <span class="s2">&quot;UploadMethod&quot;</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;进入消息发送上下文</span>
-
-<span class="sd">    Args:</span>
-<span class="sd">        method (UploadMethod): 消息上下文的枚举对象</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">t</span> <span class="o">=</span> <span class="n">upload_method_ctx</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">method</span><span class="p">)</span>
-    <span class="k">yield</span>
-    <span class="n">upload_method_ctx</span><span class="o">.</span><span class="n">reset</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
 </code></pre></div>
 </td></tr></table>
         </details>

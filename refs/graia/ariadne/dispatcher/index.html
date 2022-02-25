@@ -1279,13 +1279,6 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#graia.ariadne.dispatcher.ContextDispatcher" class="md-nav__link">
-    ContextDispatcher
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#graia.ariadne.dispatcher.MessageChainDispatcher" class="md-nav__link">
     MessageChainDispatcher
   </a>
@@ -1293,8 +1286,8 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#graia.ariadne.dispatcher.SenderDispatcher" class="md-nav__link">
-    SenderDispatcher
+  <a href="#graia.ariadne.dispatcher.ContextDispatcher" class="md-nav__link">
+    ContextDispatcher
   </a>
   
 </li>
@@ -1302,6 +1295,13 @@
         <li class="md-nav__item">
   <a href="#graia.ariadne.dispatcher.SourceDispatcher" class="md-nav__link">
     SourceDispatcher
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#graia.ariadne.dispatcher.SenderDispatcher" class="md-nav__link">
+    SenderDispatcher
   </a>
   
 </li>
@@ -1932,13 +1932,6 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#graia.ariadne.dispatcher.ContextDispatcher" class="md-nav__link">
-    ContextDispatcher
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#graia.ariadne.dispatcher.MessageChainDispatcher" class="md-nav__link">
     MessageChainDispatcher
   </a>
@@ -1946,8 +1939,8 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#graia.ariadne.dispatcher.SenderDispatcher" class="md-nav__link">
-    SenderDispatcher
+  <a href="#graia.ariadne.dispatcher.ContextDispatcher" class="md-nav__link">
+    ContextDispatcher
   </a>
   
 </li>
@@ -1955,6 +1948,13 @@
         <li class="md-nav__item">
   <a href="#graia.ariadne.dispatcher.SourceDispatcher" class="md-nav__link">
     SourceDispatcher
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#graia.ariadne.dispatcher.SenderDispatcher" class="md-nav__link">
+    SenderDispatcher
   </a>
   
 </li>
@@ -2000,55 +2000,12 @@
 
 
 
-<h2 id="graia.ariadne.dispatcher.ContextDispatcher" class="doc doc-heading">
-          <code>ContextDispatcher</code>
-
-
-
-<a href="#graia.ariadne.dispatcher.ContextDispatcher" class="headerlink" title="Permanent link">&para;</a></h2>
-
-
-    <div class="doc doc-contents ">
-        <p class="doc doc-class-bases">
-          Bases: <code><span title="graia.broadcast.entities.dispatcher.BaseDispatcher">BaseDispatcher</span></code></p>
-
-
-      <p>提取上下文的 Dispatcher</p>
-
-
-
-
-
-  <div class="doc doc-children">
-
-
-
-
-
-
-
-
-
-
-
-  </div>
-
-    </div>
-
-  </div>
-
-
-
-  <div class="doc doc-object doc-class">
-
-
-
 <h2 id="graia.ariadne.dispatcher.MessageChainDispatcher" class="doc doc-heading">
           <code>MessageChainDispatcher</code>
 
 
 
-<a href="#graia.ariadne.dispatcher.MessageChainDispatcher" class="headerlink" title="Permanent link">&para;</a></h2>
+<a href="#graia.ariadne.dispatcher.MessageChainDispatcher" class="headerlink" title="Permanent link">🔗</a></h2>
 
 
     <div class="doc doc-contents ">
@@ -2086,12 +2043,12 @@
 
 
 
-<h2 id="graia.ariadne.dispatcher.SenderDispatcher" class="doc doc-heading">
-          <code>SenderDispatcher</code>
+<h2 id="graia.ariadne.dispatcher.ContextDispatcher" class="doc doc-heading">
+          <code>ContextDispatcher</code>
 
 
 
-<a href="#graia.ariadne.dispatcher.SenderDispatcher" class="headerlink" title="Permanent link">&para;</a></h2>
+<a href="#graia.ariadne.dispatcher.ContextDispatcher" class="headerlink" title="Permanent link">🔗</a></h2>
 
 
     <div class="doc doc-contents ">
@@ -2099,9 +2056,7 @@
           Bases: <code><span title="graia.broadcast.entities.dispatcher.BaseDispatcher">BaseDispatcher</span></code></p>
 
 
-      <p>从 MessageEvent 提取 sender 的 Dispatcher.
-支持实现了 <strong>instancecheck</strong> 的注释, 如 Union, Optional (Python 3.10+)
-和被 typing.runtime_checkable 标记为运行时协议的 Protocol.</p>
+      <p>提取上下文的 Dispatcher</p>
 
 
 
@@ -2136,7 +2091,7 @@
 
 
 
-<a href="#graia.ariadne.dispatcher.SourceDispatcher" class="headerlink" title="Permanent link">&para;</a></h2>
+<a href="#graia.ariadne.dispatcher.SourceDispatcher" class="headerlink" title="Permanent link">🔗</a></h2>
 
 
     <div class="doc doc-contents ">
@@ -2145,6 +2100,51 @@
 
 
       <p>提取 MessageEvent 消息链 Source 元素的 Dispatcher</p>
+
+
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+
+  </div>
+
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-class">
+
+
+
+<h2 id="graia.ariadne.dispatcher.SenderDispatcher" class="doc doc-heading">
+          <code>SenderDispatcher</code>
+
+
+
+<a href="#graia.ariadne.dispatcher.SenderDispatcher" class="headerlink" title="Permanent link">🔗</a></h2>
+
+
+    <div class="doc doc-contents ">
+        <p class="doc doc-class-bases">
+          Bases: <code><span title="graia.broadcast.entities.dispatcher.BaseDispatcher">BaseDispatcher</span></code></p>
+
+
+      <p>从 MessageEvent 提取 sender 的 Dispatcher.
+支持实现了 <strong>instancecheck</strong> 的注释, 如 Union, Optional (Python 3.10+)
+和被 typing.runtime_checkable 标记为运行时协议的 Protocol.</p>
 
 
 

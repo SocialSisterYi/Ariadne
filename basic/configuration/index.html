@@ -1995,7 +1995,7 @@
 
 
 
-<h1 id="_1">配置相关<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h1>
+<h1 id="_1">配置相关<a class="headerlink" href="#_1" title="Permanent link">🔗</a></h1>
 <p>这里是 <code>Ariadne</code> 的 <code>__init__()</code> 签名:</p>
 <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
@@ -2012,7 +2012,7 @@
 </span><span class="hll">    <span class="n">disable_logo</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
 </span><span class="p">):</span>
 </code></pre></div>
-<h3 id="chat_log_config">chat_log_config<a class="headerlink" href="#chat_log_config" title="Permanent link">&para;</a></h3>
+<h3 id="chat_log_config">chat_log_config<a class="headerlink" href="#chat_log_config" title="Permanent link">🔗</a></h3>
 <p>这个部分是用于控制 Ariadne 的 聊天日志的.</p>
 <p>设置为 <code>False</code> 即可禁用聊天日志输出.</p>
 <p>你可以从 <code>graia.ariadne.model</code> 导入 <code>ChatLogConfig</code>, 进行更细致的控制.</p>
@@ -2020,14 +2020,14 @@
 <div class="admonition info">
 <p class="admonition-title">如果你想控制总体日志输出, 请看 <a href="../../suite/log/">这里</a></p>
 </div>
-<h3 id="use_loguru_traceback">use_loguru_traceback<a class="headerlink" href="#use_loguru_traceback" title="Permanent link">&para;</a></h3>
+<h3 id="use_loguru_traceback">use_loguru_traceback<a class="headerlink" href="#use_loguru_traceback" title="Permanent link">🔗</a></h3>
 <p><code>Graia Framework</code> 默认使用 <a href="https://docs.python.org/zh-cn/3/library/traceback.html"><code>traceback</code></a> 中的
 <a href="https://docs.python.org/zh-cn/3/library/traceback.html#traceback.print_exc"><code>traceback.print_exc()</code></a> 函数输出执行中的异常追踪.</p>
 <p>但是其无法直接记录异常至日志中, 且异常回溯有时候并不直观, 导致难以调试.</p>
 <p>设置 <code>use_loguru_traceback</code> 后, <code>Ariadne</code> 会调用 <code>util.inject_loguru_traceback()</code> 替换
 <a href="https://docs.python.org/zh-cn/3/library/traceback.html#traceback.print_exception"><code>traceback.print_exception()</code></a> 与
 <a href="https://docs.python.org/zh-cn/3/library/sys.html#sys.excepthook"><code>sys.excepthook()</code></a> 从而获得对异常输出的完全控制权.</p>
-<h3 id="use_bypass_listener">use_bypass_listener<a class="headerlink" href="#use_bypass_listener" title="Permanent link">&para;</a></h3>
+<h3 id="use_bypass_listener">use_bypass_listener<a class="headerlink" href="#use_bypass_listener" title="Permanent link">🔗</a></h3>
 <p>以下代码在 <code>Graia Broadcast</code> 的正常流程中不能正常运作,
 因为其默认事件分发器只支持原事件 (<code>listening_event is posted_event</code>:</p>
 <div class="highlight"><pre><span></span><code><span class="nd">@broadcast</span><span class="o">.</span><span class="n">receiver</span><span class="p">(</span><span class="n">MessageEvent</span><span class="p">)</span>
@@ -2035,15 +2035,15 @@
     <span class="k">await</span> <span class="n">app</span><span class="o">.</span><span class="n">sendMessage</span><span class="p">(</span><span class="n">event</span><span class="p">,</span> <span class="n">MessageChain</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="s2">&quot;Hello!&quot;</span><span class="p">))</span>
 </code></pre></div>
 <p>设置 <code>use_bypass_listener</code> 后, <code>Ariadne</code> 会通过 <code>inject_bypass_listener</code> 支持子事件解析 (事件透传).</p>
-<h3 id="max_retry">max_retry<a class="headerlink" href="#max_retry" title="Permanent link">&para;</a></h3>
+<h3 id="max_retry">max_retry<a class="headerlink" href="#max_retry" title="Permanent link">🔗</a></h3>
 <p><code>Ariadne</code> 默认会尝试无限重启 <code>Adapter</code>,
 设置 <code>max_retry</code> 可以确保在 <strong>连续至少</strong> <code>max_retry</code> 次连接失败后自动退出 <code>daemon</code> (前提是你使用 <code>Ariadne.lifecycle()</code>)</p>
-<h3 id="disable_telemetry">disable_telemetry<a class="headerlink" href="#disable_telemetry" title="Permanent link">&para;</a></h3>
+<h3 id="disable_telemetry">disable_telemetry<a class="headerlink" href="#disable_telemetry" title="Permanent link">🔗</a></h3>
 <p>设置为 <code>True</code> 后即会禁用启动时的版本检测.</p>
 <div class="admonition example">
 <p class="admonition-title">默认会检查来自 <code>graia</code> 与 <code>graiax</code> 的包.</p>
 </div>
-<h3 id="disable_logo">disable_logo<a class="headerlink" href="#disable_logo" title="Permanent link">&para;</a></h3>
+<h3 id="disable_logo">disable_logo<a class="headerlink" href="#disable_logo" title="Permanent link">🔗</a></h3>
 <p>设置为 <code>True</code> 后即会禁用启动时的 logo 打印.</p>
 <details open="open">
 <summary>Logo</summary>

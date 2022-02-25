@@ -2009,8 +2009,8 @@
 
 
 
-<h1 id="_1">消息链: 进阶<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h1>
-<h3 id="subchain">subchain 方法<a class="headerlink" href="#subchain" title="Permanent link">&para;</a></h3>
+<h1 id="_1">消息链: 进阶<a class="headerlink" href="#_1" title="Permanent link">🔗</a></h1>
+<h3 id="subchain">subchain 方法<a class="headerlink" href="#subchain" title="Permanent link">🔗</a></h3>
 <p><code>MessageChain.subchain</code> 是这样使用的:</p>
 <p>传入一个 <code>slice</code> 切片对象, 其 <code>start</code> 与 <code>stop</code> (可选) 均为 <strong>二元组</strong>, 为 <code>(int, Optional[int]</code> 格式.</p>
 <p>切片对象 <code>start</code> 与 <code>stop</code> 的第一个整数指示元素起止位置. (含义同在序列上切片)</p>
@@ -2027,20 +2027,20 @@
 <p>在消息链对象上使用 <code>[]</code> 符号并使用 <code>MessageChain[(a1, a2):(b1, b2)]</code></p>
 <p>相当于调用 <code>MessageChain.subchain(slice((a1, a2), (b1, b2)))</code></p>
 </details>
-<h3 id="_2">筛选元素<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h3>
+<h3 id="_2">筛选元素<a class="headerlink" href="#_2" title="Permanent link">🔗</a></h3>
 <p>使用 <code>include</code> 与 <code>exclude</code> 方法可以筛选消息链中的元素.</p>
 <div class="highlight"><pre><span></span><code><span class="n">msg_chain</span> <span class="o">=</span> <span class="n">MessageChain</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="s2">&quot;Hello&quot;</span><span class="p">,</span> <span class="n">At</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="mi">12345</span><span class="p">))</span>
 <span class="k">assert</span> <span class="n">msg_chain</span><span class="o">.</span><span class="n">include</span><span class="p">(</span><span class="n">Plain</span><span class="p">)</span> <span class="o">==</span> <span class="n">MessageChain</span><span class="p">([</span><span class="n">Plain</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s1">&#39;Hello&#39;</span><span class="p">)])</span>
 <span class="k">assert</span> <span class="n">msg_chain</span><span class="o">.</span><span class="n">exclude</span><span class="p">(</span><span class="n">Plain</span><span class="p">)</span> <span class="o">==</span> <span class="n">MessageChain</span><span class="p">([</span><span class="n">At</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="mi">12345</span><span class="p">)])</span>
 </code></pre></div>
-<h3 id="_3">分割<a class="headerlink" href="#_3" title="Permanent link">&para;</a></h3>
+<h3 id="_3">分割<a class="headerlink" href="#_3" title="Permanent link">🔗</a></h3>
 <p>使用 <code>split</code> 方法以切割消息链为 <strong>多个消息链</strong>.</p>
 <p><code>raw_string</code> 参数用于指示是否要保留 "空" 的文本元素.</p>
 <div class="highlight"><pre><span></span><code><span class="n">msg_chain</span> <span class="o">=</span> <span class="n">MessageChain</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="s2">&quot;Hello world!&quot;</span><span class="p">,</span> <span class="n">At</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="mi">12345</span><span class="p">))</span>
 <span class="k">assert</span> <span class="n">msg_chain</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;world!&quot;</span><span class="p">,</span> <span class="n">raw_string</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="o">==</span> <span class="p">[</span><span class="n">MessageChain</span><span class="p">([</span><span class="n">Plain</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s1">&#39;Hello &#39;</span><span class="p">)]),</span> <span class="n">MessageChain</span><span class="p">([</span><span class="n">Plain</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">),</span> <span class="n">At</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="mi">12345</span><span class="p">)])]</span>
 <span class="k">assert</span> <span class="n">msg_chain</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;world!&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="p">[</span><span class="n">MessageChain</span><span class="p">([</span><span class="n">Plain</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s1">&#39;Hello &#39;</span><span class="p">)]),</span> <span class="n">MessageChain</span><span class="p">([</span><span class="n">At</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="mi">12345</span><span class="p">)])]</span>
 </code></pre></div>
-<h3 id="_4">前缀与后缀操作<a class="headerlink" href="#_4" title="Permanent link">&para;</a></h3>
+<h3 id="_4">前缀与后缀操作<a class="headerlink" href="#_4" title="Permanent link">🔗</a></h3>
 <p>与字符串对象一样, 消息链对象支持 <code>startswith</code>, <code>endswith</code>, <code>removeprefix</code>, <code>removesuffix</code> 四个方法.</p>
 <div class="admonition warning">
 <p class="admonition-title">注意</p>
@@ -2060,7 +2060,7 @@
 <p>你知道的, <code>Python</code> 在 3.9 以后才正式引入 <code>removeprefix</code> 与 <code>removesuffix</code> 方法......</p>
 <p>不过 <code>Ariadne</code> 中的这两个方法并不需要 <code>Python</code> 3.9+</p>
 </details>
-<h3 id="replace">replace 方法<a class="headerlink" href="#replace" title="Permanent link">&para;</a></h3>
+<h3 id="replace">replace 方法<a class="headerlink" href="#replace" title="Permanent link">🔗</a></h3>
 <p><code>MessageChain</code> 的 <code>replace</code> 方法与 <code>str</code> 的 <code>replace</code> 方法有异曲同工之妙.</p>
 <p>在其表面下, <code>findSubChain</code> 承担了大部分工作, 找出所有符合 <code>old</code> 的部分, 之后由简单的循环完成替换.</p>
 <div class="highlight"><pre><span></span><code><span class="gp">&gt;&gt;&gt; </span><span class="n">MessageChain</span><span class="p">([</span><span class="s2">&quot;Hello World!Hello World!&quot;&quot;How are you?&quot;</span><span class="p">,</span> <span class="n">At</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span> <span class="s2">&quot;yo&quot;</span><span class="p">])</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span>
@@ -2075,7 +2075,7 @@
 <div class="highlight"><pre><span></span><code><span class="n">msg</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">At</span><span class="p">(</span><span class="n">app</span><span class="o">.</span><span class="n">account</span><span class="p">),</span> <span class="n">Plain</span><span class="p">(</span><span class="s2">&quot;[bot]&quot;</span><span class="p">))</span>
 </code></pre></div>
 </div>
-<h3 id="join">join 方法<a class="headerlink" href="#join" title="Permanent link">&para;</a></h3>
+<h3 id="join">join 方法<a class="headerlink" href="#join" title="Permanent link">🔗</a></h3>
 <p><code>MessageChain</code> 的 <code>join</code> 方法与 <code>str</code> 的 <code>join</code> 方法大致相同.</p>
 <p>接受一个内容为 <code>MessageChain</code> 的可迭代对象, 并用其自身拼接.</p>
 <p><code>merge</code> 参数决定是否自动帮你拼接消息链, 默认为是.</p>
@@ -2084,7 +2084,7 @@
 <span class="gp">&gt;&gt;&gt; </span><span class="n">MessageChain</span><span class="p">([</span><span class="s2">&quot; &quot;</span><span class="p">])</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">MessageChain</span><span class="p">([</span><span class="s2">&quot;A&quot;</span><span class="p">]),</span> <span class="n">MessageChain</span><span class="p">([</span><span class="s2">&quot;B&quot;</span><span class="p">]),</span> <span class="n">MessageChain</span><span class="p">([</span><span class="s2">&quot;C&quot;</span><span class="p">])],</span> <span class="n">merge</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 <span class="go">MessageChain([Plain(&quot;A&quot;), Plain(&quot; &quot;), Plain(&quot;B&quot;), Plain(&quot; &quot;), Plain(&quot;C&quot;)])</span>
 </code></pre></div>
-<h2 id="_5">元素安全性<a class="headerlink" href="#_5" title="Permanent link">&para;</a></h2>
+<h2 id="_5">元素安全性<a class="headerlink" href="#_5" title="Permanent link">🔗</a></h2>
 <p>因为 <code>MessageChain</code> 是一个可变对象, 其底层的 <code>Element</code> 属性可以被修改, 所以自然可以这样做:</p>
 <div class="highlight"><pre><span></span><code><span class="gp">&gt;&gt;&gt; </span><span class="n">chain</span> <span class="o">=</span> <span class="n">MessageChain</span><span class="p">([</span><span class="n">Plain</span><span class="p">(</span><span class="s2">&quot;hello&quot;</span><span class="p">),</span> <span class="n">At</span><span class="p">(</span><span class="mi">12345</span><span class="p">)])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">chain</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">target</span> <span class="o">=</span> <span class="mi">99999</span>

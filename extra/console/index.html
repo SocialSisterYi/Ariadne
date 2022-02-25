@@ -1967,14 +1967,14 @@
 
 
 
-<h1 id="console-">Console - 内建实时控制台<a class="headerlink" href="#console-" title="Permanent link">&para;</a></h1>
+<h1 id="console-">Console - 内建实时控制台<a class="headerlink" href="#console-" title="Permanent link">🔗</a></h1>
 <div class="admonition warning">
 <p class="admonition-title">提前说明</p>
 <p><code>Console</code> 的底层 <code>prompt-toolkit</code> 并不完备...... <span class="curtain">所以别拿着 prompt-toolkit 的 bug 来找我</span></p>
 </div>
 <p><code>Console</code> 是可以与 <code>Ariadne</code> 分离的, 不过它默认会与 <code>Ariadne</code> 一起启动与停止,
 你可以通过在实例化时传入 <code>listen_launch</code>, <code>listen_shutdown</code> 来控制这个行为.</p>
-<h2 id="_1">实例化<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h2>
+<h2 id="_1">实例化<a class="headerlink" href="#_1" title="Permanent link">🔗</a></h2>
 <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
     <span class="n">broadcast</span><span class="p">:</span> <span class="n">Broadcast</span><span class="p">,</span>
@@ -2040,7 +2040,7 @@ Ariadne A.A.A&gt;
 </code></pre></div>
 <p>你可以看到, 在按下 <code>Ctrl + C</code> 后, <code>Console</code> 也会自动将尚未完成的输入行变灰并退出.</p>
 <p>接下来, 让我们注册 <code>Console</code> 命令处理器.</p>
-<h2 id="_2">注册命令处理器<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h2>
+<h2 id="_2">注册命令处理器<a class="headerlink" href="#_2" title="Permanent link">🔗</a></h2>
 <p>有以下两种风格的注册方式</p>
 <div class="tabbed-set tabbed-alternate" data-tabs="1:2"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">类 broadcast.receiver</label><label for="__tabbed_1_2">Saya</label></div>
 <div class="tabbed-content">
@@ -2076,7 +2076,7 @@ Ariadne A.A.A&gt;
 </div>
 </div>
 <p><code>register</code> 方法与 <code>ConsoleSchema</code> 的签名均为 <code>(dispatchers: List[Dispatcher] = None, decorators: List[Decorator] = None) -&gt; Callable[[T_Callable], T_Callable]</code></p>
-<h2 id="_3">可分派的参数<a class="headerlink" href="#_3" title="Permanent link">&para;</a></h2>
+<h2 id="_3">可分派的参数<a class="headerlink" href="#_3" title="Permanent link">🔗</a></h2>
 <p>通过 <code>register</code> 或 <code>ConsoleSchema</code> 注册的 <code>Callable</code> 可获得以下参数:</p>
 <ul>
 <li>
@@ -2098,7 +2098,7 @@ Ariadne A.A.A&gt;
 <p>(<code>Ariadne</code>): 若有 <code>Ariadne</code> 实例在运行则可被分派.</p>
 </li>
 </ul>
-<h2 id="prompt">手动 prompt<a class="headerlink" href="#prompt" title="Permanent link">&para;</a></h2>
+<h2 id="prompt">手动 prompt<a class="headerlink" href="#prompt" title="Permanent link">🔗</a></h2>
 <p><code>Console</code> 一个值得注意的地方是它的每个处理函数是被单独等待执行的. (按照添加从早到晚的顺序)</p>
 <p>也就是说, 你可以通过 <code>raise PropagationCancelled</code> 来阻断剩下的处理函数执行.</p>
 <p>同时, 你可以通过获取 <code>Console</code> 实例完成以下操作.</p>

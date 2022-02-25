@@ -1967,10 +1967,10 @@
 
 
 
-<h1 id="_1">函数异步化<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h1>
+<h1 id="_1">函数异步化<a class="headerlink" href="#_1" title="Permanent link">🔗</a></h1>
 <p><code>Ariadne</code> 在 <code>util.async_exec</code> 模块里提供了 <code>io_bound</code> 与 <code>cpu_bound</code> 两个函数,
 可以用于方便的将普通函数异步化以防止阻塞.</p>
-<h2 id="_2">用法<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h2>
+<h2 id="_2">用法<a class="headerlink" href="#_2" title="Permanent link">🔗</a></h2>
 <p>首先导入:</p>
 <div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">graia.ariadne.util.async_exec</span> <span class="kn">import</span> <span class="n">io_bound</span><span class="p">,</span> <span class="n">cpu_bound</span>
 </code></pre></div>
@@ -2015,18 +2015,18 @@
 <p>这样就可以保证只在主进程中进行上下文的获取了.</p>
 </div>
 </div>
-<h2 id="parallelexecutor">充分利用 ParallelExecutor<a class="headerlink" href="#parallelexecutor" title="Permanent link">&para;</a></h2>
+<h2 id="parallelexecutor">充分利用 ParallelExecutor<a class="headerlink" href="#parallelexecutor" title="Permanent link">🔗</a></h2>
 <p>在你的代码中可以通过 <code>ParallelExecutor.get()</code> 得到一个 <code>ParallelExecutor</code> 实例, 可以在其上运行 <code>to_thread</code> 与 <code>to_process</code> 异步方法.</p>
 <p>这些方法可以运行被包装过的和没被包装过的函数.</p>
 <div class="admonition warning">
 <p class="admonition-title">提示</p>
 <p>注意其签名为 <code>(func: Callable[P, R], *args, *kwargs) -&gt; Awaitable[R]</code>. 也就是说, 不用传入元组作为打包的参数了.</p>
 </div>
-<h2 id="_3">进一步控制<a class="headerlink" href="#_3" title="Permanent link">&para;</a></h2>
+<h2 id="_3">进一步控制<a class="headerlink" href="#_3" title="Permanent link">🔗</a></h2>
 <p>要进一步控制, 可以从 <code>graia.ariadne.util.async_exec</code> 导入 <code>ParallelExecutor</code>.</p>
 <p>通过提前执行 <code>ParallelExecutor(loop=app.loop, max_thread=max_t, max_proc=max_p)</code> 可以控制并行执行器的最大线程, 进程数.</p>
 <p><code>loop</code> 可以在之后通过 <code>bind_loop</code> 函数传入.</p>
-<h2 id="_4">原理<a class="headerlink" href="#_4" title="Permanent link">&para;</a></h2>
+<h2 id="_4">原理<a class="headerlink" href="#_4" title="Permanent link">🔗</a></h2>
 <p>因为被 <code>io_bound</code> <code>cpu_bound</code> 包装的函数在另一个进程中无法访问到其原有函数,</p>
 <p>我们在 <code>ParallelExecutor</code> 的类变量 <code>func_mapping</code> 中存储了函数的 <code>__qualname__</code> 至原函数本身的映射.</p>
 <p>这样执行时 <code>io_bound</code> <code>cpu_bound</code> 只传递 <code>__qualname__</code> 与 <code>__module__</code> 给实际的执行函数, 它会通过导入 <code>__module__</code> 完成另一个进程中的函数注册.

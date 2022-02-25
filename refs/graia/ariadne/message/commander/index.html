@@ -1871,8 +1871,49 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#graia.ariadne.message.commander.ParamDesc" class="md-nav__link">
+    ParamDesc
+  </a>
+  
+    <nav class="md-nav" aria-label="ParamDesc">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#graia.ariadne.message.commander.ParamDesc.gen_model" class="md-nav__link">
+    gen_model()
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#graia.ariadne.message.commander.Slot" class="md-nav__link">
+    Slot
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#graia.ariadne.message.commander.Arg" class="md-nav__link">
     Arg
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#graia.ariadne.message.commander.CommandPattern" class="md-nav__link">
+    CommandPattern
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#graia.ariadne.message.commander.MismatchError" class="md-nav__link">
+    MismatchError
   </a>
   
 </li>
@@ -1894,13 +1935,6 @@
         
       </ul>
     </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#graia.ariadne.message.commander.CommandPattern" class="md-nav__link">
-    CommandPattern
-  </a>
   
 </li>
       
@@ -1935,40 +1969,6 @@
         
       </ul>
     </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#graia.ariadne.message.commander.MismatchError" class="md-nav__link">
-    MismatchError
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#graia.ariadne.message.commander.ParamDesc" class="md-nav__link">
-    ParamDesc
-  </a>
-  
-    <nav class="md-nav" aria-label="ParamDesc">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#graia.ariadne.message.commander.ParamDesc.gen_model" class="md-nav__link">
-    gen_model()
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#graia.ariadne.message.commander.Slot" class="md-nav__link">
-    Slot
-  </a>
   
 </li>
       
@@ -2023,11 +2023,203 @@
 
 
 
+<h2 id="graia.ariadne.message.commander.ParamDesc" class="doc doc-heading">
+          <code>ParamDesc</code>
+
+
+
+<a href="#graia.ariadne.message.commander.ParamDesc" class="headerlink" title="Permanent link">🔗</a></h2>
+
+
+    <div class="doc doc-contents ">
+        <p class="doc doc-class-bases">
+          Bases: <code><a href="https://docs.python.org/zh-cn/3/library/abc.html#module-abc">abc</a>.<a title="abc.ABC" href="https://docs.python.org/zh-cn/3/library/abc.html#abc.ABC">ABC</a></code></p>
+
+
+
+
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+
+
+  <div class="doc doc-object doc-function">
+
+
+
+<h3 id="graia.ariadne.message.commander.ParamDesc.gen_model" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">gen_model</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">validators</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Callable</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span></code>
+
+
+<a href="#graia.ariadne.message.commander.ParamDesc.gen_model" class="headerlink" title="Permanent link">🔗</a></h3>
+
+
+    <div class="doc doc-contents ">
+
+      <p>生成用于 pydantic 解析的 model 属性</p>
+
+  <p><strong>Parameters:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Description</th>
+        <th>Default</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td><code>validators</code></td>
+          <td>
+                <code><a title="typing.Iterable" href="https://docs.python.org/zh-cn/3/library/typing.html#typing.Iterable">Iterable</a>[<a title="typing.Callable" href="https://docs.python.org/zh-cn/3/library/typing.html#typing.Callable">Callable</a>]</code>
+          </td>
+          <td><p>用作 validator 的 Callable 可迭代对象</p></td>
+          <td>
+              <em>required</em>
+          </td>
+        </tr>
+    </tbody>
+  </table>
+
+        <details class="quote">
+          <summary>Source code in <code>graia/ariadne/message/commander/__init__.py</code></summary>
+          <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">91</span>
+<span class="normal">92</span>
+<span class="normal">93</span>
+<span class="normal">94</span>
+<span class="normal">95</span>
+<span class="normal">96</span>
+<span class="normal">97</span>
+<span class="normal">98</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+<span class="k">def</span> <span class="nf">gen_model</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">validators</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Callable</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;生成用于 pydantic 解析的 model 属性</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        validators (Iterable[Callable]): 用作 validator 的 Callable 可迭代对象</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="o">...</span>
+</code></pre></div>
+</td></tr></table>
+        </details>
+    </div>
+
+  </div>
+
+
+
+
+
+  </div>
+
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-class">
+
+
+
+<h2 id="graia.ariadne.message.commander.Slot" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">Slot</span><span class="p">(</span><span class="n">placeholder</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span> <span class="nb">type</span><span class="p">:</span> <span class="n">Type</span> <span class="o">=</span> <span class="bp">Ellipsis</span><span class="p">,</span> <span class="n">default</span><span class="p">:</span> <span class="n">Any</span> <span class="o">=</span> <span class="bp">Ellipsis</span><span class="p">,</span> <span class="n">default_factory</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[],</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="bp">Ellipsis</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span></code>
+
+
+<a href="#graia.ariadne.message.commander.Slot" class="headerlink" title="Permanent link">🔗</a></h2>
+
+
+    <div class="doc doc-contents ">
+        <p class="doc doc-class-bases">
+          Bases: <code><a title="graia.ariadne.message.commander.ParamDesc" href="#graia.ariadne.message.commander.ParamDesc">ParamDesc</a></code></p>
+
+
+      <p>Slot</p>
+
+
+            <details class="quote">
+              <summary>Source code in <code>graia/ariadne/message/commander/__init__.py</code></summary>
+              <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">105</span>
+<span class="normal">106</span>
+<span class="normal">107</span>
+<span class="normal">108</span>
+<span class="normal">109</span>
+<span class="normal">110</span>
+<span class="normal">111</span>
+<span class="normal">112</span>
+<span class="normal">113</span>
+<span class="normal">114</span>
+<span class="normal">115</span>
+<span class="normal">116</span>
+<span class="normal">117</span>
+<span class="normal">118</span>
+<span class="normal">119</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+    <span class="bp">self</span><span class="p">,</span>
+    <span class="n">placeholder</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span>
+    <span class="nb">type</span><span class="p">:</span> <span class="n">Type</span> <span class="o">=</span> <span class="o">...</span><span class="p">,</span>
+    <span class="n">default</span><span class="p">:</span> <span class="n">Any</span> <span class="o">=</span> <span class="o">...</span><span class="p">,</span>
+    <span class="n">default_factory</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[],</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="o">...</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">placeholder</span> <span class="o">=</span> <span class="n">placeholder</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">type</span> <span class="o">=</span> <span class="nb">type</span>
+    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="s2">&quot;raw&quot;</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">type</span> <span class="o">=</span> <span class="n">_raw</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">default</span> <span class="o">=</span> <span class="n">default</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">default_factory</span> <span class="o">=</span> <span class="n">default_factory</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">param_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">BaseModel</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+</code></pre></div>
+</td></tr></table>
+            </details>
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  </div>
+
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-class">
+
+
+
 <h2 id="graia.ariadne.message.commander.Arg" class="doc doc-heading">
 <code class="highlight language-python"><span class="n">Arg</span><span class="p">(</span><span class="n">pattern</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="nb">type</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">BaseModel</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="bp">Ellipsis</span><span class="p">,</span> <span class="n">default</span><span class="p">:</span> <span class="n">Any</span> <span class="o">=</span> <span class="bp">Ellipsis</span><span class="p">,</span> <span class="n">default_factory</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[],</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="bp">Ellipsis</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span></code>
 
 
-<a href="#graia.ariadne.message.commander.Arg" class="headerlink" title="Permanent link">&para;</a></h2>
+<a href="#graia.ariadne.message.commander.Arg" class="headerlink" title="Permanent link">🔗</a></h2>
 
 
     <div class="doc doc-contents ">
@@ -2152,11 +2344,85 @@
 
 
 
+<h2 id="graia.ariadne.message.commander.CommandPattern" class="doc doc-heading">
+          <code>CommandPattern</code>
+
+
+
+<a href="#graia.ariadne.message.commander.CommandPattern" class="headerlink" title="Permanent link">🔗</a></h2>
+
+
+    <div class="doc doc-contents ">
+
+
+      <p>命令样式</p>
+
+
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  </div>
+
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-class">
+
+
+
+<h2 id="graia.ariadne.message.commander.MismatchError" class="doc doc-heading">
+          <code>MismatchError</code>
+
+
+
+<a href="#graia.ariadne.message.commander.MismatchError" class="headerlink" title="Permanent link">🔗</a></h2>
+
+
+    <div class="doc doc-contents ">
+        <p class="doc doc-class-bases">
+          Bases: <code><a href="https://docs.python.org/zh-cn/3/library/exceptions.html#ValueError">ValueError</a></code></p>
+
+
+      <p>指令失配</p>
+
+
+
+
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-class">
+
+
+
 <h2 id="graia.ariadne.message.commander.CommandHandler" class="doc doc-heading">
 <code class="highlight language-python"><span class="n">CommandHandler</span><span class="p">(</span><span class="n">record</span><span class="p">:</span> <span class="n">CommandPattern</span><span class="p">,</span> <span class="n">callable</span><span class="p">:</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">dispatchers</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">BaseDispatcher</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">decorators</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Decorator</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span></code>
 
 
-<a href="#graia.ariadne.message.commander.CommandHandler" class="headerlink" title="Permanent link">&para;</a></h2>
+<a href="#graia.ariadne.message.commander.CommandHandler" class="headerlink" title="Permanent link">🔗</a></h2>
 
 
     <div class="doc doc-contents ">
@@ -2223,10 +2489,10 @@
 
 
 <h3 id="graia.ariadne.message.commander.CommandHandler.get_data" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">get_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">slot_data</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span> <span class="n">MessageChain</span><span class="p">],</span> <span class="n">arg_data</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">MessageChain</span><span class="p">]],</span> <span class="n">wildcard_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">MessageChain</span><span class="p">])</span></code>
+<code class="highlight language-python"><span class="n">get_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">slot_data</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span> <span class="n">MessageChain</span><span class="p">],</span> <span class="n">arg_data</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">MessageChain</span><span class="p">]],</span> <span class="n">wildcard_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">MessageChain</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span></code>
 
 
-<a href="#graia.ariadne.message.commander.CommandHandler.get_data" class="headerlink" title="Permanent link">&para;</a></h3>
+<a href="#graia.ariadne.message.commander.CommandHandler.get_data" class="headerlink" title="Permanent link">🔗</a></h3>
 
 
     <div class="doc doc-contents ">
@@ -2278,6 +2544,7 @@
     <tbody>
         <tr>
           <td>
+                <code><a title="typing.Dict" href="https://docs.python.org/zh-cn/3/library/typing.html#typing.Dict">Dict</a>[<a href="https://docs.python.org/zh-cn/3/library/stdtypes.html#str">str</a>, <a title="typing.Any" href="https://docs.python.org/zh-cn/3/library/typing.html#typing.Any">Any</a>]</code>
           </td>
           <td><p>Dict[str, Any]: 参数</p></td>
         </tr>
@@ -2344,7 +2611,7 @@
     <span class="n">slot_data</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span> <span class="n">MessageChain</span><span class="p">],</span>
     <span class="n">arg_data</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">MessageChain</span><span class="p">]],</span>
     <span class="n">wildcard_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">MessageChain</span><span class="p">],</span>
-<span class="p">):</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
     <span class="sd">&quot;&quot;&quot;基于 CommandRecord 与解析数据设置 ConstantDispatcher 参数</span>
 
 <span class="sd">    Args:</span>
@@ -2416,57 +2683,11 @@
 
 
 
-<h2 id="graia.ariadne.message.commander.CommandPattern" class="doc doc-heading">
-          <code>CommandPattern</code>
-
-
-
-<a href="#graia.ariadne.message.commander.CommandPattern" class="headerlink" title="Permanent link">&para;</a></h2>
-
-
-    <div class="doc doc-contents ">
-
-
-      <p>命令样式</p>
-
-
-
-
-
-  <div class="doc doc-children">
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  </div>
-
-    </div>
-
-  </div>
-
-
-
-  <div class="doc doc-object doc-class">
-
-
-
 <h2 id="graia.ariadne.message.commander.Commander" class="doc doc-heading">
 <code class="highlight language-python"><span class="n">Commander</span><span class="p">(</span><span class="n">broadcast</span><span class="p">:</span> <span class="n">Broadcast</span><span class="p">,</span> <span class="n">listen</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span></code>
 
 
-<a href="#graia.ariadne.message.commander.Commander" class="headerlink" title="Permanent link">&para;</a></h2>
+<a href="#graia.ariadne.message.commander.Commander" class="headerlink" title="Permanent link">🔗</a></h2>
 
 
     <div class="doc doc-contents ">
@@ -2553,7 +2774,7 @@
 <code class="highlight language-python"><span class="n">add_type_cast</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">caster</span><span class="p">:</span> <span class="n">Callable</span><span class="p">)</span></code>
 
 
-<a href="#graia.ariadne.message.commander.Commander.add_type_cast" class="headerlink" title="Permanent link">&para;</a></h3>
+<a href="#graia.ariadne.message.commander.Commander.add_type_cast" class="headerlink" title="Permanent link">🔗</a></h3>
 
 
     <div class="doc doc-contents ">
@@ -2584,7 +2805,7 @@
 <code class="highlight language-python"><span class="n">command</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">command</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">setting</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="n">Slot</span><span class="p">,</span> <span class="n">Arg</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">dispatchers</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">BaseDispatcher</span><span class="p">]</span> <span class="o">=</span> <span class="p">(),</span> <span class="n">decorators</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Decorator</span><span class="p">]</span> <span class="o">=</span> <span class="p">())</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">T_Callable</span><span class="p">],</span> <span class="n">T_Callable</span><span class="p">]</span></code>
 
 
-<a href="#graia.ariadne.message.commander.Commander.command" class="headerlink" title="Permanent link">&para;</a></h3>
+<a href="#graia.ariadne.message.commander.Commander.command" class="headerlink" title="Permanent link">🔗</a></h3>
 
 
     <div class="doc doc-contents ">
@@ -2972,7 +3193,7 @@
       <small class="doc doc-label doc-label-async"><code>async</code></small>
   </span>
 
-<a href="#graia.ariadne.message.commander.Commander.execute" class="headerlink" title="Permanent link">&para;</a></h3>
+<a href="#graia.ariadne.message.commander.Commander.execute" class="headerlink" title="Permanent link">🔗</a></h3>
 
 
     <div class="doc doc-contents ">
@@ -3137,226 +3358,6 @@
 
 
 
-  <div class="doc doc-object doc-class">
-
-
-
-<h2 id="graia.ariadne.message.commander.MismatchError" class="doc doc-heading">
-          <code>MismatchError</code>
-
-
-
-<a href="#graia.ariadne.message.commander.MismatchError" class="headerlink" title="Permanent link">&para;</a></h2>
-
-
-    <div class="doc doc-contents ">
-        <p class="doc doc-class-bases">
-          Bases: <code><a href="https://docs.python.org/zh-cn/3/library/exceptions.html#ValueError">ValueError</a></code></p>
-
-
-      <p>指令失配</p>
-
-
-
-
-    </div>
-
-  </div>
-
-
-
-  <div class="doc doc-object doc-class">
-
-
-
-<h2 id="graia.ariadne.message.commander.ParamDesc" class="doc doc-heading">
-          <code>ParamDesc</code>
-
-
-
-<a href="#graia.ariadne.message.commander.ParamDesc" class="headerlink" title="Permanent link">&para;</a></h2>
-
-
-    <div class="doc doc-contents ">
-        <p class="doc doc-class-bases">
-          Bases: <code><a href="https://docs.python.org/zh-cn/3/library/abc.html#module-abc">abc</a>.<a title="abc.ABC" href="https://docs.python.org/zh-cn/3/library/abc.html#abc.ABC">ABC</a></code></p>
-
-
-
-
-
-
-
-  <div class="doc doc-children">
-
-
-
-
-
-
-
-
-
-
-
-
-  <div class="doc doc-object doc-function">
-
-
-
-<h3 id="graia.ariadne.message.commander.ParamDesc.gen_model" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">gen_model</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">validators</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Callable</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span></code>
-
-
-<a href="#graia.ariadne.message.commander.ParamDesc.gen_model" class="headerlink" title="Permanent link">&para;</a></h3>
-
-
-    <div class="doc doc-contents ">
-
-      <p>生成用于 pydantic 解析的 model 属性</p>
-
-  <p><strong>Parameters:</strong></p>
-  <table>
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Type</th>
-        <th>Description</th>
-        <th>Default</th>
-      </tr>
-    </thead>
-    <tbody>
-        <tr>
-          <td><code>validators</code></td>
-          <td>
-                <code><a title="typing.Iterable" href="https://docs.python.org/zh-cn/3/library/typing.html#typing.Iterable">Iterable</a>[<a title="typing.Callable" href="https://docs.python.org/zh-cn/3/library/typing.html#typing.Callable">Callable</a>]</code>
-          </td>
-          <td><p>用作 validator 的 Callable 可迭代对象</p></td>
-          <td>
-              <em>required</em>
-          </td>
-        </tr>
-    </tbody>
-  </table>
-
-        <details class="quote">
-          <summary>Source code in <code>graia/ariadne/message/commander/__init__.py</code></summary>
-          <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">91</span>
-<span class="normal">92</span>
-<span class="normal">93</span>
-<span class="normal">94</span>
-<span class="normal">95</span>
-<span class="normal">96</span>
-<span class="normal">97</span>
-<span class="normal">98</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
-<span class="k">def</span> <span class="nf">gen_model</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">validators</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Callable</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;生成用于 pydantic 解析的 model 属性</span>
-
-<span class="sd">    Args:</span>
-<span class="sd">        validators (Iterable[Callable]): 用作 validator 的 Callable 可迭代对象</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="o">...</span>
-</code></pre></div>
-</td></tr></table>
-        </details>
-    </div>
-
-  </div>
-
-
-
-
-
-  </div>
-
-    </div>
-
-  </div>
-
-
-
-  <div class="doc doc-object doc-class">
-
-
-
-<h2 id="graia.ariadne.message.commander.Slot" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">Slot</span><span class="p">(</span><span class="n">placeholder</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span> <span class="nb">type</span><span class="p">:</span> <span class="n">Type</span> <span class="o">=</span> <span class="bp">Ellipsis</span><span class="p">,</span> <span class="n">default</span><span class="p">:</span> <span class="n">Any</span> <span class="o">=</span> <span class="bp">Ellipsis</span><span class="p">,</span> <span class="n">default_factory</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[],</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="bp">Ellipsis</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span></code>
-
-
-<a href="#graia.ariadne.message.commander.Slot" class="headerlink" title="Permanent link">&para;</a></h2>
-
-
-    <div class="doc doc-contents ">
-        <p class="doc doc-class-bases">
-          Bases: <code><a title="graia.ariadne.message.commander.ParamDesc" href="#graia.ariadne.message.commander.ParamDesc">ParamDesc</a></code></p>
-
-
-      <p>Slot</p>
-
-
-            <details class="quote">
-              <summary>Source code in <code>graia/ariadne/message/commander/__init__.py</code></summary>
-              <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">105</span>
-<span class="normal">106</span>
-<span class="normal">107</span>
-<span class="normal">108</span>
-<span class="normal">109</span>
-<span class="normal">110</span>
-<span class="normal">111</span>
-<span class="normal">112</span>
-<span class="normal">113</span>
-<span class="normal">114</span>
-<span class="normal">115</span>
-<span class="normal">116</span>
-<span class="normal">117</span>
-<span class="normal">118</span>
-<span class="normal">119</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
-    <span class="bp">self</span><span class="p">,</span>
-    <span class="n">placeholder</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span>
-    <span class="nb">type</span><span class="p">:</span> <span class="n">Type</span> <span class="o">=</span> <span class="o">...</span><span class="p">,</span>
-    <span class="n">default</span><span class="p">:</span> <span class="n">Any</span> <span class="o">=</span> <span class="o">...</span><span class="p">,</span>
-    <span class="n">default_factory</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[],</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="o">...</span><span class="p">,</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">placeholder</span> <span class="o">=</span> <span class="n">placeholder</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">type</span> <span class="o">=</span> <span class="nb">type</span>
-    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="s2">&quot;raw&quot;</span><span class="p">:</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">type</span> <span class="o">=</span> <span class="n">_raw</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">default</span> <span class="o">=</span> <span class="n">default</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">default_factory</span> <span class="o">=</span> <span class="n">default_factory</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">param_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">BaseModel</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
-</code></pre></div>
-</td></tr></table>
-            </details>
-
-
-
-  <div class="doc doc-children">
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  </div>
-
-    </div>
-
-  </div>
-
-
-
 
   <div class="doc doc-object doc-function">
 
@@ -3366,7 +3367,7 @@
 <code class="highlight language-python"><span class="n">chain_validator</span><span class="p">(</span><span class="n">value</span><span class="p">:</span> <span class="n">MessageChain</span><span class="p">,</span> <span class="n">field</span><span class="p">:</span> <span class="n">ModelField</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">MessageChain</span><span class="p">,</span> <span class="n">Element</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span></code>
 
 
-<a href="#graia.ariadne.message.commander.chain_validator" class="headerlink" title="Permanent link">&para;</a></h2>
+<a href="#graia.ariadne.message.commander.chain_validator" class="headerlink" title="Permanent link">🔗</a></h2>
 
 
     <div class="doc doc-contents ">

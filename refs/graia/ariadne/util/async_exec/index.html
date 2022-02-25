@@ -1750,6 +1750,13 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
+  <a href="#graia.ariadne.util.async_exec.ParallelExecutor.get" class="md-nav__link">
+    get()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#graia.ariadne.util.async_exec.ParallelExecutor.bind_loop" class="md-nav__link">
     bind_loop()
   </a>
@@ -1757,15 +1764,15 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#graia.ariadne.util.async_exec.ParallelExecutor.close" class="md-nav__link">
-    close()
+  <a href="#graia.ariadne.util.async_exec.ParallelExecutor.shutdown" class="md-nav__link">
+    shutdown()
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#graia.ariadne.util.async_exec.ParallelExecutor.get" class="md-nav__link">
-    get()
+  <a href="#graia.ariadne.util.async_exec.ParallelExecutor.close" class="md-nav__link">
+    close()
   </a>
   
 </li>
@@ -1785,8 +1792,8 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#graia.ariadne.util.async_exec.ParallelExecutor.shutdown" class="md-nav__link">
-    shutdown()
+  <a href="#graia.ariadne.util.async_exec.ParallelExecutor.to_thread" class="md-nav__link">
+    to_thread()
   </a>
   
 </li>
@@ -1794,13 +1801,6 @@
           <li class="md-nav__item">
   <a href="#graia.ariadne.util.async_exec.ParallelExecutor.to_process" class="md-nav__link">
     to_process()
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#graia.ariadne.util.async_exec.ParallelExecutor.to_thread" class="md-nav__link">
-    to_thread()
   </a>
   
 </li>
@@ -1825,15 +1825,15 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#graia.ariadne.util.async_exec.cpu_bound" class="md-nav__link">
-    cpu_bound()
+  <a href="#graia.ariadne.util.async_exec.io_bound" class="md-nav__link">
+    io_bound()
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#graia.ariadne.util.async_exec.io_bound" class="md-nav__link">
-    io_bound()
+  <a href="#graia.ariadne.util.async_exec.cpu_bound" class="md-nav__link">
+    cpu_bound()
   </a>
   
 </li>
@@ -2011,6 +2011,13 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
+  <a href="#graia.ariadne.util.async_exec.ParallelExecutor.get" class="md-nav__link">
+    get()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#graia.ariadne.util.async_exec.ParallelExecutor.bind_loop" class="md-nav__link">
     bind_loop()
   </a>
@@ -2018,15 +2025,15 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#graia.ariadne.util.async_exec.ParallelExecutor.close" class="md-nav__link">
-    close()
+  <a href="#graia.ariadne.util.async_exec.ParallelExecutor.shutdown" class="md-nav__link">
+    shutdown()
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#graia.ariadne.util.async_exec.ParallelExecutor.get" class="md-nav__link">
-    get()
+  <a href="#graia.ariadne.util.async_exec.ParallelExecutor.close" class="md-nav__link">
+    close()
   </a>
   
 </li>
@@ -2046,8 +2053,8 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#graia.ariadne.util.async_exec.ParallelExecutor.shutdown" class="md-nav__link">
-    shutdown()
+  <a href="#graia.ariadne.util.async_exec.ParallelExecutor.to_thread" class="md-nav__link">
+    to_thread()
   </a>
   
 </li>
@@ -2055,13 +2062,6 @@
           <li class="md-nav__item">
   <a href="#graia.ariadne.util.async_exec.ParallelExecutor.to_process" class="md-nav__link">
     to_process()
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#graia.ariadne.util.async_exec.ParallelExecutor.to_thread" class="md-nav__link">
-    to_thread()
   </a>
   
 </li>
@@ -2086,15 +2086,15 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#graia.ariadne.util.async_exec.cpu_bound" class="md-nav__link">
-    cpu_bound()
+  <a href="#graia.ariadne.util.async_exec.io_bound" class="md-nav__link">
+    io_bound()
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#graia.ariadne.util.async_exec.io_bound" class="md-nav__link">
-    io_bound()
+  <a href="#graia.ariadne.util.async_exec.cpu_bound" class="md-nav__link">
+    cpu_bound()
   </a>
   
 </li>
@@ -2144,7 +2144,7 @@
 <code class="highlight language-python"><span class="n">ParallelExecutor</span><span class="p">(</span><span class="n">loop</span><span class="p">:</span> <span class="n">AbstractEventLoop</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">max_thread</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">max_process</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span></code>
 
 
-<a href="#graia.ariadne.util.async_exec.ParallelExecutor" class="headerlink" title="Permanent link">&para;</a></h2>
+<a href="#graia.ariadne.util.async_exec.ParallelExecutor" class="headerlink" title="Permanent link">🔗</a></h2>
 
 
     <div class="doc doc-contents ">
@@ -2263,11 +2263,106 @@
 
 
 
+<h3 id="graia.ariadne.util.async_exec.ParallelExecutor.get" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">get</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">loop</span><span class="p">:</span> <span class="n">AbstractEventLoop</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;ParallelExecutor&#39;</span></code>
+
+
+<a href="#graia.ariadne.util.async_exec.ParallelExecutor.get" class="headerlink" title="Permanent link">🔗</a></h3>
+
+
+    <div class="doc doc-contents ">
+
+      <p>获取 ParallelExecutor 实例</p>
+
+  <p><strong>Parameters:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Description</th>
+        <th>Default</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td><code>loop</code></td>
+          <td>
+                <code><span title="asyncio.events.AbstractEventLoop">AbstractEventLoop</span></code>
+          </td>
+          <td><p>查找的事件循环. Defaults to None.</p></td>
+          <td>
+                <code>None</code>
+          </td>
+        </tr>
+    </tbody>
+  </table>
+
+  <p><strong>Returns:</strong></p>
+  <table>
+    <thead>
+      <tr>
+<th>Name</th>        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+<td><code>ParallelExecutor</code></td>          <td>
+                <code>&#39;ParallelExecutor&#39;</code>
+          </td>
+          <td><p>找到的 / 新创建的 ParallelExecutor.</p></td>
+        </tr>
+    </tbody>
+  </table>
+
+        <details class="quote">
+          <summary>Source code in <code>graia/ariadne/util/async_exec.py</code></summary>
+          <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">60</span>
+<span class="normal">61</span>
+<span class="normal">62</span>
+<span class="normal">63</span>
+<span class="normal">64</span>
+<span class="normal">65</span>
+<span class="normal">66</span>
+<span class="normal">67</span>
+<span class="normal">68</span>
+<span class="normal">69</span>
+<span class="normal">70</span>
+<span class="normal">71</span>
+<span class="normal">72</span>
+<span class="normal">73</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="nd">@classmethod</span>
+<span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">loop</span><span class="p">:</span> <span class="n">AbstractEventLoop</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;ParallelExecutor&quot;</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;获取 ParallelExecutor 实例</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        loop (AbstractEventLoop, optional): 查找的事件循环. Defaults to None.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        ParallelExecutor: 找到的 / 新创建的 ParallelExecutor.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">loop</span> <span class="o">=</span> <span class="n">loop</span> <span class="ow">or</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">get_running_loop</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">loop</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">cls</span><span class="o">.</span><span class="n">loop_ref_dict</span><span class="p">:</span>
+        <span class="bp">cls</span><span class="o">.</span><span class="n">loop_ref_dict</span><span class="p">[</span><span class="n">loop</span><span class="p">]</span> <span class="o">=</span> <span class="n">ParallelExecutor</span><span class="p">()</span>
+    <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">loop_ref_dict</span><span class="p">[</span><span class="n">loop</span><span class="p">]</span>
+</code></pre></div>
+</td></tr></table>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-function">
+
+
+
 <h3 id="graia.ariadne.util.async_exec.ParallelExecutor.bind_loop" class="doc doc-heading">
 <code class="highlight language-python"><span class="n">bind_loop</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">loop</span><span class="p">:</span> <span class="n">AbstractEventLoop</span><span class="p">)</span></code>
 
 
-<a href="#graia.ariadne.util.async_exec.ParallelExecutor.bind_loop" class="headerlink" title="Permanent link">&para;</a></h3>
+<a href="#graia.ariadne.util.async_exec.ParallelExecutor.bind_loop" class="headerlink" title="Permanent link">🔗</a></h3>
 
 
     <div class="doc doc-contents ">
@@ -2326,11 +2421,46 @@
 
 
 
+<h3 id="graia.ariadne.util.async_exec.ParallelExecutor.shutdown" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">shutdown</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span></code>
+
+
+<a href="#graia.ariadne.util.async_exec.ParallelExecutor.shutdown" class="headerlink" title="Permanent link">🔗</a></h3>
+
+
+    <div class="doc doc-contents ">
+
+      <p>关闭本类的所有底层 Executor.</p>
+
+        <details class="quote">
+          <summary>Source code in <code>graia/ariadne/util/async_exec.py</code></summary>
+          <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">83</span>
+<span class="normal">84</span>
+<span class="normal">85</span>
+<span class="normal">86</span>
+<span class="normal">87</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="nd">@classmethod</span>
+<span class="k">def</span> <span class="nf">shutdown</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;关闭本类的所有底层 Executor.&quot;&quot;&quot;</span>
+    <span class="k">for</span> <span class="n">exec</span> <span class="ow">in</span> <span class="bp">cls</span><span class="o">.</span><span class="n">loop_ref_dict</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+        <span class="n">exec</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</code></pre></div>
+</td></tr></table>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-function">
+
+
+
 <h3 id="graia.ariadne.util.async_exec.ParallelExecutor.close" class="doc doc-heading">
 <code class="highlight language-python"><span class="n">close</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></code>
 
 
-<a href="#graia.ariadne.util.async_exec.ParallelExecutor.close" class="headerlink" title="Permanent link">&para;</a></h3>
+<a href="#graia.ariadne.util.async_exec.ParallelExecutor.close" class="headerlink" title="Permanent link">🔗</a></h3>
 
 
     <div class="doc doc-contents ">
@@ -2359,105 +2489,11 @@
 
 
 
-<h3 id="graia.ariadne.util.async_exec.ParallelExecutor.get" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">get</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">loop</span><span class="p">:</span> <span class="n">AbstractEventLoop</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span></code>
-
-
-<a href="#graia.ariadne.util.async_exec.ParallelExecutor.get" class="headerlink" title="Permanent link">&para;</a></h3>
-
-
-    <div class="doc doc-contents ">
-
-      <p>获取 ParallelExecutor 实例</p>
-
-  <p><strong>Parameters:</strong></p>
-  <table>
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Type</th>
-        <th>Description</th>
-        <th>Default</th>
-      </tr>
-    </thead>
-    <tbody>
-        <tr>
-          <td><code>loop</code></td>
-          <td>
-                <code><span title="asyncio.events.AbstractEventLoop">AbstractEventLoop</span></code>
-          </td>
-          <td><p>查找的事件循环. Defaults to None.</p></td>
-          <td>
-                <code>None</code>
-          </td>
-        </tr>
-    </tbody>
-  </table>
-
-  <p><strong>Returns:</strong></p>
-  <table>
-    <thead>
-      <tr>
-<th>Name</th>        <th>Type</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-        <tr>
-<td><code>ParallelExecutor</code></td>          <td>
-          </td>
-          <td><p>找到的 / 新创建的 ParallelExecutor.</p></td>
-        </tr>
-    </tbody>
-  </table>
-
-        <details class="quote">
-          <summary>Source code in <code>graia/ariadne/util/async_exec.py</code></summary>
-          <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">60</span>
-<span class="normal">61</span>
-<span class="normal">62</span>
-<span class="normal">63</span>
-<span class="normal">64</span>
-<span class="normal">65</span>
-<span class="normal">66</span>
-<span class="normal">67</span>
-<span class="normal">68</span>
-<span class="normal">69</span>
-<span class="normal">70</span>
-<span class="normal">71</span>
-<span class="normal">72</span>
-<span class="normal">73</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="nd">@classmethod</span>
-<span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">loop</span><span class="p">:</span> <span class="n">AbstractEventLoop</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;获取 ParallelExecutor 实例</span>
-
-<span class="sd">    Args:</span>
-<span class="sd">        loop (AbstractEventLoop, optional): 查找的事件循环. Defaults to None.</span>
-
-<span class="sd">    Returns:</span>
-<span class="sd">        ParallelExecutor: 找到的 / 新创建的 ParallelExecutor.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">loop</span> <span class="o">=</span> <span class="n">loop</span> <span class="ow">or</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">get_running_loop</span><span class="p">()</span>
-    <span class="k">if</span> <span class="n">loop</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">cls</span><span class="o">.</span><span class="n">loop_ref_dict</span><span class="p">:</span>
-        <span class="bp">cls</span><span class="o">.</span><span class="n">loop_ref_dict</span><span class="p">[</span><span class="n">loop</span><span class="p">]</span> <span class="o">=</span> <span class="n">ParallelExecutor</span><span class="p">()</span>
-    <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">loop_ref_dict</span><span class="p">[</span><span class="n">loop</span><span class="p">]</span>
-</code></pre></div>
-</td></tr></table>
-        </details>
-    </div>
-
-  </div>
-
-
-
-  <div class="doc doc-object doc-function">
-
-
-
 <h3 id="graia.ariadne.util.async_exec.ParallelExecutor.run_func" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">run_func</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">module</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">args</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">run_func</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">module</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">args</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span></code>
 
 
-<a href="#graia.ariadne.util.async_exec.ParallelExecutor.run_func" class="headerlink" title="Permanent link">&para;</a></h3>
+<a href="#graia.ariadne.util.async_exec.ParallelExecutor.run_func" class="headerlink" title="Permanent link">🔗</a></h3>
 
 
     <div class="doc doc-contents ">
@@ -2528,7 +2564,8 @@
     </thead>
     <tbody>
         <tr>
-<td><code>R</code></td>          <td>
+<td><code>Any</code></td>          <td>
+                <code><a title="typing.Any" href="https://docs.python.org/zh-cn/3/library/typing.html#typing.Any">Any</a></code>
           </td>
           <td><p>底层函数的返回值</p></td>
         </tr>
@@ -2552,7 +2589,7 @@
 <span class="normal">106</span>
 <span class="normal">107</span>
 <span class="normal">108</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="nd">@classmethod</span>
-<span class="k">def</span> <span class="nf">run_func</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">module</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">args</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">:</span> <span class="nb">dict</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">run_func</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">module</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">args</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;运行函数的实现</span>
 
 <span class="sd">    Args:</span>
@@ -2562,7 +2599,7 @@
 <span class="sd">        kwargs (dict): 关键字参数</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        R: 底层函数的返回值</span>
+<span class="sd">        Any: 底层函数的返回值</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">importlib</span><span class="o">.</span><span class="n">import_module</span><span class="p">(</span><span class="n">module</span><span class="p">)</span>
     <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">func_mapping</span><span class="p">[</span><span class="n">module</span><span class="p">,</span> <span class="n">name</span><span class="p">](</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
@@ -2583,7 +2620,7 @@
 <code class="highlight language-python"><span class="n">run_func_static</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">func</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="n">R</span><span class="p">],</span> <span class="n">args</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">R</span></code>
 
 
-<a href="#graia.ariadne.util.async_exec.ParallelExecutor.run_func_static" class="headerlink" title="Permanent link">&para;</a></h3>
+<a href="#graia.ariadne.util.async_exec.ParallelExecutor.run_func_static" class="headerlink" title="Permanent link">🔗</a></h3>
 
 
     <div class="doc doc-contents ">
@@ -2696,169 +2733,11 @@
 
 
 
-<h3 id="graia.ariadne.util.async_exec.ParallelExecutor.shutdown" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">shutdown</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span></code>
-
-
-<a href="#graia.ariadne.util.async_exec.ParallelExecutor.shutdown" class="headerlink" title="Permanent link">&para;</a></h3>
-
-
-    <div class="doc doc-contents ">
-
-      <p>关闭本类的所有底层 Executor.</p>
-
-        <details class="quote">
-          <summary>Source code in <code>graia/ariadne/util/async_exec.py</code></summary>
-          <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">83</span>
-<span class="normal">84</span>
-<span class="normal">85</span>
-<span class="normal">86</span>
-<span class="normal">87</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="nd">@classmethod</span>
-<span class="k">def</span> <span class="nf">shutdown</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;关闭本类的所有底层 Executor.&quot;&quot;&quot;</span>
-    <span class="k">for</span> <span class="n">exec</span> <span class="ow">in</span> <span class="bp">cls</span><span class="o">.</span><span class="n">loop_ref_dict</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
-        <span class="n">exec</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-</code></pre></div>
-</td></tr></table>
-        </details>
-    </div>
-
-  </div>
-
-
-
-  <div class="doc doc-object doc-function">
-
-
-
-<h3 id="graia.ariadne.util.async_exec.ParallelExecutor.to_process" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">to_process</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">func</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[</span><span class="n">P</span><span class="p">,</span> <span class="n">R</span><span class="p">],</span> <span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">P</span><span class="o">.</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">P</span><span class="o">.</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Awaitable</span><span class="p">[</span><span class="n">R</span><span class="p">]</span></code>
-
-
-<a href="#graia.ariadne.util.async_exec.ParallelExecutor.to_process" class="headerlink" title="Permanent link">&para;</a></h3>
-
-
-    <div class="doc doc-contents ">
-
-      <p>在进程中异步运行 func 函数. 需要先注册过才行.</p>
-
-  <p><strong>Parameters:</strong></p>
-  <table>
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Type</th>
-        <th>Description</th>
-        <th>Default</th>
-      </tr>
-    </thead>
-    <tbody>
-        <tr>
-          <td><code>func</code></td>
-          <td>
-                <code><a title="typing.Callable" href="https://docs.python.org/zh-cn/3/library/typing.html#typing.Callable">Callable</a>[<span title="graia.ariadne.typing.P">P</span>, <span title="graia.ariadne.typing.R">R</span>]</code>
-          </td>
-          <td><p>要调用的函数.</p></td>
-          <td>
-              <em>required</em>
-          </td>
-        </tr>
-        <tr>
-          <td><code>*args</code></td>
-          <td>
-                <code><span title="graia.ariadne.typing.P">P</span>.<span title="graia.ariadne.typing.P.args">args</span></code>
-          </td>
-          <td><p>附带的位置参数.</p></td>
-          <td>
-                <code>()</code>
-          </td>
-        </tr>
-        <tr>
-          <td><code>**kwargs</code></td>
-          <td>
-                <code><span title="graia.ariadne.typing.P">P</span>.<span title="graia.ariadne.typing.P.kwargs">kwargs</span></code>
-          </td>
-          <td><p>附带的关键词参数.</p></td>
-          <td>
-                <code>{}</code>
-          </td>
-        </tr>
-    </tbody>
-  </table>
-
-  <p><strong>Returns:</strong></p>
-  <table>
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-        <tr>
-          <td>
-                <code><a title="typing.Awaitable" href="https://docs.python.org/zh-cn/3/library/typing.html#typing.Awaitable">Awaitable</a>[<span title="graia.ariadne.typing.R">R</span>]</code>
-          </td>
-          <td><p>Future[R]: 返回结果. 需要被异步等待.</p></td>
-        </tr>
-    </tbody>
-  </table>
-
-        <details class="quote">
-          <summary>Source code in <code>graia/ariadne/util/async_exec.py</code></summary>
-          <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">145</span>
-<span class="normal">146</span>
-<span class="normal">147</span>
-<span class="normal">148</span>
-<span class="normal">149</span>
-<span class="normal">150</span>
-<span class="normal">151</span>
-<span class="normal">152</span>
-<span class="normal">153</span>
-<span class="normal">154</span>
-<span class="normal">155</span>
-<span class="normal">156</span>
-<span class="normal">157</span>
-<span class="normal">158</span>
-<span class="normal">159</span>
-<span class="normal">160</span>
-<span class="normal">161</span>
-<span class="normal">162</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">to_process</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">func</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[</span><span class="n">P</span><span class="p">,</span> <span class="n">R</span><span class="p">],</span> <span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">P</span><span class="o">.</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">P</span><span class="o">.</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Awaitable</span><span class="p">[</span><span class="n">R</span><span class="p">]:</span>
-    <span class="sd">&quot;&quot;&quot;在进程中异步运行 func 函数. 需要先注册过才行.</span>
-
-<span class="sd">    Args:</span>
-<span class="sd">        func (Callable[P, R]): 要调用的函数.</span>
-<span class="sd">        *args (P.args): 附带的位置参数.</span>
-<span class="sd">        **kwargs (P.kwargs): 附带的关键词参数.</span>
-
-<span class="sd">    Returns:</span>
-<span class="sd">        Future[R]: 返回结果. 需要被异步等待.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">get_running_loop</span><span class="p">()</span><span class="o">.</span><span class="n">run_in_executor</span><span class="p">(</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">proc_exec</span><span class="p">,</span>
-        <span class="n">ParallelExecutor</span><span class="o">.</span><span class="n">run_func_static</span><span class="p">,</span>
-        <span class="n">func</span><span class="p">,</span>
-        <span class="n">args</span><span class="p">,</span>
-        <span class="n">kwargs</span><span class="p">,</span>
-    <span class="p">)</span>
-</code></pre></div>
-</td></tr></table>
-        </details>
-    </div>
-
-  </div>
-
-
-
-  <div class="doc doc-object doc-function">
-
-
-
 <h3 id="graia.ariadne.util.async_exec.ParallelExecutor.to_thread" class="doc doc-heading">
 <code class="highlight language-python"><span class="n">to_thread</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">func</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[</span><span class="n">P</span><span class="p">,</span> <span class="n">R</span><span class="p">],</span> <span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">P</span><span class="o">.</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">P</span><span class="o">.</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Awaitable</span><span class="p">[</span><span class="n">R</span><span class="p">]</span></code>
 
 
-<a href="#graia.ariadne.util.async_exec.ParallelExecutor.to_thread" class="headerlink" title="Permanent link">&para;</a></h3>
+<a href="#graia.ariadne.util.async_exec.ParallelExecutor.to_thread" class="headerlink" title="Permanent link">🔗</a></h3>
 
 
     <div class="doc doc-contents ">
@@ -2973,6 +2852,129 @@
 
 
 
+  <div class="doc doc-object doc-function">
+
+
+
+<h3 id="graia.ariadne.util.async_exec.ParallelExecutor.to_process" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">to_process</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">func</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[</span><span class="n">P</span><span class="p">,</span> <span class="n">R</span><span class="p">],</span> <span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">P</span><span class="o">.</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">P</span><span class="o">.</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Awaitable</span><span class="p">[</span><span class="n">R</span><span class="p">]</span></code>
+
+
+<a href="#graia.ariadne.util.async_exec.ParallelExecutor.to_process" class="headerlink" title="Permanent link">🔗</a></h3>
+
+
+    <div class="doc doc-contents ">
+
+      <p>在进程中异步运行 func 函数. 需要先注册过才行.</p>
+
+  <p><strong>Parameters:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Description</th>
+        <th>Default</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td><code>func</code></td>
+          <td>
+                <code><a title="typing.Callable" href="https://docs.python.org/zh-cn/3/library/typing.html#typing.Callable">Callable</a>[<span title="graia.ariadne.typing.P">P</span>, <span title="graia.ariadne.typing.R">R</span>]</code>
+          </td>
+          <td><p>要调用的函数.</p></td>
+          <td>
+              <em>required</em>
+          </td>
+        </tr>
+        <tr>
+          <td><code>*args</code></td>
+          <td>
+                <code><span title="graia.ariadne.typing.P">P</span>.<span title="graia.ariadne.typing.P.args">args</span></code>
+          </td>
+          <td><p>附带的位置参数.</p></td>
+          <td>
+                <code>()</code>
+          </td>
+        </tr>
+        <tr>
+          <td><code>**kwargs</code></td>
+          <td>
+                <code><span title="graia.ariadne.typing.P">P</span>.<span title="graia.ariadne.typing.P.kwargs">kwargs</span></code>
+          </td>
+          <td><p>附带的关键词参数.</p></td>
+          <td>
+                <code>{}</code>
+          </td>
+        </tr>
+    </tbody>
+  </table>
+
+  <p><strong>Returns:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td>
+                <code><a title="typing.Awaitable" href="https://docs.python.org/zh-cn/3/library/typing.html#typing.Awaitable">Awaitable</a>[<span title="graia.ariadne.typing.R">R</span>]</code>
+          </td>
+          <td><p>Future[R]: 返回结果. 需要被异步等待.</p></td>
+        </tr>
+    </tbody>
+  </table>
+
+        <details class="quote">
+          <summary>Source code in <code>graia/ariadne/util/async_exec.py</code></summary>
+          <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">145</span>
+<span class="normal">146</span>
+<span class="normal">147</span>
+<span class="normal">148</span>
+<span class="normal">149</span>
+<span class="normal">150</span>
+<span class="normal">151</span>
+<span class="normal">152</span>
+<span class="normal">153</span>
+<span class="normal">154</span>
+<span class="normal">155</span>
+<span class="normal">156</span>
+<span class="normal">157</span>
+<span class="normal">158</span>
+<span class="normal">159</span>
+<span class="normal">160</span>
+<span class="normal">161</span>
+<span class="normal">162</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">to_process</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">func</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[</span><span class="n">P</span><span class="p">,</span> <span class="n">R</span><span class="p">],</span> <span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">P</span><span class="o">.</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">P</span><span class="o">.</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Awaitable</span><span class="p">[</span><span class="n">R</span><span class="p">]:</span>
+    <span class="sd">&quot;&quot;&quot;在进程中异步运行 func 函数. 需要先注册过才行.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        func (Callable[P, R]): 要调用的函数.</span>
+<span class="sd">        *args (P.args): 附带的位置参数.</span>
+<span class="sd">        **kwargs (P.kwargs): 附带的关键词参数.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Future[R]: 返回结果. 需要被异步等待.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">get_running_loop</span><span class="p">()</span><span class="o">.</span><span class="n">run_in_executor</span><span class="p">(</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">proc_exec</span><span class="p">,</span>
+        <span class="n">ParallelExecutor</span><span class="o">.</span><span class="n">run_func_static</span><span class="p">,</span>
+        <span class="n">func</span><span class="p">,</span>
+        <span class="n">args</span><span class="p">,</span>
+        <span class="n">kwargs</span><span class="p">,</span>
+    <span class="p">)</span>
+</code></pre></div>
+</td></tr></table>
+        </details>
+    </div>
+
+  </div>
+
+
+
 
 
   </div>
@@ -2992,7 +2994,7 @@
 <code class="highlight language-python"><span class="n">IS_MAIN_PROCESS</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">bool</span></code>
 
 
-<a href="#graia.ariadne.util.async_exec.IS_MAIN_PROCESS" class="headerlink" title="Permanent link">&para;</a></h2>
+<a href="#graia.ariadne.util.async_exec.IS_MAIN_PROCESS" class="headerlink" title="Permanent link">🔗</a></h2>
 
 
     <div class="doc doc-contents ">
@@ -3049,7 +3051,7 @@
 <code class="highlight language-python"><span class="n">_reg_sigint</span><span class="p">()</span></code>
 
 
-<a href="#graia.ariadne.util.async_exec._reg_sigint" class="headerlink" title="Permanent link">&para;</a></h2>
+<a href="#graia.ariadne.util.async_exec._reg_sigint" class="headerlink" title="Permanent link">🔗</a></h2>
 
 
     <div class="doc doc-contents ">
@@ -3082,128 +3084,11 @@
 
 
 
-<h2 id="graia.ariadne.util.async_exec.cpu_bound" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">cpu_bound</span><span class="p">(</span><span class="n">func</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[</span><span class="n">P</span><span class="p">,</span> <span class="n">R</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">[</span><span class="n">P</span><span class="p">,</span> <span class="n">Awaitable</span><span class="p">[</span><span class="n">R</span><span class="p">]]</span></code>
-
-
-<a href="#graia.ariadne.util.async_exec.cpu_bound" class="headerlink" title="Permanent link">&para;</a></h2>
-
-
-    <div class="doc doc-contents ">
-
-      <p>包装一个函数在进程中异步运行.</p>
-
-  <p><strong>Parameters:</strong></p>
-  <table>
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Type</th>
-        <th>Description</th>
-        <th>Default</th>
-      </tr>
-    </thead>
-    <tbody>
-        <tr>
-          <td><code>func</code></td>
-          <td>
-                <code><a title="typing.Callable" href="https://docs.python.org/zh-cn/3/library/typing.html#typing.Callable">Callable</a>[<span title="graia.ariadne.typing.P">P</span>, <span title="graia.ariadne.typing.R">R</span>]</code>
-          </td>
-          <td><p>要包装的函数</p></td>
-          <td>
-              <em>required</em>
-          </td>
-        </tr>
-    </tbody>
-  </table>
-
-  <p><strong>Returns:</strong></p>
-  <table>
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-        <tr>
-          <td>
-                <code><a title="typing.Callable" href="https://docs.python.org/zh-cn/3/library/typing.html#typing.Callable">Callable</a>[<span title="graia.ariadne.typing.P">P</span>, <a title="typing.Awaitable" href="https://docs.python.org/zh-cn/3/library/typing.html#typing.Awaitable">Awaitable</a>[<span title="graia.ariadne.typing.R">R</span>]]</code>
-          </td>
-          <td><p>Callable[P, Awaitable[R]]: 包装后的函数</p></td>
-        </tr>
-    </tbody>
-  </table>
-
-        <details class="quote">
-          <summary>Source code in <code>graia/ariadne/util/async_exec.py</code></summary>
-          <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">192</span>
-<span class="normal">193</span>
-<span class="normal">194</span>
-<span class="normal">195</span>
-<span class="normal">196</span>
-<span class="normal">197</span>
-<span class="normal">198</span>
-<span class="normal">199</span>
-<span class="normal">200</span>
-<span class="normal">201</span>
-<span class="normal">202</span>
-<span class="normal">203</span>
-<span class="normal">204</span>
-<span class="normal">205</span>
-<span class="normal">206</span>
-<span class="normal">207</span>
-<span class="normal">208</span>
-<span class="normal">209</span>
-<span class="normal">210</span>
-<span class="normal">211</span>
-<span class="normal">212</span>
-<span class="normal">213</span>
-<span class="normal">214</span>
-<span class="normal">215</span>
-<span class="normal">216</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">cpu_bound</span><span class="p">(</span><span class="n">func</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[</span><span class="n">P</span><span class="p">,</span> <span class="n">R</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">[</span><span class="n">P</span><span class="p">,</span> <span class="n">Awaitable</span><span class="p">[</span><span class="n">R</span><span class="p">]]:</span>
-    <span class="sd">&quot;&quot;&quot;包装一个函数在进程中异步运行.</span>
-
-<span class="sd">    Args:</span>
-<span class="sd">        func (Callable[P, R]): 要包装的函数</span>
-
-<span class="sd">    Returns:</span>
-<span class="sd">        Callable[P, Awaitable[R]]: 包装后的函数</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">ParallelExecutor</span><span class="o">.</span><span class="n">func_mapping</span><span class="p">[</span><span class="n">func</span><span class="o">.</span><span class="vm">__module__</span><span class="p">,</span> <span class="n">func</span><span class="o">.</span><span class="vm">__qualname__</span><span class="p">]</span> <span class="o">=</span> <span class="n">func</span>
-
-    <span class="nd">@functools</span><span class="o">.</span><span class="n">wraps</span><span class="p">(</span><span class="n">func</span><span class="p">)</span>
-    <span class="k">async</span> <span class="k">def</span> <span class="nf">wrapper</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">P</span><span class="o">.</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">P</span><span class="o">.</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">R</span><span class="p">:</span>
-        <span class="n">loop</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">get_running_loop</span><span class="p">()</span>
-        <span class="n">executor</span> <span class="o">=</span> <span class="n">ParallelExecutor</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">loop</span><span class="p">)</span>
-        <span class="k">return</span> <span class="k">await</span> <span class="n">loop</span><span class="o">.</span><span class="n">run_in_executor</span><span class="p">(</span>
-            <span class="n">executor</span><span class="o">.</span><span class="n">proc_exec</span><span class="p">,</span>
-            <span class="n">ParallelExecutor</span><span class="o">.</span><span class="n">run_func</span><span class="p">,</span>
-            <span class="n">func</span><span class="o">.</span><span class="vm">__qualname__</span><span class="p">,</span>
-            <span class="n">func</span><span class="o">.</span><span class="vm">__module__</span><span class="p">,</span>
-            <span class="n">args</span><span class="p">,</span>
-            <span class="n">kwargs</span><span class="p">,</span>
-        <span class="p">)</span>
-
-    <span class="k">return</span> <span class="n">wrapper</span>
-</code></pre></div>
-</td></tr></table>
-        </details>
-    </div>
-
-  </div>
-
-
-
-  <div class="doc doc-object doc-function">
-
-
-
 <h2 id="graia.ariadne.util.async_exec.io_bound" class="doc doc-heading">
 <code class="highlight language-python"><span class="n">io_bound</span><span class="p">(</span><span class="n">func</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[</span><span class="n">P</span><span class="p">,</span> <span class="n">R</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">[</span><span class="n">P</span><span class="p">,</span> <span class="n">Awaitable</span><span class="p">[</span><span class="n">R</span><span class="p">]]</span></code>
 
 
-<a href="#graia.ariadne.util.async_exec.io_bound" class="headerlink" title="Permanent link">&para;</a></h2>
+<a href="#graia.ariadne.util.async_exec.io_bound" class="headerlink" title="Permanent link">🔗</a></h2>
 
 
     <div class="doc doc-contents ">
@@ -3295,6 +3180,123 @@
         <span class="n">executor</span> <span class="o">=</span> <span class="n">ParallelExecutor</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">loop</span><span class="p">)</span>
         <span class="k">return</span> <span class="k">await</span> <span class="n">loop</span><span class="o">.</span><span class="n">run_in_executor</span><span class="p">(</span>
             <span class="n">executor</span><span class="o">.</span><span class="n">thread_exec</span><span class="p">,</span>
+            <span class="n">ParallelExecutor</span><span class="o">.</span><span class="n">run_func</span><span class="p">,</span>
+            <span class="n">func</span><span class="o">.</span><span class="vm">__qualname__</span><span class="p">,</span>
+            <span class="n">func</span><span class="o">.</span><span class="vm">__module__</span><span class="p">,</span>
+            <span class="n">args</span><span class="p">,</span>
+            <span class="n">kwargs</span><span class="p">,</span>
+        <span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">wrapper</span>
+</code></pre></div>
+</td></tr></table>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-function">
+
+
+
+<h2 id="graia.ariadne.util.async_exec.cpu_bound" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">cpu_bound</span><span class="p">(</span><span class="n">func</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[</span><span class="n">P</span><span class="p">,</span> <span class="n">R</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">[</span><span class="n">P</span><span class="p">,</span> <span class="n">Awaitable</span><span class="p">[</span><span class="n">R</span><span class="p">]]</span></code>
+
+
+<a href="#graia.ariadne.util.async_exec.cpu_bound" class="headerlink" title="Permanent link">🔗</a></h2>
+
+
+    <div class="doc doc-contents ">
+
+      <p>包装一个函数在进程中异步运行.</p>
+
+  <p><strong>Parameters:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Description</th>
+        <th>Default</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td><code>func</code></td>
+          <td>
+                <code><a title="typing.Callable" href="https://docs.python.org/zh-cn/3/library/typing.html#typing.Callable">Callable</a>[<span title="graia.ariadne.typing.P">P</span>, <span title="graia.ariadne.typing.R">R</span>]</code>
+          </td>
+          <td><p>要包装的函数</p></td>
+          <td>
+              <em>required</em>
+          </td>
+        </tr>
+    </tbody>
+  </table>
+
+  <p><strong>Returns:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td>
+                <code><a title="typing.Callable" href="https://docs.python.org/zh-cn/3/library/typing.html#typing.Callable">Callable</a>[<span title="graia.ariadne.typing.P">P</span>, <a title="typing.Awaitable" href="https://docs.python.org/zh-cn/3/library/typing.html#typing.Awaitable">Awaitable</a>[<span title="graia.ariadne.typing.R">R</span>]]</code>
+          </td>
+          <td><p>Callable[P, Awaitable[R]]: 包装后的函数</p></td>
+        </tr>
+    </tbody>
+  </table>
+
+        <details class="quote">
+          <summary>Source code in <code>graia/ariadne/util/async_exec.py</code></summary>
+          <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">192</span>
+<span class="normal">193</span>
+<span class="normal">194</span>
+<span class="normal">195</span>
+<span class="normal">196</span>
+<span class="normal">197</span>
+<span class="normal">198</span>
+<span class="normal">199</span>
+<span class="normal">200</span>
+<span class="normal">201</span>
+<span class="normal">202</span>
+<span class="normal">203</span>
+<span class="normal">204</span>
+<span class="normal">205</span>
+<span class="normal">206</span>
+<span class="normal">207</span>
+<span class="normal">208</span>
+<span class="normal">209</span>
+<span class="normal">210</span>
+<span class="normal">211</span>
+<span class="normal">212</span>
+<span class="normal">213</span>
+<span class="normal">214</span>
+<span class="normal">215</span>
+<span class="normal">216</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">cpu_bound</span><span class="p">(</span><span class="n">func</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[</span><span class="n">P</span><span class="p">,</span> <span class="n">R</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">[</span><span class="n">P</span><span class="p">,</span> <span class="n">Awaitable</span><span class="p">[</span><span class="n">R</span><span class="p">]]:</span>
+    <span class="sd">&quot;&quot;&quot;包装一个函数在进程中异步运行.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        func (Callable[P, R]): 要包装的函数</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Callable[P, Awaitable[R]]: 包装后的函数</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">ParallelExecutor</span><span class="o">.</span><span class="n">func_mapping</span><span class="p">[</span><span class="n">func</span><span class="o">.</span><span class="vm">__module__</span><span class="p">,</span> <span class="n">func</span><span class="o">.</span><span class="vm">__qualname__</span><span class="p">]</span> <span class="o">=</span> <span class="n">func</span>
+
+    <span class="nd">@functools</span><span class="o">.</span><span class="n">wraps</span><span class="p">(</span><span class="n">func</span><span class="p">)</span>
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">wrapper</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">P</span><span class="o">.</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">P</span><span class="o">.</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">R</span><span class="p">:</span>
+        <span class="n">loop</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">get_running_loop</span><span class="p">()</span>
+        <span class="n">executor</span> <span class="o">=</span> <span class="n">ParallelExecutor</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">loop</span><span class="p">)</span>
+        <span class="k">return</span> <span class="k">await</span> <span class="n">loop</span><span class="o">.</span><span class="n">run_in_executor</span><span class="p">(</span>
+            <span class="n">executor</span><span class="o">.</span><span class="n">proc_exec</span><span class="p">,</span>
             <span class="n">ParallelExecutor</span><span class="o">.</span><span class="n">run_func</span><span class="p">,</span>
             <span class="n">func</span><span class="o">.</span><span class="vm">__qualname__</span><span class="p">,</span>
             <span class="n">func</span><span class="o">.</span><span class="vm">__module__</span><span class="p">,</span>

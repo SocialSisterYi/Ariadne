@@ -2113,15 +2113,15 @@
 
 
 
-<h1 id="twilight-">Twilight - 混合式消息链处理器<a class="headerlink" href="#twilight-" title="Permanent link">&para;</a></h1>
+<h1 id="twilight-">Twilight - 混合式消息链处理器<a class="headerlink" href="#twilight-" title="Permanent link">🔗</a></h1>
 <blockquote>
 <p>本模块名字取自 <a href="https://mlp.fandom.com/wiki/My_Little_Pony_Friendship_is_Magic_Wiki"><code>My Little Pony</code></a> 中的 <a href="https://mlp.fandom.com/wiki/Twilight_Sparkle"><code>Twilight Sparkle</code></a>.</p>
 <p>Friendship is magic!</p>
 </blockquote>
-<h2 id="_1">缘起<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h2>
+<h2 id="_1">缘起<a class="headerlink" href="#_1" title="Permanent link">🔗</a></h2>
 <p>想必 <a href="../../appendix/terms/#v4"><code>v4</code></a> 用户都或多或少的知道 <code>Kanata</code> 吧.</p>
 <p>其介绍的 正则表达式 参数提取/关键字匹配 非常的有趣, 而 <code>Twilight</code> 在其基础上增加了对 <code>argparse</code> 中部分功能的支持.</p>
-<h2 id="_2">快速开始<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h2>
+<h2 id="_2">快速开始<a class="headerlink" href="#_2" title="Permanent link">🔗</a></h2>
 <div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">graia.ariadne.message.parser.twilight</span> <span class="kn">import</span> <span class="n">Twilight</span><span class="p">,</span> <span class="n">FullMatch</span><span class="p">,</span> <span class="n">ParamMatch</span><span class="p">,</span> <span class="n">RegexResult</span>
 
 <span class="n">twilight</span> <span class="o">=</span> <span class="n">Twilight</span><span class="p">([</span><span class="n">FullMatch</span><span class="p">(</span><span class="s2">&quot;指令&quot;</span><span class="p">),</span> <span class="n">ParamMatch</span><span class="p">()</span> <span class="o">@</span> <span class="s2">&quot;param&quot;</span><span class="p">])</span>
@@ -2131,7 +2131,7 @@
     <span class="k">await</span> <span class="n">app</span><span class="o">.</span><span class="n">sendMessage</span><span class="p">(</span><span class="n">event</span><span class="p">,</span> <span class="s2">&quot;收到指令: &quot;</span> <span class="o">+</span> <span class="n">param</span><span class="o">.</span><span class="n">result</span><span class="p">)</span>
 </code></pre></div>
 <p>接下来, 让我们解析一下这段代码:</p>
-<h2 id="twilight">创建 Twilight<a class="headerlink" href="#twilight" title="Permanent link">&para;</a></h2>
+<h2 id="twilight">创建 Twilight<a class="headerlink" href="#twilight" title="Permanent link">🔗</a></h2>
 <div class="highlight"><pre><span></span><code><span class="n">twilight</span> <span class="o">=</span> <span class="n">Twilight</span><span class="p">([</span><span class="n">FullMatch</span><span class="p">(</span><span class="s2">&quot;指令&quot;</span><span class="p">),</span> <span class="n">ParamMatch</span><span class="p">()</span> <span class="o">@</span> <span class="s2">&quot;param&quot;</span><span class="p">])</span>
 </code></pre></div>
 <p>这里说明我们需要匹配内容为 "指令 xxx" 的消息, 并且把 "xxx" 作为参数传递给 <code>param</code> 变量.</p>
@@ -2142,14 +2142,14 @@
 <a href="../../refs/graia/ariadne/message/parser/twilight/#graia.ariadne.message.parser.twilight.Sparkle"><code>Sparkle</code></a> 而无需配合 <code>Broadcast</code>.</p>
 <p>这对于本地调试很有用.</p>
 </div>
-<h3 id="_3">分配参数<a class="headerlink" href="#_3" title="Permanent link">&para;</a></h3>
+<h3 id="_3">分配参数<a class="headerlink" href="#_3" title="Permanent link">🔗</a></h3>
 <div class="highlight"><pre><span></span><code><span class="n">ParamMatch</span><span class="p">()</span> <span class="o">@</span> <span class="s2">&quot;param&quot;</span>
 </code></pre></div>
 <p>这一段的 <code>ParamMatch() @ "param"</code> 说明这个参数传递给函数内的 <code>param</code> 形参.</p>
 <p>也就是 <code>param: RegexResult</code> 这里.</p>
 <p>与此同时, <code class="highlight"><span class="n">ParamMatch</span><span class="p">()</span><span class="o">.</span><span class="n">param</span><span class="p">(</span><span class="s2">&quot;param&quot;</span><span class="p">)</span></code> 与这个用法等效.</p>
-<h2 id="match">Match<a class="headerlink" href="#match" title="Permanent link">&para;</a></h2>
-<h3 id="regexmatch">RegexMatch<a class="headerlink" href="#regexmatch" title="Permanent link">&para;</a></h3>
+<h2 id="match">Match<a class="headerlink" href="#match" title="Permanent link">🔗</a></h2>
+<h3 id="regexmatch">RegexMatch<a class="headerlink" href="#regexmatch" title="Permanent link">🔗</a></h3>
 <p><a href="../../refs/graia/ariadne/message/parser/twilight/#graia.ariadne.message.parser.twilight.RegexMatch"><code>RegexMatch</code></a> 是 <code>Twilight</code> 的基础, 它可以匹配指定的正则表达式.</p>
 <p><a href="../../refs/graia/ariadne/message/parser/twilight/#graia.ariadne.message.parser.twilight.FullMatch"><code>FullMatch</code></a>
 <a href="../../refs/graia/ariadne/message/parser/twilight/#graia.ariadne.message.parser.twilight.UnionMatch"><code>UnionMatch</code></a>
@@ -2162,11 +2162,11 @@
 <li><code>ParamMatch</code>: 匹配指定参数</li>
 <li><code>WildcardMatch</code>: 匹配任意内容</li>
 </ul>
-<h4 id="flags">flags 方法<a class="headerlink" href="#flags" title="Permanent link">&para;</a></h4>
+<h4 id="flags">flags 方法<a class="headerlink" href="#flags" title="Permanent link">🔗</a></h4>
 <p>可以通过 <a href="../../refs/graia/ariadne/message/parser/twilight/#graia.ariadne.message.parser.twilight.RegexMatch.flags"><code>flags</code></a> 方法设置正则表达式的匹配标记.</p>
 <div class="highlight"><pre><span></span><code><span class="gp">&gt;&gt;&gt; </span><span class="n">RegexMatch</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;\d+ # digits&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">flags</span><span class="p">(</span><span class="n">re</span><span class="o">.</span><span class="n">V</span><span class="p">)</span> <span class="c1"># 设置 re.VERBOSE 标记</span>
 </code></pre></div>
-<h4 id="space">space 方法<a class="headerlink" href="#space" title="Permanent link">&para;</a></h4>
+<h4 id="space">space 方法<a class="headerlink" href="#space" title="Permanent link">🔗</a></h4>
 <p><a href="../../refs/graia/ariadne/message/parser/twilight/#graia.ariadne.message.parser.twilight.SpacePolicy"><code>SpacePolicy</code></a> 是一个 <a href="https://docs.python.org/zh-cn/3/library/enum.html#enum.Enum"><code>enum.Enum</code></a> 类, 有如下常量:</p>
 <ul>
 <li><code>NOSPACE</code>: 不附带尾随空格.</li>
@@ -2178,7 +2178,7 @@
 应该传递给
 <a href="../../refs/graia/ariadne/message/parser/twilight/#graia.ariadne.message.parser.twilight.RegexMatch.space"><code>RegexMatch.space</code></a>
 方法, 用于确定 <code>RegexMatch</code> 尾随空格策略.</p>
-<h3 id="argumentmatch">ArgumentMatch<a class="headerlink" href="#argumentmatch" title="Permanent link">&para;</a></h3>
+<h3 id="argumentmatch">ArgumentMatch<a class="headerlink" href="#argumentmatch" title="Permanent link">🔗</a></h3>
 <p><code>ArgumentMatch</code> 思路与 <code>RegexMatch</code> 不同, 它基于 <a href="https://docs.python.org/zh-cn/3/library/argparse.html#module-argparse">argparse</a> 进行参数解析.</p>
 <p><a href="../../refs/graia/ariadne/message/parser/twilight/#graia.ariadne.message.parser.twilight.ArgumentMatch"><code>ArgumentMatch</code></a>
 的初始化方法与 <a href="https://docs.python.org/zh-cn/3/library/argparse.html#argparse.ArgumentParser.add_argument">add_argument</a> 非常相似.</p>
@@ -2187,7 +2187,7 @@
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ArgumentMatch</span><span class="p">(</span><span class="s2">&quot;-o&quot;</span><span class="p">,</span> <span class="s2">&quot;--opt&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span> <span class="n">choices</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;head&quot;</span><span class="p">,</span> <span class="s2">&quot;body&quot;</span><span class="p">])</span> <span class="c1"># 只允许 &quot;head&quot; 或 &quot;body&quot;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ArgumentMatch</span><span class="p">(</span><span class="s2">&quot;-m&quot;</span><span class="p">,</span> <span class="n">choices</span><span class="o">=</span><span class="n">MessageChain</span><span class="p">([</span><span class="s2">&quot;choice_a&quot;</span><span class="p">,</span> <span class="s2">&quot;choice_b&quot;</span><span class="p">]))</span> <span class="c1"># 注意默认是 MessageChain, 所以要这样写</span>
 </code></pre></div>
-<h2 id="broadcast">配合 Broadcast 使用<a class="headerlink" href="#broadcast" title="Permanent link">&para;</a></h2>
+<h2 id="broadcast">配合 Broadcast 使用<a class="headerlink" href="#broadcast" title="Permanent link">🔗</a></h2>
 <p><code>Twilight</code> 应作为 <code>dispatcher</code> 传入 <code>broadcast.receiver</code> / <code>ListenerSchema</code> 中.</p>
 <p>在 <code>receiver</code> 函数的类型标注中, 通过 标注参数为 <code>Sparkle</code> 获取当前 <code>Sparkle</code>, 通过 <code>name: Match</code> 的形式获取 <code>name</code> 对应的匹配对象.</p>
 <p>像这样:</p>
@@ -2207,7 +2207,7 @@
 <p class="admonition-title">使用 <code>Sparkle</code>, <code>Match</code>, <code>MatchResult</code> 的子类进行标注都是可以的.</p>
 </div>
 <p>一旦匹配失败 (<code>generate</code> 抛出异常), <code>Broadcast</code> 的本次执行就会被取消.</p>
-<h3 id="matchresult">MatchResult<a class="headerlink" href="#matchresult" title="Permanent link">&para;</a></h3>
+<h3 id="matchresult">MatchResult<a class="headerlink" href="#matchresult" title="Permanent link">🔗</a></h3>
 <p><code>RegexResult</code> 与 <code>ArgResult</code> 都是 <a href="../../refs/graia/ariadne/message/parser/twilight/#graia.ariadne.message.parser.twilight.MatchResult"><code>MatchResult</code></a> 的子类.</p>
 <p>这二者方便地标注了匹配结果信息.</p>
 <p><code>MatchResult</code> 的属性:</p>

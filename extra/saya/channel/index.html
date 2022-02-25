@@ -1981,7 +1981,7 @@
 
 
 
-<h1 id="channel">使用 Channel<a class="headerlink" href="#channel" title="Permanent link">&para;</a></h1>
+<h1 id="channel">使用 Channel<a class="headerlink" href="#channel" title="Permanent link">🔗</a></h1>
 <p>推荐在模块开头使用 <code>channel = Channel.current()</code> 后, 使用以下方法:</p>
 <ul>
 <li><code>channel.name(str)</code>: 定义插件名字.</li>
@@ -1992,9 +1992,9 @@
 <p class="admonition-title">提示</p>
 <p>这些可以通过 <code>Channel</code> 的 <code>_name</code>, <code>_author</code>, <code>_description</code> 属性获取.</p>
 </div>
-<h2 id="channeluse">channel.use<a class="headerlink" href="#channeluse" title="Permanent link">&para;</a></h2>
+<h2 id="channeluse">channel.use<a class="headerlink" href="#channeluse" title="Permanent link">🔗</a></h2>
 <p>这是 <code>Channel</code> 的核心方法. 也是 <code>Saya module</code> 与其他部分交互的首选途径.</p>
-<h3 id="_1">用法<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h3>
+<h3 id="_1">用法<a class="headerlink" href="#_1" title="Permanent link">🔗</a></h3>
 <p>你需要一个 <code>Schema</code> 对象, 之后</p>
 <div class="highlight"><pre><span></span><code><span class="nd">@channel</span><span class="o">.</span><span class="n">use</span><span class="p">(</span><span class="n">SchemaObject</span><span class="p">)</span>
 <span class="k">async</span> <span class="k">def</span> <span class="nf">fetch</span><span class="p">(</span><span class="o">...</span><span class="p">):</span>
@@ -2011,7 +2011,7 @@
 <p>你可以创建主文件 ( <code>main.py</code> ) 的 <code>Saya Channel</code> !</p>
 <p>只需要调用 <code>Saya.create_main_channel()</code> 即可.</p>
 </div>
-<h2 id="schema">不只是 Schema 调用<a class="headerlink" href="#schema" title="Permanent link">&para;</a></h2>
+<h2 id="schema">不只是 Schema 调用<a class="headerlink" href="#schema" title="Permanent link">🔗</a></h2>
 <p>还记得我们在刚刚的 <a href="./start">快速开始</a> 中所用到的这部分吗?</p>
 <div class="highlight"><pre><span></span><code><span class="k">with</span> <span class="n">saya</span><span class="o">.</span><span class="n">module_context</span><span class="p">():</span>
     <span class="n">saya</span><span class="o">.</span><span class="n">require</span><span class="p">(</span><span class="s2">&quot;modules.module_as_file&quot;</span><span class="p">)</span>
@@ -2028,7 +2028,7 @@
 <div class="highlight"><span class="filename">main.py 的一部分</span><pre><span></span><code><span class="n">func</span> <span class="o">=</span> <span class="n">saya</span><span class="o">.</span><span class="n">require</span><span class="p">(</span><span class="s2">&quot;modules.module_as_file&quot;</span><span class="p">)</span>
 </code></pre></div>
 <p>现在, <code>main.py</code> 下的 <code>func</code> 与 <code>module_as_file.py</code> 中的 <code>exported_func</code> 是一个函数.</p>
-<h2 id="channel_1">Channel 的其他用法<a class="headerlink" href="#channel_1" title="Permanent link">&para;</a></h2>
+<h2 id="channel_1">Channel 的其他用法<a class="headerlink" href="#channel_1" title="Permanent link">🔗</a></h2>
 <p><code>Channel</code> 有如下用法:</p>
 <ul>
 <li>

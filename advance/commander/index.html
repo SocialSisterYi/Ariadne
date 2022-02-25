@@ -2101,8 +2101,8 @@
 
 
 
-<h1 id="commander-">Commander - 便捷的命令触发系统<a class="headerlink" href="#commander-" title="Permanent link">&para;</a></h1>
-<h2 id="_1">在开始之前<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h2>
+<h1 id="commander-">Commander - 便捷的命令触发系统<a class="headerlink" href="#commander-" title="Permanent link">🔗</a></h1>
+<h2 id="_1">在开始之前<a class="headerlink" href="#_1" title="Permanent link">🔗</a></h2>
 <p>现在 <code>Ariadne</code> 的命令解析实现方式异常丰富.</p>
 <ul>
 <li>
@@ -2119,7 +2119,7 @@
 </li>
 </ul>
 <p>按照你的需求, 选择最适合你的处理器.</p>
-<h2 id="_2">开始使用<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h2>
+<h2 id="_2">开始使用<a class="headerlink" href="#_2" title="Permanent link">🔗</a></h2>
 <div class="admonition graiax">
 <p class="admonition-title">社区提示</p>
 <p>本文档中含有以下可能让人不适的信息:</p>
@@ -2137,7 +2137,7 @@
 
 <span class="n">cmd</span> <span class="o">=</span> <span class="n">Commander</span><span class="p">(</span><span class="n">broadcast</span><span class="p">)</span>
 </code></pre></div>
-<h3 id="command"><code>command</code> 方法<a class="headerlink" href="#command" title="Permanent link">&para;</a></h3>
+<h3 id="command"><code>command</code> 方法<a class="headerlink" href="#command" title="Permanent link">🔗</a></h3>
 <p><code>Commander.command</code> 主要作为装饰器使用, 用于注册命令.</p>
 <p>其 <code>dispatchers</code> <code>decorators</code> 两个参数与 <code>Broadcast.receiver</code> 含义相同, 这里不再详细讲解.</p>
 <p>其 <code>command</code> 参数为一个字符串, 为类似 <code>shell</code> 的主命令样式.</p>
@@ -2177,18 +2177,18 @@
 <div class="highlight"><span class="filename">示例</span><pre><span></span><code><span class="nd">@cmd</span><span class="o">.</span><span class="n">command</span><span class="p">(</span><span class="s2">&quot;.cmd </span><span class="si">{placeholder}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;param&quot;</span><span class="p">:</span> <span class="n">Slot</span><span class="p">(</span><span class="s2">&quot;placeholder&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)})</span>
 <span class="k">async</span> <span class="k">def</span> <span class="nf">func</span><span class="p">(</span><span class="n">param</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span> <span class="o">...</span>
 </code></pre></div>
-<h3 id="_3">参数分派与标注<a class="headerlink" href="#_3" title="Permanent link">&para;</a></h3>
+<h3 id="_3">参数分派与标注<a class="headerlink" href="#_3" title="Permanent link">🔗</a></h3>
 <p>使用 <strong>参数定义</strong> 的拓展语法, 可以指定参数的类型与默认值, 并且让其不需要 <a href="./#slot">参数重定向</a> 就可以直接被分派.</p>
 <p>这种语法与 Python 中的标注语法相同. 例如: <code class="highlight"><span class="p">{</span><span class="n">content</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;default&quot;</span><span class="p">}</span></code></p>
 <p>它可以为 <code class="highlight"><span class="k">def</span> <span class="p">(</span><span class="n">content</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="o">...</span></code> 进行参数分派.</p>
 <p>前导的 <code>...</code> 声明启用了 <code>wildcard</code>, 接受任意个尾接消息链, 在这个情况下可以进一步启用 <code>raw</code>.</p>
-<h4 id="wildcard">关于 wildcard<a class="headerlink" href="#wildcard" title="Permanent link">&para;</a></h4>
+<h4 id="wildcard">关于 wildcard<a class="headerlink" href="#wildcard" title="Permanent link">🔗</a></h4>
 <p><code>wildcard</code> 模式可以类比 <code class="highlight"><span class="k">def</span> <span class="nf">func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">anno</span><span class="p">)</span></code> 中的 <code>*args</code>.</p>
 <p>这种情况下接受任意个参数, 并通过 <code>{...param: anno}</code> 中的 <code>anno</code> 逐个处理.</p>
 <p>最后分派的将是 <code>Tuple[anno]</code> 类型参数.</p>
 <p>显而易见的, <code>default</code> 在 <code>wildcard</code> 下不可被设置.</p>
 <p>通过 <code class="highlight"><span class="p">{</span><span class="o">...</span><span class="n">content</span><span class="p">:</span> <span class="n">raw</span><span class="p">}</span></code> 这种特殊格式可以启用 <a href="./#raw"><code>raw</code></a> 解析模式.</p>
-<h4 id="_4">参数的自动解析<a class="headerlink" href="#_4" title="Permanent link">&para;</a></h4>
+<h4 id="_4">参数的自动解析<a class="headerlink" href="#_4" title="Permanent link">🔗</a></h4>
 <p><code>Commander</code> 内部用了某些魔法自动解析参数并转换为对应的 Python 对象.</p>
 <div class="highlight"><span class="filename">示例</span><pre><span></span><code><span class="k">class</span> <span class="nc">ExampleModel</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
     <span class="o">...</span>
@@ -2210,16 +2210,16 @@
 </code></pre></div>
 <p>本机制并不会与 <code>Decorator</code> 解析冲突.</p>
 </div>
-<h3 id="slot">参数重定向: <code>Slot</code> 的使用<a class="headerlink" href="#slot" title="Permanent link">&para;</a></h3>
+<h3 id="slot">参数重定向: <code>Slot</code> 的使用<a class="headerlink" href="#slot" title="Permanent link">🔗</a></h3>
 <p><code>Slot</code> 指定了它需要的 <code>placeholder</code>, 参数的类型, 以及 (可选的) 默认值.</p>
 <p>主命令各个参数的优先级如下:</p>
 <p>函数声明 &lt; 命令的拓展语法 &lt; Slot 定义</p>
-<h4 id="raw">最后一个参数: 可选项与 <code>raw</code> 属性<a class="headerlink" href="#raw" title="Permanent link">&para;</a></h4>
+<h4 id="raw">最后一个参数: 可选项与 <code>raw</code> 属性<a class="headerlink" href="#raw" title="Permanent link">🔗</a></h4>
 <p>在 <code>Slot</code> 上指定 <code>default</code> / <code>default_factory</code> 即默认认为是可选项, 且要求其对应的参数在最后.</p>
 <p>指定 <code>Slot</code> 的 <code>type</code> 为字面值 <code class="highlight"><span class="s2">&quot;raw&quot;</span></code> <span class="curtain">或者 commander._raw</span> 时,
 会认为 <code>Slot</code> 为 <code>raw</code>.</p>
 <p><code>raw</code> 模式下, 末尾 <code>wildcard</code> 的消息链元组会被转化为原来的单个消息链.</p>
-<h3 id="arg">动态选项: <code>Arg</code><a class="headerlink" href="#arg" title="Permanent link">&para;</a></h3>
+<h3 id="arg">动态选项: <code>Arg</code><a class="headerlink" href="#arg" title="Permanent link">🔗</a></h3>
 <p><code>Arg</code> 必须指定 <code>default</code> (<code>default_factory</code>) 值作为没有该参数时的选项。</p>
 <p><code>Arg</code> 的 <code>pattern</code> 必须由 <strong>单个</strong> 选择匹配或完全匹配开头, 之后紧跟任意个 <strong>参数定义</strong> .</p>
 <div class="highlight"><pre><span></span><code><span class="nc">CONSTANT</span><span class="w"> </span>::<span class="o">=</span><span class="w"> </span>任意非空且不包含<span class="w"> </span><span class="l">&quot;[]{}|:&quot;</span><span class="w"> </span>这些符号的字符串<span class="w"></span>
@@ -2249,7 +2249,7 @@
 
 <span class="n">Arg</span><span class="p">(</span><span class="s2">&quot;--option </span><span class="si">{value}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="n">MessageChain</span><span class="p">([</span><span class="s2">&quot;default&quot;</span><span class="p">]))</span> <span class="c1"># 默认 type 为 MessageChain</span>
 </code></pre></div>
-<h3 id="add_type_cast"><code>add_type_cast</code>: 添加可处理的类型<a class="headerlink" href="#add_type_cast" title="Permanent link">&para;</a></h3>
+<h3 id="add_type_cast"><code>add_type_cast</code>: 添加可处理的类型<a class="headerlink" href="#add_type_cast" title="Permanent link">🔗</a></h3>
 <p><code>Commander</code> 之下, <code>pydantic</code> 处理了大部分数据的处理工作, 对于一些特殊的类型, 你可以通过 <code>add_type_cast</code> 添加自定义的转换函数.</p>
 <div class="admonition warning">
 <p class="admonition-title">add_type_cast 接受的函数会通过 <a href="https://pydantic-docs.helpmanual.io/usage/validators/"><code>pydantic.validator</code></a> 转换, 请注意其规范.</p>
@@ -2267,7 +2267,7 @@
 <p class="admonition-title"><code>value</code> 字段如果没有冲突的类型转换函数则总是 <code>MessageChain</code> 类型</p>
 </div>
 <p>这样添加了 <code>List[str]</code> 与 <code>List[MessageChain]</code> 两种类型支持.</p>
-<h3 id="saya">配合 <code>Saya</code> 使用<a class="headerlink" href="#saya" title="Permanent link">&para;</a></h3>
+<h3 id="saya">配合 <code>Saya</code> 使用<a class="headerlink" href="#saya" title="Permanent link">🔗</a></h3>
 <p><code class="highlight"><span class="kn">from</span> <span class="nn">graia.ariadne.message.commander.saya</span> <span class="kn">import</span> <span class="n">CommanderBehaviour</span><span class="p">,</span> <span class="n">CommandSchema</span></code></p>
 <p><code>CommanderBehaviour</code> 需要传入一个 <code>Commander</code> 实例.</p>
 <p><code>CommandSchema</code> 参数与 <code>Commander.command</code> 相同.</p>

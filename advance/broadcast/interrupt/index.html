@@ -1941,7 +1941,7 @@
 
 
 
-<h1 id="interrupt-">Interrupt - 中断<a class="headerlink" href="#interrupt-" title="Permanent link">&para;</a></h1>
+<h1 id="interrupt-">Interrupt - 中断<a class="headerlink" href="#interrupt-" title="Permanent link">🔗</a></h1>
 <p>有时你可能需要进一步获取信息以处理.</p>
 <p>比如这样:</p>
 <div>
@@ -1954,7 +1954,7 @@
 </div>
 
 <p>对于此种交互方式, 我们提供了 <code>Interrupt</code> 以支持.</p>
-<h2 id="_1">开始使用<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h2>
+<h2 id="_1">开始使用<a class="headerlink" href="#_1" title="Permanent link">🔗</a></h2>
 <p>先进行导入:</p>
 <div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">graia.broadcast.interrupt</span> <span class="kn">import</span> <span class="n">InterruptControl</span>
 <span class="kn">from</span> <span class="nn">graia.broadcast.interrupt.waiter</span> <span class="kn">import</span> <span class="n">Waiter</span>
@@ -2042,7 +2042,7 @@
 <div class="admonition note">
 <p class="admonition-title">在 <code>InterruptControl.wait</code> 上使用 <code>timeout</code> 参数可以设置超时时间, 超时会引发 <code>TimeoutError</code>.</p>
 </div>
-<h2 id="_2">它是怎么运作的?<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h2>
+<h2 id="_2">它是怎么运作的?<a class="headerlink" href="#_2" title="Permanent link">🔗</a></h2>
 <p><code>Interrupt</code> 创建的 <code>Waiter</code> 对象很像 <code>asyncio.Future</code>, 是基于回调的设计.</p>
 <p>在 <code>inc.wait()</code> 时, 会创建一个临时的事件监听器, 等待 <code>Waiter</code> 成功执行事件处理, 并将其处理结果传回 <code>inc.wait()</code> 的调用者.</p>
 <p>也就是说, <code>inc.wait</code> 判断, 处理的是 <strong>"下一个"</strong> 消息 / 事件.</p>

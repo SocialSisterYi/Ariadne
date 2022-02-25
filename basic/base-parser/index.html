@@ -2231,7 +2231,7 @@
 
 
 
-<h1 id="_1">基础消息链处理器<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h1>
+<h1 id="_1">基础消息链处理器<a class="headerlink" href="#_1" title="Permanent link">🔗</a></h1>
 <div class="admonition info">
 <p class="admonition-title">提示</p>
 <p>这里介绍的所有处理器都是 <code>Broadcast Decorator</code>.</p>
@@ -2239,10 +2239,10 @@
 </div>
 <p>本部分代码在 <a href="https://github.com/GraiaProject/Ariadne/blob/master/src/graia/ariadne/message/parser/base.py"><code>base.py</code></a></p>
 <p>不匹配时它们都会通过引发 <code>ExecutionStop</code> 停止执行.</p>
-<h2 id="detectprefix">DetectPrefix<a class="headerlink" href="#detectprefix" title="Permanent link">&para;</a></h2>
+<h2 id="detectprefix">DetectPrefix<a class="headerlink" href="#detectprefix" title="Permanent link">🔗</a></h2>
 <p>顾名思义, 检测前缀.</p>
 <p>实例化时传入前缀 <strong>字符串</strong> 即可.</p>
-<h3 id="_2">使用<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h3>
+<h3 id="_2">使用<a class="headerlink" href="#_2" title="Permanent link">🔗</a></h3>
 <p>作为 <code>Decorator</code>, 你应该放到 <code>broadcast.receiver</code> / <code>ListenerSchema</code> 的 <code>decorators</code> 参数列表里.</p>
 <div class="highlight"><pre><span></span><code><span class="nd">@broadcast</span><span class="o">.</span><span class="n">receiver</span><span class="p">(</span><span class="o">...</span><span class="p">,</span> <span class="n">decorators</span><span class="o">=</span><span class="p">[</span><span class="n">DetectPrefix</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">)])</span>
 <span class="k">def</span> <span class="nf">on_message</span><span class="p">(</span><span class="n">chain</span><span class="p">:</span> <span class="n">MessageChain</span><span class="p">):</span> <span class="c1"># chain 必定以 &quot;/&quot; 打头</span>
@@ -2253,10 +2253,10 @@
     <span class="o">...</span> <span class="c1"># &quot;.TestSomething&quot; -&gt; &quot;Something&quot;</span>
 </code></pre></div>
 <p>这会自动去掉前缀. 但是不会改动 <code>Quote</code> 与 <code>Source</code> 等元数据元素.</p>
-<h2 id="detectsuffix">DetectSuffix<a class="headerlink" href="#detectsuffix" title="Permanent link">&para;</a></h2>
+<h2 id="detectsuffix">DetectSuffix<a class="headerlink" href="#detectsuffix" title="Permanent link">🔗</a></h2>
 <p>顾名思义, 检测后缀.</p>
 <p>实例化时传入后缀 <strong>字符串</strong> 即可.</p>
-<h3 id="_3">使用<a class="headerlink" href="#_3" title="Permanent link">&para;</a></h3>
+<h3 id="_3">使用<a class="headerlink" href="#_3" title="Permanent link">🔗</a></h3>
 <p>作为 <code>Decorator</code>, 放到 <code>broadcast.receiver</code> / <code>ListenerSchema</code> 的 <code>decorators</code> .</p>
 <div class="highlight"><pre><span></span><code><span class="nd">@broadcast</span><span class="o">.</span><span class="n">receiver</span><span class="p">(</span><span class="o">...</span><span class="p">,</span> <span class="n">decorators</span><span class="o">=</span><span class="p">[</span><span class="n">DetectSuffix</span><span class="p">(</span><span class="s1">&#39;启动&#39;</span><span class="p">)])</span>
 <span class="k">def</span> <span class="nf">on_message</span><span class="p">(</span><span class="n">chain</span><span class="p">:</span> <span class="n">MessageChain</span><span class="p">):</span> <span class="c1"># chain 必定以 &quot;启动&quot; 结尾</span>
@@ -2267,17 +2267,17 @@
     <span class="o">...</span> <span class="c1"># &quot;TestSuffix&quot; -&gt; &quot;Test&quot;</span>
 </code></pre></div>
 <p>这会自动去掉后缀. 但是不会改动 <code>Quote</code> 与 <code>Source</code> 等元数据元素.</p>
-<h2 id="mentionme">MentionMe<a class="headerlink" href="#mentionme" title="Permanent link">&para;</a></h2>
+<h2 id="mentionme">MentionMe<a class="headerlink" href="#mentionme" title="Permanent link">🔗</a></h2>
 <p>检测在聊天中提到 Bot (At Bot 或以 Bot 群昵称/自己名称 打头).</p>
-<h3 id="_4">使用<a class="headerlink" href="#_4" title="Permanent link">&para;</a></h3>
+<h3 id="_4">使用<a class="headerlink" href="#_4" title="Permanent link">🔗</a></h3>
 <p><code>Decorator</code>: 放到 <code>broadcast.receiver</code> / <code>ListenerSchema</code> 的 <code>decorators</code> .</p>
 <div class="highlight"><pre><span></span><code><span class="nd">@broadcast</span><span class="o">.</span><span class="n">receiver</span><span class="p">(</span><span class="o">...</span><span class="p">,</span> <span class="n">decorators</span><span class="o">=</span><span class="p">[</span><span class="n">MentionMe</span><span class="p">()])</span> <span class="c1"># 注意要实例化</span>
 <span class="k">async</span> <span class="k">def</span> <span class="nf">on_mention_me</span><span class="p">(</span><span class="n">chain</span><span class="p">:</span> <span class="n">MessageChain</span><span class="p">):</span> <span class="c1"># 不会改动消息链</span>
     <span class="o">...</span>
 </code></pre></div>
-<h2 id="mention">Mention<a class="headerlink" href="#mention" title="Permanent link">&para;</a></h2>
+<h2 id="mention">Mention<a class="headerlink" href="#mention" title="Permanent link">🔗</a></h2>
 <p>检测在聊天中提到指定的人 (At 指定的人 或以 指定的人 群昵称/名称打头).</p>
-<h3 id="_5">使用<a class="headerlink" href="#_5" title="Permanent link">&para;</a></h3>
+<h3 id="_5">使用<a class="headerlink" href="#_5" title="Permanent link">🔗</a></h3>
 <p><code>Decorator</code>: 放到 <code>broadcast.receiver</code> / <code>ListenerSchema</code> 的 <code>decorators</code> .</p>
 <p>同时你需要为其提供 target 参数.</p>
 <div class="highlight"><pre><span></span><code><span class="nd">@broadcast</span><span class="o">.</span><span class="n">receiver</span><span class="p">(</span><span class="o">...</span><span class="p">,</span> <span class="n">decorators</span><span class="o">=</span><span class="p">[</span><span class="n">Mention</span><span class="p">(</span><span class="n">target</span><span class="o">=...</span><span class="p">)])</span> <span class="c1"># target: int | str  </span>
@@ -2285,21 +2285,21 @@
 <span class="k">async</span> <span class="k">def</span> <span class="nf">on_mention</span><span class="p">(</span><span class="n">chain</span><span class="p">:</span> <span class="n">MessageChain</span><span class="p">):</span> <span class="c1"># 不会改动消息链</span>
     <span class="o">...</span>
 </code></pre></div>
-<h2 id="containkeyword">ContainKeyword<a class="headerlink" href="#containkeyword" title="Permanent link">&para;</a></h2>
+<h2 id="containkeyword">ContainKeyword<a class="headerlink" href="#containkeyword" title="Permanent link">🔗</a></h2>
 <p>检测消息链是否包含指定关键字.</p>
-<h3 id="_6">使用<a class="headerlink" href="#_6" title="Permanent link">&para;</a></h3>
+<h3 id="_6">使用<a class="headerlink" href="#_6" title="Permanent link">🔗</a></h3>
 <p><code>Decorator</code>: 放入 <code>broadcast.receiver</code> / <code>ListenerSchema</code> 的 <code>decorators</code> .</p>
 <p>同时你需要为其提供 keyword 参数.</p>
 <div class="highlight"><pre><span></span><code><span class="nd">@broadcast</span><span class="o">.</span><span class="n">receiver</span><span class="p">(</span><span class="o">...</span><span class="p">,</span> <span class="n">decorators</span><span class="o">=</span><span class="p">[</span><span class="n">ContainKeyword</span><span class="p">(</span><span class="n">keyword</span><span class="o">=...</span><span class="p">)])</span> <span class="c1"># keyword: str</span>
 <span class="k">async</span> <span class="k">def</span> <span class="nf">on_contain_keyword</span><span class="p">(</span><span class="n">chain</span><span class="p">:</span> <span class="n">MessageChain</span><span class="p">):</span> <span class="c1"># 不会改动消息链</span>
     <span class="o">...</span>
 </code></pre></div>
-<h2 id="matchcontent">MatchContent<a class="headerlink" href="#matchcontent" title="Permanent link">&para;</a></h2>
+<h2 id="matchcontent">MatchContent<a class="headerlink" href="#matchcontent" title="Permanent link">🔗</a></h2>
 <p>检测消息链是否与对应消息链相等.</p>
 <div class="admonition warning">
 <p class="admonition-title">注意 Image 等元素的特殊对比规则</p>
 </div>
-<h3 id="_7">使用<a class="headerlink" href="#_7" title="Permanent link">&para;</a></h3>
+<h3 id="_7">使用<a class="headerlink" href="#_7" title="Permanent link">🔗</a></h3>
 <p><code>Decorator</code>: 放入 <code>broadcast.receiver</code> / <code>ListenerSchema</code> 的 <code>decorators</code> .</p>
 <div class="highlight"><pre><span></span><code><span class="nd">@broadcast</span><span class="o">.</span><span class="n">receiver</span><span class="p">(</span><span class="o">...</span><span class="p">,</span> <span class="n">decorators</span><span class="o">=</span><span class="p">[</span><span class="n">MatchContent</span><span class="p">(</span><span class="n">content</span><span class="o">=...</span><span class="p">)])</span> 
 <span class="c1"># content: str | MessageChain </span>
@@ -2307,22 +2307,22 @@
 <span class="k">async</span> <span class="k">def</span> <span class="nf">on_match_content</span><span class="p">(</span><span class="n">chain</span><span class="p">:</span> <span class="n">MessageChain</span><span class="p">):</span> <span class="c1"># 不会改动消息链</span>
     <span class="o">...</span>
 </code></pre></div>
-<h2 id="matchregex">MatchRegex<a class="headerlink" href="#matchregex" title="Permanent link">&para;</a></h2>
+<h2 id="matchregex">MatchRegex<a class="headerlink" href="#matchregex" title="Permanent link">🔗</a></h2>
 <p>检测消息链是否匹配指定正则表达式.</p>
 <div class="admonition warning">
 <p class="admonition-title">注意 [] 等特殊字符, 因为是使用 <code>MessageChain.asDisplay</code> 结果作为匹配源的.</p>
 </div>
-<h3 id="_8">使用<a class="headerlink" href="#_8" title="Permanent link">&para;</a></h3>
+<h3 id="_8">使用<a class="headerlink" href="#_8" title="Permanent link">🔗</a></h3>
 <p><code>Decorator</code>: 放入 <code>broadcast.receiver</code> / <code>ListenerSchema</code> 的 <code>decorators</code> .</p>
 <div class="highlight"><pre><span></span><code><span class="nd">@broadcast</span><span class="o">.</span><span class="n">receiver</span><span class="p">(</span><span class="o">...</span><span class="p">,</span> <span class="n">decorators</span><span class="o">=</span><span class="p">[</span><span class="n">MatchRegex</span><span class="p">(</span><span class="n">regex</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;\d+&quot;</span><span class="p">)])</span> <span class="c1"># regex 参数为 regex 表达式</span>
 <span class="k">async</span> <span class="k">def</span> <span class="nf">on_match_regex</span><span class="p">(</span><span class="n">chain</span><span class="p">:</span> <span class="n">MessageChain</span><span class="p">):</span> <span class="c1"># 不会改动消息链</span>
     <span class="o">...</span>
 </code></pre></div>
-<h2 id="matchtemplate">matchTemplate<a class="headerlink" href="#matchtemplate" title="Permanent link">&para;</a></h2>
+<h2 id="matchtemplate">matchTemplate<a class="headerlink" href="#matchtemplate" title="Permanent link">🔗</a></h2>
 <p>检测消息链是否匹配指定模板.</p>
 <p>遇到元素实例则检测是否相等，遇到元素类型则检测类型是否匹配.</p>
 <p><code>Plain</code> 实例与类型会被自动拼接起来.</p>
-<h3 id="_9">使用<a class="headerlink" href="#_9" title="Permanent link">&para;</a></h3>
+<h3 id="_9">使用<a class="headerlink" href="#_9" title="Permanent link">🔗</a></h3>
 <p><code>Decorator</code>: 放入 <code>broadcast.receiver</code> / <code>ListenerSchema</code> 的 <code>decorators</code> .</p>
 <p>```py
 @broadcast.receiver(..., decorators=[MatchTemplate([Plain, Plain("搜图"), Image])]) # 需要 "*搜图 [图片]" 才能匹配 (*为任意多字符)

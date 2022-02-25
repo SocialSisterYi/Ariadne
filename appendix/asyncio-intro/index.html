@@ -1995,7 +1995,7 @@
 
 
 
-<h1 id="asyncio">asyncio 教程<a class="headerlink" href="#asyncio" title="Permanent link">&para;</a></h1>
+<h1 id="asyncio">asyncio 教程<a class="headerlink" href="#asyncio" title="Permanent link">🔗</a></h1>
 <blockquote>
 <p>本章摘自 YiriMirai 的文档。</p>
 <p>YiriMirai 是一个轻量, 低耦合的 Python QQ Bot 框架.</p>
@@ -2012,7 +2012,7 @@
 <div class="admonition info">
 <p class="admonition-title">如果你心急了，请直接跳到 <a href="./#_5">使用协程</a> </p>
 </div>
-<h2 id="_1">什么是异步？<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h2>
+<h2 id="_1">什么是异步？<a class="headerlink" href="#_1" title="Permanent link">🔗</a></h2>
 <p>在讲异步之前，需要先知道一个与之相对的概念：同步。</p>
 <p>其实同步对我们而言并不陌生。在接触到异步之前，我们认知的一切都是同步的。我们可以想象代码一句一句地执行，遇到函数就进入，执行完函数再执行函数后面的东西，所有的执行顺序都严格地和代码书写的顺序一致——这就是同步。</p>
 <p>比如这样的代码：</p>
@@ -2048,7 +2048,7 @@
 <p>如此看来，异步似乎是一件不太好的事情。它让程序的运行平添了一种不可控的随意性，我们不再能看到代码就直接推演出结果，因为即使是相邻书写的僵局代码，之间也可能会有别的代码执行。</p>
 <p>但是 <strong>异步相较于同步而言，带来的性能提升实在是太诱人了</strong> 。一个网站的服务器，如果是同步的，那么它同时只能让一个用户访问——这简直是不可理喻的事情。异步就像几万年前蹲踞在草原清冷的月光下，用锐利的眼神眺望人类营地篝火的一只秀美的狼，而猎手们则思考着如何给它套上项圈，变成自己忠实的猎犬。</p>
 <p>所以，多线程、回调，包括协程，这一系列设计，与其说是为了充分利用计算资源，不如说是为了 <strong>在人类可理解的范畴内，更好地制服异步</strong> 。</p>
-<h2 id="_2">锁的“困境”<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h2>
+<h2 id="_2">锁的“困境”<a class="headerlink" href="#_2" title="Permanent link">🔗</a></h2>
 <p>多线程和锁的结合，至今仍然是异步编程的最佳选择之一。因此，怎么加锁、在何处加锁，就成为了一门重要的学问。</p>
 <p>锁是个好东西，但是不能有太多。一方面，反复地获取锁释放锁会占用运行时间；另一方面，当一个线程长时间持有某个锁时，其他的线程如果想要访问这个资源，也必须在原地等待， <strong>极端情况下，同一时间只有一个线程在执行！</strong></p>
 <p>人们在优化锁的使用上花了很大工夫，从中衍生出的各种理论此处不再赘述。随着锁的使用方式逐渐变得复杂，人们发现，如果想要完美地控制锁的粒度，就不得不对花大量的代码去精细地控制每一个锁，这让编写代码的难度大大提高了。</p>
@@ -2056,7 +2056,7 @@
 <p>当然，GIL 的存在也没有完全把多线程的优点抹消掉。比如一个线程在 <code>sleep</code> 的时候，或者在等待网络请求返回的时候，还是会乖乖地释放掉 GIL 锁，让其他线程运行的。不过这时候，释放 GIL 的线程实际上只是在等着，什么都不干，最后还是只有一个线程在运行。</p>
 <p><strong>既然还是只有一个线程在运行，那么为什么不干脆用单线程实现呢？</strong></p>
 <p><strong>答案是：当然可以</strong>。对于这个问题，人们给出了许多答案，其中最著名的是两种：<strong>回调和协程</strong> 。</p>
-<h2 id="_3">从回调到协程（上）<a class="headerlink" href="#_3" title="Permanent link">&para;</a></h2>
+<h2 id="_3">从回调到协程（上）<a class="headerlink" href="#_3" title="Permanent link">🔗</a></h2>
 <p>介绍了这么多，我们终于第一次提到了“协程”这个词。不过先不要着急，要想理解协程的概念，我们还需要一些基础的东西。</p>
 <p>回到上面刚刚提出的问题，不过这里要换个说法：<strong>怎样在单线程中实现异步</strong> ？</p>
 <p>其实在刚才的讨论中我们已经知道了问题的答案，那就是，像带着 GIL 的多线程一样，在某个地方需要等待时，就立马切换到别的任务，等待完成之后，再继续刚才的任务。</p>
@@ -2148,7 +2148,7 @@
         <span class="n">callback</span><span class="p">(</span><span class="n">key</span><span class="o">.</span><span class="n">fileobj</span><span class="p">,</span> <span class="n">mask</span><span class="p">)</span>
 </code></pre></div>
 <p>在 Windows 下基于 <code>I/O Completion Port</code> 的模型比基于 <code>Selector</code> 的模型更可拓展（支持子进程等），当然这是题外话了。</p>
-<h2 id="_4">从回调到协程（下）<a class="headerlink" href="#_4" title="Permanent link">&para;</a></h2>
+<h2 id="_4">从回调到协程（下）<a class="headerlink" href="#_4" title="Permanent link">🔗</a></h2>
 <p>上一节中，我们已经简单说了基于底层 <code>selector</code> 的回调协程，它都需要通过 <code>socket</code> 创建的原始套接字进行操作，非常笨拙且不友好。</p>
 <p>回调的本质，是将一个任务分成两部分，在耗时操作之前的部分，和耗时操作之后的部分，后者是前者的继续，或者叫做续体（continuation）。回调式就是把续体写成回调函数的形式，传递到其他地方，这种操作又叫做 <strong>续体传递（continuation-passing）</strong> 。从这个层面上看，回调是续体传递风格（Continuation-Passing Style, CPS）的一种。</p>
 <p>CPS 其实是很早就被研究过的东西，它最初的应用不是在异步，而是在函数式编程中。用 CPS 书写的 IR 可以方便地实现惰性求值，而且因为续体天生就是 Monad，所以顺便可以解决求值顺序的问题。（话说，为什么到处都是 Monad 呢？）上一句话大可不必理解，毕竟我们不是在讲函数式编程，不过是借用一下 CPS 的术语，提供一个新的视角而已。</p>
@@ -2184,7 +2184,7 @@
 <p>执行到 <code>pause</code> 的时候，这个函数暂停，等到 <code>resume</code> 被调用时，才继续执行。</p>
 <p>非常好，现在问题只有一个了：<strong>怎么才能实现暂停的功能呢</strong>？</p>
 <p><strong>答案就是：协程</strong>。</p>
-<h2 id="async-await">async 和 await<a class="headerlink" href="#async-await" title="Permanent link">&para;</a></h2>
+<h2 id="async-await">async 和 await<a class="headerlink" href="#async-await" title="Permanent link">🔗</a></h2>
 <p>按照最简单的方式来理解，<strong>协程就是可以暂停的函数</strong>。</p>
 <p>如果你对 Python 的其他部分有一定了解，你一定会想到—— <strong>生成器 （Generator）</strong>。</p>
 <p>实际上，asyncio 刚刚被引入时，协程就是通过 <code>@asyncio.coroutine</code> 包装生成器而成的。</p>
@@ -2221,7 +2221,7 @@
 <p>Python 的协程就是使用了这个思路，只不过这样创建的协程，控制权不会直接移交给调用者，而是 <strong>事件循环</strong> 。</p>
 <p>那协程怎么互相调用呢？没关系，通过 <code>yield from</code> 语法，可以进一步转交控制权给下层生成器，也就是协程。</p>
 <p>没过多久 (Python 3.5)，<code>async</code> 与 <code>await</code> 就被加入 Python 了。</p>
-<h2 id="_5">使用协程<a class="headerlink" href="#_5" title="Permanent link">&para;</a></h2>
+<h2 id="_5">使用协程<a class="headerlink" href="#_5" title="Permanent link">🔗</a></h2>
 <p>通过 <code>async</code> 关键字可以将一个函数变为 <strong>定义上</strong> 的异步函数，通过 <code>await</code> 关键字调用其他的异步函数。</p>
 <p>要在协程内部并发多个协程，我们需要 <strong>创建任务（Task）</strong> 。</p>
 <p>我们可以通过 <code>asyncio.create_task()</code> 函数来创建一个任务。</p>
