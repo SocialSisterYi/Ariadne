@@ -4732,7 +4732,7 @@
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;unexpected token type: </span><span class="si">{</span><span class="n">t_type</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">match</span><span class="p">:</span>
-        <span class="k">match</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">space</span> <span class="o">=</span> <span class="n">SpacePolicy</span><span class="o">.</span><span class="n">NOSPACE</span>
+        <span class="k">match</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">space_policy</span> <span class="o">=</span> <span class="n">SpacePolicy</span><span class="o">.</span><span class="n">NOSPACE</span>
 
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">extra_args</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">match</span><span class="p">,</span> <span class="n">extra_args</span><span class="p">)</span>
