@@ -1973,6 +1973,7 @@
     <div class="doc doc-contents first">
 
       <p>Alconna 的简单封装</p>
+<p>Important: 建议手动从 <code>arclet.alconna</code> 导入其他部分</p>
 
 
 
@@ -2006,12 +2007,12 @@
 
             <details class="quote">
               <summary>Source code in <code>graia/ariadne/message/parser/alconna.py</code></summary>
-              <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">24</span>
-<span class="normal">25</span>
-<span class="normal">26</span>
-<span class="normal">27</span>
-<span class="normal">28</span>
-<span class="normal">29</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">alconna</span><span class="p">:</span> <span class="n">Alconna</span><span class="p">,</span> <span class="n">reply_help</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+              <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">34</span>
+<span class="normal">35</span>
+<span class="normal">36</span>
+<span class="normal">37</span>
+<span class="normal">38</span>
+<span class="normal">39</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">alconna</span><span class="p">:</span> <span class="n">Alconna</span><span class="p">,</span> <span class="n">reply_help</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
     <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">alconna</span> <span class="o">=</span> <span class="n">alconna</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">reply_help</span> <span class="o">=</span> <span class="n">reply_help</span>
@@ -2054,33 +2055,31 @@
 
         <details class="quote">
           <summary>Source code in <code>graia/ariadne/message/parser/alconna.py</code></summary>
-          <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">31</span>
-<span class="normal">32</span>
-<span class="normal">33</span>
-<span class="normal">34</span>
-<span class="normal">35</span>
-<span class="normal">36</span>
-<span class="normal">37</span>
-<span class="normal">38</span>
-<span class="normal">39</span>
-<span class="normal">40</span>
-<span class="normal">41</span>
+          <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">41</span>
 <span class="normal">42</span>
 <span class="normal">43</span>
 <span class="normal">44</span>
 <span class="normal">45</span>
 <span class="normal">46</span>
 <span class="normal">47</span>
-<span class="normal">48</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">beforeExecution</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">interface</span><span class="p">:</span> <span class="s2">&quot;DispatcherInterface[MessageEvent]&quot;</span><span class="p">):</span>
+<span class="normal">48</span>
+<span class="normal">49</span>
+<span class="normal">50</span>
+<span class="normal">51</span>
+<span class="normal">52</span>
+<span class="normal">53</span>
+<span class="normal">54</span>
+<span class="normal">55</span>
+<span class="normal">56</span>
+<span class="normal">57</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">beforeExecution</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">interface</span><span class="p">:</span> <span class="s2">&quot;DispatcherInterface[MessageEvent]&quot;</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;预处理消息链并存入 local_storage&quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">reply_help</span><span class="p">:</span>
         <span class="n">event</span><span class="p">:</span> <span class="n">MessageEvent</span> <span class="o">=</span> <span class="k">await</span> <span class="n">interface</span><span class="o">.</span><span class="n">lookup_param</span><span class="p">(</span><span class="s2">&quot;event&quot;</span><span class="p">,</span> <span class="n">MessageEvent</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
         <span class="n">app</span><span class="p">:</span> <span class="n">Ariadne</span> <span class="o">=</span> <span class="n">get_running</span><span class="p">()</span>
 
         <span class="k">def</span> <span class="nf">_send_help_string</span><span class="p">(</span><span class="n">help_string</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
-            <span class="n">app</span><span class="o">.</span><span class="n">loop</span><span class="o">.</span><span class="n">create_task</span><span class="p">(</span>
-                <span class="n">app</span><span class="o">.</span><span class="n">sendMessage</span><span class="p">(</span><span class="n">event</span><span class="o">.</span><span class="n">sender</span><span class="p">,</span> <span class="n">GraiaMessageChain</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">help_string</span><span class="p">))</span>
-            <span class="p">)</span>
+            <span class="n">app</span><span class="o">.</span><span class="n">loop</span><span class="o">.</span><span class="n">create_task</span><span class="p">(</span><span class="n">app</span><span class="o">.</span><span class="n">sendMessage</span><span class="p">(</span><span class="n">event</span><span class="o">.</span><span class="n">sender</span><span class="p">,</span> <span class="n">GraiaMessageChain</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">help_string</span><span class="p">)))</span>
+
         <span class="n">change_help_send_action</span><span class="p">(</span><span class="n">_send_help_string</span><span class="p">)</span>
 
     <span class="n">local_storage</span> <span class="o">=</span> <span class="n">interface</span><span class="o">.</span><span class="n">local_storage</span>
