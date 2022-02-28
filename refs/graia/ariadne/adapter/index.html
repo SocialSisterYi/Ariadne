@@ -1944,6 +1944,20 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
+  <a href="#graia.ariadne.adapter.Adapter.call_api" class="md-nav__link">
+    call_api()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#graia.ariadne.adapter.Adapter.start" class="md-nav__link">
+    start()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#graia.ariadne.adapter.Adapter.build_event" class="md-nav__link">
     build_event()
   </a>
@@ -1951,28 +1965,15 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#graia.ariadne.adapter.Adapter.stop" class="md-nav__link">
-    stop()
+  <a href="#graia.ariadne.adapter.Adapter.fetch_cycle" class="md-nav__link">
+    fetch_cycle()
   </a>
   
 </li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#graia.ariadne.adapter.DebugAdapter" class="md-nav__link">
-    DebugAdapter
-  </a>
-  
-    <nav class="md-nav" aria-label="DebugAdapter">
-      <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#graia.ariadne.adapter.DebugAdapter.build_event" class="md-nav__link">
-    build_event()
+  <a href="#graia.ariadne.adapter.Adapter.stop" class="md-nav__link">
+    stop()
   </a>
   
 </li>
@@ -2012,8 +2013,6 @@
 
 
   <div class="doc doc-children">
-
-
 
 
 
@@ -2072,43 +2071,32 @@
               <em>required</em>
           </td>
         </tr>
-        <tr>
-          <td><code>log</code></td>
-          <td>
-                <code><a href="https://docs.python.org/zh-cn/3/library/functions.html#bool">bool</a></code>
-          </td>
-          <td><p>开启网络连接日志. Defaults to False.</p></td>
-          <td>
-              <em>required</em>
-          </td>
-        </tr>
     </tbody>
   </table>
 
             <details class="quote">
               <summary>Source code in <code>graia/ariadne/adapter/__init__.py</code></summary>
-              <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">30</span>
+              <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">22</span>
+<span class="normal">23</span>
+<span class="normal">24</span>
+<span class="normal">25</span>
+<span class="normal">26</span>
+<span class="normal">27</span>
+<span class="normal">28</span>
+<span class="normal">29</span>
+<span class="normal">30</span>
 <span class="normal">31</span>
 <span class="normal">32</span>
 <span class="normal">33</span>
 <span class="normal">34</span>
 <span class="normal">35</span>
 <span class="normal">36</span>
-<span class="normal">37</span>
-<span class="normal">38</span>
-<span class="normal">39</span>
-<span class="normal">40</span>
-<span class="normal">41</span>
-<span class="normal">42</span>
-<span class="normal">43</span>
-<span class="normal">44</span>
-<span class="normal">45</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">broadcast</span><span class="p">:</span> <span class="n">Broadcast</span><span class="p">,</span> <span class="n">mirai_session</span><span class="p">:</span> <span class="n">MiraiSession</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="normal">37</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">broadcast</span><span class="p">:</span> <span class="n">Broadcast</span><span class="p">,</span> <span class="n">mirai_session</span><span class="p">:</span> <span class="n">MiraiSession</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;初始化 Adapter.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        broadcast (Broadcast): 广播系统</span>
 <span class="sd">        mirai_session (MiraiSession): MiraiSession 实例</span>
-<span class="sd">        log (bool, optional): 开启网络连接日志. Defaults to False.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">broadcast</span><span class="p">:</span> <span class="n">Broadcast</span> <span class="o">=</span> <span class="n">broadcast</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">running</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
@@ -2117,7 +2105,8 @@
     <span class="bp">self</span><span class="o">.</span><span class="n">call_task</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Task</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ClientSession</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">event_queue</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Queue</span><span class="p">[</span><span class="n">MiraiEvent</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">call_queue</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Queue</span><span class="p">[</span><span class="n">APICallInfo</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="k">if</span> <span class="s2">&quot;abstract&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">tags</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Adapter is abstract, cannot be instantiated.&quot;</span><span class="p">)</span>
 </code></pre></div>
 </td></tr></table>
             </details>
@@ -2140,6 +2129,174 @@
 
 
 
+
+  <div class="doc doc-object doc-function">
+
+
+
+<h3 id="graia.ariadne.adapter.Adapter.call_api" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">call_api</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">action</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">method</span><span class="p">:</span> <span class="n">CallMethod</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span> <span class="nb">str</span><span class="p">,</span> <span class="n">FormData</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="nb">dict</span><span class="p">,</span> <span class="nb">list</span><span class="p">]</span></code>
+
+  <span class="doc doc-properties">
+      <small class="doc doc-label doc-label-async"><code>async</code></small>
+  </span>
+
+<a href="#graia.ariadne.adapter.Adapter.call_api" class="headerlink" title="Permanent link">🔗</a></h3>
+
+
+    <div class="doc doc-contents ">
+
+      <p>调用 API</p>
+
+  <p><strong>Parameters:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Description</th>
+        <th>Default</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td><code>action</code></td>
+          <td>
+                <code><a href="https://docs.python.org/zh-cn/3/library/stdtypes.html#str">str</a></code>
+          </td>
+          <td><p>API 动作名, 用斜杠分割</p></td>
+          <td>
+              <em>required</em>
+          </td>
+        </tr>
+        <tr>
+          <td><code>method</code></td>
+          <td>
+                <code><a title="graia.ariadne.model.CallMethod" href="../model/#graia.ariadne.model.CallMethod">CallMethod</a></code>
+          </td>
+          <td><p>调用方法</p></td>
+          <td>
+              <em>required</em>
+          </td>
+        </tr>
+        <tr>
+          <td><code>data</code></td>
+          <td>
+                <code><a title="typing.Optional" href="https://docs.python.org/zh-cn/3/library/typing.html#typing.Optional">Optional</a>[<a title="typing.Union" href="https://docs.python.org/zh-cn/3/library/typing.html#typing.Union">Union</a>[<a title="typing.Dict" href="https://docs.python.org/zh-cn/3/library/typing.html#typing.Dict">Dict</a>[<a href="https://docs.python.org/zh-cn/3/library/stdtypes.html#str">str</a>, <a title="typing.Any" href="https://docs.python.org/zh-cn/3/library/typing.html#typing.Any">Any</a>], <a href="https://docs.python.org/zh-cn/3/library/stdtypes.html#str">str</a>, <a title="aiohttp.FormData" href="https://docs.aiohttp.org/en/stable/client_reference.html#aiohttp.FormData">FormData</a>]]</code>
+          </td>
+          <td><p>调用数据. Defaults to None.</p></td>
+          <td>
+                <code>None</code>
+          </td>
+        </tr>
+    </tbody>
+  </table>
+
+  <p><strong>Returns:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td>
+                <code><a title="typing.Union" href="https://docs.python.org/zh-cn/3/library/typing.html#typing.Union">Union</a>[<a href="https://docs.python.org/zh-cn/3/library/stdtypes.html#dict">dict</a>, <a href="https://docs.python.org/zh-cn/3/library/stdtypes.html#list">list</a>]</code>
+          </td>
+          <td><p>Union[dict, list]: API 返回的数据, 为 json 兼容格式</p></td>
+        </tr>
+    </tbody>
+  </table>
+
+        <details class="quote">
+          <summary>Source code in <code>graia/ariadne/adapter/__init__.py</code></summary>
+          <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">39</span>
+<span class="normal">40</span>
+<span class="normal">41</span>
+<span class="normal">42</span>
+<span class="normal">43</span>
+<span class="normal">44</span>
+<span class="normal">45</span>
+<span class="normal">46</span>
+<span class="normal">47</span>
+<span class="normal">48</span>
+<span class="normal">49</span>
+<span class="normal">50</span>
+<span class="normal">51</span>
+<span class="normal">52</span>
+<span class="normal">53</span>
+<span class="normal">54</span>
+<span class="normal">55</span>
+<span class="normal">56</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">call_api</span><span class="p">(</span>
+    <span class="bp">self</span><span class="p">,</span>
+    <span class="n">action</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">method</span><span class="p">:</span> <span class="n">CallMethod</span><span class="p">,</span>
+    <span class="n">data</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span> <span class="nb">str</span><span class="p">,</span> <span class="n">FormData</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="nb">dict</span><span class="p">,</span> <span class="nb">list</span><span class="p">]:</span>
+    <span class="sd">&quot;&quot;&quot;调用 API</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        action (str): API 动作名, 用斜杠分割</span>
+<span class="sd">        method (CallMethod): 调用方法</span>
+<span class="sd">        data (Optional[Union[Dict[str, Any], str, FormData]], optional): 调用数据. Defaults to None.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Union[dict, list]: API 返回的数据, 为 json 兼容格式</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="o">...</span>
+</code></pre></div>
+</td></tr></table>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-function">
+
+
+
+<h3 id="graia.ariadne.adapter.Adapter.start" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">start</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></code>
+
+  <span class="doc doc-properties">
+      <small class="doc doc-label doc-label-async"><code>async</code></small>
+  </span>
+
+<a href="#graia.ariadne.adapter.Adapter.start" class="headerlink" title="Permanent link">🔗</a></h3>
+
+
+    <div class="doc doc-contents ">
+
+      <p>启动 Adapter</p>
+
+        <details class="quote">
+          <summary>Source code in <code>graia/ariadne/adapter/__init__.py</code></summary>
+          <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">58</span>
+<span class="normal">59</span>
+<span class="normal">60</span>
+<span class="normal">61</span>
+<span class="normal">62</span>
+<span class="normal">63</span>
+<span class="normal">64</span>
+<span class="normal">65</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">start</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;启动 Adapter&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">running</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">running</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">event_queue</span> <span class="o">=</span> <span class="n">Queue</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fetch_task</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">create_task</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fetch_cycle</span><span class="p">())</span>
+    <span class="k">if</span> <span class="s2">&quot;reverse&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">tags</span><span class="p">:</span>
+        <span class="k">await</span> <span class="n">await_predicate</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">mirai_session</span><span class="o">.</span><span class="n">session_key</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">mirai_session</span><span class="o">.</span><span class="n">single_mode</span><span class="p">)</span>
+</code></pre></div>
+</td></tr></table>
+        </details>
+    </div>
+
+  </div>
 
 
 
@@ -2226,7 +2383,8 @@
 
         <details class="quote">
           <summary>Source code in <code>graia/ariadne/adapter/__init__.py</code></summary>
-          <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">68</span>
+          <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">67</span>
+<span class="normal">68</span>
 <span class="normal">69</span>
 <span class="normal">70</span>
 <span class="normal">71</span>
@@ -2248,8 +2406,7 @@
 <span class="normal">87</span>
 <span class="normal">88</span>
 <span class="normal">89</span>
-<span class="normal">90</span>
-<span class="normal">91</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">build_event</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">MiraiEvent</span><span class="p">:</span>
+<span class="normal">90</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">build_event</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">MiraiEvent</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    从尚未明确指定事件类型的对象中获取事件的定义, 并进行解析</span>
 
@@ -2282,6 +2439,40 @@
 
 
 
+  <div class="doc doc-object doc-function">
+
+
+
+<h3 id="graia.ariadne.adapter.Adapter.fetch_cycle" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">fetch_cycle</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></code>
+
+  <span class="doc doc-properties">
+      <small class="doc doc-label doc-label-async"><code>async</code></small>
+  </span>
+
+<a href="#graia.ariadne.adapter.Adapter.fetch_cycle" class="headerlink" title="Permanent link">🔗</a></h3>
+
+
+    <div class="doc doc-contents ">
+
+      <p>循环获取事件, 放入 event_queue 中</p>
+
+        <details class="quote">
+          <summary>Source code in <code>graia/ariadne/adapter/__init__.py</code></summary>
+          <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">92</span>
+<span class="normal">93</span>
+<span class="normal">94</span>
+<span class="normal">95</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">fetch_cycle</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;循环获取事件, 放入 event_queue 中&quot;&quot;&quot;</span>
+    <span class="o">...</span>
+</code></pre></div>
+</td></tr></table>
+        </details>
+    </div>
+
+  </div>
+
 
 
   <div class="doc doc-object doc-function">
@@ -2304,204 +2495,17 @@
 
         <details class="quote">
           <summary>Source code in <code>graia/ariadne/adapter/__init__.py</code></summary>
-          <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">101</span>
-<span class="normal">102</span>
-<span class="normal">103</span>
-<span class="normal">104</span>
-<span class="normal">105</span>
-<span class="normal">106</span>
-<span class="normal">107</span>
-<span class="normal">108</span>
-<span class="normal">109</span>
-<span class="normal">110</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">stop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+          <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 97</span>
+<span class="normal"> 98</span>
+<span class="normal"> 99</span>
+<span class="normal">100</span>
+<span class="normal">101</span>
+<span class="normal">102</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">stop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;停止 Adapter&quot;&quot;&quot;</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">running</span> <span class="o">=</span> <span class="kc">False</span>
     <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">fetch_task</span>
     <span class="n">logger</span><span class="o">.</span><span class="n">success</span><span class="p">(</span><span class="s2">&quot;Event fetch task completed.&quot;</span><span class="p">)</span>
-    <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">call_task</span>
-    <span class="n">logger</span><span class="o">.</span><span class="n">success</span><span class="p">(</span><span class="s2">&quot;Caller task completed.&quot;</span><span class="p">)</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">session</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">fetch_task</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">call_task</span> <span class="o">=</span> <span class="kc">None</span>
-</code></pre></div>
-</td></tr></table>
-        </details>
-    </div>
-
-  </div>
-
-
-
-
-
-  </div>
-
-    </div>
-
-  </div>
-
-
-
-
-
-  <div class="doc doc-object doc-class">
-
-
-
-<h2 id="graia.ariadne.adapter.DebugAdapter" class="doc doc-heading">
-          <code>DebugAdapter</code>
-
-
-
-<a href="#graia.ariadne.adapter.DebugAdapter" class="headerlink" title="Permanent link">🔗</a></h2>
-
-
-    <div class="doc doc-contents ">
-        <p class="doc doc-class-bases">
-          Bases: <code><span title="graia.ariadne.adapter.DefaultAdapter">DefaultAdapter</span></code></p>
-
-
-      <p>Debugging adapter</p>
-
-
-
-
-
-  <div class="doc doc-children">
-
-
-
-
-
-
-
-
-  <div class="doc doc-object doc-function">
-
-
-
-<h3 id="graia.ariadne.adapter.DebugAdapter.build_event" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">build_event</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">MiraiEvent</span></code>
-
-
-<a href="#graia.ariadne.adapter.DebugAdapter.build_event" class="headerlink" title="Permanent link">🔗</a></h3>
-
-
-    <div class="doc doc-contents ">
-
-      <p>从尚未明确指定事件类型的对象中获取事件的定义, 并进行解析</p>
-
-  <p><strong>Parameters:</strong></p>
-  <table>
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Type</th>
-        <th>Description</th>
-        <th>Default</th>
-      </tr>
-    </thead>
-    <tbody>
-        <tr>
-          <td><code>data</code></td>
-          <td>
-                <code><a href="https://docs.python.org/zh-cn/3/library/stdtypes.html#dict">dict</a></code>
-          </td>
-          <td><p>用 dict 表示的序列化态事件, 应包含有字段 <code>type</code> 以供分析事件定义.</p></td>
-          <td>
-              <em>required</em>
-          </td>
-        </tr>
-    </tbody>
-  </table>
-
-  <p><strong>Raises:</strong></p>
-  <table>
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-        <tr>
-          <td>
-                <code><a title="graia.ariadne.exception.InvalidArgument" href="../exception/#graia.ariadne.exception.InvalidArgument">InvalidArgument</a></code>
-          </td>
-          <td><p>目标对象中不包含字段 <code>type</code></p></td>
-        </tr>
-        <tr>
-          <td>
-                <code><a href="https://docs.python.org/zh-cn/3/library/exceptions.html#ValueError">ValueError</a></code>
-          </td>
-          <td><p>没有找到对应的字段, 通常的, 这意味着应用获取到了一个尚未被定义的事件, 请报告问题.</p></td>
-        </tr>
-    </tbody>
-  </table>
-
-  <p><strong>Returns:</strong></p>
-  <table>
-    <thead>
-      <tr>
-<th>Name</th>        <th>Type</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-        <tr>
-<td><code>MiraiEvent</code></td>          <td>
-                <code><a title="graia.ariadne.event.MiraiEvent" href="../event/#graia.ariadne.event.MiraiEvent">MiraiEvent</a></code>
-          </td>
-          <td><p>已经被序列化的事件</p></td>
-        </tr>
-    </tbody>
-  </table>
-
-        <details class="quote">
-          <summary>Source code in <code>graia/ariadne/adapter/__init__.py</code></summary>
-          <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">153</span>
-<span class="normal">154</span>
-<span class="normal">155</span>
-<span class="normal">156</span>
-<span class="normal">157</span>
-<span class="normal">158</span>
-<span class="normal">159</span>
-<span class="normal">160</span>
-<span class="normal">161</span>
-<span class="normal">162</span>
-<span class="normal">163</span>
-<span class="normal">164</span>
-<span class="normal">165</span>
-<span class="normal">166</span>
-<span class="normal">167</span>
-<span class="normal">168</span>
-<span class="normal">169</span>
-<span class="normal">170</span>
-<span class="normal">171</span>
-<span class="normal">172</span>
-<span class="normal">173</span>
-<span class="normal">174</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">build_event</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">MiraiEvent</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    从尚未明确指定事件类型的对象中获取事件的定义, 并进行解析</span>
-
-<span class="sd">    Args:</span>
-<span class="sd">        data (dict): 用 dict 表示的序列化态事件, 应包含有字段 `type` 以供分析事件定义.</span>
-
-<span class="sd">    Raises:</span>
-<span class="sd">        InvalidArgument: 目标对象中不包含字段 `type`</span>
-<span class="sd">        ValueError: 没有找到对应的字段, 通常的, 这意味着应用获取到了一个尚未被定义的事件, 请报告问题.</span>
-
-<span class="sd">    Returns:</span>
-<span class="sd">        MiraiEvent: 已经被序列化的事件</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">try</span><span class="p">:</span>
-        <span class="n">event</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">build_event</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
-    <span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">e</span><span class="o">.</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="se">\n</span><span class="si">{</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-        <span class="k">raise</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">event</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">event</span>
 </code></pre></div>
 </td></tr></table>
         </details>

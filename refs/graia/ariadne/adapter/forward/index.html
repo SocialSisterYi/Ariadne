@@ -1226,6 +1226,19 @@
     HttpAdapter
   </a>
   
+    <nav class="md-nav" aria-label="HttpAdapter">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#graia.ariadne.adapter.forward.HttpAdapter.authenticate" class="md-nav__link">
+    authenticate()
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
       
         <li class="md-nav__item">
@@ -1245,6 +1258,13 @@
         
       </ul>
     </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#graia.ariadne.adapter.forward.ComposeForwardAdapter" class="md-nav__link">
+    ComposeForwardAdapter
+  </a>
   
 </li>
       
@@ -2004,6 +2024,19 @@
     HttpAdapter
   </a>
   
+    <nav class="md-nav" aria-label="HttpAdapter">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#graia.ariadne.adapter.forward.HttpAdapter.authenticate" class="md-nav__link">
+    authenticate()
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
       
         <li class="md-nav__item">
@@ -2023,6 +2056,13 @@
         
       </ul>
     </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#graia.ariadne.adapter.forward.ComposeForwardAdapter" class="md-nav__link">
+    ComposeForwardAdapter
+  </a>
   
 </li>
       
@@ -2079,9 +2119,63 @@
           Bases: <code><a title="graia.ariadne.adapter.Adapter" href="../#graia.ariadne.adapter.Adapter">Adapter</a></code></p>
 
 
-      <p>仅使用正向 HTTP 的适配器, 采用短轮询接收事件/消息.
-不推荐.</p>
+      <p>仅使用正向 HTTP 的适配器, 采用短轮询接收事件/消息.</p>
 
+
+
+  <p><strong>Parameters:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Description</th>
+        <th>Default</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td><code>broadcast</code></td>
+          <td>
+                <code><span title="graia.broadcast.Broadcast">Broadcast</span></code>
+          </td>
+          <td><p>广播系统</p></td>
+          <td>
+              <em>required</em>
+          </td>
+        </tr>
+        <tr>
+          <td><code>mirai_session</code></td>
+          <td>
+                <code><a title="graia.ariadne.model.MiraiSession" href="../../model/#graia.ariadne.model.MiraiSession">MiraiSession</a></code>
+          </td>
+          <td><p>MiraiSession 实例</p></td>
+          <td>
+              <em>required</em>
+          </td>
+        </tr>
+        <tr>
+          <td><code>fetch_interval</code></td>
+          <td>
+                <code><a href="https://docs.python.org/zh-cn/3/library/functions.html#float">float</a></code>
+          </td>
+          <td><p>抓取事件间隔(s). Defaults to 0.5.</p></td>
+          <td>
+                <code>0.5</code>
+          </td>
+        </tr>
+        <tr>
+          <td><code>count</code></td>
+          <td>
+                <code><a href="https://docs.python.org/zh-cn/3/library/functions.html#int">int</a></code>
+          </td>
+          <td><p>单次抓取事件数目. Defaults to 10.</p></td>
+          <td>
+                <code>10</code>
+          </td>
+        </tr>
+    </tbody>
+  </table>
 
             <details class="quote">
               <summary>Source code in <code>graia/ariadne/adapter/forward.py</code></summary>
@@ -2094,13 +2188,29 @@
 <span class="normal">40</span>
 <span class="normal">41</span>
 <span class="normal">42</span>
-<span class="normal">43</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+<span class="normal">43</span>
+<span class="normal">44</span>
+<span class="normal">45</span>
+<span class="normal">46</span>
+<span class="normal">47</span>
+<span class="normal">48</span>
+<span class="normal">49</span>
+<span class="normal">50</span>
+<span class="normal">51</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
     <span class="n">broadcast</span><span class="p">:</span> <span class="n">Broadcast</span><span class="p">,</span>
     <span class="n">mirai_session</span><span class="p">:</span> <span class="n">MiraiSession</span><span class="p">,</span>
     <span class="n">fetch_interval</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.5</span><span class="p">,</span>
     <span class="n">count</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;初始化 HttpAdapter</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        broadcast (Broadcast): 广播系统</span>
+<span class="sd">        mirai_session (MiraiSession): MiraiSession 实例</span>
+<span class="sd">        fetch_interval (float, optional): 抓取事件间隔(s). Defaults to 0.5.</span>
+<span class="sd">        count (int, optional): 单次抓取事件数目. Defaults to 10.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">broadcast</span><span class="p">,</span> <span class="n">mirai_session</span><span class="p">)</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">fetch_interval</span> <span class="o">=</span> <span class="n">fetch_interval</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">count</span> <span class="o">=</span> <span class="n">count</span>
@@ -2119,6 +2229,68 @@
 
 
 
+
+
+
+  <div class="doc doc-object doc-function">
+
+
+
+<h3 id="graia.ariadne.adapter.forward.HttpAdapter.authenticate" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">authenticate</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span></code>
+
+  <span class="doc doc-properties">
+      <small class="doc doc-label doc-label-async"><code>async</code></small>
+  </span>
+
+<a href="#graia.ariadne.adapter.forward.HttpAdapter.authenticate" class="headerlink" title="Permanent link">🔗</a></h3>
+
+
+    <div class="doc doc-contents ">
+
+      <p>在 mira-api-http 进行认证并存入 MiraiSession</p>
+
+        <details class="quote">
+          <summary>Source code in <code>graia/ariadne/adapter/forward.py</code></summary>
+          <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">53</span>
+<span class="normal">54</span>
+<span class="normal">55</span>
+<span class="normal">56</span>
+<span class="normal">57</span>
+<span class="normal">58</span>
+<span class="normal">59</span>
+<span class="normal">60</span>
+<span class="normal">61</span>
+<span class="normal">62</span>
+<span class="normal">63</span>
+<span class="normal">64</span>
+<span class="normal">65</span>
+<span class="normal">66</span>
+<span class="normal">67</span>
+<span class="normal">68</span>
+<span class="normal">69</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">authenticate</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;在 mira-api-http 进行认证并存入 MiraiSession&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">mirai_session</span><span class="o">.</span><span class="n">single_mode</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">mirai_session</span><span class="o">.</span><span class="n">session_key</span><span class="p">:</span>
+        <span class="k">async</span> <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">post</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">mirai_session</span><span class="o">.</span><span class="n">url_gen</span><span class="p">(</span><span class="s2">&quot;verify&quot;</span><span class="p">),</span>
+            <span class="n">data</span><span class="o">=</span><span class="n">ujson</span><span class="o">.</span><span class="n">dumps</span><span class="p">({</span><span class="s2">&quot;verifyKey&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">mirai_session</span><span class="o">.</span><span class="n">verify_key</span><span class="p">}),</span>
+        <span class="p">)</span> <span class="k">as</span> <span class="n">response</span><span class="p">:</span>
+            <span class="n">response</span><span class="o">.</span><span class="n">raise_for_status</span><span class="p">()</span>
+            <span class="n">session_key</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="p">(</span><span class="k">await</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">())[</span><span class="s2">&quot;session&quot;</span><span class="p">]</span>
+        <span class="k">async</span> <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">post</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">mirai_session</span><span class="o">.</span><span class="n">url_gen</span><span class="p">(</span><span class="s2">&quot;bind&quot;</span><span class="p">),</span>
+            <span class="n">data</span><span class="o">=</span><span class="n">ujson</span><span class="o">.</span><span class="n">dumps</span><span class="p">({</span><span class="s2">&quot;sessionKey&quot;</span><span class="p">:</span> <span class="n">session_key</span><span class="p">,</span> <span class="s2">&quot;qq&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">mirai_session</span><span class="o">.</span><span class="n">account</span><span class="p">}),</span>
+        <span class="p">)</span> <span class="k">as</span> <span class="n">response</span><span class="p">:</span>
+            <span class="n">response</span><span class="o">.</span><span class="n">raise_for_status</span><span class="p">()</span>
+            <span class="n">validate_response</span><span class="p">(</span><span class="k">await</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">())</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mirai_session</span><span class="o">.</span><span class="n">session_key</span> <span class="o">=</span> <span class="n">session_key</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">success</span><span class="p">(</span><span class="s2">&quot;Successfully got session key&quot;</span><span class="p">)</span>
+</code></pre></div>
+</td></tr></table>
+        </details>
+    </div>
+
+  </div>
 
 
 
@@ -2153,9 +2325,66 @@
       <p>正向 Websocket 适配器.</p>
 
 
+
+  <p><strong>Parameters:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Description</th>
+        <th>Default</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td><code>broadcast</code></td>
+          <td>
+                <code><span title="graia.broadcast.Broadcast">Broadcast</span></code>
+          </td>
+          <td><p>广播系统</p></td>
+          <td>
+              <em>required</em>
+          </td>
+        </tr>
+        <tr>
+          <td><code>mirai_session</code></td>
+          <td>
+                <code><a title="graia.ariadne.model.MiraiSession" href="../../model/#graia.ariadne.model.MiraiSession">MiraiSession</a></code>
+          </td>
+          <td><p>MiraiSession 实例</p></td>
+          <td>
+              <em>required</em>
+          </td>
+        </tr>
+        <tr>
+          <td><code>ping</code></td>
+          <td>
+                <code><a href="https://docs.python.org/zh-cn/3/library/functions.html#bool">bool</a></code>
+          </td>
+          <td><p>是否发送 ping 消息. Defaults to True.</p></td>
+          <td>
+                <code>True</code>
+          </td>
+        </tr>
+        <tr>
+          <td><code>log</code></td>
+          <td>
+                <code><a href="https://docs.python.org/zh-cn/3/library/functions.html#bool">bool</a></code>
+          </td>
+          <td><p>是否记录网络日志. Defaults to False.</p></td>
+          <td>
+                <code>False</code>
+          </td>
+        </tr>
+    </tbody>
+  </table>
+
             <details class="quote">
               <summary>Source code in <code>graia/ariadne/adapter/forward.py</code></summary>
-              <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">144</span>
+              <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">142</span>
+<span class="normal">143</span>
+<span class="normal">144</span>
 <span class="normal">145</span>
 <span class="normal">146</span>
 <span class="normal">147</span>
@@ -2166,9 +2395,23 @@
 <span class="normal">152</span>
 <span class="normal">153</span>
 <span class="normal">154</span>
-<span class="normal">155</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+<span class="normal">155</span>
+<span class="normal">156</span>
+<span class="normal">157</span>
+<span class="normal">158</span>
+<span class="normal">159</span>
+<span class="normal">160</span>
+<span class="normal">161</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span> <span class="n">broadcast</span><span class="p">:</span> <span class="n">Broadcast</span><span class="p">,</span> <span class="n">mirai_session</span><span class="p">:</span> <span class="n">MiraiSession</span><span class="p">,</span> <span class="n">ping</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">log</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;初始化 WebsocketAdapter</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        broadcast (Broadcast): 广播系统</span>
+<span class="sd">        mirai_session (MiraiSession): MiraiSession 实例</span>
+<span class="sd">        ping (bool, optional): 是否发送 ping 消息. Defaults to True.</span>
+<span class="sd">        log (bool, optional): 是否记录网络日志. Defaults to False.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">broadcast</span><span class="p">,</span> <span class="n">mirai_session</span><span class="p">)</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">ping</span> <span class="o">=</span> <span class="n">ping</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">ping_task</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Task</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
@@ -2185,6 +2428,7 @@
 
 
   <div class="doc doc-children">
+
 
 
 
@@ -2243,13 +2487,7 @@
 
         <details class="quote">
           <summary>Source code in <code>graia/ariadne/adapter/forward.py</code></summary>
-          <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">157</span>
-<span class="normal">158</span>
-<span class="normal">159</span>
-<span class="normal">160</span>
-<span class="normal">161</span>
-<span class="normal">162</span>
-<span class="normal">163</span>
+          <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">163</span>
 <span class="normal">164</span>
 <span class="normal">165</span>
 <span class="normal">166</span>
@@ -2264,7 +2502,13 @@
 <span class="normal">175</span>
 <span class="normal">176</span>
 <span class="normal">177</span>
-<span class="normal">178</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">ws_ping</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">interval</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">30.0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="normal">178</span>
+<span class="normal">179</span>
+<span class="normal">180</span>
+<span class="normal">181</span>
+<span class="normal">182</span>
+<span class="normal">183</span>
+<span class="normal">184</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">ws_ping</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">interval</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">30.0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;向 Mirai API HTTP 的 WebsocketAdapter 循环发送 ping.</span>
 
 <span class="sd">    Args:</span>
@@ -2292,6 +2536,49 @@
     </div>
 
   </div>
+
+
+
+
+
+
+  </div>
+
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-class">
+
+
+
+<h2 id="graia.ariadne.adapter.forward.ComposeForwardAdapter" class="doc doc-heading">
+          <code>ComposeForwardAdapter</code>
+
+
+
+<a href="#graia.ariadne.adapter.forward.ComposeForwardAdapter" class="headerlink" title="Permanent link">🔗</a></h2>
+
+
+    <div class="doc doc-contents ">
+        <p class="doc doc-class-bases">
+          Bases: <code><a title="graia.ariadne.adapter.forward.WebsocketAdapter" href="#graia.ariadne.adapter.forward.WebsocketAdapter">WebsocketAdapter</a></code></p>
+
+
+      <p>正向 HTTP 与 Websocket 的组合适配器.</p>
+
+
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
 
 
 
