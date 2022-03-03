@@ -2157,6 +2157,9 @@
 <p>也就是说, <code>int(group)</code> 等价于 <code>group.id</code> .</p>
 <p><code>Group</code> <code>Friend</code> <code>Member</code> 上还有 <code>getInfo</code> <code>modifyInfo</code> <code>getProfile</code> <code>modifyAdmin</code> <code>getConfig</code> <code>modifyConfig</code> 等方便方法.</p>
 <p><code>MemberPerm</code> 支持富比较操作, 也就是说你可以通过 <code>Member.permission &gt;= MemberPerm.Administrator</code> 判断成员是否有管理权限.</p>
+<div class="admonition error">
+<p class="admonition-title">你 <strong>永远不应该</strong> 自行实例化 <code>Group</code> <code>Friend</code> <code>Member</code> <code>Stranger</code> 类型.</p>
+</div>
 <h2 id="_2">某些事件的额外方法<a class="headerlink" href="#_2" title="Permanent link">🔗</a></h2>
 <p><a href="https://github.com/GraiaProject/Ariadne/blob/master/src/graia/ariadne/event/mirai.py#L773"><code>RequestEvent</code></a>
 带有一些额外方法, 如 <code>accept</code> <code>reject</code> <code>ignore</code> 等, 直接在其上使用 <code>await</code> 即可.</p>
