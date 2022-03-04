@@ -733,8 +733,22 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#resultvalue" class="md-nav__link">
+    ResultValue 装饰器
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#int" class="md-nav__link">
+    int 类型的参数名
+  </a>
   
 </li>
       
@@ -2186,8 +2200,22 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#resultvalue" class="md-nav__link">
+    ResultValue 装饰器
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#int" class="md-nav__link">
+    int 类型的参数名
+  </a>
   
 </li>
       
@@ -2243,7 +2271,21 @@
 </code></pre></div>
 <p>这一段的 <code>ParamMatch() @ "param"</code> 说明这个参数传递给函数内的 <code>param</code> 形参.</p>
 <p>也就是 <code>param: RegexResult</code> 这里.</p>
-<p>与此同时, <code class="highlight"><span class="n">ParamMatch</span><span class="p">()</span><span class="o">.</span><span class="n">param</span><span class="p">(</span><span class="s2">&quot;param&quot;</span><span class="p">)</span></code> 与这个用法等效.</p>
+<p>与此同时, 以下用法等效.</p>
+<div class="highlight"><pre><span></span><code><span class="gp">&gt;&gt;&gt; </span><span class="n">ParamMatch</span><span class="p">()</span><span class="o">.</span><span class="n">param</span><span class="p">(</span><span class="s2">&quot;param&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="s2">&quot;param&quot;</span> <span class="o">@</span> <span class="n">ParamMatch</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="s2">&quot;param&quot;</span> <span class="o">&lt;&lt;</span> <span class="n">ParamMatch</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ParamMatch</span><span class="p">()</span> <span class="o">&gt;&gt;</span> <span class="s2">&quot;param&quot;</span>
+</code></pre></div>
+<p>!!! warning "注意位移运算符 <code>&gt;&gt;</code> 与 <code>&lt;&lt;</code> 始终朝向字符串.</p>
+<details class="info" open="open">
+<summary>为什么支持这些运算符? </summary>
+<p><code>&gt;&gt;</code> 与 <code>&lt;&lt;</code> 支持的灵感源于其他语言中对于文件流的操作:</p>
+<div class="highlight"><pre><span></span><code><span class="n">cin</span><span class="w"> </span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">var</span><span class="p">;</span><span class="w"></span>
+<span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;value&quot;</span><span class="p">;</span><span class="w"></span>
+</code></pre></div>
+<p>我们借鉴了这些语言的设计, 将 <code>&gt;&gt;</code> 与 <code>&lt;&lt;</code> 的运算符设计为支持 <code>str</code> / <code>int</code> 类型以进行参数分派.</p>
+</details>
 <h2 id="match">Match<a class="headerlink" href="#match" title="Permanent link">🔗</a></h2>
 <h3 id="regexmatch">RegexMatch<a class="headerlink" href="#regexmatch" title="Permanent link">🔗</a></h3>
 <p><a href="../../refs/graia/ariadne/message/parser/twilight/#graia.ariadne.message.parser.twilight.RegexMatch"><code>RegexMatch</code></a> 是 <code>Twilight</code> 的基础, 它可以匹配指定的正则表达式.</p>
@@ -2312,6 +2354,26 @@
 <li><code>MatchResult.origin</code>: 原始 <code>Match</code> 对象.</li>
 <li><code>MatchResult.result</code>: 匹配结果.</li>
 </ul>
+<h3 id="resultvalue">ResultValue 装饰器<a class="headerlink" href="#resultvalue" title="Permanent link">🔗</a></h3>
+<p><code>ResultValue</code> 作为装饰器使用, 可以直接获取匹配结果而不需要从 <code>Match.result</code> 提取.</p>
+<div class="highlight"><pre><span></span><code><span class="nd">@broadcast</span><span class="o">.</span><span class="n">receiver</span><span class="p">(</span><span class="n">MessageEvent</span><span class="p">,</span> <span class="n">dispatchers</span><span class="o">=</span><span class="p">[</span>
+        <span class="n">Twilight</span><span class="p">(</span>
+            <span class="p">[</span>
+                <span class="n">FullMatch</span><span class="p">(</span><span class="s2">&quot;.command&quot;</span><span class="p">),</span>
+                <span class="s2">&quot;arg&quot;</span> <span class="o">@</span> <span class="n">RegexMatch</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;\d+&quot;</span><span class="p">,</span> <span class="n">optional</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="p">]</span>
+        <span class="p">)</span>
+    <span class="p">]</span>
+<span class="p">)</span>
+<span class="hll"><span class="k">async</span> <span class="k">def</span> <span class="nf">reply</span><span class="p">(</span><span class="o">...</span><span class="p">,</span> <span class="n">arg</span><span class="p">:</span> <span class="n">MessageChain</span> <span class="o">=</span> <span class="n">ResultValue</span><span class="p">()):</span> <span class="c1"># 保证不会被正常的流程覆盖</span>
+</span>    <span class="o">...</span>
+</code></pre></div>
+<h2 id="int">int 类型的参数名<a class="headerlink" href="#int" title="Permanent link">🔗</a></h2>
+<p>你可以这样: <code class="highlight"><span class="n">ParamMatch</span><span class="p">()</span> <span class="o">@</span> <span class="mi">1</span></code></p>
+<p>之后获取 <a href="../../refs/graia/ariadne/message/parser/twilight/#graia.ariadne.message.parser.twilight.Sparkle"><code>Sparkle</code></a> 对象, 并对其进行索引操作.</p>
+<div class="highlight"><pre><span></span><code><span class="n">p</span><span class="p">:</span> <span class="n">RegexResult</span> <span class="o">=</span> <span class="n">Sparkle</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+</code></pre></div>
+<p>这里只是顺嘴一提，因为有些时候这个不如 <code>str</code> 来的方便.</p>
 
               
             </article>
