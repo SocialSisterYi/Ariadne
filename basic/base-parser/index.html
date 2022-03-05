@@ -2456,7 +2456,7 @@
 <h3 id="_5">使用<a class="headerlink" href="#_5" title="Permanent link">🔗</a></h3>
 <p><code>Decorator</code>: 放到 <code>broadcast.receiver</code> / <code>ListenerSchema</code> 的 <code>decorators</code> .</p>
 <p>同时你需要为其提供 target 参数.</p>
-<div class="highlight"><pre><span></span><code><span class="nd">@broadcast</span><span class="o">.</span><span class="n">receiver</span><span class="p">(</span><span class="o">...</span><span class="p">,</span> <span class="n">decorators</span><span class="o">=</span><span class="p">[</span><span class="n">Mention</span><span class="p">(</span><span class="n">target</span><span class="o">=...</span><span class="p">)])</span> <span class="c1"># target: int | str  </span>
+<div class="highlight"><pre><span></span><code><span class="nd">@broadcast</span><span class="o">.</span><span class="n">receiver</span><span class="p">(</span><span class="o">...</span><span class="p">,</span> <span class="n">decorators</span><span class="o">=</span><span class="p">[</span><span class="n">Mention</span><span class="p">(</span><span class="n">target</span><span class="o">=...</span><span class="p">)])</span> <span class="c1"># target: int | str</span>
 <span class="c1"># int: 用户 QQ 号, str: 用户的名字</span>
 <span class="k">async</span> <span class="k">def</span> <span class="nf">on_mention</span><span class="p">(</span><span class="n">chain</span><span class="p">:</span> <span class="n">MessageChain</span><span class="p">):</span> <span class="c1"># 不会改动消息链</span>
     <span class="o">...</span>
@@ -2477,8 +2477,8 @@
 </div>
 <h3 id="_7">使用<a class="headerlink" href="#_7" title="Permanent link">🔗</a></h3>
 <p><code>Decorator</code>: 放入 <code>broadcast.receiver</code> / <code>ListenerSchema</code> 的 <code>decorators</code> .</p>
-<div class="highlight"><pre><span></span><code><span class="nd">@broadcast</span><span class="o">.</span><span class="n">receiver</span><span class="p">(</span><span class="o">...</span><span class="p">,</span> <span class="n">decorators</span><span class="o">=</span><span class="p">[</span><span class="n">MatchContent</span><span class="p">(</span><span class="n">content</span><span class="o">=...</span><span class="p">)])</span> 
-<span class="c1"># content: str | MessageChain </span>
+<div class="highlight"><pre><span></span><code><span class="nd">@broadcast</span><span class="o">.</span><span class="n">receiver</span><span class="p">(</span><span class="o">...</span><span class="p">,</span> <span class="n">decorators</span><span class="o">=</span><span class="p">[</span><span class="n">MatchContent</span><span class="p">(</span><span class="n">content</span><span class="o">=...</span><span class="p">)])</span>
+<span class="c1"># content: str | MessageChain</span>
 <span class="c1"># 当 content 为 str 时, 将会与MessageChain.asDisplay()进行比较, 当 content 为 MessageChain 时, 将会与 MessageChain 进行比较</span>
 <span class="k">async</span> <span class="k">def</span> <span class="nf">on_match_content</span><span class="p">(</span><span class="n">chain</span><span class="p">:</span> <span class="n">MessageChain</span><span class="p">):</span> <span class="c1"># 不会改动消息链</span>
     <span class="o">...</span>

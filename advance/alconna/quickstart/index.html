@@ -2099,10 +2099,10 @@
 <div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">arclet.alconna</span> <span class="kn">import</span> <span class="n">AlconnaString</span>
 <span class="kn">from</span> <span class="nn">graia.ariadne.message.parser.alconna</span> <span class="kn">import</span> <span class="n">AlconnaDispatcher</span>
 
-<span class="c1"># example: !点歌 &lt;歌名&gt; --歌手 &lt;歌手名&gt;                       </span>
+<span class="c1"># example: !点歌 &lt;歌名&gt; --歌手 &lt;歌手名&gt;</span>
 <span class="n">music</span> <span class="o">=</span> <span class="n">AlconnaString</span><span class="p">(</span>
     <span class="s2">&quot;!点歌 &lt;song_name:str&gt;  #在XXX中搜索歌名&quot;</span><span class="p">,</span> <span class="c1"># 主参数: &lt;歌名&gt;</span>
-    <span class="s2">&quot;--歌手|-s &lt;singer_name:str&gt; #指定歌手&quot;</span>  <span class="c1"># 选项名: --歌手  选项别名: -s  选项参数: &lt;歌手名&gt;   </span>
+    <span class="s2">&quot;--歌手|-s &lt;singer_name:str&gt; #指定歌手&quot;</span>  <span class="c1"># 选项名: --歌手  选项别名: -s  选项参数: &lt;歌手名&gt;</span>
 <span class="p">)</span>
 
 <span class="nd">@app</span><span class="o">.</span><span class="n">broadcast</span><span class="o">.</span><span class="n">receiver</span><span class="p">(</span><span class="n">FriendMessage</span><span class="p">,</span> <span class="n">dispatchers</span><span class="o">=</span><span class="p">[</span><span class="n">AlconnaDispatcher</span><span class="p">(</span><span class="n">alconna</span><span class="o">=</span><span class="n">music</span><span class="p">,</span> <span class="n">reply_help</span><span class="o">=</span><span class="kc">True</span><span class="p">)])</span>
@@ -2138,7 +2138,7 @@
     <span class="n">options</span><span class="o">=</span><span class="p">[</span>
         <span class="n">Subcommand</span><span class="p">(</span>
             <span class="s2">&quot;sub_name&quot;</span><span class="p">,</span>
-            <span class="n">Option</span><span class="p">(</span><span class="s2">&quot;sub_opt&quot;</span><span class="p">,</span> <span class="n">sub_opt_arg</span><span class="o">=</span><span class="s2">&quot;sub_arg&quot;</span><span class="p">),</span> 
+            <span class="n">Option</span><span class="p">(</span><span class="s2">&quot;sub_opt&quot;</span><span class="p">,</span> <span class="n">sub_opt_arg</span><span class="o">=</span><span class="s2">&quot;sub_arg&quot;</span><span class="p">),</span>
             <span class="n">sub_main_arg</span><span class="o">=</span><span class="s2">&quot;sub_main_arg&quot;</span>
         <span class="p">),</span>
         <span class="n">Option</span><span class="p">(</span><span class="s2">&quot;opt&quot;</span><span class="p">,</span> <span class="n">opt_arg</span><span class="o">=</span><span class="s2">&quot;opt_arg&quot;</span><span class="p">)</span>
