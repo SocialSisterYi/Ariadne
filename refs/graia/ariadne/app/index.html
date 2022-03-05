@@ -6641,7 +6641,7 @@
 
 
 <h3 id="graia.ariadne.app.OperationMixin.getMemberInfo" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">getMemberInfo</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">member</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Member</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span> <span class="n">group</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">Group</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">MemberInfo</span></code>
+<code class="highlight language-python"><span class="n">getMemberInfo</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">member</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Member</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span> <span class="n">group</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">Group</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Member</span></code>
 
   <span class="doc doc-properties">
       <small class="doc doc-label doc-label-async"><code>async</code></small>
@@ -6652,7 +6652,7 @@
 
     <div class="doc doc-contents ">
 
-      <p>获取指定群组成员的可修改状态.</p>
+      <p>获取指定群组成员 (等价于 getMember, 但是更高效).</p>
 
   <p><strong>Parameters:</strong></p>
   <table>
@@ -6716,10 +6716,10 @@
     </thead>
     <tbody>
         <tr>
-<td><code>MemberInfo</code></td>          <td>
-                <code><a title="graia.ariadne.model.MemberInfo" href="../model/#graia.ariadne.model.MemberInfo">MemberInfo</a></code>
+<td><code>Member</code></td>          <td>
+                <code><a title="graia.ariadne.model.Member" href="../model/#graia.ariadne.model.Member">Member</a></code>
           </td>
-          <td><p>指定群组成员的可修改状态</p></td>
+          <td><p>指定群组成员</p></td>
         </tr>
     </tbody>
   </table>
@@ -6760,9 +6760,9 @@
 <span class="normal">821</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="nd">@app_ctx_manager</span>
 <span class="k">async</span> <span class="k">def</span> <span class="nf">getMemberInfo</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span> <span class="n">member</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Member</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span> <span class="n">group</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">Group</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">MemberInfo</span><span class="p">:</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Member</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    获取指定群组成员的可修改状态.</span>
+<span class="sd">    获取指定群组成员 (等价于 getMember, 但是更高效).</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        member (Union[Member, int]): 指定群成员, 可为 Member 实例, 若前设成立, 则不需要提供 group.</span>
@@ -6772,7 +6772,7 @@
 <span class="sd">        TypeError: 提供了错误的参数, 阅读有关文档得到问题原因</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        MemberInfo: 指定群组成员的可修改状态</span>
+<span class="sd">        Member: 指定群组成员</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">group</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">member</span><span class="p">,</span> <span class="n">Member</span><span class="p">):</span>
         <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;you should give a Member instance if you cannot give a Group instance to me.&quot;</span><span class="p">)</span>
@@ -6788,7 +6788,7 @@
         <span class="p">},</span>
     <span class="p">)</span>
 
-    <span class="k">return</span> <span class="n">MemberInfo</span><span class="o">.</span><span class="n">parse_obj</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">Member</span><span class="o">.</span><span class="n">parse_obj</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
 </code></pre></div>
 </td></tr></table>
         </details>
