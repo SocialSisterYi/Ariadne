@@ -13,7 +13,7 @@
     
     
       
-        <title>依赖注入 - Graia Ariadne 文档</title>
+        <title>importlib.resources 简要概述 - Graia Ariadne 文档</title>
       
     
     
@@ -71,7 +71,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#depend-" class="md-skip">
+        <a href="#importlibresources" class="md-skip">
           跳转至
         </a>
       
@@ -106,7 +106,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              依赖注入
+              importlib.resources 简要概述
             
           </span>
         </div>
@@ -194,15 +194,13 @@
         
   
   
-    
-  
 
 
   
   
   
     <li class="md-tabs__item">
-      <a href="../../.." class="md-tabs__link md-tabs__link--active">
+      <a href="../../.." class="md-tabs__link">
         文档
       </a>
     </li>
@@ -247,10 +245,12 @@
         
   
   
+    
+  
 
 
   <li class="md-tabs__item">
-    <a href="../../../elaina/talk/NAV/" class="md-tabs__link">
+    <a href="../NAV/" class="md-tabs__link md-tabs__link--active">
       魔女的碎碎念
     </a>
   </li>
@@ -324,14 +324,12 @@
 
   
   
-    
-  
   
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_1" type="checkbox" id="__nav_1" checked>
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_1" data-md-state="indeterminate" type="checkbox" id="__nav_1" checked>
       
       
       
@@ -497,14 +495,12 @@
               
   
   
-    
-  
   
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_1_4" type="checkbox" id="__nav_1_4" checked>
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_1_4" data-md-state="indeterminate" type="checkbox" id="__nav_1_4" checked>
       
       
       
@@ -525,14 +521,12 @@
               
   
   
-    
-  
   
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_1_4_1" type="checkbox" id="__nav_1_4_1" checked>
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_1_4_1" data-md-state="indeterminate" type="checkbox" id="__nav_1_4_1" checked>
       
       
       
@@ -553,21 +547,11 @@
               
   
   
-    
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../../../advance/broadcast/depend/" class="md-nav__link">
         依赖注入
       </a>
-      
     </li>
   
 
@@ -579,7 +563,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../interrupt/" class="md-nav__link">
+      <a href="../../../advance/broadcast/interrupt/" class="md-nav__link">
         中断
       </a>
     </li>
@@ -600,7 +584,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../msg-chain/" class="md-nav__link">
+      <a href="../../../advance/msg-chain/" class="md-nav__link">
         消息链
       </a>
     </li>
@@ -614,7 +598,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../commander/" class="md-nav__link">
+      <a href="../../../advance/commander/" class="md-nav__link">
         Commander
       </a>
     </li>
@@ -628,7 +612,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../twilight/" class="md-nav__link">
+      <a href="../../../advance/twilight/" class="md-nav__link">
         Twilight
       </a>
     </li>
@@ -642,7 +626,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../twilight-old/" class="md-nav__link">
+      <a href="../../../advance/twilight-old/" class="md-nav__link">
         Twilight 旧版文档
       </a>
     </li>
@@ -656,7 +640,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../adapter/" class="md-nav__link">
+      <a href="../../../advance/adapter/" class="md-nav__link">
         Adapter
       </a>
     </li>
@@ -681,7 +665,7 @@
         
         
         <div class="md-nav__link md-nav__link--index ">
-          <a href="../../alconna/quickstart/">Alconna</a>
+          <a href="../../../advance/alconna/quickstart/">Alconna</a>
           
         </div>
       
@@ -1944,12 +1928,14 @@
 
   
   
+    
+  
   
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4" data-md-state="indeterminate" type="checkbox" id="__nav_4" checked>
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4" type="checkbox" id="__nav_4" checked>
       
       
       
@@ -1957,7 +1943,7 @@
         
         
         <div class="md-nav__link md-nav__link--index ">
-          <a href="../../../elaina/talk/NAV/">魔女的碎碎念</a>
+          <a href="../NAV/">魔女的碎碎念</a>
           
             <label for="__nav_4">
               <span class="md-nav__icon md-icon"></span>
@@ -1978,7 +1964,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../elaina/talk/hocon/" class="md-nav__link">
+      <a href="../hocon/" class="md-nav__link">
         配置文件相关
       </a>
     </li>
@@ -1990,11 +1976,21 @@
               
   
   
+    
   
-    <li class="md-nav__item">
-      <a href="../../../elaina/talk/imp_res/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         importlib.resources 简要概述
       </a>
+      
     </li>
   
 
@@ -2051,52 +2047,48 @@
             <article class="md-content__inner md-typeset">
               
                 
-<a href="https://github.com/GraiaProject/Ariadne/blob/master/document/docs/advance/broadcast/depend.md" title="编辑此页" class="md-content__button md-icon">
+<a href="https://github.com/GraiaProject/Ariadne/blob/master/document/docs/elaina/talk/imp_res.md" title="编辑此页" class="md-content__button md-icon">
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.71 7.04c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.37-.39-1.02-.39-1.41 0l-1.84 1.83 3.75 3.75M3 17.25V21h3.75L17.81 9.93l-3.75-3.75L3 17.25z"/></svg>
 </a>
 
 
 
-<h1 id="depend-">Depend - 依赖注入<a class="headerlink" href="#depend-" title="Permanent link">🔗</a></h1>
-<p>有时, 前面介绍的基础消息链处理器与 <code>Twilight</code> 消息链处理器, 都不能满足我们的需求. 例如, 对某些数据 (好友号, 群号, 权限等) 的主动判断.</p>
-<p>此时, <code>Depend</code> 即可助你一臂之力. 我们可利用其构造构造一个 <code>Headless Decorator</code>.</p>
+<h1 id="importlibresources">importlib.resources 简要概述<a class="headerlink" href="#importlibresources" title="Permanent link">🔗</a></h1>
+<p>在最近拿 Ariadne 写 <code>Github Bot</code> 的时候, 我碰到了需要引用外部 <code>gql</code> 文件(GraphQL 的描述文件)的需求,
+在解决这个问题时, 我使用了 <code>importlib.resources</code> 这个标准库模块.</p>
+<p>我将在这个 LightTalk 中简单介绍这个模块的使用方法.</p>
+<p>这个模块用于在 Python Module / Package 中引用静态文件,
+并允许 <code>poetry</code> 等打包工具将该静态文件放入包中并发布到 <code>pypi</code>.</p>
 <div class="admonition info">
-<p class="admonition-title">你可以从 <code>graia.broadcast.builtin.decorators</code> 导入 <code>Depend</code>.</p>
+<p class="admonition-title">关于 <code>Saya</code> 模块的发布方式</p>
 </div>
-<p>首先, 我们需要实现一个异步函数. 它可以接收 <a href="../../../basic/params/">与事件处理函数相同的参数</a>. 如果我们想对群号进行检查, 可以这样写：</p>
-<div class="highlight"><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">check_group</span><span class="p">(</span><span class="n">group</span><span class="p">:</span> <span class="n">Group</span><span class="p">):</span>
-    <span class="k">if</span> <span class="n">group</span><span class="o">.</span><span class="n">id</span> <span class="o">!=</span> <span class="mi">12345678</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="n">ExecutionStop</span>
+<p>我在很多的, 像是 A60, Redinn 等人的 Graia 应用中看到他们使用了 <code>modules</code>, <code>plugins</code> 这种类似 <code>Bukkit</code> 的目录模式.
+事实上, 由于我并没有对关于 <code>Saya</code> 模块和使用到 <code>Saya</code> 的应用写文档指导,
+这种情况反而是在我意料之中... 就算我强行推进我想象的理想架构, Python 现在也没有类似 lerna 这样的用于 monorepo 模式开发的包管理工具...<br />
+ 那么我就先做个示范吧.</p>
+<h1 id="_1">目录结构展示<a class="headerlink" href="#_1" title="Permanent link">🔗</a></h1>
+<div class="highlight"><pre><span></span><code>stellaium
+    └─order_1
+        ├─commands
+        ├─github
+           ├─commands
+           |    └─ repo.py
+           └─resources
+                └─ __init__.py
+                └─ simple_repo_info.gql
 </code></pre></div>
-<p>这里, 触发的 <code>ExecutionStop</code> 异常, 会结束 Ariadne 对消息的处理, 也就是说, 除了群号为 <code>12345678</code> 以外的群里有消息时, 机器人就不会响应了.</p>
-<p>我们用 <code>Depend(check_group)</code> 创建一个 <code>Decorator</code> , 并把它传入 <code>broadcast.receiver</code> 中:</p>
-<div class="highlight"><pre><span></span><code><span class="nd">@broadcast</span><span class="o">.</span><span class="n">receiver</span><span class="p">(</span><span class="n">GroupMessage</span><span class="p">,</span> <span class="n">decorators</span><span class="o">=</span><span class="p">[</span><span class="n">Depend</span><span class="p">(</span><span class="n">check_group</span><span class="p">)])</span>
-<span class="k">async</span> <span class="k">def</span> <span class="nf">foo</span><span class="p">(</span><span class="o">...</span><span class="p">):</span> <span class="o">...</span>
-</code></pre></div>
-<p>运行机器人进行测试, 此时机器人只会响应群号为 12345678 的群里的消息.</p>
-<div class="admonition note">
-<p class="admonition-title">提示</p>
-<p>你也可以创建一个包装器函数:</p>
-<div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">require_group</span><span class="p">(</span><span class="o">*</span><span class="n">group_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
-    <span class="k">async</span> <span class="k">def</span> <span class="nf">wrapper</span><span class="p">(</span><span class="n">group</span><span class="p">:</span> <span class="n">Group</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">group</span><span class="o">.</span><span class="n">id</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">group_id</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">ExecutionStop</span>
-    <span class="k">return</span> <span class="n">wrapper</span>
+<p>我们将 <code>stellaium.order_1.github.resources</code> 作为我们的 <code>资源包</code>, 并在其他的地方引用.</p>
+<p>这里以引用 <code>simple_repo_info.gql</code> 文件作为示范.</p>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">importlib.resources</span> <span class="k">as</span> <span class="nn">pkg_resources</span>
+<span class="kn">import</span> <span class="nn">stellaium.order_1.github.resources</span> <span class="k">as</span> <span class="nn">resources</span>
 
-<span class="nd">@broadcast</span><span class="o">.</span><span class="n">receiver</span><span class="p">(</span><span class="n">GroupMessage</span><span class="p">,</span> <span class="n">decorators</span><span class="o">=</span><span class="p">[</span><span class="n">Depend</span><span class="p">(</span><span class="n">require_group</span><span class="p">(</span><span class="mi">12345678</span><span class="p">,</span> <span class="mi">87654321</span><span class="p">))])</span>
-<span class="k">async</span> <span class="k">def</span> <span class="nf">foo</span><span class="p">(</span><span class="o">...</span><span class="p">):</span> <span class="o">...</span>
+<span class="k">with</span> <span class="n">pkg_resources</span><span class="o">.</span><span class="n">path</span><span class="p">(</span><span class="n">resources</span><span class="p">,</span> <span class="s2">&quot;simple_repo_info.gql&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
+    <span class="o">...</span> <span class="c1"># file 在这里是个 pathlib.Path, 也就是说可以 read_text 和 read_bytes.</span>
 </code></pre></div>
-</div>
-<p><code>Decorator</code> 也可以配合前面提到的基础消息链处理器, 还有 <code>Twilight</code> 一起使用:</p>
-<div class="highlight"><pre><span></span><code><span class="nd">@broadcast</span><span class="o">.</span><span class="n">receiver</span><span class="p">(</span>
-    <span class="n">GroupMessage</span><span class="p">,</span>
-    <span class="n">dispatchers</span><span class="o">=</span><span class="p">[</span><span class="n">Twilight</span><span class="p">(</span><span class="n">Sparkle</span><span class="p">([</span><span class="n">UnionMatch</span><span class="p">(</span><span class="s2">&quot;get_data&quot;</span><span class="p">,</span> <span class="s2">&quot;data&quot;</span><span class="p">)]))],</span>
-    <span class="n">decorators</span><span class="o">=</span><span class="p">[</span><span class="n">Depend</span><span class="p">(</span><span class="n">check_group</span><span class="p">)],</span>
-<span class="p">)</span>
-<span class="k">async</span> <span class="k">def</span> <span class="nf">get_data</span><span class="p">(</span><span class="o">...</span><span class="p">):</span> <span class="o">...</span>
-</code></pre></div>
-<div class="admonition graiax">
-<p class="admonition-title">社区文档相关章节: <a href="https://graiax.cn/make_ero_bot/tutorials/9_not_everyone_have_st.html">链接</a></p>
+<p>如果你的包管理工具配置正确(通常来讲不需要多做什么事, 除非你配置了 glob), 静态资源文件也会被打包.</p>
+<p>这种方式减少了对于启动 Saya 应用时强加的运行目录要求.</p>
+<div class="admonition tip">
+<p class="admonition-title">请不要将数据库文件/配置文件/含有用户数据的文件作为静态资源.</p>
 </div>
 
               
@@ -2116,7 +2108,7 @@
     <nav class="md-footer__inner md-grid" aria-label="页脚">
       
         
-        <a href="../../../basic/background/" class="md-footer__link md-footer__link--prev" aria-label="上一页: 后台任务" rel="prev">
+        <a href="../hocon/" class="md-footer__link md-footer__link--prev" aria-label="上一页: 配置文件相关" rel="prev">
           <div class="md-footer__button md-icon">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
           </div>
@@ -2125,26 +2117,11 @@
               <span class="md-footer__direction">
                 上一页
               </span>
-              后台任务
+              配置文件相关
             </div>
           </div>
         </a>
       
-      
-        
-        <a href="../interrupt/" class="md-footer__link md-footer__link--next" aria-label="下一页: 中断" rel="next">
-          <div class="md-footer__title">
-            <div class="md-ellipsis">
-              <span class="md-footer__direction">
-                下一页
-              </span>
-              中断
-            </div>
-          </div>
-          <div class="md-footer__button md-icon">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4z"/></svg>
-          </div>
-        </a>
       
     </nav>
   
