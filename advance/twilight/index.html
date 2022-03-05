@@ -764,6 +764,13 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#_4" class="md-nav__link">
+    生成帮助
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -2299,6 +2306,13 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#_4" class="md-nav__link">
+    生成帮助
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -2454,6 +2468,51 @@
 <div class="highlight"><pre><span></span><code><span class="n">p</span><span class="p">:</span> <span class="n">RegexResult</span> <span class="o">=</span> <span class="n">Sparkle</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
 </code></pre></div>
 <p>这里只是顺嘴一提，因为有些时候这个不如 <code>str</code> 来的方便.</p>
+<h2 id="_4">生成帮助<a class="headerlink" href="#_4" title="Permanent link">🔗</a></h2>
+<p>使用 <a href="../../refs/graia/ariadne/message/parser/twilight/#graia.ariadne.message.parser.twilight.Twilight.get_help"><code>Twilight.get_help</code></a> 可以获得帮助文本(已进行缩进处理).</p>
+<p>对于 <code>ArgumentMatch</code>, 结果与 <a href="https://docs.python.org/zh-cn/3/library/argparse.html#argparse.ArgumentParser.format_help"><code>argparse.ArgumentParser.format_help</code></a> 相近.</p>
+<p><code>RegexMatch</code> 会在有参数分发位置时显示其分发目标. ( <code>name -&gt; help</code> 形式)</p>
+<p><code>sep</code> 控制了 <code>name -&gt; help</code> 格式中 使用的分割形式 (默认为 <code class="highlight"><span class="s2">&quot; -&gt; &quot;</span></code>)</p>
+<p>如果没有通过 <code>help</code> 方法传入帮助字符串, 则 <code>UnionMatch</code> 与 <code>ParamMatch</code> 会尝试生成一个 (<code>ParamMatch</code> 为 <code class="highlight"><span class="s2">&quot;参数&quot;</span></code>, <code>UnionMatch</code> 会从 <code>pattern</code> 推断).</p>
+<p>否则, 该 <code>RegexMatch</code> 会被忽略.</p>
+<p>传入的 <code>usage</code> 后会添加上来自 <code>argparse</code> 自动生成的参数选项, 所以 <code>usage</code> 中只应描述 <code>RegexMatch</code> 提供的匹配.</p>
+<p><code>description</code> 与 <code>epilog</code> 参数含义与 <a href="https://docs.python.org/zh-cn/3/library/argparse.html#argparse.ArgumentParser"><code>argparse.ArgumentParser</code></a> 中语义相同.</p>
+<p>你可以通过下面的实例看看它的效果:</p>
+<div class="highlight"><pre><span></span><code><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">Twilight</span><span class="p">(</span>
+<span class="gp">... </span>        <span class="p">[</span>
+<span class="gp">... </span>            <span class="n">FullMatch</span><span class="p">(</span><span class="s2">&quot;.test&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">help</span><span class="p">(</span><span class="s2">&quot;匹配 .test&quot;</span><span class="p">),</span>
+<span class="gp">... </span>            <span class="s2">&quot;union&quot;</span> <span class="o">@</span> <span class="n">UnionMatch</span><span class="p">(</span><span class="s2">&quot;A&quot;</span><span class="p">,</span> <span class="s2">&quot;B&quot;</span><span class="p">,</span> <span class="s2">&quot;C&quot;</span><span class="p">),</span>
+<span class="gp">... </span>            <span class="s2">&quot;at&quot;</span> <span class="o">@</span> <span class="n">ElementMatch</span><span class="p">(</span><span class="n">At</span><span class="p">),</span>
+<span class="gp">... </span>            <span class="s2">&quot;op1&quot;</span> <span class="o">@</span> <span class="n">ParamMatch</span><span class="p">(),</span>
+<span class="gp">... </span>            <span class="s2">&quot;op2&quot;</span> <span class="o">@</span> <span class="n">ParamMatch</span><span class="p">()</span><span class="o">.</span><span class="n">help</span><span class="p">(</span><span class="s2">&quot;操作符&quot;</span><span class="p">),</span>
+<span class="gp">... </span>            <span class="s2">&quot;help&quot;</span> <span class="o">@</span> <span class="n">ArgumentMatch</span><span class="p">(</span><span class="s2">&quot;--help&quot;</span><span class="p">,</span> <span class="s2">&quot;-h&quot;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store_true&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">help</span><span class="p">(</span><span class="s2">&quot;显示该帮助&quot;</span><span class="p">),</span>
+<span class="gp">... </span>            <span class="s2">&quot;arg&quot;</span> <span class="o">@</span> <span class="n">WildcardMatch</span><span class="p">()</span><span class="o">.</span><span class="n">flags</span><span class="p">(</span><span class="n">re</span><span class="o">.</span><span class="n">DOTALL</span><span class="p">),</span>
+<span class="gp">... </span>            <span class="s2">&quot;v&quot;</span> <span class="o">@</span> <span class="n">ArgumentMatch</span><span class="p">(</span><span class="s2">&quot;--verbose&quot;</span><span class="p">,</span> <span class="s2">&quot;-v&quot;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store_true&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">help</span><span class="p">(</span><span class="s2">&quot;显示详细信息&quot;</span><span class="p">),</span>
+<span class="gp">... </span>        <span class="p">]</span>
+<span class="gp">... </span>    <span class="p">)</span><span class="o">.</span><span class="n">get_help</span><span class="p">(</span><span class="s2">&quot;用法字符串&quot;</span><span class="p">,</span> <span class="s2">&quot;描述&quot;</span><span class="p">,</span> <span class="s2">&quot;总结&quot;</span><span class="p">)</span>
+<span class="gp">... </span><span class="p">)</span>
+<span class="go">用法字符串 [--help] [--verbose]</span>
+
+<span class="go">描述</span>
+
+<span class="go">匹配项:</span>
+<span class="go">  匹配 .test</span>
+
+<span class="go">  union -&gt; 在 [&#39;A&#39;, &#39;B&#39;, &#39;C&#39;] 中选择一项</span>
+
+<span class="go">  at -&gt; At 元素</span>
+
+<span class="go">  op1 -&gt; 参数</span>
+
+<span class="go">  op2 -&gt; 操作符</span>
+
+<span class="go">可选参数:</span>
+<span class="go">  --help, -h     显示该帮助</span>
+<span class="go">  --verbose, -v  显示详细信息</span>
+
+<span class="go">总结</span>
+</code></pre></div>
 
               
             </article>

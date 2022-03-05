@@ -2240,9 +2240,9 @@
 <p><code>MessageChain</code> 的 <code>replace</code> 方法与 <code>str</code> 的 <code>replace</code> 方法有异曲同工之妙.</p>
 <p>在其表面下, <code>findSubChain</code> 承担了大部分工作, 找出所有符合 <code>old</code> 的部分, 之后由简单的循环完成替换.</p>
 <div class="highlight"><pre><span></span><code><span class="gp">&gt;&gt;&gt; </span><span class="n">MessageChain</span><span class="p">([</span><span class="s2">&quot;Hello World!Hello World!&quot;&quot;How are you?&quot;</span><span class="p">,</span> <span class="n">At</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span> <span class="s2">&quot;yo&quot;</span><span class="p">])</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span>
-<span class="go">        MessageChain([&quot;Hello World!&quot;]),</span>
-<span class="go">        MessageChain([&quot;No!&quot;])</span>
-<span class="go">    )</span>
+<span class="gp">... </span>    <span class="n">MessageChain</span><span class="p">([</span><span class="s2">&quot;Hello World!&quot;</span><span class="p">]),</span>
+<span class="gp">... </span>    <span class="n">MessageChain</span><span class="p">([</span><span class="s2">&quot;No!&quot;</span><span class="p">])</span>
+<span class="gp">... </span><span class="p">)</span>
 <span class="go">MessageChain([Plain(&quot;No!No!How are you?&quot;), At(1), Plain(&quot;yo&quot;)])</span>
 </code></pre></div>
 <div class="admonition note">
