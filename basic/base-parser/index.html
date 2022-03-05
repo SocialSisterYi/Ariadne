@@ -2501,7 +2501,7 @@
 <h3 id="_9">使用<a class="headerlink" href="#_9" title="Permanent link">🔗</a></h3>
 <p><code>Decorator</code>: 放入 <code>broadcast.receiver</code> / <code>ListenerSchema</code> 的 <code>decorators</code> .</p>
 <p>```py
-@broadcast.receiver(..., decorators=[MatchTemplate([Plain, Plain("搜图"), Image])]) # 需要 "*搜图 [图片]" 才能匹配 (*为任意多字符)
+<a class="magiclink magiclink-github magiclink-mention" href="https://github.com/broadcast" title="GitHub User: broadcast">@broadcast</a>.receiver(..., decorators=[MatchTemplate([Plain, Plain("搜图"), Image])]) # 需要 "*搜图 [图片]" 才能匹配 (*为任意多字符)
 async def on_match_regex(chain: MessageChain): # 不会改动消息链
     ...</p>
 <div class="admonition graiax">
