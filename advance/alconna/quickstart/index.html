@@ -2052,6 +2052,13 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#_4" class="md-nav__link">
+    特殊事件
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#twilight" class="md-nav__link">
     与 Twilight 对比
   </a>
@@ -2059,7 +2066,7 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#_4" class="md-nav__link">
+  <a href="#_5" class="md-nav__link">
     下一步
   </a>
   
@@ -2089,12 +2096,11 @@
 <p>本模块由 <code>RF-Tar-Railt</code> 维护,
 <code>BlueGlassBlock</code> 仅进行了针对 <code>Ariadne</code> 的封装, 本模块余下部分从 <code>Alconna wiki</code> 复制并修改而来.</p>
 </div>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">graia.ariadne.message.parser.alconna</span> <span class="kn">import</span> <span class="p">(</span>
-    <span class="n">AlconnaDispatcher</span><span class="p">,</span>
-    <span class="n">Alconna</span>
-<span class="p">)</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">arclet.alconna</span> <span class="kn">import</span> <span class="n">AlconnaString</span>
+<span class="kn">from</span> <span class="nn">graia.ariadne.message.parser.alconna</span> <span class="kn">import</span> <span class="n">AlconnaDispatcher</span>
+
 <span class="c1"># example: !点歌 &lt;歌名&gt; --歌手 &lt;歌手名&gt;                       </span>
-<span class="n">music</span> <span class="o">=</span> <span class="n">Alconna</span><span class="o">.</span><span class="n">from_string</span><span class="p">(</span>
+<span class="n">music</span> <span class="o">=</span> <span class="n">AlconnaString</span><span class="p">(</span>
     <span class="s2">&quot;!点歌 &lt;song_name:str&gt;  #在XXX中搜索歌名&quot;</span><span class="p">,</span> <span class="c1"># 主参数: &lt;歌名&gt;</span>
     <span class="s2">&quot;--歌手|-s &lt;singer_name:str&gt; #指定歌手&quot;</span>  <span class="c1"># 选项名: --歌手  选项别名: -s  选项参数: &lt;歌手名&gt;   </span>
 <span class="p">)</span>
@@ -2112,7 +2118,7 @@
  <li class="chat left">歌名是 大地</li>
  <li class="chat left">歌手是 Beyond</li>
  <li class="chat right">!点歌 --help</li>
- <li class="chat left">!点歌 &lt;song_name&gt;&#13;在XXX中搜索歌名&#13;可用的选项有:&#13;# 指定歌手\n  -s, --歌手 &lt;singer_name&gt;</li>
+ <li class="chat left">!点歌 &lt;song_name&gt;<br>在XXX中搜索歌名<br>可用的选项有:<br>&#35; 指定歌手<br>  -s, --歌手 &lt;singer_name&gt;</li>
 </ul>
 </div>
 
@@ -2156,6 +2162,12 @@
 <li><code>dict</code>: 当<code>name</code>代表<code>Alconna</code>内的选项, 并且确实解析到数据时返回对应的字典对象; 未解析时为None</li>
 <li>其他类型: 在 <code>name</code> 上进行此标注等价于<code>arpamar.all_matched_args.get(name)</code>; 未解析时为None</li>
 </ul>
+<h2 id="_4">特殊事件<a class="headerlink" href="#_4" title="Permanent link">🔗</a></h2>
+<p>当<code>AlconnaDispatcher</code>的<code>reply_help</code>为<code>False</code>时, 其会向bcc广播一个<code>AlconnaHelpMessage</code>事件</p>
+<p>该事件可获取的参数如下:
+- <code>help_string</code>(str): 可能的帮助信息
+- <code>alconna</code> (Alconna): 该帮助信息对应的命令
+- <code>sender</code>, <code>messageChain</code>, <code>app</code>, ...: 从源消息事件中可获取的所有参数</p>
 <h2 id="twilight">与 Twilight 对比<a class="headerlink" href="#twilight" title="Permanent link">🔗</a></h2>
 <p><code>Twilight</code> 偏重于对消息链的正则化处理,</p>
 <p>而 <code>Alconna</code> 偏重于对参数的各种形式解析, 不限于消息链 (更像 <code>argparse</code> 模块).</p>
@@ -2164,7 +2176,7 @@
 <p>同时, <code>Twilight</code> 是基于对象的参数处理器, 在类型补全上更完备.</p>
 <p>但是 <code>Alconna</code> 有子命令的支持, 且性能占优, 魔法较多(迫真).</p>
 <p>总之, 根据自己的需要, 选择合适的工具.</p>
-<h2 id="_4">下一步<a class="headerlink" href="#_4" title="Permanent link">🔗</a></h2>
+<h2 id="_5">下一步<a class="headerlink" href="#_5" title="Permanent link">🔗</a></h2>
 <p><code>Ariadne</code> 只对 <code>Alconna</code> 进行了简单的封装, 接下来你可以访问其 <a href="https://arcletproject.github.io/docs/alconna/tutorial">文档</a> 进一步了解用法.</p>
 <div class="admonition graiax">
 <p class="admonition-title">社区文档相关章节: <a href="https://graiax.cn/make_ero_bot/tutorials/6_4_alconna.html">链接</a></p>
