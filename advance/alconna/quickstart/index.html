@@ -71,7 +71,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#_1" class="md-skip">
+        <a href="#alconna-" class="md-skip">
           跳转至
         </a>
       
@@ -2038,23 +2038,50 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#_2" class="md-nav__link">
-    用法
+  <a href="#_1" class="md-nav__link">
+    快速开始
   </a>
   
 </li>
       
         <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    结构
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#alconna" class="md-nav__link">
+    创建 Alconna
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#alconnadispatcher" class="md-nav__link">
+    使用 AlconnaDispatcher
+  </a>
+  
+    <nav class="md-nav" aria-label="使用 AlconnaDispatcher">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
   <a href="#_3" class="md-nav__link">
     参数标注
   </a>
   
 </li>
-      
-        <li class="md-nav__item">
+        
+          <li class="md-nav__item">
   <a href="#_4" class="md-nav__link">
     特殊事件
   </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -2090,21 +2117,21 @@
 
 
 
-<h1 id="_1">快速开始<a class="headerlink" href="#_1" title="Permanent link">🔗</a></h1>
+<h1 id="alconna-">Alconna - 功能强大的命令解析器<a class="headerlink" href="#alconna-" title="Permanent link">🔗</a></h1>
 <div class="admonition warning">
 <p class="admonition-title">关于本模块</p>
 <p>本模块由 <code>RF-Tar-Railt</code> 维护,
 <code>BlueGlassBlock</code> 仅进行了针对 <code>Ariadne</code> 的封装, 本模块余下部分从 <code>Alconna wiki</code> 复制并修改而来.</p>
 </div>
+<h2 id="_1">快速开始<a class="headerlink" href="#_1" title="Permanent link">🔗</a></h2>
+<p>以下将直观展示<code>Alconna</code>的使用方法:</p>
 <div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">arclet.alconna</span> <span class="kn">import</span> <span class="n">AlconnaString</span>
 <span class="kn">from</span> <span class="nn">graia.ariadne.message.parser.alconna</span> <span class="kn">import</span> <span class="n">AlconnaDispatcher</span>
-
 <span class="c1"># example: !点歌 &lt;歌名&gt; --歌手 &lt;歌手名&gt;</span>
 <span class="n">music</span> <span class="o">=</span> <span class="n">AlconnaString</span><span class="p">(</span>
     <span class="s2">&quot;!点歌 &lt;song_name:str&gt;  #在XXX中搜索歌名&quot;</span><span class="p">,</span> <span class="c1"># 主参数: &lt;歌名&gt;</span>
     <span class="s2">&quot;--歌手|-s &lt;singer_name:str&gt; #指定歌手&quot;</span>  <span class="c1"># 选项名: --歌手  选项别名: -s  选项参数: &lt;歌手名&gt;</span>
 <span class="p">)</span>
-
 <span class="nd">@app</span><span class="o">.</span><span class="n">broadcast</span><span class="o">.</span><span class="n">receiver</span><span class="p">(</span><span class="n">FriendMessage</span><span class="p">,</span> <span class="n">dispatchers</span><span class="o">=</span><span class="p">[</span><span class="n">AlconnaDispatcher</span><span class="p">(</span><span class="n">alconna</span><span class="o">=</span><span class="n">music</span><span class="p">,</span> <span class="n">reply_help</span><span class="o">=</span><span class="kc">True</span><span class="p">)])</span>
 <span class="k">async</span> <span class="k">def</span> <span class="nf">friend_message_listener</span><span class="p">(</span><span class="n">app</span><span class="p">:</span> <span class="n">Ariadne</span><span class="p">,</span> <span class="n">friend</span><span class="p">:</span> <span class="n">Friend</span><span class="p">,</span> <span class="n">song_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">singer_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
     <span class="k">await</span> <span class="n">app</span><span class="o">.</span><span class="n">sendFriendMessage</span><span class="p">(</span><span class="n">friend</span><span class="p">,</span> <span class="n">MessageChain</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="s2">&quot;歌名是 &quot;</span><span class="p">,</span> <span class="n">song_name</span><span class="p">))</span>
@@ -2122,7 +2149,7 @@
 </ul>
 </div>
 
-<h2 id="_2">用法<a class="headerlink" href="#_2" title="Permanent link">🔗</a></h2>
+<h2 id="_2">结构<a class="headerlink" href="#_2" title="Permanent link">🔗</a></h2>
 <p>通过阅读 Alconna 的签名可以得知，Alconna 支持四大类参数：</p>
 <ul>
 <li><code>headers</code> : 呼叫该命令的命令头，一般是你的机器人的名字或者符号，与 command 至少有一个填写. 例如: /, !</li>
@@ -2153,7 +2180,18 @@
 /name main_args
 </code></pre></div>
 <p>解析成功的命令的参数会保存在 analysis_message 方法返回的 <code>Arpamar</code> 实例中</p>
-<h2 id="_3">参数标注<a class="headerlink" href="#_3" title="Permanent link">🔗</a></h2>
+<h2 id="alconna">创建 Alconna<a class="headerlink" href="#alconna" title="Permanent link">🔗</a></h2>
+<div class="highlight"><pre><span></span><code><span class="n">alconna</span> <span class="o">=</span> <span class="n">Alconna</span><span class="p">(</span><span class="n">command</span><span class="o">=</span><span class="s2">&quot;指令&quot;</span><span class="p">,</span> <span class="n">options</span><span class="o">=</span><span class="p">[</span><span class="n">Option</span><span class="p">(</span><span class="s2">&quot;选项&quot;</span><span class="p">)],</span> <span class="n">main_args</span><span class="o">=</span><span class="n">Args</span><span class="o">.</span><span class="n">foo</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span>
+</code></pre></div>
+<p>这里说明我们需要匹配内容为 "指令 something:str"的消息, 并把 "something" 赋予参数名 "foo"; 该指令可以使用 "选项" 这个命令选项</p>
+<p>而后另有4种构造方式, 可以满足不同使用者的需求:
+- koishi-like: 以类似<code>koishi</code>中指令创建的方式创建<code>Alconna</code>
+- format: 以类似f-string的格式创建<code>Alconna</code>
+- click-like: 以类似<code>click</code>中指令创建的方式创建<code>Alconna</code>
+- fire-like: 以类型<code>python-fire</code>中指令创建的方式创建<code>Alconna</code></p>
+<h2 id="alconnadispatcher">使用 <code>AlconnaDispatcher</code><a class="headerlink" href="#alconnadispatcher" title="Permanent link">🔗</a></h2>
+<p>您可以在 <code>Ariadne</code> 中使用 <code>AlconnaDispatcher</code> 来帮助解析命令.</p>
+<h3 id="_3">参数标注<a class="headerlink" href="#_3" title="Permanent link">🔗</a></h3>
 <p><code>AlconnaDispatcher</code> 可以分配以下几种参数:</p>
 <ul>
 <li><code>Alconna</code>: 使用的 <code>Alconna</code> 对象.</li>
@@ -2162,7 +2200,7 @@
 <li><code>dict</code>: 当<code>name</code>代表<code>Alconna</code>内的选项, 并且确实解析到数据时返回对应的字典对象; 未解析时为None</li>
 <li>其他类型: 在 <code>name</code> 上进行此标注等价于<code>arpamar.all_matched_args.get(name)</code>; 未解析时为None</li>
 </ul>
-<h2 id="_4">特殊事件<a class="headerlink" href="#_4" title="Permanent link">🔗</a></h2>
+<h3 id="_4">特殊事件<a class="headerlink" href="#_4" title="Permanent link">🔗</a></h3>
 <p>当<code>AlconnaDispatcher</code>的<code>reply_help</code>为<code>False</code>时, 其会向bcc广播一个<code>AlconnaHelpMessage</code>事件</p>
 <p>该事件可获取的参数如下:
 - <code>help_string</code>(str): 可能的帮助信息
@@ -2174,7 +2212,7 @@
 <p>另一点, <code>Alconna</code>的功能相对复杂, 不太适合初识消息解析的用户.</p>
 <p>如果你想要 <code>argparse</code> 中各种特别 <code>Action</code> (如 <code>append</code>) 的原生支持, 可能 <code>Twilight</code> 会更好编写.</p>
 <p>同时, <code>Twilight</code> 是基于对象的参数处理器, 在类型补全上更完备.</p>
-<p>但是 <code>Alconna</code> 有子命令的支持, 且性能占优, 魔法较多(迫真).</p>
+<p>但是 <code>Alconna</code> 有更好更强大的参数类型解析与子命令的支持, 且性能占优, 魔法较多(迫真).</p>
 <p>总之, 根据自己的需要, 选择合适的工具.</p>
 <h2 id="_5">下一步<a class="headerlink" href="#_5" title="Permanent link">🔗</a></h2>
 <p><code>Ariadne</code> 只对 <code>Alconna</code> 进行了简单的封装, 接下来你可以访问其 <a href="https://arcletproject.github.io/docs/alconna/tutorial">文档</a> 进一步了解用法.</p>
