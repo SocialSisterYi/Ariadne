@@ -2393,7 +2393,7 @@
 
 
 <h3 id="graia.ariadne.console.Console.data_getter" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">data_getter</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span></code>
+<code class="highlight language-python"><span class="n">data_getter</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span></code>
 
 
 <a href="#graia.ariadne.console.Console.data_getter" class="headerlink" title="Permanent link">🔗</a></h3>
@@ -2480,7 +2480,7 @@
 
 
 <h3 id="graia.ariadne.console.Console.prompt" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">prompt</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">l_prompt</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">AnyFormattedText</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">r_prompt</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">AnyFormattedText</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">style</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Style</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span></code>
+<code class="highlight language-python"><span class="n">prompt</span><span class="p">(</span><span class="n">l_prompt</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">AnyFormattedText</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">r_prompt</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">AnyFormattedText</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">style</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Style</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span></code>
 
   <span class="doc doc-properties">
       <small class="doc doc-label doc-label-async"><code>async</code></small>
@@ -2642,7 +2642,7 @@
 
 
 <h3 id="graia.ariadne.console.Console.loop" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">loop</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span></code>
+<code class="highlight language-python"><span class="n">loop</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span></code>
 
   <span class="doc doc-properties">
       <small class="doc doc-label doc-label-async"><code>async</code></small>
@@ -2770,7 +2770,7 @@
 
 
 <h3 id="graia.ariadne.console.Console.start" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">start</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">start</span><span class="p">()</span></code>
 
 
 <a href="#graia.ariadne.console.Console.start" class="headerlink" title="Permanent link">🔗</a></h3>
@@ -2823,7 +2823,7 @@
 
 
 <h3 id="graia.ariadne.console.Console.stop" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">stop</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">stop</span><span class="p">()</span></code>
 
 
 <a href="#graia.ariadne.console.Console.stop" class="headerlink" title="Permanent link">🔗</a></h3>
@@ -2870,7 +2870,7 @@
 
 
 <h3 id="graia.ariadne.console.Console.join" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">join</span><span class="p">()</span></code>
 
   <span class="doc doc-properties">
       <small class="doc doc-label doc-label-async"><code>async</code></small>
@@ -2908,7 +2908,7 @@
 
 
 <h3 id="graia.ariadne.console.Console.register" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">register</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dispatchers</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">BaseDispatcher</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">decorators</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Decorator</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">register</span><span class="p">(</span><span class="n">dispatchers</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">BaseDispatcher</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">decorators</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Decorator</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span></code>
 
 
 <a href="#graia.ariadne.console.Console.register" class="headerlink" title="Permanent link">🔗</a></h3>

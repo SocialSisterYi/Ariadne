@@ -2440,7 +2440,7 @@
 
 
 <h3 id="graia.ariadne.util.async_exec.ParallelExecutor.get" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">get</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">loop</span><span class="p">:</span> <span class="n">AbstractEventLoop</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;ParallelExecutor&#39;</span></code>
+<code class="highlight language-python"><span class="n">get</span><span class="p">(</span><span class="n">loop</span><span class="p">:</span> <span class="n">AbstractEventLoop</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;ParallelExecutor&#39;</span></code>
 
 
 <a href="#graia.ariadne.util.async_exec.ParallelExecutor.get" class="headerlink" title="Permanent link">🔗</a></h3>
@@ -2535,7 +2535,7 @@
 
 
 <h3 id="graia.ariadne.util.async_exec.ParallelExecutor.bind_loop" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">bind_loop</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">loop</span><span class="p">:</span> <span class="n">AbstractEventLoop</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">bind_loop</span><span class="p">(</span><span class="n">loop</span><span class="p">:</span> <span class="n">AbstractEventLoop</span><span class="p">)</span></code>
 
 
 <a href="#graia.ariadne.util.async_exec.ParallelExecutor.bind_loop" class="headerlink" title="Permanent link">🔗</a></h3>
@@ -2598,7 +2598,7 @@
 
 
 <h3 id="graia.ariadne.util.async_exec.ParallelExecutor.shutdown" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">shutdown</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">shutdown</span><span class="p">()</span></code>
 
 
 <a href="#graia.ariadne.util.async_exec.ParallelExecutor.shutdown" class="headerlink" title="Permanent link">🔗</a></h3>
@@ -2633,7 +2633,7 @@
 
 
 <h3 id="graia.ariadne.util.async_exec.ParallelExecutor.close" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">close</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">close</span><span class="p">()</span></code>
 
 
 <a href="#graia.ariadne.util.async_exec.ParallelExecutor.close" class="headerlink" title="Permanent link">🔗</a></h3>
@@ -2666,7 +2666,7 @@
 
 
 <h3 id="graia.ariadne.util.async_exec.ParallelExecutor.run_func" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">run_func</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">module</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">args</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span></code>
+<code class="highlight language-python"><span class="n">run_func</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">module</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">args</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span></code>
 
 
 <a href="#graia.ariadne.util.async_exec.ParallelExecutor.run_func" class="headerlink" title="Permanent link">🔗</a></h3>
@@ -2793,7 +2793,7 @@
 
 
 <h3 id="graia.ariadne.util.async_exec.ParallelExecutor.run_func_static" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">run_func_static</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">func</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="n">R</span><span class="p">],</span> <span class="n">args</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">R</span></code>
+<code class="highlight language-python"><span class="n">run_func_static</span><span class="p">(</span><span class="n">func</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="n">R</span><span class="p">],</span> <span class="n">args</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">R</span></code>
 
 
 <a href="#graia.ariadne.util.async_exec.ParallelExecutor.run_func_static" class="headerlink" title="Permanent link">🔗</a></h3>
@@ -2910,7 +2910,7 @@
 
 
 <h3 id="graia.ariadne.util.async_exec.ParallelExecutor.to_thread" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">to_thread</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">func</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[</span><span class="n">P</span><span class="p">,</span> <span class="n">R</span><span class="p">],</span> <span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">P</span><span class="o">.</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">P</span><span class="o">.</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Awaitable</span><span class="p">[</span><span class="n">R</span><span class="p">]</span></code>
+<code class="highlight language-python"><span class="n">to_thread</span><span class="p">(</span><span class="n">func</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[</span><span class="n">P</span><span class="p">,</span> <span class="n">R</span><span class="p">],</span> <span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">P</span><span class="o">.</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">P</span><span class="o">.</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Awaitable</span><span class="p">[</span><span class="n">R</span><span class="p">]</span></code>
 
 
 <a href="#graia.ariadne.util.async_exec.ParallelExecutor.to_thread" class="headerlink" title="Permanent link">🔗</a></h3>
@@ -3033,7 +3033,7 @@
 
 
 <h3 id="graia.ariadne.util.async_exec.ParallelExecutor.to_process" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">to_process</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">func</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[</span><span class="n">P</span><span class="p">,</span> <span class="n">R</span><span class="p">],</span> <span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">P</span><span class="o">.</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">P</span><span class="o">.</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Awaitable</span><span class="p">[</span><span class="n">R</span><span class="p">]</span></code>
+<code class="highlight language-python"><span class="n">to_process</span><span class="p">(</span><span class="n">func</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[</span><span class="n">P</span><span class="p">,</span> <span class="n">R</span><span class="p">],</span> <span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">P</span><span class="o">.</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">P</span><span class="o">.</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Awaitable</span><span class="p">[</span><span class="n">R</span><span class="p">]</span></code>
 
 
 <a href="#graia.ariadne.util.async_exec.ParallelExecutor.to_process" class="headerlink" title="Permanent link">🔗</a></h3>
