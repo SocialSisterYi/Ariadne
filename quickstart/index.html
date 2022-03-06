@@ -9,7 +9,7 @@
       
       
       <link rel="icon" href="../images/favicon.png">
-      <meta name="generator" content="mkdocs-1.2.3, mkdocs-material-8.2.4">
+      <meta name="generator" content="mkdocs-1.2.3, mkdocs-material-8.2.5">
     
     
       
@@ -2181,26 +2181,43 @@ poetry update graia-broadcast
 <p>现在我们需要协定好 <code>mirai-api-http</code> 的配置, 以便于接下来的说明.</p>
 <p>根据 <code>mirai-api-http</code> 的相关文档, 我们可以得出这么一个配置文件的方案:</p>
 <div class="highlight"><pre><span></span><code><span class="c1"># file: &quot;MCL/config/net.mamoe.mirai-api-http/setting.yml&quot;</span><span class="w"></span>
+<span class="c1">## 配置文件中的值，全为默认值</span><span class="w"></span>
+
+<span class="c1">## 启用的 adapter, 内置有 http, ws, reverse-ws, webhook</span><span class="w"></span>
 <span class="nt">adapters</span><span class="p">:</span><span class="w"></span>
 <span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">http</span><span class="w"></span>
 <span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ws</span><span class="w"></span>
-<span class="nt">debug</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span><span class="w"></span>
+
+<span class="c1">## 是否开启认证流程, 若为 true 则建立连接时需要验证 verifyKey</span><span class="w"></span>
 <span class="nt">enableVerify</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span><span class="w"></span>
-<span class="nt">verifyKey</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ServiceVerifyKey</span><span class="w"> </span><span class="c1"># 你可以自己设定, 这里作为示范</span><span class="w"></span>
+<span class="nt">verifyKey</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ServiceVerifyKey</span><span class="w"></span>
+
+<span class="c1">## 开启一些调试信息</span><span class="w"></span>
+<span class="nt">debug</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span><span class="w"></span>
+
+<span class="c1">## 是否开启单 session 模式, 若为 true，则自动创建 session 绑定 console 中登录的 bot</span><span class="w"></span>
+<span class="c1">## 开启后，接口中任何 sessionKey 不需要传递参数</span><span class="w"></span>
+<span class="c1">## 若 console 中有多个 bot 登录，则行为未定义</span><span class="w"></span>
+<span class="c1">## 确保 console 中只有一个 bot 登陆时启用</span><span class="w"></span>
 <span class="nt">singleMode</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span><span class="w"></span>
-<span class="nt">cacheSize</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">4096</span><span class="w"> </span><span class="c1"># 可选, 缓存大小, 默认4096. 缓存过小会导致引用回复与撤回消息失败</span><span class="w"></span>
+
+<span class="c1">## 历史消息的缓存大小</span><span class="w"></span>
+<span class="c1">## 同时，也是 http adapter 的消息队列容量</span><span class="w"></span>
+<span class="nt">cacheSize</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">4096</span><span class="w"></span>
+
+<span class="c1">## adapter 的单独配置，键名与 adapters 项配置相同</span><span class="w"></span>
 <span class="nt">adapterSettings</span><span class="p">:</span><span class="w"></span>
 <span class="w">  </span><span class="c1">## 详情看 http adapter 使用说明 配置</span><span class="w"></span>
 <span class="w">  </span><span class="nt">http</span><span class="p">:</span><span class="w"></span>
 <span class="w">    </span><span class="nt">host</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">localhost</span><span class="w"></span>
-<span class="w">    </span><span class="nt">port</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">8080</span><span class="w"> </span><span class="c1"># 端口</span><span class="w"></span>
-<span class="w">    </span><span class="nt">cors</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="err">*</span><span class="p p-Indicator">]</span><span class="w"></span>
+<span class="w">    </span><span class="nt">port</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">8080</span><span class="w"></span>
+<span class="w">    </span><span class="nt">cors</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">&quot;*&quot;</span><span class="p p-Indicator">]</span><span class="w"></span>
 
 <span class="w">  </span><span class="c1">## 详情看 websocket adapter 使用说明 配置</span><span class="w"></span>
 <span class="w">  </span><span class="nt">ws</span><span class="p">:</span><span class="w"></span>
 <span class="w">    </span><span class="nt">host</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">localhost</span><span class="w"></span>
-<span class="w">    </span><span class="nt">port</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">8080</span><span class="w"> </span><span class="c1"># 端口</span><span class="w"></span>
-<span class="w">    </span><span class="nt">reservedSyncId</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">-1</span><span class="w"> </span><span class="c1"># 确保为 -1, 否则 WebsocketAdapter(Experimental) 没法正常工作.</span><span class="w"></span>
+<span class="w">    </span><span class="nt">port</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">8080</span><span class="w"></span>
+<span class="w">    </span><span class="nt">reservedSyncId</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">-1</span><span class="w"></span>
 </code></pre></div>
 <p>将以下代码保存到文件 <code>bot.py</code> 内, 确保该文件位于你的工作区内:</p>
 <div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">asyncio</span>
@@ -2362,7 +2379,7 @@ poetry update graia-broadcast
     <script id="__config" type="application/json">{"base": "..", "features": ["navigation.tabs", "navigation.tabs.sticky", "navigation.expand", "navigation.top"], "translations": {"clipboard.copy": "\u590d\u5236", "clipboard.copied": "\u5df2\u590d\u5236", "search.config.lang": "ja", "search.config.pipeline": "trimmer, stemmer", "search.config.separator": "[\\uff0c\\u3002]+", "search.placeholder": "\u641c\u7d22", "search.result.placeholder": "\u952e\u5165\u4ee5\u5f00\u59cb\u641c\u7d22", "search.result.none": "\u6ca1\u6709\u627e\u5230\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.one": "\u627e\u5230 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.other": "# \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.more.one": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.more.other": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 # \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.term.missing": "\u7f3a\u5c11", "select.version.title": "\u9009\u62e9\u5f53\u524d\u7248\u672c"}, "search": "../assets/javascripts/workers/search.bd0b6b67.min.js"}</script>
     
     
-      <script src="../assets/javascripts/bundle.5413a266.min.js"></script>
+      <script src="../assets/javascripts/bundle.467223ff.min.js"></script>
       
         <script src="../assets/admonition.js"></script>
       
