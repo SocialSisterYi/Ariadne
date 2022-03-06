@@ -1400,6 +1400,20 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#graia.ariadne.dispatcher.SubjectDispatcher" class="md-nav__link">
+    SubjectDispatcher
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#graia.ariadne.dispatcher.BaseDispatcher" class="md-nav__link">
+    BaseDispatcher
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -2135,6 +2149,20 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#graia.ariadne.dispatcher.SubjectDispatcher" class="md-nav__link">
+    SubjectDispatcher
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#graia.ariadne.dispatcher.BaseDispatcher" class="md-nav__link">
+    BaseDispatcher
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -2186,7 +2214,7 @@
 
     <div class="doc doc-contents ">
         <p class="doc doc-class-bases">
-          Bases: <code><span title="graia.broadcast.entities.dispatcher.BaseDispatcher">BaseDispatcher</span></code></p>
+          Bases: <code><span title="graia.broadcast.entities.dispatcher.BaseDispatcher">AbstractDispatcher</span></code></p>
 
 
       <p>从 MessageEvent 提取 MessageChain 的 Dispatcher</p>
@@ -2229,7 +2257,7 @@
 
     <div class="doc doc-contents ">
         <p class="doc doc-class-bases">
-          Bases: <code><span title="graia.broadcast.entities.dispatcher.BaseDispatcher">BaseDispatcher</span></code></p>
+          Bases: <code><span title="graia.broadcast.entities.dispatcher.BaseDispatcher">AbstractDispatcher</span></code></p>
 
 
       <p>提取上下文的 Dispatcher</p>
@@ -2272,7 +2300,7 @@
 
     <div class="doc doc-contents ">
         <p class="doc doc-class-bases">
-          Bases: <code><span title="graia.broadcast.entities.dispatcher.BaseDispatcher">BaseDispatcher</span></code></p>
+          Bases: <code><span title="graia.broadcast.entities.dispatcher.BaseDispatcher">AbstractDispatcher</span></code></p>
 
 
       <p>提取 MessageEvent 消息链 Source 元素的 Dispatcher</p>
@@ -2315,12 +2343,96 @@
 
     <div class="doc doc-contents ">
         <p class="doc doc-class-bases">
-          Bases: <code><span title="graia.broadcast.entities.dispatcher.BaseDispatcher">BaseDispatcher</span></code></p>
+          Bases: <code><span title="graia.broadcast.entities.dispatcher.BaseDispatcher">AbstractDispatcher</span></code></p>
 
 
-      <p>从 MessageEvent 提取 sender 的 Dispatcher.
-支持实现了 <strong>instancecheck</strong> 的注释, 如 Union, Optional (Python 3.10+)
-和被 typing.runtime_checkable 标记为运行时协议的 Protocol.</p>
+      <p>从 MessageEvent 提取 sender 的 Dispatcher.</p>
+
+
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+
+  </div>
+
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-class">
+
+
+
+<h2 id="graia.ariadne.dispatcher.SubjectDispatcher" class="doc doc-heading">
+          <code>SubjectDispatcher</code>
+
+
+
+<a href="#graia.ariadne.dispatcher.SubjectDispatcher" class="headerlink" title="Permanent link">🔗</a></h2>
+
+
+    <div class="doc doc-contents ">
+        <p class="doc doc-class-bases">
+          Bases: <code><span title="graia.broadcast.entities.dispatcher.BaseDispatcher">AbstractDispatcher</span></code></p>
+
+
+      <p>从 ActiveMessage 提取 subject 的 Dispatcher</p>
+
+
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+
+  </div>
+
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-class">
+
+
+
+<h2 id="graia.ariadne.dispatcher.BaseDispatcher" class="doc doc-heading">
+          <code>BaseDispatcher</code>
+
+
+
+<a href="#graia.ariadne.dispatcher.BaseDispatcher" class="headerlink" title="Permanent link">🔗</a></h2>
+
+
+    <div class="doc doc-contents ">
+        <p class="doc doc-class-bases">
+          Bases: <code><span title="graia.broadcast.entities.dispatcher.BaseDispatcher">AbstractDispatcher</span></code></p>
+
+
+      <p>空 Dispatcher</p>
 
 
 

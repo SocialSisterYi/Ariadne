@@ -2494,8 +2494,7 @@
 
         <details class="quote">
           <summary>Source code in <code>graia/ariadne/typing.py</code></summary>
-          <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">73</span>
-<span class="normal">74</span>
+          <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">74</span>
 <span class="normal">75</span>
 <span class="normal">76</span>
 <span class="normal">77</span>
@@ -2504,7 +2503,8 @@
 <span class="normal">80</span>
 <span class="normal">81</span>
 <span class="normal">82</span>
-<span class="normal">83</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="nd">@staticmethod</span>
+<span class="normal">83</span>
+<span class="normal">84</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="nd">@staticmethod</span>
 <span class="k">async</span> <span class="k">def</span> <span class="nf">param</span><span class="p">(</span><span class="n">item</span><span class="p">:</span> <span class="n">SendMessageDict</span><span class="p">,</span> <span class="o">/</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SendMessageDict</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;传入 SendMessageDict 作为参数, 传出 SendMessageDict 作为结果</span>
 
@@ -2586,8 +2586,7 @@
 
         <details class="quote">
           <summary>Source code in <code>graia/ariadne/typing.py</code></summary>
-          <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">85</span>
-<span class="normal">86</span>
+          <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">86</span>
 <span class="normal">87</span>
 <span class="normal">88</span>
 <span class="normal">89</span>
@@ -2596,7 +2595,8 @@
 <span class="normal">92</span>
 <span class="normal">93</span>
 <span class="normal">94</span>
-<span class="normal">95</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="nd">@staticmethod</span>
+<span class="normal">95</span>
+<span class="normal">96</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="nd">@staticmethod</span>
 <span class="k">async</span> <span class="k">def</span> <span class="nf">result</span><span class="p">(</span><span class="n">item</span><span class="p">:</span> <span class="s2">&quot;BotMessage&quot;</span><span class="p">,</span> <span class="o">/</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">R</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;处理返回结果</span>
 
@@ -2678,8 +2678,7 @@
 
         <details class="quote">
           <summary>Source code in <code>graia/ariadne/typing.py</code></summary>
-          <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 97</span>
-<span class="normal"> 98</span>
+          <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 98</span>
 <span class="normal"> 99</span>
 <span class="normal">100</span>
 <span class="normal">101</span>
@@ -2688,7 +2687,8 @@
 <span class="normal">104</span>
 <span class="normal">105</span>
 <span class="normal">106</span>
-<span class="normal">107</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="nd">@staticmethod</span>
+<span class="normal">107</span>
+<span class="normal">108</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="nd">@staticmethod</span>
 <span class="k">async</span> <span class="k">def</span> <span class="nf">exception</span><span class="p">(</span><span class="n">item</span><span class="p">:</span> <span class="n">SendMessageException</span><span class="p">,</span> <span class="o">/</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">T</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;发生异常时进行处理，可以选择不返回而是直接引发异常</span>
 
@@ -2724,7 +2724,7 @@
 
 
 <h2 id="graia.ariadne.typing.generic_issubclass" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">generic_issubclass</span><span class="p">(</span><span class="bp">cls</span><span class="p">:</span> <span class="nb">type</span><span class="p">,</span> <span class="n">par</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">type</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">type</span><span class="p">,</span> <span class="o">...</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="nb">bool</span></code>
+<code class="highlight language-python"><span class="n">generic_issubclass</span><span class="p">(</span><span class="bp">cls</span><span class="p">:</span> <span class="nb">type</span><span class="p">,</span> <span class="n">par</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">T</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="nb">type</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">type</span><span class="p">,</span> <span class="o">...</span><span class="p">]]])</span> <span class="o">-&gt;</span> <span class="n">TypeGuard</span><span class="p">[</span><span class="n">T</span><span class="p">]</span></code>
 
 
 <a href="#graia.ariadne.typing.generic_issubclass" class="headerlink" title="Permanent link">🔗</a></h2>
@@ -2779,7 +2779,7 @@
     <tbody>
         <tr>
 <td><code>bool</code></td>          <td>
-                <code><a href="https://docs.python.org/zh-cn/3/library/functions.html#bool">bool</a></code>
+                <code><span title="typing_extensions.TypeGuard">TypeGuard</span>[<span title="graia.ariadne.typing.T">T</span>]</code>
           </td>
           <td><p>是否是父类</p></td>
         </tr>
@@ -2788,8 +2788,7 @@
 
         <details class="quote">
           <summary>Source code in <code>graia/ariadne/typing.py</code></summary>
-          <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">110</span>
-<span class="normal">111</span>
+          <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">111</span>
 <span class="normal">112</span>
 <span class="normal">113</span>
 <span class="normal">114</span>
@@ -2814,7 +2813,8 @@
 <span class="normal">133</span>
 <span class="normal">134</span>
 <span class="normal">135</span>
-<span class="normal">136</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">generic_issubclass</span><span class="p">(</span><span class="bp">cls</span><span class="p">:</span> <span class="nb">type</span><span class="p">,</span> <span class="n">par</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">type</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">type</span><span class="p">,</span> <span class="o">...</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="normal">136</span>
+<span class="normal">137</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">generic_issubclass</span><span class="p">(</span><span class="bp">cls</span><span class="p">:</span> <span class="nb">type</span><span class="p">,</span> <span class="n">par</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">T</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="nb">type</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">type</span><span class="p">,</span> <span class="o">...</span><span class="p">]]])</span> <span class="o">-&gt;</span> <span class="n">TypeGuard</span><span class="p">[</span><span class="n">T</span><span class="p">]:</span>
     <span class="sd">&quot;&quot;&quot;检查 cls 是否是 args 中的一个子类, 支持泛型, Any, Union</span>
 
 <span class="sd">    Args:</span>
@@ -2919,8 +2919,7 @@
 
         <details class="quote">
           <summary>Source code in <code>graia/ariadne/typing.py</code></summary>
-          <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">139</span>
-<span class="normal">140</span>
+          <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">140</span>
 <span class="normal">141</span>
 <span class="normal">142</span>
 <span class="normal">143</span>
@@ -2945,7 +2944,8 @@
 <span class="normal">162</span>
 <span class="normal">163</span>
 <span class="normal">164</span>
-<span class="normal">165</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">generic_isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">par</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">type</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">type</span><span class="p">,</span> <span class="o">...</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="normal">165</span>
+<span class="normal">166</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">generic_isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">par</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">type</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">type</span><span class="p">,</span> <span class="o">...</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;检查 obj 是否是 args 中的一个类型, 支持泛型, Any, Union</span>
 
 <span class="sd">    Args:</span>
