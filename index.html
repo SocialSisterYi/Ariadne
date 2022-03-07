@@ -249,9 +249,25 @@
   
 
 
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="elaina/talk/imp_res/" class="md-tabs__link">
+        魔女的碎碎念
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+
+
   <li class="md-tabs__item">
-    <a href="elaina/talk/NAV/" class="md-tabs__link">
-      魔女的碎碎念
+    <a href="config/" class="md-tabs__link">
+      文档设置
     </a>
   </li>
 
@@ -438,13 +454,6 @@
         <li class="md-nav__item">
   <a href="#_8" class="md-nav__link">
     加入我们
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#_9" class="md-nav__link">
-    文档: 切换主题色
   </a>
   
 </li>
@@ -2036,16 +2045,10 @@
       
       
       
-        
-        
-        <div class="md-nav__link md-nav__link--index ">
-          <a href="elaina/talk/NAV/">魔女的碎碎念</a>
-          
-            <label for="__nav_4">
-              <span class="md-nav__icon md-icon"></span>
-            </label>
-          
-        </div>
+        <label class="md-nav__link" for="__nav_4">
+          魔女的碎碎念
+          <span class="md-nav__icon md-icon"></span>
+        </label>
       
       <nav class="md-nav" aria-label="魔女的碎碎念" data-md-level="1">
         <label class="md-nav__title" for="__nav_4">
@@ -2060,8 +2063,8 @@
   
   
     <li class="md-nav__item">
-      <a href="elaina/talk/hocon/" class="md-nav__link">
-        配置文件相关
+      <a href="elaina/talk/imp_res/" class="md-nav__link">
+        importlib.resources 简述
       </a>
     </li>
   
@@ -2074,8 +2077,8 @@
   
   
     <li class="md-nav__item">
-      <a href="elaina/talk/imp_res/" class="md-nav__link">
-        importlib.resources 简要概述
+      <a href="elaina/talk/hocon/" class="md-nav__link">
+        配置文件: Hocon
       </a>
     </li>
   
@@ -2084,6 +2087,21 @@
           
         </ul>
       </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="config/" class="md-nav__link">
+        文档设置
+      </a>
     </li>
   
 
@@ -2180,13 +2198,6 @@
         <li class="md-nav__item">
   <a href="#_8" class="md-nav__link">
     加入我们
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#_9" class="md-nav__link">
-    文档: 切换主题色
   </a>
   
 </li>
@@ -2298,48 +2309,6 @@
 <blockquote>
 <p>QQ 群不定时清除不活跃成员, 可重新申请入群.</p>
 </blockquote>
-<h2 id="_9">文档: 切换主题色<a class="headerlink" href="#_9" title="Permanent link">🔗</a></h2>
-<blockquote>
-<p>按下对应颜色即可切换.</p>
-<p>默认颜色: <code>indigo</code>.</p>
-</blockquote>
-<div class="mdx-switch">
-<button data-md-color-primary="red"><code>red</code></button>
-<button data-md-color-primary="pink"><code>pink</code></button>
-<button data-md-color-primary="purple"><code>purple</code></button>
-<button data-md-color-primary="deep-purple"><code>deep purple</code></button>
-<button data-md-color-primary="indigo"><code>indigo</code></button>
-<button data-md-color-primary="blue"><code>blue</code></button>
-<button data-md-color-primary="light-blue"><code>light blue</code></button>
-<button data-md-color-primary="cyan"><code>cyan</code></button>
-<button data-md-color-primary="teal"><code>teal</code></button>
-<button data-md-color-primary="green"><code>green</code></button>
-<button data-md-color-primary="light-green"><code>light green</code></button>
-<button data-md-color-primary="lime"><code>lime</code></button>
-<button data-md-color-primary="yellow"><code>yellow</code></button>
-<button data-md-color-primary="amber"><code>amber</code></button>
-<button data-md-color-primary="orange"><code>orange</code></button>
-<button data-md-color-primary="deep-orange"><code>deep orange</code></button>
-<button data-md-color-primary="brown"><code>brown</code></button>
-<button data-md-color-primary="grey"><code>grey</code></button>
-<button data-md-color-primary="blue-grey"><code>blue grey</code></button>
-<button data-md-color-primary="black"><code>black</code></button>
-<button data-md-color-primary="white"><code>white</code></button>
-</div>
-
-<script>
-    var buttons = document.querySelectorAll("button[data-md-color-primary]")
-    buttons.forEach(function(button) {
-        button.addEventListener("click", function() {
-        var attr = this.getAttribute("data-md-color-primary");
-        document.body.setAttribute("data-md-color-primary", attr);
-        localStorage.setItem("data-md-color-primary", attr);
-        var name = document.querySelector("#__code_2 code span.l");
-        name.textContent = attr.replace("-", " ");
-        })
-    })
-
-</script>
 
               
             </article>
