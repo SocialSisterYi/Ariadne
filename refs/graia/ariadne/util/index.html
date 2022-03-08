@@ -2140,27 +2140,6 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#graia.ariadne.util.assert_on_" class="md-nav__link">
-    assert_on_()
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#graia.ariadne.util.assert_" class="md-nav__link">
-    assert_()
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#graia.ariadne.util.assert_not_" class="md-nav__link">
-    assert_not_()
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#graia.ariadne.util.eval_ctx" class="md-nav__link">
     eval_ctx()
   </a>
@@ -2262,8 +2241,8 @@
 
             <details class="quote">
               <summary>Source code in <code>graia/ariadne/util/__init__.py</code></summary>
-              <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">342</span>
-<span class="normal">343</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="n">ContextVar</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+              <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">296</span>
+<span class="normal">297</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="n">ContextVar</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">ctx_var</span> <span class="o">=</span> <span class="n">context</span>
 </code></pre></div>
 </td></tr></table>
@@ -2311,9 +2290,9 @@
 
             <details class="quote">
               <summary>Source code in <code>graia/ariadne/util/__init__.py</code></summary>
-              <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">353</span>
-<span class="normal">354</span>
-<span class="normal">355</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwds</span><span class="p">):</span>
+              <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">307</span>
+<span class="normal">308</span>
+<span class="normal">309</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwds</span><span class="p">):</span>
     <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">kwds</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
         <span class="bp">self</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span>
 </code></pre></div>
@@ -2406,15 +2385,15 @@
 
         <details class="quote">
           <summary>Source code in <code>graia/ariadne/util/__init__.py</code></summary>
-          <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">46</span>
+          <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">44</span>
+<span class="normal">45</span>
+<span class="normal">46</span>
 <span class="normal">47</span>
 <span class="normal">48</span>
 <span class="normal">49</span>
 <span class="normal">50</span>
 <span class="normal">51</span>
-<span class="normal">52</span>
-<span class="normal">53</span>
-<span class="normal">54</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">loguru_excepthook</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">val</span><span class="p">,</span> <span class="n">tb</span><span class="p">,</span> <span class="o">*</span><span class="n">_</span><span class="p">,</span> <span class="o">**</span><span class="n">__</span><span class="p">):</span>
+<span class="normal">52</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">loguru_excepthook</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">val</span><span class="p">,</span> <span class="n">tb</span><span class="p">,</span> <span class="o">*</span><span class="n">_</span><span class="p">,</span> <span class="o">**</span><span class="n">__</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;loguru 异常回调</span>
 
 <span class="sd">    Args:</span>
@@ -2483,7 +2462,9 @@
 
         <details class="quote">
           <summary>Source code in <code>graia/ariadne/util/__init__.py</code></summary>
-          <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">57</span>
+          <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">55</span>
+<span class="normal">56</span>
+<span class="normal">57</span>
 <span class="normal">58</span>
 <span class="normal">59</span>
 <span class="normal">60</span>
@@ -2491,9 +2472,7 @@
 <span class="normal">62</span>
 <span class="normal">63</span>
 <span class="normal">64</span>
-<span class="normal">65</span>
-<span class="normal">66</span>
-<span class="normal">67</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">loguru_async_handler</span><span class="p">(</span><span class="n">_</span><span class="p">,</span> <span class="n">ctx</span><span class="p">:</span> <span class="nb">dict</span><span class="p">):</span>
+<span class="normal">65</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">loguru_async_handler</span><span class="p">(</span><span class="n">_</span><span class="p">,</span> <span class="n">ctx</span><span class="p">:</span> <span class="nb">dict</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;loguru 异步异常回调</span>
 
 <span class="sd">    Args:</span>
@@ -2530,12 +2509,12 @@
 
         <details class="quote">
           <summary>Source code in <code>graia/ariadne/util/__init__.py</code></summary>
-          <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">87</span>
+          <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">85</span>
+<span class="normal">86</span>
+<span class="normal">87</span>
 <span class="normal">88</span>
 <span class="normal">89</span>
-<span class="normal">90</span>
-<span class="normal">91</span>
-<span class="normal">92</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">inject_loguru_traceback</span><span class="p">(</span><span class="n">loop</span><span class="p">:</span> <span class="n">AbstractEventLoop</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+<span class="normal">90</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">inject_loguru_traceback</span><span class="p">(</span><span class="n">loop</span><span class="p">:</span> <span class="n">AbstractEventLoop</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;使用 loguru 模块替换默认的 traceback.print_exception 与 sys.excepthook&quot;&quot;&quot;</span>
     <span class="n">traceback</span><span class="o">.</span><span class="n">print_exception</span> <span class="o">=</span> <span class="n">loguru_excepthook</span>
     <span class="n">sys</span><span class="o">.</span><span class="n">excepthook</span> <span class="o">=</span> <span class="n">loguru_excepthook</span>
@@ -2591,7 +2570,9 @@
 
         <details class="quote">
           <summary>Source code in <code>graia/ariadne/util/__init__.py</code></summary>
-          <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 95</span>
+          <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 93</span>
+<span class="normal"> 94</span>
+<span class="normal"> 95</span>
 <span class="normal"> 96</span>
 <span class="normal"> 97</span>
 <span class="normal"> 98</span>
@@ -2630,9 +2611,7 @@
 <span class="normal">131</span>
 <span class="normal">132</span>
 <span class="normal">133</span>
-<span class="normal">134</span>
-<span class="normal">135</span>
-<span class="normal">136</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">inject_bypass_listener</span><span class="p">(</span><span class="n">broadcast</span><span class="p">:</span> <span class="n">Broadcast</span><span class="p">):</span>
+<span class="normal">134</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">inject_bypass_listener</span><span class="p">(</span><span class="n">broadcast</span><span class="p">:</span> <span class="n">Broadcast</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;注入 BypassListener 以享受子事件解析.</span>
 
 <span class="sd">    Args:</span>
@@ -2742,7 +2721,9 @@
 
         <details class="quote">
           <summary>Source code in <code>graia/ariadne/util/__init__.py</code></summary>
-          <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">139</span>
+          <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">137</span>
+<span class="normal">138</span>
+<span class="normal">139</span>
 <span class="normal">140</span>
 <span class="normal">141</span>
 <span class="normal">142</span>
@@ -2759,9 +2740,7 @@
 <span class="normal">153</span>
 <span class="normal">154</span>
 <span class="normal">155</span>
-<span class="normal">156</span>
-<span class="normal">157</span>
-<span class="normal">158</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">app_ctx_manager</span><span class="p">(</span><span class="n">func</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[</span><span class="n">P</span><span class="p">,</span> <span class="n">R</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">[</span><span class="n">P</span><span class="p">,</span> <span class="n">R</span><span class="p">]:</span>
+<span class="normal">156</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">app_ctx_manager</span><span class="p">(</span><span class="n">func</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[</span><span class="n">P</span><span class="p">,</span> <span class="n">R</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">[</span><span class="n">P</span><span class="p">,</span> <span class="n">R</span><span class="p">]:</span>
     <span class="sd">&quot;&quot;&quot;包装声明需要在 Ariadne Context 中执行的函数</span>
 
 <span class="sd">    Args:</span>
@@ -2849,7 +2828,9 @@
 
         <details class="quote">
           <summary>Source code in <code>graia/ariadne/util/__init__.py</code></summary>
-          <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">161</span>
+          <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">159</span>
+<span class="normal">160</span>
+<span class="normal">161</span>
 <span class="normal">162</span>
 <span class="normal">163</span>
 <span class="normal">164</span>
@@ -2860,9 +2841,7 @@
 <span class="normal">169</span>
 <span class="normal">170</span>
 <span class="normal">171</span>
-<span class="normal">172</span>
-<span class="normal">173</span>
-<span class="normal">174</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">gen_subclass</span><span class="p">(</span><span class="bp">cls</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="n">T</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Generator</span><span class="p">[</span><span class="n">Type</span><span class="p">[</span><span class="n">T</span><span class="p">],</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
+<span class="normal">172</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">gen_subclass</span><span class="p">(</span><span class="bp">cls</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="n">T</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Generator</span><span class="p">[</span><span class="n">Type</span><span class="p">[</span><span class="n">T</span><span class="p">],</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
     <span class="sd">&quot;&quot;&quot;生成某个类的所有子类 (包括其自身)</span>
 
 <span class="sd">    Args:</span>
@@ -2902,9 +2881,9 @@
 
         <details class="quote">
           <summary>Source code in <code>graia/ariadne/util/__init__.py</code></summary>
-          <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">177</span>
-<span class="normal">178</span>
-<span class="normal">179</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">wrap_bracket</span><span class="p">(</span><span class="n">string</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+          <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">175</span>
+<span class="normal">176</span>
+<span class="normal">177</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">wrap_bracket</span><span class="p">(</span><span class="n">string</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;在字符串中转义中括号括号&quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">string</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;[&quot;</span><span class="p">,</span> <span class="s2">&quot;</span><span class="se">\\</span><span class="s2">u005b&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;]&quot;</span><span class="p">,</span> <span class="s2">&quot;</span><span class="se">\\</span><span class="s2">u005d&quot;</span><span class="p">)</span>
 </code></pre></div>
@@ -2975,16 +2954,16 @@
 
         <details class="quote">
           <summary>Source code in <code>graia/ariadne/util/__init__.py</code></summary>
-          <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">182</span>
+          <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">180</span>
+<span class="normal">181</span>
+<span class="normal">182</span>
 <span class="normal">183</span>
 <span class="normal">184</span>
 <span class="normal">185</span>
 <span class="normal">186</span>
 <span class="normal">187</span>
 <span class="normal">188</span>
-<span class="normal">189</span>
-<span class="normal">190</span>
-<span class="normal">191</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">const_call</span><span class="p">(</span><span class="n">val</span><span class="p">:</span> <span class="n">T</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">[[],</span> <span class="n">T</span><span class="p">]:</span>
+<span class="normal">189</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">const_call</span><span class="p">(</span><span class="n">val</span><span class="p">:</span> <span class="n">T</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">[[],</span> <span class="n">T</span><span class="p">]:</span>
     <span class="sd">&quot;&quot;&quot;生成一个返回常量的 Callable</span>
 
 <span class="sd">    Args:</span>
@@ -2994,323 +2973,6 @@
 <span class="sd">        Callable[[], T]: 返回的函数</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="k">lambda</span><span class="p">:</span> <span class="n">val</span>
-</code></pre></div>
-</td></tr></table>
-        </details>
-    </div>
-
-  </div>
-
-
-
-  <div class="doc doc-object doc-function">
-
-
-
-<h2 id="graia.ariadne.util.assert_on_" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">assert_on_</span><span class="p">(</span><span class="n">pre_condition</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span> <span class="n">condition</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span> <span class="o">*</span><span class="n">message</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="n">NoReturn</span><span class="p">]</span></code>
-
-
-<a href="#graia.ariadne.util.assert_on_" class="headerlink" title="Permanent link">🔗</a></h2>
-
-
-    <div class="doc doc-contents ">
-
-      <p>检查条件是否成立, 如果不成立则抛出 ValueError</p>
-
-  <p><strong>Parameters:</strong></p>
-  <table>
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Type</th>
-        <th>Description</th>
-        <th>Default</th>
-      </tr>
-    </thead>
-    <tbody>
-        <tr>
-          <td><code>pre_condition</code></td>
-          <td>
-                <code><a class="autorefs autorefs-external" href="https://docs.python.org/zh-cn/3/library/functions.html#bool">bool</a></code>
-          </td>
-          <td><p>前置条件</p></td>
-          <td>
-              <em>required</em>
-          </td>
-        </tr>
-        <tr>
-          <td><code>condition</code></td>
-          <td>
-                <code><a class="autorefs autorefs-external" href="https://docs.python.org/zh-cn/3/library/functions.html#bool">bool</a></code>
-          </td>
-          <td><p>条件语句</p></td>
-          <td>
-              <em>required</em>
-          </td>
-        </tr>
-        <tr>
-          <td><code>message</code></td>
-          <td>
-                <code><a class="autorefs autorefs-external" title="typing.Any" href="https://docs.python.org/zh-cn/3/library/typing.html#typing.Any">Any</a></code>
-          </td>
-          <td><p>附带的消息.</p></td>
-          <td>
-              <em>required</em>
-          </td>
-        </tr>
-    </tbody>
-  </table>
-
-  <p><strong>Returns:</strong></p>
-  <table>
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-        <tr>
-          <td>
-                <code><a class="autorefs autorefs-external" title="typing.Union" href="https://docs.python.org/zh-cn/3/library/typing.html#typing.Union">Union</a>[None, <a class="autorefs autorefs-external" title="typing.NoReturn" href="https://docs.python.org/zh-cn/3/library/typing.html#typing.NoReturn">NoReturn</a>]</code>
-          </td>
-          <td><p>Union[None, NoReturn]: 无返回值</p></td>
-        </tr>
-    </tbody>
-  </table>
-
-        <details class="quote">
-          <summary>Source code in <code>graia/ariadne/util/__init__.py</code></summary>
-          <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">194</span>
-<span class="normal">195</span>
-<span class="normal">196</span>
-<span class="normal">197</span>
-<span class="normal">198</span>
-<span class="normal">199</span>
-<span class="normal">200</span>
-<span class="normal">201</span>
-<span class="normal">202</span>
-<span class="normal">203</span>
-<span class="normal">204</span>
-<span class="normal">205</span>
-<span class="normal">206</span>
-<span class="normal">207</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">assert_on_</span><span class="p">(</span><span class="n">pre_condition</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span> <span class="n">condition</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span> <span class="o">*</span><span class="n">message</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="n">NoReturn</span><span class="p">]:</span>
-    <span class="sd">&quot;&quot;&quot;检查条件是否成立, 如果不成立则抛出 ValueError</span>
-
-<span class="sd">    Args:</span>
-<span class="sd">        pre_condition (bool): 前置条件</span>
-<span class="sd">        condition (bool): 条件语句</span>
-<span class="sd">        message (Any, optional): 附带的消息.</span>
-
-<span class="sd">    Returns:</span>
-<span class="sd">        Union[None, NoReturn]: 无返回值</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="n">pre_condition</span><span class="p">:</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">condition</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="o">*</span><span class="n">message</span><span class="p">)</span>
-</code></pre></div>
-</td></tr></table>
-        </details>
-    </div>
-
-  </div>
-
-
-
-  <div class="doc doc-object doc-function">
-
-
-
-<h2 id="graia.ariadne.util.assert_" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">assert_</span><span class="p">(</span><span class="n">condition</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span> <span class="o">*</span><span class="n">message</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="n">NoReturn</span><span class="p">]</span></code>
-
-
-<a href="#graia.ariadne.util.assert_" class="headerlink" title="Permanent link">🔗</a></h2>
-
-
-    <div class="doc doc-contents ">
-
-      <p>引发 ValueError 的断言</p>
-
-  <p><strong>Parameters:</strong></p>
-  <table>
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Type</th>
-        <th>Description</th>
-        <th>Default</th>
-      </tr>
-    </thead>
-    <tbody>
-        <tr>
-          <td><code>condition</code></td>
-          <td>
-                <code><a class="autorefs autorefs-external" href="https://docs.python.org/zh-cn/3/library/functions.html#bool">bool</a></code>
-          </td>
-          <td><p>条件语句</p></td>
-          <td>
-              <em>required</em>
-          </td>
-        </tr>
-        <tr>
-          <td><code>*message</code></td>
-          <td>
-                <code><a class="autorefs autorefs-external" title="typing.Any" href="https://docs.python.org/zh-cn/3/library/typing.html#typing.Any">Any</a></code>
-          </td>
-          <td><p>附带的消息.</p></td>
-          <td>
-                <code>()</code>
-          </td>
-        </tr>
-    </tbody>
-  </table>
-
-  <p><strong>Returns:</strong></p>
-  <table>
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-        <tr>
-          <td>
-                <code><a class="autorefs autorefs-external" title="typing.Union" href="https://docs.python.org/zh-cn/3/library/typing.html#typing.Union">Union</a>[None, <a class="autorefs autorefs-external" title="typing.NoReturn" href="https://docs.python.org/zh-cn/3/library/typing.html#typing.NoReturn">NoReturn</a>]</code>
-          </td>
-          <td><p>Union[None, NoReturn]: 无返回值</p></td>
-        </tr>
-    </tbody>
-  </table>
-
-        <details class="quote">
-          <summary>Source code in <code>graia/ariadne/util/__init__.py</code></summary>
-          <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">210</span>
-<span class="normal">211</span>
-<span class="normal">212</span>
-<span class="normal">213</span>
-<span class="normal">214</span>
-<span class="normal">215</span>
-<span class="normal">216</span>
-<span class="normal">217</span>
-<span class="normal">218</span>
-<span class="normal">219</span>
-<span class="normal">220</span>
-<span class="normal">221</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">assert_</span><span class="p">(</span><span class="n">condition</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span> <span class="o">*</span><span class="n">message</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="n">NoReturn</span><span class="p">]:</span>
-    <span class="sd">&quot;&quot;&quot;引发 ValueError 的断言</span>
-
-<span class="sd">    Args:</span>
-<span class="sd">        condition (bool): 条件语句</span>
-<span class="sd">        *message (Any): 附带的消息.</span>
-
-<span class="sd">    Returns:</span>
-<span class="sd">        Union[None, NoReturn]: 无返回值</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">condition</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="o">*</span><span class="n">message</span><span class="p">)</span>
-</code></pre></div>
-</td></tr></table>
-        </details>
-    </div>
-
-  </div>
-
-
-
-  <div class="doc doc-object doc-function">
-
-
-
-<h2 id="graia.ariadne.util.assert_not_" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">assert_not_</span><span class="p">(</span><span class="n">condition</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span> <span class="o">*</span><span class="n">message</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="n">NoReturn</span><span class="p">]</span></code>
-
-
-<a href="#graia.ariadne.util.assert_not_" class="headerlink" title="Permanent link">🔗</a></h2>
-
-
-    <div class="doc doc-contents ">
-
-      <p>检查条件是否成立, 如果不成立则抛出 ValueError</p>
-
-  <p><strong>Parameters:</strong></p>
-  <table>
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Type</th>
-        <th>Description</th>
-        <th>Default</th>
-      </tr>
-    </thead>
-    <tbody>
-        <tr>
-          <td><code>condition</code></td>
-          <td>
-                <code><a class="autorefs autorefs-external" href="https://docs.python.org/zh-cn/3/library/functions.html#bool">bool</a></code>
-          </td>
-          <td><p>条件语句</p></td>
-          <td>
-              <em>required</em>
-          </td>
-        </tr>
-        <tr>
-          <td><code>*message</code></td>
-          <td>
-                <code><a class="autorefs autorefs-external" title="typing.Any" href="https://docs.python.org/zh-cn/3/library/typing.html#typing.Any">Any</a></code>
-          </td>
-          <td><p>附带的消息.</p></td>
-          <td>
-                <code>()</code>
-          </td>
-        </tr>
-    </tbody>
-  </table>
-
-  <p><strong>Returns:</strong></p>
-  <table>
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-        <tr>
-          <td>
-                <code><a class="autorefs autorefs-external" title="typing.Union" href="https://docs.python.org/zh-cn/3/library/typing.html#typing.Union">Union</a>[None, <a class="autorefs autorefs-external" title="typing.NoReturn" href="https://docs.python.org/zh-cn/3/library/typing.html#typing.NoReturn">NoReturn</a>]</code>
-          </td>
-          <td><p>Union[None, NoReturn]: 无返回值</p></td>
-        </tr>
-    </tbody>
-  </table>
-
-        <details class="quote">
-          <summary>Source code in <code>graia/ariadne/util/__init__.py</code></summary>
-          <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">224</span>
-<span class="normal">225</span>
-<span class="normal">226</span>
-<span class="normal">227</span>
-<span class="normal">228</span>
-<span class="normal">229</span>
-<span class="normal">230</span>
-<span class="normal">231</span>
-<span class="normal">232</span>
-<span class="normal">233</span>
-<span class="normal">234</span>
-<span class="normal">235</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">assert_not_</span><span class="p">(</span><span class="n">condition</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span> <span class="o">*</span><span class="n">message</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="n">NoReturn</span><span class="p">]:</span>
-    <span class="sd">&quot;&quot;&quot;检查条件是否成立, 如果不成立则抛出 ValueError</span>
-
-<span class="sd">    Args:</span>
-<span class="sd">        condition (bool): 条件语句</span>
-<span class="sd">        *message (Any): 附带的消息.</span>
-
-<span class="sd">    Returns:</span>
-<span class="sd">        Union[None, NoReturn]: 无返回值</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="n">condition</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="o">*</span><span class="n">message</span><span class="p">)</span>
 </code></pre></div>
 </td></tr></table>
         </details>
@@ -3399,24 +3061,24 @@
 
         <details class="quote">
           <summary>Source code in <code>graia/ariadne/util/__init__.py</code></summary>
-          <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">238</span>
-<span class="normal">239</span>
-<span class="normal">240</span>
-<span class="normal">241</span>
-<span class="normal">242</span>
-<span class="normal">243</span>
-<span class="normal">244</span>
-<span class="normal">245</span>
-<span class="normal">246</span>
-<span class="normal">247</span>
-<span class="normal">248</span>
-<span class="normal">249</span>
-<span class="normal">250</span>
-<span class="normal">251</span>
-<span class="normal">252</span>
-<span class="normal">253</span>
-<span class="normal">254</span>
-<span class="normal">255</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">eval_ctx</span><span class="p">(</span>
+          <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">192</span>
+<span class="normal">193</span>
+<span class="normal">194</span>
+<span class="normal">195</span>
+<span class="normal">196</span>
+<span class="normal">197</span>
+<span class="normal">198</span>
+<span class="normal">199</span>
+<span class="normal">200</span>
+<span class="normal">201</span>
+<span class="normal">202</span>
+<span class="normal">203</span>
+<span class="normal">204</span>
+<span class="normal">205</span>
+<span class="normal">206</span>
+<span class="normal">207</span>
+<span class="normal">208</span>
+<span class="normal">209</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">eval_ctx</span><span class="p">(</span>
     <span class="n">layer</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">globals_</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">DictStrAny</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">locals_</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">DictStrAny</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">DictStrAny</span><span class="p">,</span> <span class="n">DictStrAny</span><span class="p">]:</span>
     <span class="sd">&quot;&quot;&quot;获取一个上下文的全局和局部变量</span>
@@ -3497,15 +3159,15 @@
 
         <details class="quote">
           <summary>Source code in <code>graia/ariadne/util/__init__.py</code></summary>
-          <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">261</span>
-<span class="normal">262</span>
-<span class="normal">263</span>
-<span class="normal">264</span>
-<span class="normal">265</span>
-<span class="normal">266</span>
-<span class="normal">267</span>
-<span class="normal">268</span>
-<span class="normal">269</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">await_predicate</span><span class="p">(</span><span class="n">predicate</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[],</span> <span class="nb">bool</span><span class="p">],</span> <span class="n">interval</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.01</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+          <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">215</span>
+<span class="normal">216</span>
+<span class="normal">217</span>
+<span class="normal">218</span>
+<span class="normal">219</span>
+<span class="normal">220</span>
+<span class="normal">221</span>
+<span class="normal">222</span>
+<span class="normal">223</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">await_predicate</span><span class="p">(</span><span class="n">predicate</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[],</span> <span class="nb">bool</span><span class="p">],</span> <span class="n">interval</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.01</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;异步阻塞至满足 predicate 为 True</span>
 
 <span class="sd">    Args:</span>
@@ -3605,33 +3267,33 @@
 
         <details class="quote">
           <summary>Source code in <code>graia/ariadne/util/__init__.py</code></summary>
-          <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">272</span>
-<span class="normal">273</span>
-<span class="normal">274</span>
-<span class="normal">275</span>
-<span class="normal">276</span>
-<span class="normal">277</span>
-<span class="normal">278</span>
-<span class="normal">279</span>
-<span class="normal">280</span>
-<span class="normal">281</span>
-<span class="normal">282</span>
-<span class="normal">283</span>
-<span class="normal">284</span>
-<span class="normal">285</span>
-<span class="normal">286</span>
-<span class="normal">287</span>
-<span class="normal">288</span>
-<span class="normal">289</span>
-<span class="normal">290</span>
-<span class="normal">291</span>
-<span class="normal">292</span>
-<span class="normal">293</span>
-<span class="normal">294</span>
-<span class="normal">295</span>
-<span class="normal">296</span>
-<span class="normal">297</span>
-<span class="normal">298</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">yield_with_timeout</span><span class="p">(</span>
+          <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">226</span>
+<span class="normal">227</span>
+<span class="normal">228</span>
+<span class="normal">229</span>
+<span class="normal">230</span>
+<span class="normal">231</span>
+<span class="normal">232</span>
+<span class="normal">233</span>
+<span class="normal">234</span>
+<span class="normal">235</span>
+<span class="normal">236</span>
+<span class="normal">237</span>
+<span class="normal">238</span>
+<span class="normal">239</span>
+<span class="normal">240</span>
+<span class="normal">241</span>
+<span class="normal">242</span>
+<span class="normal">243</span>
+<span class="normal">244</span>
+<span class="normal">245</span>
+<span class="normal">246</span>
+<span class="normal">247</span>
+<span class="normal">248</span>
+<span class="normal">249</span>
+<span class="normal">250</span>
+<span class="normal">251</span>
+<span class="normal">252</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">yield_with_timeout</span><span class="p">(</span>
     <span class="n">getter_coro</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[],</span> <span class="n">Coroutine</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">T</span><span class="p">]],</span>
     <span class="n">predicate</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[],</span> <span class="nb">bool</span><span class="p">],</span>
     <span class="n">await_length</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.2</span><span class="p">,</span>
@@ -3726,27 +3388,27 @@
 
         <details class="quote">
           <summary>Source code in <code>graia/ariadne/util/__init__.py</code></summary>
-          <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">301</span>
-<span class="normal">302</span>
-<span class="normal">303</span>
-<span class="normal">304</span>
-<span class="normal">305</span>
-<span class="normal">306</span>
-<span class="normal">307</span>
-<span class="normal">308</span>
-<span class="normal">309</span>
-<span class="normal">310</span>
-<span class="normal">311</span>
-<span class="normal">312</span>
-<span class="normal">313</span>
-<span class="normal">314</span>
-<span class="normal">315</span>
-<span class="normal">316</span>
-<span class="normal">317</span>
-<span class="normal">318</span>
-<span class="normal">319</span>
-<span class="normal">320</span>
-<span class="normal">321</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">deprecated</span><span class="p">(</span><span class="n">remove_ver</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">Callable</span><span class="p">[</span><span class="n">P</span><span class="p">,</span> <span class="n">R</span><span class="p">]],</span> <span class="n">Callable</span><span class="p">[</span><span class="n">P</span><span class="p">,</span> <span class="n">R</span><span class="p">]]:</span>
+          <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">255</span>
+<span class="normal">256</span>
+<span class="normal">257</span>
+<span class="normal">258</span>
+<span class="normal">259</span>
+<span class="normal">260</span>
+<span class="normal">261</span>
+<span class="normal">262</span>
+<span class="normal">263</span>
+<span class="normal">264</span>
+<span class="normal">265</span>
+<span class="normal">266</span>
+<span class="normal">267</span>
+<span class="normal">268</span>
+<span class="normal">269</span>
+<span class="normal">270</span>
+<span class="normal">271</span>
+<span class="normal">272</span>
+<span class="normal">273</span>
+<span class="normal">274</span>
+<span class="normal">275</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">deprecated</span><span class="p">(</span><span class="n">remove_ver</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">Callable</span><span class="p">[</span><span class="n">P</span><span class="p">,</span> <span class="n">R</span><span class="p">]],</span> <span class="n">Callable</span><span class="p">[</span><span class="n">P</span><span class="p">,</span> <span class="n">R</span><span class="p">]]:</span>
     <span class="sd">&quot;&quot;&quot;标注一个方法 / 函数已被弃用</span>
 
 <span class="sd">    Args:</span>
@@ -3835,19 +3497,19 @@
 
         <details class="quote">
           <summary>Source code in <code>graia/ariadne/util/__init__.py</code></summary>
-          <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">324</span>
-<span class="normal">325</span>
-<span class="normal">326</span>
-<span class="normal">327</span>
-<span class="normal">328</span>
-<span class="normal">329</span>
-<span class="normal">330</span>
-<span class="normal">331</span>
-<span class="normal">332</span>
-<span class="normal">333</span>
-<span class="normal">334</span>
-<span class="normal">335</span>
-<span class="normal">336</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">resolve_dispatchers_mixin</span><span class="p">(</span><span class="n">dispatchers</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">T_Dispatcher</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">T_Dispatcher</span><span class="p">]:</span>
+          <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">278</span>
+<span class="normal">279</span>
+<span class="normal">280</span>
+<span class="normal">281</span>
+<span class="normal">282</span>
+<span class="normal">283</span>
+<span class="normal">284</span>
+<span class="normal">285</span>
+<span class="normal">286</span>
+<span class="normal">287</span>
+<span class="normal">288</span>
+<span class="normal">289</span>
+<span class="normal">290</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">resolve_dispatchers_mixin</span><span class="p">(</span><span class="n">dispatchers</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">T_Dispatcher</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">T_Dispatcher</span><span class="p">]:</span>
     <span class="sd">&quot;&quot;&quot;解析 dispatcher list 的 mixin</span>
 
 <span class="sd">    Args:</span>
@@ -3938,33 +3600,33 @@
 
         <details class="quote">
           <summary>Source code in <code>graia/ariadne/util/__init__.py</code></summary>
-          <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">368</span>
-<span class="normal">369</span>
-<span class="normal">370</span>
-<span class="normal">371</span>
-<span class="normal">372</span>
-<span class="normal">373</span>
-<span class="normal">374</span>
-<span class="normal">375</span>
-<span class="normal">376</span>
-<span class="normal">377</span>
-<span class="normal">378</span>
-<span class="normal">379</span>
-<span class="normal">380</span>
-<span class="normal">381</span>
-<span class="normal">382</span>
-<span class="normal">383</span>
-<span class="normal">384</span>
-<span class="normal">385</span>
-<span class="normal">386</span>
-<span class="normal">387</span>
-<span class="normal">388</span>
-<span class="normal">389</span>
-<span class="normal">390</span>
-<span class="normal">391</span>
-<span class="normal">392</span>
-<span class="normal">393</span>
-<span class="normal">394</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">signal_handler</span><span class="p">(</span><span class="n">callback</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[],</span> <span class="kc">None</span><span class="p">],</span> <span class="n">one_time</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+          <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">322</span>
+<span class="normal">323</span>
+<span class="normal">324</span>
+<span class="normal">325</span>
+<span class="normal">326</span>
+<span class="normal">327</span>
+<span class="normal">328</span>
+<span class="normal">329</span>
+<span class="normal">330</span>
+<span class="normal">331</span>
+<span class="normal">332</span>
+<span class="normal">333</span>
+<span class="normal">334</span>
+<span class="normal">335</span>
+<span class="normal">336</span>
+<span class="normal">337</span>
+<span class="normal">338</span>
+<span class="normal">339</span>
+<span class="normal">340</span>
+<span class="normal">341</span>
+<span class="normal">342</span>
+<span class="normal">343</span>
+<span class="normal">344</span>
+<span class="normal">345</span>
+<span class="normal">346</span>
+<span class="normal">347</span>
+<span class="normal">348</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">signal_handler</span><span class="p">(</span><span class="n">callback</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[],</span> <span class="kc">None</span><span class="p">],</span> <span class="n">one_time</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;注册信号处理器</span>
 <span class="sd">    Args:</span>
 <span class="sd">        callback (Callable[[], None]): 信号处理器</span>
