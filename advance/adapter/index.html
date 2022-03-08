@@ -2143,22 +2143,22 @@
 <h1 id="_1">适配器<a class="headerlink" href="#_1" title="Permanent link">🔗</a></h1>
 <p><code>Ariadne</code> 的适配器用于建立与 <code>mirai-api-http</code> 的连接.</p>
 <div class="admonition info">
-<p class="admonition-title">请参阅 <a href="../../refs/graia/ariadne/adapter/#graia.ariadne.adapter">API 文档</a></p>
+<p class="admonition-title">请参阅 <a class="autorefs autorefs-internal" href="../../refs/graia/ariadne/adapter/#graia.ariadne.adapter">API 文档</a></p>
 </div>
 <h2 id="_2">正向适配器<a class="headerlink" href="#_2" title="Permanent link">🔗</a></h2>
 <p>正向适配器作为客户端连接至 <code>mirai-api-http</code>, 有以下几种类型.</p>
 <ul>
 <li>
-<p><a href="../../refs/graia/ariadne/adapter/forward/#graia.ariadne.adapter.forward.WebsocketAdapter"><code>WebsocketAdapter</code></a> 正向 Websocket</p>
+<p><a class="autorefs autorefs-internal" href="../../refs/graia/ariadne/adapter/forward/#graia.ariadne.adapter.forward.WebsocketAdapter"><code>WebsocketAdapter</code></a> 正向 Websocket</p>
 </li>
 <li>
-<p><a href="../../refs/graia/ariadne/adapter/forward/#graia.ariadne.adapter.forward.HttpAdapter"><code>HttpAdapter</code></a> 正向 HTTP</p>
+<p><a class="autorefs autorefs-internal" href="../../refs/graia/ariadne/adapter/forward/#graia.ariadne.adapter.forward.HttpAdapter"><code>HttpAdapter</code></a> 正向 HTTP</p>
 </li>
 <li>
-<p><a href="../../refs/graia/ariadne/adapter/forward/#graia.ariadne.adapter.forward.ComposeForwardAdapter"><code>ComposeForwardAdapter</code></a> 正向 Websocket + HTTP</p>
+<p><a class="autorefs autorefs-internal" href="../../refs/graia/ariadne/adapter/forward/#graia.ariadne.adapter.forward.ComposeForwardAdapter"><code>ComposeForwardAdapter</code></a> 正向 Websocket + HTTP</p>
 </li>
 </ul>
-<p>正向适配器均有一个 <code>ForwardAdapter.session</code> 对应着其 <a href="https://docs.aiohttp.org/en/stable/client_reference.html#aiohttp.ClientSession"><code>aiohttp.ClientSession</code></a> 对象.</p>
+<p>正向适配器均有一个 <code>ForwardAdapter.session</code> 对应着其 <a class="autorefs autorefs-external" href="https://docs.aiohttp.org/en/stable/client_reference.html#aiohttp.ClientSession"><code>aiohttp.ClientSession</code></a> 对象.</p>
 <h2 id="_3">反向适配器<a class="headerlink" href="#_3" title="Permanent link">🔗</a></h2>
 <p>反向适配器作为服务端让 <code>mirai-api-http</code> 进行连接, 有以下几种类型.</p>
 <div class="admonition warning">
@@ -2169,13 +2169,13 @@
 </div>
 <ul>
 <li>
-<p><a href="../../refs/graia/ariadne/adapter/reverse/#graia.ariadne.adapter.reverse.ComposeWebhookAdapter"><code>ComposeWebhookAdapter</code></a> 正向 HTTP + 反向 HTTP</p>
+<p><a class="autorefs autorefs-internal" href="../../refs/graia/ariadne/adapter/reverse/#graia.ariadne.adapter.reverse.ComposeWebhookAdapter"><code>ComposeWebhookAdapter</code></a> 正向 HTTP + 反向 HTTP</p>
 </li>
 <li>
-<p><a href="../../refs/graia/ariadne/adapter/reverse/#graia.ariadne.adapter.reverse.ComposeReverseWebsocketAdapter"><code>ComposeReverseWebsocketAdapter</code></a> 正向 HTTP + 反向 Websocket</p>
+<p><a class="autorefs autorefs-internal" href="../../refs/graia/ariadne/adapter/reverse/#graia.ariadne.adapter.reverse.ComposeReverseWebsocketAdapter"><code>ComposeReverseWebsocketAdapter</code></a> 正向 HTTP + 反向 Websocket</p>
 </li>
 <li>
-<p><a href="../../refs/graia/ariadne/adapter/reverse/#graia.ariadne.adapter.reverse.ReverseWebsocketAdapter"><code>ReverseWebsocketAdapter</code></a> 纯反向 Websocket</p>
+<p><a class="autorefs autorefs-internal" href="../../refs/graia/ariadne/adapter/reverse/#graia.ariadne.adapter.reverse.ReverseWebsocketAdapter"><code>ReverseWebsocketAdapter</code></a> 纯反向 Websocket</p>
 </li>
 </ul>
 <p>这些反向适配器需要传入 <code>route</code> 与 <code>port</code> 作为服务路径 (默认 <code class="highlight"><span class="s2">&quot;/&quot;</span></code> ) 与服务器端口 (默认 <code class="highlight"><span class="mi">8000</span></code> )，多余的关键字参数会传入 <code>uvicorn.Config</code>.</p>

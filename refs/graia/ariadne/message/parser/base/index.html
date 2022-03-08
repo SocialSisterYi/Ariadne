@@ -1742,38 +1742,12 @@
     DetectPrefix
   </a>
   
-    <nav class="md-nav" aria-label="DetectPrefix">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#graia.ariadne.message.parser.base.DetectPrefix.target" class="md-nav__link">
-    target()
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
 </li>
       
         <li class="md-nav__item">
   <a href="#graia.ariadne.message.parser.base.DetectSuffix" class="md-nav__link">
     DetectSuffix
   </a>
-  
-    <nav class="md-nav" aria-label="DetectSuffix">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#graia.ariadne.message.parser.base.DetectSuffix.target" class="md-nav__link">
-    target()
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
@@ -2208,38 +2182,12 @@
     DetectPrefix
   </a>
   
-    <nav class="md-nav" aria-label="DetectPrefix">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#graia.ariadne.message.parser.base.DetectPrefix.target" class="md-nav__link">
-    target()
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
 </li>
       
         <li class="md-nav__item">
   <a href="#graia.ariadne.message.parser.base.DetectSuffix" class="md-nav__link">
     DetectSuffix
   </a>
-  
-    <nav class="md-nav" aria-label="DetectSuffix">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#graia.ariadne.message.parser.base.DetectSuffix.target" class="md-nav__link">
-    target()
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
@@ -2335,6 +2283,7 @@
 
 
 
+
   <div class="doc doc-object doc-class">
 
 
@@ -2348,7 +2297,7 @@
 
     <div class="doc doc-contents ">
         <p class="doc doc-class-bases">
-          Bases: <code><span title="graia.broadcast.entities.decorator.Decorator">Decorator</span></code></p>
+          Bases: <code><span title="graia.ariadne.message.parser.base.ChainDecorator">ChainDecorator</span></code></p>
 
 
       <p>前缀检测器</p>
@@ -2369,7 +2318,7 @@
         <tr>
           <td><code>prefix</code></td>
           <td>
-                <code><a href="https://docs.python.org/zh-cn/3/library/stdtypes.html#str">str</a></code>
+                <code><a class="autorefs autorefs-external" href="https://docs.python.org/zh-cn/3/library/stdtypes.html#str">str</a></code>
           </td>
           <td><p>要匹配的前缀</p></td>
           <td>
@@ -2381,19 +2330,21 @@
 
             <details class="quote">
               <summary>Source code in <code>graia/ariadne/message/parser/base.py</code></summary>
-              <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">21</span>
-<span class="normal">22</span>
-<span class="normal">23</span>
-<span class="normal">24</span>
-<span class="normal">25</span>
-<span class="normal">26</span>
-<span class="normal">27</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">prefix</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+              <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">43</span>
+<span class="normal">44</span>
+<span class="normal">45</span>
+<span class="normal">46</span>
+<span class="normal">47</span>
+<span class="normal">48</span>
+<span class="normal">49</span>
+<span class="normal">50</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">prefix</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;初始化前缀检测器.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        prefix (str): 要匹配的前缀</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">prefix</span> <span class="o">=</span> <span class="n">prefix</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">next</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ChainDecorator</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
 </code></pre></div>
 </td></tr></table>
             </details>
@@ -2410,58 +2361,6 @@
 
 
 
-
-  <div class="doc doc-object doc-function">
-
-
-
-<h3 id="graia.ariadne.message.parser.base.DetectPrefix.target" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">target</span><span class="p">(</span><span class="n">interface</span><span class="p">:</span> <span class="n">DecoratorInterface</span><span class="p">)</span></code>
-
-  <span class="doc doc-properties">
-      <small class="doc doc-label doc-label-async"><code>async</code></small>
-  </span>
-
-<a href="#graia.ariadne.message.parser.base.DetectPrefix.target" class="headerlink" title="Permanent link">🔗</a></h3>
-
-
-    <div class="doc doc-contents ">
-
-      <p>检测前缀并 decorate 参数</p>
-
-        <details class="quote">
-          <summary>Source code in <code>graia/ariadne/message/parser/base.py</code></summary>
-          <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">29</span>
-<span class="normal">30</span>
-<span class="normal">31</span>
-<span class="normal">32</span>
-<span class="normal">33</span>
-<span class="normal">34</span>
-<span class="normal">35</span>
-<span class="normal">36</span>
-<span class="normal">37</span>
-<span class="normal">38</span>
-<span class="normal">39</span>
-<span class="normal">40</span>
-<span class="normal">41</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">target</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">interface</span><span class="p">:</span> <span class="n">DecoratorInterface</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;检测前缀并 decorate 参数&quot;&quot;&quot;</span>
-    <span class="n">chain</span><span class="p">:</span> <span class="n">MessageChain</span> <span class="o">=</span> <span class="k">await</span> <span class="n">interface</span><span class="o">.</span><span class="n">dispatcher_interface</span><span class="o">.</span><span class="n">lookup_param</span><span class="p">(</span>
-        <span class="s2">&quot;message_chain&quot;</span><span class="p">,</span> <span class="n">MessageChain</span><span class="p">,</span> <span class="kc">None</span>
-    <span class="p">)</span>
-    <span class="n">header</span> <span class="o">=</span> <span class="n">chain</span><span class="o">.</span><span class="n">include</span><span class="p">(</span><span class="n">Quote</span><span class="p">,</span> <span class="n">Source</span><span class="p">)</span>
-    <span class="n">rest</span><span class="p">:</span> <span class="n">MessageChain</span> <span class="o">=</span> <span class="n">chain</span><span class="o">.</span><span class="n">exclude</span><span class="p">(</span><span class="n">Quote</span><span class="p">,</span> <span class="n">Source</span><span class="p">)</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">rest</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">prefix</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="n">ExecutionStop</span>
-    <span class="n">result</span> <span class="o">=</span> <span class="n">rest</span><span class="o">.</span><span class="n">removeprefix</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">prefix</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">interface</span><span class="o">.</span><span class="n">annotation</span> <span class="ow">is</span> <span class="n">MessageChain</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">header</span> <span class="o">+</span> <span class="n">result</span>
-    <span class="k">return</span> <span class="kc">None</span>
-</code></pre></div>
-</td></tr></table>
-        </details>
-    </div>
-
-  </div>
 
 
 
@@ -2488,7 +2387,7 @@
 
     <div class="doc doc-contents ">
         <p class="doc doc-class-bases">
-          Bases: <code><span title="graia.broadcast.entities.decorator.Decorator">Decorator</span></code></p>
+          Bases: <code><span title="graia.ariadne.message.parser.base.ChainDecorator">ChainDecorator</span></code></p>
 
 
       <p>后缀检测器</p>
@@ -2509,7 +2408,7 @@
         <tr>
           <td><code>suffix</code></td>
           <td>
-                <code><a href="https://docs.python.org/zh-cn/3/library/stdtypes.html#str">str</a></code>
+                <code><a class="autorefs autorefs-external" href="https://docs.python.org/zh-cn/3/library/stdtypes.html#str">str</a></code>
           </td>
           <td><p>要匹配的后缀</p></td>
           <td>
@@ -2521,19 +2420,21 @@
 
             <details class="quote">
               <summary>Source code in <code>graia/ariadne/message/parser/base.py</code></summary>
-              <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">49</span>
-<span class="normal">50</span>
-<span class="normal">51</span>
-<span class="normal">52</span>
-<span class="normal">53</span>
-<span class="normal">54</span>
-<span class="normal">55</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">suffix</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+              <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">69</span>
+<span class="normal">70</span>
+<span class="normal">71</span>
+<span class="normal">72</span>
+<span class="normal">73</span>
+<span class="normal">74</span>
+<span class="normal">75</span>
+<span class="normal">76</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">suffix</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;初始化后缀检测器.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        suffix (str): 要匹配的后缀</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">suffix</span> <span class="o">=</span> <span class="n">suffix</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">next</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ChainDecorator</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
 </code></pre></div>
 </td></tr></table>
             </details>
@@ -2550,58 +2451,6 @@
 
 
 
-
-  <div class="doc doc-object doc-function">
-
-
-
-<h3 id="graia.ariadne.message.parser.base.DetectSuffix.target" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">target</span><span class="p">(</span><span class="n">interface</span><span class="p">:</span> <span class="n">DecoratorInterface</span><span class="p">)</span></code>
-
-  <span class="doc doc-properties">
-      <small class="doc doc-label doc-label-async"><code>async</code></small>
-  </span>
-
-<a href="#graia.ariadne.message.parser.base.DetectSuffix.target" class="headerlink" title="Permanent link">🔗</a></h3>
-
-
-    <div class="doc doc-contents ">
-
-      <p>检测后缀并 decorate 参数</p>
-
-        <details class="quote">
-          <summary>Source code in <code>graia/ariadne/message/parser/base.py</code></summary>
-          <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">57</span>
-<span class="normal">58</span>
-<span class="normal">59</span>
-<span class="normal">60</span>
-<span class="normal">61</span>
-<span class="normal">62</span>
-<span class="normal">63</span>
-<span class="normal">64</span>
-<span class="normal">65</span>
-<span class="normal">66</span>
-<span class="normal">67</span>
-<span class="normal">68</span>
-<span class="normal">69</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">target</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">interface</span><span class="p">:</span> <span class="n">DecoratorInterface</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;检测后缀并 decorate 参数&quot;&quot;&quot;</span>
-    <span class="n">chain</span><span class="p">:</span> <span class="n">MessageChain</span> <span class="o">=</span> <span class="k">await</span> <span class="n">interface</span><span class="o">.</span><span class="n">dispatcher_interface</span><span class="o">.</span><span class="n">lookup_param</span><span class="p">(</span>
-        <span class="s2">&quot;message_chain&quot;</span><span class="p">,</span> <span class="n">MessageChain</span><span class="p">,</span> <span class="kc">None</span>
-    <span class="p">)</span>
-    <span class="n">header</span> <span class="o">=</span> <span class="n">chain</span><span class="o">.</span><span class="n">include</span><span class="p">(</span><span class="n">Quote</span><span class="p">,</span> <span class="n">Source</span><span class="p">)</span>
-    <span class="n">rest</span><span class="p">:</span> <span class="n">MessageChain</span> <span class="o">=</span> <span class="n">chain</span><span class="o">.</span><span class="n">exclude</span><span class="p">(</span><span class="n">Quote</span><span class="p">,</span> <span class="n">Source</span><span class="p">)</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">rest</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">suffix</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="n">ExecutionStop</span>
-    <span class="n">result</span> <span class="o">=</span> <span class="n">rest</span><span class="o">.</span><span class="n">removesuffix</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">suffix</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">interface</span><span class="o">.</span><span class="n">annotation</span> <span class="ow">is</span> <span class="n">MessageChain</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">header</span> <span class="o">+</span> <span class="n">result</span>
-    <span class="k">return</span> <span class="kc">None</span>
-</code></pre></div>
-</td></tr></table>
-        </details>
-    </div>
-
-  </div>
 
 
 
@@ -2629,7 +2478,7 @@
 
     <div class="doc doc-contents ">
         <p class="doc doc-class-bases">
-          Bases: <code><span title="graia.broadcast.entities.decorator.Decorator">Decorator</span></code></p>
+          Bases: <code><span title="graia.ariadne.message.parser.base.ChainDecorator">ChainDecorator</span></code></p>
 
 
       <p>At 账号或者提到账号群昵称</p>
@@ -2672,7 +2521,7 @@
 
     <div class="doc doc-contents ">
         <p class="doc doc-class-bases">
-          Bases: <code><span title="graia.broadcast.entities.decorator.Decorator">Decorator</span></code></p>
+          Bases: <code><span title="graia.ariadne.message.parser.base.ChainDecorator">ChainDecorator</span></code></p>
 
 
       <p>At 或提到指定人</p>
@@ -2680,9 +2529,11 @@
 
             <details class="quote">
               <summary>Source code in <code>graia/ariadne/message/parser/base.py</code></summary>
-              <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">106</span>
-<span class="normal">107</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">target</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+              <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">125</span>
+<span class="normal">126</span>
+<span class="normal">127</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">target</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">person</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">target</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">next</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ChainDecorator</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
 </code></pre></div>
 </td></tr></table>
             </details>
@@ -2690,6 +2541,7 @@
 
 
   <div class="doc doc-children">
+
 
 
 
@@ -2724,7 +2576,7 @@
 
     <div class="doc doc-contents ">
         <p class="doc doc-class-bases">
-          Bases: <code><span title="graia.broadcast.entities.decorator.Decorator">Decorator</span></code></p>
+          Bases: <code><span title="graia.ariadne.message.parser.base.ChainDecorator">ChainDecorator</span></code></p>
 
 
       <p>消息中含有指定关键字</p>
@@ -2732,9 +2584,11 @@
 
             <details class="quote">
               <summary>Source code in <code>graia/ariadne/message/parser/base.py</code></summary>
-              <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">131</span>
-<span class="normal">132</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">keyword</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+              <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">154</span>
+<span class="normal">155</span>
+<span class="normal">156</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">keyword</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">keyword</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">keyword</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">next</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ChainDecorator</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
 </code></pre></div>
 </td></tr></table>
             </details>
@@ -2742,6 +2596,7 @@
 
 
   <div class="doc doc-children">
+
 
 
 
@@ -2776,7 +2631,7 @@
 
     <div class="doc doc-contents ">
         <p class="doc doc-class-bases">
-          Bases: <code><span title="graia.broadcast.entities.decorator.Decorator">Decorator</span></code></p>
+          Bases: <code><span title="graia.ariadne.message.parser.base.ChainDecorator">ChainDecorator</span></code></p>
 
 
       <p>匹配字符串 / 消息链</p>
@@ -2784,9 +2639,11 @@
 
             <details class="quote">
               <summary>Source code in <code>graia/ariadne/message/parser/base.py</code></summary>
-              <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">147</span>
-<span class="normal">148</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">content</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">MessageChain</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+              <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">172</span>
+<span class="normal">173</span>
+<span class="normal">174</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">content</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">MessageChain</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">content</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">MessageChain</span><span class="p">]</span> <span class="o">=</span> <span class="n">content</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">next</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ChainDecorator</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
 </code></pre></div>
 </td></tr></table>
             </details>
@@ -2794,6 +2651,7 @@
 
 
   <div class="doc doc-children">
+
 
 
 
@@ -2828,7 +2686,7 @@
 
     <div class="doc doc-contents ">
         <p class="doc doc-class-bases">
-          Bases: <code><span title="graia.broadcast.entities.decorator.Decorator">Decorator</span></code></p>
+          Bases: <code><span title="graia.ariadne.message.parser.base.ChainDecorator">ChainDecorator</span></code></p>
 
 
       <p>匹配正则表达式</p>
@@ -2849,7 +2707,7 @@
         <tr>
           <td><code>regex</code></td>
           <td>
-                <code><a href="https://docs.python.org/zh-cn/3/library/stdtypes.html#str">str</a></code>
+                <code><a class="autorefs autorefs-external" href="https://docs.python.org/zh-cn/3/library/stdtypes.html#str">str</a></code>
           </td>
           <td><p>正则表达式</p></td>
           <td>
@@ -2859,7 +2717,7 @@
         <tr>
           <td><code>flags</code></td>
           <td>
-                <code><a href="https://docs.python.org/zh-cn/3/library/re.html#module-re">re</a>.<span title="re.RegexFlag">RegexFlag</span></code>
+                <code><a class="autorefs autorefs-external" href="https://docs.python.org/zh-cn/3/library/re.html#module-re">re</a>.<span title="re.RegexFlag">RegexFlag</span></code>
           </td>
           <td><p>正则表达式标志</p></td>
           <td>
@@ -2871,15 +2729,16 @@
 
             <details class="quote">
               <summary>Source code in <code>graia/ariadne/message/parser/base.py</code></summary>
-              <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">165</span>
-<span class="normal">166</span>
-<span class="normal">167</span>
-<span class="normal">168</span>
-<span class="normal">169</span>
-<span class="normal">170</span>
-<span class="normal">171</span>
-<span class="normal">172</span>
-<span class="normal">173</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">regex</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">flags</span><span class="p">:</span> <span class="n">re</span><span class="o">.</span><span class="n">RegexFlag</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">RegexFlag</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+              <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">192</span>
+<span class="normal">193</span>
+<span class="normal">194</span>
+<span class="normal">195</span>
+<span class="normal">196</span>
+<span class="normal">197</span>
+<span class="normal">198</span>
+<span class="normal">199</span>
+<span class="normal">200</span>
+<span class="normal">201</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">regex</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">flags</span><span class="p">:</span> <span class="n">re</span><span class="o">.</span><span class="n">RegexFlag</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">RegexFlag</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;初始化匹配正则表达式.</span>
 
 <span class="sd">    Args:</span>
@@ -2888,6 +2747,7 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">regex</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">regex</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">flags</span><span class="p">:</span> <span class="n">re</span><span class="o">.</span><span class="n">RegexFlag</span> <span class="o">=</span> <span class="n">flags</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">next</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ChainDecorator</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
 </code></pre></div>
 </td></tr></table>
             </details>
@@ -2895,6 +2755,7 @@
 
 
   <div class="doc doc-children">
+
 
 
 
@@ -2930,7 +2791,7 @@
 
     <div class="doc doc-contents ">
         <p class="doc doc-class-bases">
-          Bases: <code><span title="graia.broadcast.entities.decorator.Decorator">Decorator</span></code></p>
+          Bases: <code><span title="graia.ariadne.message.parser.base.ChainDecorator">ChainDecorator</span></code></p>
 
 
       <p>模板匹配</p>
@@ -2938,20 +2799,22 @@
 
             <details class="quote">
               <summary>Source code in <code>graia/ariadne/message/parser/base.py</code></summary>
-              <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">186</span>
-<span class="normal">187</span>
-<span class="normal">188</span>
-<span class="normal">189</span>
-<span class="normal">190</span>
-<span class="normal">191</span>
-<span class="normal">192</span>
-<span class="normal">193</span>
-<span class="normal">194</span>
-<span class="normal">195</span>
-<span class="normal">196</span>
-<span class="normal">197</span>
-<span class="normal">198</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">template</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">Type</span><span class="p">[</span><span class="n">Element</span><span class="p">],</span> <span class="n">Element</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+              <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">215</span>
+<span class="normal">216</span>
+<span class="normal">217</span>
+<span class="normal">218</span>
+<span class="normal">219</span>
+<span class="normal">220</span>
+<span class="normal">221</span>
+<span class="normal">222</span>
+<span class="normal">223</span>
+<span class="normal">224</span>
+<span class="normal">225</span>
+<span class="normal">226</span>
+<span class="normal">227</span>
+<span class="normal">228</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">template</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">Type</span><span class="p">[</span><span class="n">Element</span><span class="p">],</span> <span class="n">Element</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">template</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">Type</span><span class="p">[</span><span class="n">Element</span><span class="p">],</span> <span class="n">Element</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">next</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ChainDecorator</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="k">for</span> <span class="n">element</span> <span class="ow">in</span> <span class="n">template</span><span class="p">:</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">element</span><span class="p">,</span> <span class="nb">type</span><span class="p">)</span> <span class="ow">and</span> <span class="n">element</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">Plain</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">template</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">element</span><span class="p">)</span>
@@ -2979,6 +2842,7 @@
 
 
 
+
   <div class="doc doc-object doc-function">
 
 
@@ -2996,20 +2860,20 @@
 
         <details class="quote">
           <summary>Source code in <code>graia/ariadne/message/parser/base.py</code></summary>
-          <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">200</span>
-<span class="normal">201</span>
-<span class="normal">202</span>
-<span class="normal">203</span>
-<span class="normal">204</span>
-<span class="normal">205</span>
-<span class="normal">206</span>
-<span class="normal">207</span>
-<span class="normal">208</span>
-<span class="normal">209</span>
-<span class="normal">210</span>
-<span class="normal">211</span>
-<span class="normal">212</span>
-<span class="normal">213</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">match</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">chain</span><span class="p">:</span> <span class="n">MessageChain</span><span class="p">):</span>
+          <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">230</span>
+<span class="normal">231</span>
+<span class="normal">232</span>
+<span class="normal">233</span>
+<span class="normal">234</span>
+<span class="normal">235</span>
+<span class="normal">236</span>
+<span class="normal">237</span>
+<span class="normal">238</span>
+<span class="normal">239</span>
+<span class="normal">240</span>
+<span class="normal">241</span>
+<span class="normal">242</span>
+<span class="normal">243</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">match</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">chain</span><span class="p">:</span> <span class="n">MessageChain</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;匹配消息链&quot;&quot;&quot;</span>
     <span class="n">chain</span> <span class="o">=</span> <span class="n">chain</span><span class="o">.</span><span class="n">asSendable</span><span class="p">()</span>
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">template</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">chain</span><span class="p">):</span>
