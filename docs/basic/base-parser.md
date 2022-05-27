@@ -142,7 +142,7 @@ async def on_match_regex(chain: MessageChain): # 不会改动消息链
     ...
 ```
 
-## matchTemplate
+## MatchTemplate
 
 检测消息链是否匹配指定模板.
 
@@ -156,7 +156,42 @@ async def on_match_regex(chain: MessageChain): # 不会改动消息链
 
 ```py
 @broadcast.receiver(..., decorators=[MatchTemplate([Plain, Plain("搜图"), Image])]) # 需要 "*搜图 [图片]" 才能匹配 (*为任意多字符)
-async def on_match_regex(chain: MessageChain): # 不会改动消息链
+async def on_match(chain: MessageChain): # 不会改动消息链
+    ...
+```
+
+## FuzzyMatch
+
+模糊匹配字符串.
+
+### 使用
+
+`Decorator`: 放入 `broadcast.receiver` / `ListenerSchema` 的 `decorators` .
+
+```py
+@broadcast.receiver(..., decorators=[FuzzyMatch("github"))]) # 默认阈值为 60% 相似
+async def on_match(chain: MessageChain): # 不会改动消息链
+    ...
+```
+
+!!! warning "我们更推荐 FuzzyDispatcher, 因为它只在多个匹配中选择最相近的一个."
+
+## FuzzyDispatcher
+
+模糊匹配字符串.
+
+### 使用
+
+作为 `Dispatcher` 使用. 在相同 `scope` 中只有最相近的匹配会被激活.
+
+```py
+@broadcast.receiver(..., dispatchers=[FuzzyDispatcher("github"))]) # 默认阈值为 60% 相似
+async def on_match(chain: MessageChain, rate: float): # 若要获取相似度必须包含 "rate" 单词
     ...
 
-!!! graiax "社区文档相关章节: [链接](https://graiax.cn/make_ero_bot/tutorials/6_1_base_parser.html)"
+@broadcast.receiver(..., dispatchers=[FuzzyDispatcher("gitlab"))]) # 与上面的默认不能同时触发
+async def on_match(chain: MessageChain):
+    ...
+```
+
+!!! graiax "社区文档相关章节: [链接](https://graiax.cn/guide/base_parser.html)"

@@ -3,25 +3,34 @@
 
 # Utility Layout
 import asyncio
+import collections
+import contextlib
 import functools
 import inspect
 import logging
 import sys
 import traceback
+import types
 import typing
 import warnings
 from asyncio.events import AbstractEventLoop
 from contextvars import ContextVar
+from types import TracebackType
 from typing import (
     TYPE_CHECKING,
     Any,
     AsyncIterator,
     Callable,
     Coroutine,
+    Deque,
     Dict,
     Generator,
+    Generic,
+    Iterable,
     List,
+    Literal,
     Optional,
+    Set,
     Tuple,
     Type,
     TypeVar,
@@ -33,6 +42,7 @@ from graia.broadcast.entities.dispatcher import BaseDispatcher
 from graia.broadcast.entities.event import Dispatchable
 from graia.broadcast.entities.listener import Listener
 from graia.broadcast.entities.namespace import Namespace
+from graia.broadcast.exceptions import ExecutionStop, RequirementCrashed
 from graia.broadcast.interfaces.dispatcher import DispatcherInterface
 from graia.broadcast.typing import T_Dispatcher
 from graia.broadcast.utilles import dispatcher_mixin_handler
@@ -41,7 +51,21 @@ from loguru import logger
 from ..typing import DictStrAny, P, R, T
 
 
-def loguru_excepthook(cls, val, tb, *_, **__):
+def type_repr(obj: Any) -> str:
+    if isinstance(obj, types.GenericAlias):
+        return repr(obj)
+    if isinstance(obj, type):
+        if obj.__module__ == "builtins":
+            return obj.__qualname__
+        return f"{obj.__module__}.{obj.__qualname__}"
+    if obj is ...:
+        return "..."
+    if isinstance(obj, types.FunctionType):
+        return obj.__name__
+    return repr(obj)
+
+
+def loguru_excepthook(cls: Type[BaseException], val: BaseException, tb: TracebackType, *_, **__):
     """loguru 异常回调
 
     Args:
@@ -49,6 +73,27 @@ def loguru_excepthook(cls, val, tb, *_, **__):
         val (Exception): 异常的实际值
         tb (TracebackType): 回溯消息
     """
+    exec_module_name = tb.tb_frame.f_globals.get("__name__", "")
+    if issubclass(cls, ExecutionStop) and exec_module_name.startswith("graia"):
+        return
+    elif isinstance(val, RequirementCrashed) and exec_module_name.startswith("graia.broadcast"):
+        with contextlib.suppress(Exception):
+            local_dict = tb.tb_frame.f_locals
+            _, param_name, param_anno, param_default = val.args
+            if isinstance(param_anno, type):
+                param_anno = param_anno.__qualname__
+            param_repr = "".join(
+                [
+                    param_name,
+                    f": {type_repr(param_anno)}" if param_anno else "",
+                    f" = {param_default}" if param_default else "",
+                ]
+            )
+            val = RequirementCrashed(
+                "Unable to lookup parameter " f"({param_repr})",
+                local_dict["dispatchers"],
+            )
+
     logger.opt(exception=(cls, val, tb)).error("Exception:")
 
 
@@ -75,14 +120,14 @@ class LoguruHandler(logging.Handler):
 
         # Find caller from where originated the logged message
         frame, depth = logging.currentframe(), 2
-        while frame.f_code.co_filename == logging.__file__:
+        while frame and frame.f_code.co_filename == logging.__file__:
             frame = frame.f_back
             depth += 1
 
         logger.opt(depth=depth, exception=record.exc_info).log(level, record.getMessage())
 
 
-def inject_loguru_traceback(loop: AbstractEventLoop = None):
+def inject_loguru_traceback(loop: Optional[AbstractEventLoop] = None):
     """使用 loguru 模块替换默认的 traceback.print_exception 与 sys.excepthook"""
     traceback.print_exception = loguru_excepthook
     sys.excepthook = loguru_excepthook
@@ -105,8 +150,8 @@ def inject_bypass_listener(broadcast: Broadcast):
             callable: Callable,
             namespace: Namespace,
             listening_events: List[Type[Dispatchable]],
-            inline_dispatchers: List[T_Dispatcher] = None,
-            decorators: List[Decorator] = None,
+            inline_dispatchers: Optional[List[T_Dispatcher]] = None,
+            decorators: Optional[List[Decorator]] = None,
             priority: int = 16,
         ) -> None:
             events = []
@@ -117,8 +162,8 @@ def inject_bypass_listener(broadcast: Broadcast):
                 callable,
                 namespace,
                 events,
-                inline_dispatchers=inline_dispatchers,
-                decorators=decorators,
+                inline_dispatchers=inline_dispatchers or [],
+                decorators=decorators or [],
                 priority=priority,
             )
 
@@ -134,6 +179,42 @@ def inject_bypass_listener(broadcast: Broadcast):
         pass
 
 
+class AsyncSignal(Generic[T]):
+    """模拟 asyncio.Event, 但是支持 sig.wait(Hashable)"""
+
+    def __init__(self, value: T = None) -> None:
+        self._waiters: Dict[T, Deque[asyncio.Future]] = {}
+        self._value: T = value
+        self._special: Dict[str, asyncio.Future] = {}
+
+    def __repr__(self) -> str:
+        waiter_str = f", waiters: {len(self._waiters)}" if self._waiters else ""
+        return f"<AsyncSignal [value: {self._value}{waiter_str}]>"
+
+    def value(self) -> T:
+        return self._value
+
+    def set(self, value: T) -> None:
+        self._value = value
+
+        waiter_deque = self._waiters.setdefault(value, collections.deque())
+
+        for fut in waiter_deque:
+            if not fut.done():
+                fut.set_result(True)
+        waiter_deque.clear()
+
+    async def wait(self, value: T, wait_id: Optional[str] = None) -> Literal[True]:
+        if self._value == value:
+            return True
+
+        fut = asyncio.get_running_loop().create_future()
+        if wait_id:
+            self._special[wait_id] = fut
+        self._waiters.setdefault(value, collections.deque()).append(fut)
+        return await fut
+
+
 def app_ctx_manager(func: Callable[P, R]) -> Callable[P, R]:
     """包装声明需要在 Ariadne Context 中执行的函数
 
@@ -145,13 +226,13 @@ def app_ctx_manager(func: Callable[P, R]) -> Callable[P, R]:
     """
 
     @functools.wraps(func)
-    async def wrapper(*args: P.args, **kwargs: P.kwargs):
+    def wrapper(*args: P.args, **kwargs: P.kwargs):
         from ..context import enter_context
 
         sys.audit("CallAriadneAPI", func.__name__, args, kwargs)
 
-        with enter_context(app=args[0]):
-            return await func(*args, **kwargs)
+        with enter_context(app=args[0]):  # type: ignore
+            return func(*args, **kwargs)
 
     return wrapper
 
@@ -238,15 +319,14 @@ async def yield_with_timeout(
     Yields:
         T: getter_coro 的返回值
     """
-    last_tsk = None
+    last_tsk: Optional[Set["asyncio.Task[T]"]] = None
     while predicate():
         last_tsk = last_tsk or {asyncio.create_task(getter_coro())}
         done, last_tsk = await asyncio.wait(last_tsk, timeout=await_length)
         if not done:
             continue
         for t in done:
-            res = await t
-            yield res
+            yield await t
     if last_tsk:
         for tsk in last_tsk:
             tsk.cancel()
@@ -275,11 +355,11 @@ def deprecated(remove_ver: str) -> Callable[[Callable[P, R]], Callable[P, R]]:
     return out_wrapper
 
 
-def resolve_dispatchers_mixin(dispatchers: List[T_Dispatcher]) -> List[T_Dispatcher]:
+def resolve_dispatchers_mixin(dispatchers: Iterable[T_Dispatcher]) -> List[T_Dispatcher]:
     """解析 dispatcher list 的 mixin
 
     Args:
-        dispatchers (List[T_Dispatcher]): dispatcher 列表
+        dispatchers (Iterable[T_Dispatcher]): dispatcher 列表
 
     Returns:
         List[T_Dispatcher]: 解析后的 dispatcher 列表
@@ -339,7 +419,7 @@ def signal_handler(callback: Callable[[], None], one_time: bool = True) -> None:
         handler = signal.getsignal(sig)
 
         def handler_wrapper(sig_num, frame):
-            if handler:
+            if callable(handler):
                 handler(sig_num, frame)
             callback()
             if one_time:
@@ -351,9 +431,8 @@ def signal_handler(callback: Callable[[], None], one_time: bool = True) -> None:
 def get_cls(obj) -> Optional[type]:
     if cls := typing.get_origin(obj):
         return cls
-    else:
-        if isinstance(obj, type):
-            return obj
+    if isinstance(obj, type):
+        return obj
 
 
 # Import layout

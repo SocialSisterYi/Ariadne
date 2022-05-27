@@ -1,5 +1,6 @@
 """Ariadne 实例
 """
+
 import asyncio
 import base64
 import importlib.metadata
@@ -14,10 +15,10 @@ from datetime import datetime
 from typing import (
     TYPE_CHECKING,
     Any,
+    AsyncGenerator,
     ClassVar,
     Coroutine,
     Dict,
-    Generator,
     Iterable,
     List,
     Literal,
@@ -61,7 +62,7 @@ from .model import (
     Stranger,
     UploadMethod,
 )
-from .typing import SendMessageAction, SendMessageDict, SendMessageException
+from .typing import SendMessageActionProtocol, SendMessageDict, SendMessageException
 from .util import (
     app_ctx_manager,
     await_predicate,
@@ -73,7 +74,7 @@ from .util import (
 
 if TYPE_CHECKING:
     from .message.element import Image, Voice
-    from .typing import R, T
+    from .typing import T
 
 ARIADNE_ASCII_LOGO = "\n".join(
     (
@@ -105,7 +106,7 @@ class AriadneMixin:
 class MessageMixin(AriadneMixin):
     """用于发送, 撤回, 获取消息的 Mixin 类."""
 
-    default_send_action: SendMessageAction
+    default_send_action: SendMessageActionProtocol
 
     @app_ctx_manager
     async def getMessageFromId(self, messageId: int) -> MessageEvent:
@@ -122,7 +123,7 @@ class MessageMixin(AriadneMixin):
             CallMethod.GET,
             {"sessionKey": self.session_key, "id": messageId},
         )
-        return self.adapter.build_event(result)
+        return cast(MessageEvent, self.adapter.build_event(result))
 
     @app_ctx_manager
     async def sendFriendMessage(
@@ -159,10 +160,12 @@ class MessageMixin(AriadneMixin):
             )
             event: ActiveFriendMessage = ActiveFriendMessage(
                 messageChain=MessageChain([Source(id=result["messageId"], time=datetime.now())]) + message,
-                subject=(await RelationshipMixin.getFriend(self, int(target))),
+                subject=(await RelationshipMixin.getFriend(self, int(target))),  # type: ignore
             )
             with enter_context(self, event):
                 self.broadcast.postEvent(event)
+            if result["messageId"] < 0:
+                logger.warning("Failed to send message, your account may be blocked.")
             return BotMessage(messageId=result["messageId"], origin=message)
 
     @app_ctx_manager
@@ -203,10 +206,12 @@ class MessageMixin(AriadneMixin):
             )
             event: ActiveGroupMessage = ActiveGroupMessage(
                 messageChain=MessageChain([Source(id=result["messageId"], time=datetime.now())]) + message,
-                subject=(await RelationshipMixin.getGroup(self, int(target))),
+                subject=(await RelationshipMixin.getGroup(self, int(target))),  # type: ignore
             )
             with enter_context(self, event):
                 self.broadcast.postEvent(event)
+            if result["messageId"] < 0:
+                logger.warning("Failed to send message, your account may be blocked.")
             return BotMessage(messageId=result["messageId"], origin=message)
 
     @app_ctx_manager
@@ -219,6 +224,9 @@ class MessageMixin(AriadneMixin):
         quote: Optional[Union[Source, int]] = None,
     ) -> BotMessage:
         """发送临时会话给群组中的特定成员, 可指定回复的消息.
+
+        Warning:
+            本 API 大概率会导致账号风控/冻结. 请谨慎使用.
 
         Args:
             group (Union[Group, int]): 指定的群组, 可以是群组的 ID 也可以是 Group 实例.
@@ -250,10 +258,12 @@ class MessageMixin(AriadneMixin):
             )
             event: ActiveTempMessage = ActiveTempMessage(
                 messageChain=MessageChain([Source(id=result["messageId"], time=datetime.now())]) + message,
-                subject=(await RelationshipMixin.getMember(self, int(group), int(target))),
+                subject=(await RelationshipMixin.getMember(self, int(group), int(target))),  # type: ignore
             )
             with enter_context(self, event):
                 self.broadcast.postEvent(event)
+            if result["messageId"] < 0:
+                logger.warning("Failed to send message, your account may be limited.")
             return BotMessage(messageId=result["messageId"], origin=message)
 
     @app_ctx_manager
@@ -263,8 +273,8 @@ class MessageMixin(AriadneMixin):
         message: MessageChain,
         *,
         quote: Union[bool, int, Source, MessageChain] = False,
-        action: SendMessageAction["T", "R"] = ...,
-    ) -> Union["T", "R"]:
+        action: SendMessageActionProtocol["T"] = ...,
+    ) -> "T":
         """
         依据传入的 `target` 自动发送消息.
         请注意发送给群成员时会自动作为临时消息发送.
@@ -282,7 +292,7 @@ class MessageMixin(AriadneMixin):
             Union[T, R]: 默认实现为 BotMessage
         """
         action = action if action is not ... else self.default_send_action
-        data = {"message": message}
+        data: Dict[Any, Any] = {"message": message}
         # quote
         if isinstance(quote, bool) and quote and isinstance(target, MessageEvent):
             data["quote"] = target.messageChain.getFirst(Source)
@@ -299,7 +309,7 @@ class MessageMixin(AriadneMixin):
             data["target"] = target
         send_data: SendMessageDict = SendMessageDict(**data)
         # send message
-        data = await action.param(send_data)
+        data = await action.param(send_data)  # type: ignore
 
         try:
             if isinstance(data["target"], Friend):
@@ -309,9 +319,12 @@ class MessageMixin(AriadneMixin):
             elif isinstance(data["target"], Member):
                 val = await self.sendTempMessage(**data)
             else:
-                raise NotImplementedError(f"Unable to send message with {target} as target.")
+                logger.warning(
+                    f"Unable to send {data['message']} to {data['target']} of type {type(data['target'])}"
+                )
+                return await action.result(BotMessage(messageId=-1, origin=data["message"]))
         except Exception as e:
-            e.send_data = send_data
+            e.send_data = send_data  # type: ignore
             return await action.exception(cast(SendMessageException, e))
         else:
             return await action.result(val)
@@ -460,7 +473,7 @@ class RelationshipMixin(AriadneMixin):
         """尝试从已知的群组唯一 ID 和已知的群组成员的 ID, 获取对应成员的信息.
 
         Args:
-            group_id (Union[Group, int]): 已知的群组唯一 ID
+            group (Union[Group, int]): 已知的群组唯一 ID
             member_id (int): 已知的群组成员的 ID
 
         Returns:
@@ -815,10 +828,13 @@ class OperationMixin(AriadneMixin):
         Returns:
             None: 没有返回.
         """
-        if not group and not isinstance(member, Member):
-            raise TypeError("you should give a Member instance if you cannot give a Group instance to me.")
-        if isinstance(member, Member) and not group:
-            group: Group = member.group
+        if group is None:
+            if isinstance(member, Member):
+                group = member.group
+            else:
+                raise TypeError(
+                    "you should give a Member instance if you cannot give a Group instance to me."
+                )
         await self.adapter.call_api(
             "memberInfo",
             CallMethod.RESTPOST,
@@ -852,11 +868,13 @@ class OperationMixin(AriadneMixin):
         Returns:
             None: 没有返回.
         """
-        if not group and not isinstance(member, Member):
-            raise TypeError("you should give a Member instance if you cannot give a Group instance to me.")
-        if isinstance(member, Member) and not group:
-            group: Group = member.group
-
+        if group is None:
+            if isinstance(member, Member):
+                group = member.group
+            else:
+                raise TypeError(
+                    "you should give a Member instance if you cannot give a Group instance to me."
+                )
         await self.adapter.call_api(
             "memberAdmin",
             CallMethod.POST,
@@ -914,9 +932,9 @@ class AnnouncementMixin(AriadneMixin):
     async def getAnnouncementIterator(
         self,
         target: Union[Group, int],
-        offset: Optional[int] = 0,
-        size: Optional[int] = 10,
-    ) -> Generator[Announcement, None, None]:
+        offset: int = 0,
+        size: int = 10,
+    ) -> AsyncGenerator[Announcement, None]:
         """
         获取群公告列表.
 
@@ -926,15 +944,14 @@ class AnnouncementMixin(AriadneMixin):
             size (Optional[int], optional): 列表大小. 默认为 10.
 
         Returns:
-            Generator[Announcement, None, None]: 列出群组下所有的公告.
+            AsyncGenerator[Announcement, None]: 列出群组下所有的公告.
         """
         target = int(target)
         current_offset = offset
-        cache: List[FileInfo] = []
+        cache: List[Announcement] = []
         while True:
-            while cache:
-                yield cache[0]
-                cache.pop(0)
+            for announcement in cache:
+                yield announcement
             cache = await self.getAnnouncementList(target, current_offset, size)
             current_offset += len(cache)
             if not cache:
@@ -1046,10 +1063,10 @@ class FileMixin(AriadneMixin):
         self,
         target: Union[Group, int],
         id: str = "",
-        offset: Optional[int] = 0,
-        size: Optional[int] = 1,
+        offset: int = 0,
+        size: int = 1,
         with_download_info: bool = False,
-    ) -> Generator[FileInfo, None, None]:
+    ) -> AsyncGenerator[FileInfo, None]:
         """
         以生成器形式列出指定文件夹下的所有文件.
 
@@ -1062,15 +1079,14 @@ class FileMixin(AriadneMixin):
             with_download_info (bool): 是否携带下载信息, 无必要不要携带
 
         Returns:
-            Generator[FileInfo, None, None]: 文件信息生成器.
+            AsyncGenerator[FileInfo, None]: 文件信息生成器.
         """
         target = int(target)
         current_offset = offset
         cache: List[FileInfo] = []
         while True:
-            while cache:
-                yield cache[0]
-                cache.pop(0)
+            for file_info in cache:
+                yield file_info
             cache = await self.getFileList(target, id, current_offset, size, with_download_info)
             current_offset += len(cache)
             if not cache:
@@ -1300,7 +1316,7 @@ class FileMixin(AriadneMixin):
     async def uploadFile(
         self,
         data: Union[bytes, io.IOBase, os.PathLike],
-        method: Union[str, UploadMethod] = None,
+        method: Union[str, UploadMethod, None] = None,
         target: Union[Friend, Group, int] = -1,
         path: str = "",
         name: str = "",
@@ -1351,11 +1367,11 @@ class MultimediaMixin(AriadneMixin):
 
     @app_ctx_manager
     async def uploadImage(
-        self, data: Union[bytes, io.IOBase, os.PathLike], method: Union[str, UploadMethod] = None
+        self, data: Union[bytes, io.IOBase, os.PathLike], method: Union[None, str, UploadMethod] = None
     ) -> "Image":
         """上传一张图片到远端服务器, 需要提供: 图片的原始数据(bytes), 图片的上传类型.
         Args:
-            image_bytes (Union[bytes, io.IOBase, os.PathLike]): 图片的原始数据
+            data (Union[bytes, io.IOBase, os.PathLike]): 图片的原始数据
             method (str | UploadMethod, optional): 图片的上传类型, 可从上下文推断
         Returns:
             Image: 生成的图片消息元素
@@ -1382,7 +1398,7 @@ class MultimediaMixin(AriadneMixin):
 
     @app_ctx_manager
     async def uploadVoice(
-        self, data: Union[bytes, io.IOBase, os.PathLike], method: Union[str, UploadMethod] = None
+        self, data: Union[bytes, io.IOBase, os.PathLike], method: Union[None, str, UploadMethod] = None
     ) -> "Voice":
         """上传语音到远端服务器, 需要提供: 语音的原始数据(bytes), 语音的上传类型.
         Args:
@@ -1518,16 +1534,15 @@ class Ariadne(MessageMixin, RelationshipMixin, OperationMixin, AnnouncementMixin
         Returns:
             T: 创建的类.
         """
-        self.info: Dict[Type["T"], "T"]
-        if cls in self.info.keys():
-            return self.info[cls]
+        if cls in self.info:
+            return self.info[cls]  # type: ignore
         call_args: list = []
         call_kwargs: Dict[str, Any] = {}
 
         init_sig = inspect.signature(cls)
 
         for name, param in init_sig.parameters.items():
-            if param.annotation in self.info.keys() and param.kind not in (
+            if param.annotation in self.info and param.kind not in (
                 param.VAR_KEYWORD,
                 param.VAR_POSITIONAL,
             ):
@@ -1562,6 +1577,7 @@ class Ariadne(MessageMixin, RelationshipMixin, OperationMixin, AnnouncementMixin
                 await asyncio.wait_for(self.adapter.start(), timeout=retry_interval)
                 logger.success("daemon: adapter started")
                 self.broadcast.postEvent(AdapterLaunched(self))
+                assert self.adapter.event_queue is not None, "No event queue found for Adapter"
                 async for event in yield_with_timeout(
                     self.adapter.event_queue.get,
                     lambda: (
@@ -1570,9 +1586,8 @@ class Ariadne(MessageMixin, RelationshipMixin, OperationMixin, AnnouncementMixin
                 ):
                     with enter_context(self, event):
                         sys.audit("AriadnePostRemoteEvent", event)
-                        if isinstance(event, MessageEvent):
-                            if event.messageChain.onlyContains(Source):  # Contains unsupported type
-                                event.messageChain.append("<! 不支持的消息类型 !>")
+                        if isinstance(event, MessageEvent) and event.messageChain.onlyContains(Source):
+                            event.messageChain.append("<! 不支持的消息类型 !>")
                         if isinstance(event, FriendEvent):
                             with enter_message_send_context(UploadMethod.Friend):
                                 self.broadcast.postEvent(event)
@@ -1582,47 +1597,47 @@ class Ariadne(MessageMixin, RelationshipMixin, OperationMixin, AnnouncementMixin
                         else:
                             self.broadcast.postEvent(event)
             except asyncio.exceptions.TimeoutError:
-                logger.critical("Timeout when connecting to mirai-api-http. Configuration problem?")
+                logger.critical("Timeout connecting to mirai-api-http. Configuration problem?")
             except Exception as e:
                 logger.exception(e)
             self.broadcast.postEvent(AdapterShutdowned(self))
             if retry_cnt == self.max_retry:
-                logger.critical(f"Max retry exceeded: {self.max_retry}. Stop Ariadne.")
-                logger.warning("Press Ctrl-C to confirm exit.")
+                logger.critical(f"Max retry exceeded: {self.max_retry}.")
                 break
             if self.status in {AriadneStatus.RUNNING, AriadneStatus.LAUNCH}:
-                if not self.adapter.mirai_session.session_key or self.adapter.mirai_session.single_mode:
+                if not self.adapter.connected.value():
                     retry_cnt += 1
                 else:
-                    retry_cnt = 0
+                    retry_cnt = 1
                 await self.adapter.stop()
-                logger.warning(f"daemon: adapter down, restart in {retry_interval}s")
+                logger.warning(f"Adapter down, restart in {retry_interval}s")
                 await asyncio.sleep(retry_interval)
-                logger.info("daemon: restarting adapter")
-
-        logger.debug("Ariadne daemon stopped.")
+                logger.warning(f"Retry: {retry_cnt} / {self.max_retry}")
 
         exceptions: List[Tuple[Type[Exception], tuple]] = []
 
         logger.info("Stopping Ariadne...")
         self.status = AriadneStatus.CLEANUP
+        launch_fut = self.adapter.connected._special.get("__ariadne_launch__", self.loop.create_future())
+        if not launch_fut.done():
+            launch_fut.set_exception(asyncio.CancelledError)
         for t in asyncio.all_tasks(self.loop):
             if t is asyncio.current_task(self.loop):
                 continue
-            coro: Coroutine = t.get_coro()
+            coro: Coroutine = t.get_coro()  # type: ignore
             try:
-                if coro.__qualname__ in ("Broadcast.Executor", "print_track_async.<locals>.wrapper"):
+                if coro.__qualname__ == "Broadcast.Executor":
                     t.cancel()
-                    logger.debug(f"Cancelling {t.get_name()} wrapping {coro.__qualname__}")
+                    logger.debug(f"Cancelling {t.get_name()} (Broadcast.Executor)")
+                elif cast(str, coro.cr_frame.f_globals["__name__"]).startswith("graia.scheduler"):
+                    t.cancel()
+                    logger.debug(f"Cancelling {t.get_name()} (Scheduler Task)")
             except Exception as e:
                 exceptions.append((e.__class__, e.args))
 
         logger.info("Posting Ariadne shutdown event...")
 
-        await self.broadcast.layered_scheduler(
-            listener_generator=self.broadcast.default_listener_generator(ApplicationShutdowned),
-            event=ApplicationShutdowned(self),
-        )
+        await self.broadcast.postEvent(ApplicationShutdowned(self))
 
         self.running.remove(self)
 
@@ -1635,64 +1650,59 @@ class Ariadne(MessageMixin, RelationshipMixin, OperationMixin, AnnouncementMixin
 
     async def launch(self):
         """启动 Ariadne."""
-        if self.status is AriadneStatus.STOP:
-            self.status = AriadneStatus.LAUNCH
+        if self.status is not AriadneStatus.STOP:
+            return
+        self.status = AriadneStatus.LAUNCH
 
-            # Logo
-            if not self.disable_logo:
-                logger.opt(colors=True, raw=True).info(f"<cyan>{ARIADNE_ASCII_LOGO}</>")
+        # Logo
+        if not self.disable_logo:
+            logger.opt(colors=True, raw=True).info(f"<cyan>{ARIADNE_ASCII_LOGO}</>")
 
-            # Telemetry
-            if not self.disable_telemetry:
-                official: List[Tuple[str, str]] = []
-                community: List[str] = []
-                for dist in importlib.metadata.distributions():
-                    name: str = dist.metadata["Name"]
-                    version: str = dist.version
-                    if name.startswith("graia-"):
-                        official.append((" ".join(name.split("-")[1:]).title(), version))
-                    elif name.startswith("graiax-"):
-                        community.append((" ".join(name.split("-")).title(), version))
+        # Telemetry
+        if not self.disable_telemetry:
+            official: List[Tuple[str, str]] = []
+            community: List[Tuple[str, str]] = []
+            for dist in importlib.metadata.distributions():
+                name: str = dist.metadata["Name"]
+                version: str = dist.version
+                if name.startswith("graia-"):
+                    official.append((" ".join(name.split("-")[1:]).title(), version))
+                elif name.startswith("graiax-"):
+                    community.append((" ".join(name.split("-")).title(), version))
 
-                for name, version in official:
-                    logger.opt(colors=True, raw=True).info(
-                        f"<magenta>{name}</> version: <yellow>{version}</>\n"
-                    )
-                for name, version in community:
-                    logger.opt(colors=True, raw=True).info(f"<cyan>{name}</> version: <yellow>{version}</>\n")
+            for name, version in official:
+                logger.opt(colors=True, raw=True).info(f"<magenta>{name}</> version: <yellow>{version}</>\n")
+            for name, version in community:
+                logger.opt(colors=True, raw=True).info(f"<cyan>{name}</> version: <yellow>{version}</>\n")
 
-            logger.info("Launching app...")
-            start_time = time.time()
+        logger.info("Launching app...")
+        start_time = time.time()
 
-            if self.chat_log_cfg.enabled:
-                self.chat_log_cfg.initialize(self)
+        if self.chat_log_cfg.enabled:
+            self.chat_log_cfg.initialize(self)
 
-            if ContextDispatcher not in self.broadcast.finale_dispatchers:
-                self.broadcast.finale_dispatchers.append(ContextDispatcher)
+        if ContextDispatcher not in self.broadcast.finale_dispatchers:
+            self.broadcast.finale_dispatchers.append(ContextDispatcher)
 
-            self.daemon_task = self.loop.create_task(self.daemon(), name="ariadne_daemon")
-            await await_predicate(lambda: self.adapter.running, 0.0001)
+        self.daemon_task = self.loop.create_task(self.daemon(), name="ariadne_daemon")
 
-            self.running.add(self)
+        self.running.add(self)
 
-            if "reverse" not in self.adapter.tags:
-                await await_predicate(
-                    lambda: self.adapter.mirai_session.session_key or self.adapter.mirai_session.single_mode,
-                    0.0001,
-                )
+        try:
+            await self.adapter.connected.wait(True, "__ariadne_launch__")
+        except asyncio.CancelledError:
+            logger.error("Launch abort!")
+            return
 
-            self.status = AriadneStatus.RUNNING
+        self.status = AriadneStatus.RUNNING
 
-            self.remote_version = await self.getVersion()
-            logger.success(f"Remote version: {self.remote_version}")
-            if not self.remote_version.startswith("2"):
-                raise RuntimeError(f"You are using an unsupported version: {self.remote_version}!")
-            logger.success(f"Application launched with {time.time() - start_time:.2}s")
+        self.remote_version = await self.getVersion()
+        logger.success(f"Remote version: {self.remote_version}")
+        if not self.remote_version.startswith("2"):
+            raise RuntimeError(f"You are using an unsupported version: {self.remote_version}!")
+        logger.success(f"Application launched with {time.time() - start_time:.2}s")
 
-            await self.broadcast.layered_scheduler(
-                listener_generator=self.broadcast.default_listener_generator(ApplicationLaunched),
-                event=ApplicationLaunched(self),
-            )
+        await self.broadcast.postEvent(ApplicationLaunched(self))
 
     async def stop(self):
         """请求停止 Ariadne."""
@@ -1707,25 +1717,26 @@ class Ariadne(MessageMixin, RelationshipMixin, OperationMixin, AnnouncementMixin
         if self.status in {AriadneStatus.RUNNING, AriadneStatus.LAUNCH}:
             await self.stop()
         await await_predicate(lambda: self.status is AriadneStatus.STOP)
-        await self.daemon_task
+        if self.daemon_task:
+            await self.daemon_task
 
     async def lifecycle(self):
         """以 async 阻塞方式启动 Ariadne 并等待其停止."""
 
         def sig_handler(*_):
-            if self.status is AriadneStatus.RUNNING:
+            if self.status in {AriadneStatus.RUNNING, AriadneStatus.LAUNCH}:
                 self.status = AriadneStatus.SHUTDOWN
+                logger.warning("Stop signal received, scheduling stop process.")
+                logger.warning("Press Ctrl-C again to force quit.")
 
         signal_handler(sig_handler)
         await self.launch()
-        await self.daemon_task
+        if self.daemon_task:
+            await self.daemon_task
 
     def launch_blocking(self):
         """以阻塞方式启动 Ariadne 并等待其停止."""
-        try:
-            self.loop.run_until_complete(self.lifecycle())
-        except KeyboardInterrupt:
-            pass
+        self.loop.run_until_complete(self.lifecycle())
         self.loop.run_until_complete(self.join())
 
     @app_ctx_manager

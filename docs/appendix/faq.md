@@ -52,3 +52,42 @@ assert img.base64 is not None
 -   可以保证 `asPersistentString` 完整存储了图片数据, 以防止不可靠 `url` 影响.
 
 可能后续会添加一个 `remove_url` 的仅关键字参数.
+
+## TROUBLESHOOT - 常见故障排查
+
+> 本部分用于排查常见用户错误.
+
+### TimeoutError: Unable to connect to mirai-api-http. Configuration Problem?
+
+请检查：
+
+1. mirai-console 是否成功登录账号
+
+2. mirai-api-http 是否正确配置 (启用 `HTTP` 与 `Websocket` 适配器)
+
+3. `Python` 版本 (3.8 以上)
+
+4. `Ariadne` 版本是否为最新 (![PyPI](https://img.shields.io/pypi/v/graia-ariadne?label=%20))
+
+5. 其他 `Graia Project` 相关的库是否为最新 (e.g. `graia-saya` `graia-scheduler`)
+
+6. `Ariadne` 配置是否与 `mirai-api-http` 相同. (包括 QQ 号，地址和验证密钥)
+
+### 收不到消息，且控制台显示 `Failed to send message, your account may be blocked.`
+
+你的账号可能被 **风控** 了. 请等待几天后再试.
+
+### MCL 显示 `Cannot download package "net.mamoe:mirai-api-http"`
+
+如果你的 MCL 显示以下错误输出:
+
+```text
+[INFO] Verifying "net.mamoe:mirai-api-http" v2.5.0
+[ERROR] "net.mamoe:mirai-api-http" is corrupted.
+[ERROR] Cannot download package "net.mamoe:mirai-api-http"
+[ERROR] The local file "net.mamoe:mirai-api-http" is still corrupted, please check the network.
+```
+
+请手动下载 `mirai-api-http` 包, 并将其放置于 `MCL` 的 `plugins` 目录下.
+
+之后便可以安全忽略这个错误. (这是因为 `mirai-api-http` 的维护者忘记发布 `mirai-api-http` 到 maven 仓库托管了, 详见 [这里](https://github.com/project-mirai/mirai-api-http/issues/557#issuecomment-1099900036))

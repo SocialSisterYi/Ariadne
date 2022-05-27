@@ -5,7 +5,9 @@ import typing
 from datetime import datetime, timedelta
 from types import TracebackType
 from typing import (
+    TYPE_CHECKING,
     Any,
+    AsyncGenerator,
     Awaitable,
     Callable,
     Dict,
@@ -15,6 +17,7 @@ from typing import (
     Type,
     TypeVar,
     Union,
+    overload,
 )
 
 from graia.broadcast.entities.dispatcher import BaseDispatcher
@@ -67,13 +70,14 @@ class CoolDown(BaseDispatcher):
         if builtins.type(None) in typing.get_args(type) and delta.total_seconds() <= 0:
             return None, satisfied
         if generic_issubclass(datetime, type):
-            return next_exec_time, satisfied
+            return next_exec_time, satisfied  # type: ignore
         if generic_issubclass(timedelta, type):
-            return delta, satisfied
+            return delta, satisfied  # type: ignore
         if generic_issubclass(float, type):
-            return delta.total_seconds(), satisfied
+            return delta.total_seconds(), satisfied  # type: ignore
         if generic_issubclass(int, type):
-            return int(delta.total_seconds()), satisfied
+            return int(delta.total_seconds()), satisfied  # type: ignore
+        return None, satisfied
 
     async def set(self, target: int) -> None:
         self.source[target] = datetime.now() + self.interval
@@ -85,21 +89,20 @@ class CoolDown(BaseDispatcher):
         next_exec_time: datetime = self.source.get(sender_id, current_time)
         delta: timedelta = next_exec_time - current_time
         satisfied: bool = delta <= timedelta(seconds=0)
-        if not satisfied:
-            if self.stop_on_cooldown:
-                param_dict: Dict[str, Any] = {}
-                for name, anno, _ in self.override_signature:
-                    param_dict[name] = await interface.lookup_param(name, anno, None)
-                res = self.override_condition(**param_dict)
-                if not ((await res) if inspect.isawaitable(res) else res):
-                    raise ExecutionStop
-        interface.local_storage["next_exec_time"] = next_exec_time
-        interface.local_storage["delta"] = delta
+        if not satisfied and self.stop_on_cooldown:
+            param_dict: Dict[str, Any] = {}
+            for name, anno, _ in self.override_signature:
+                param_dict[name] = await interface.lookup_param(name, anno, None)
+            res = self.override_condition(**param_dict)
+            if not ((await res) if inspect.isawaitable(res) else res):
+                raise ExecutionStop
+        interface.local_storage[f"{__name__}:next_exec_time"] = next_exec_time
+        interface.local_storage[f"{__name__}:delta"] = delta
 
     async def catch(self, interface: DispatcherInterface[MessageEvent]):
         annotation = interface.annotation
-        next_exec_time: datetime = interface.local_storage["next_exec_time"]
-        delta: timedelta = interface.local_storage["delta"]
+        next_exec_time: datetime = interface.local_storage[f"{__name__}:next_exec_time"]
+        delta: timedelta = interface.local_storage[f"{__name__}:delta"]
         if builtins.type(None) in typing.get_args(annotation) and delta.total_seconds() <= 0:
             return Force(None)
         if generic_issubclass(datetime, annotation):
@@ -122,11 +125,26 @@ class CoolDown(BaseDispatcher):
         if not exception:
             await self.set(sender_id)
 
+    if TYPE_CHECKING:
+
+        @overload
+        @contextlib.asynccontextmanager
+        async def trigger(self, target: int) -> AsyncGenerator[Tuple[Optional[datetime], bool], None]:
+            ...
+
+        @overload
+        @contextlib.asynccontextmanager
+        async def trigger(
+            self, target: int, type: Type[T_Time]
+        ) -> AsyncGenerator[Tuple[Optional[T_Time], bool], None]:
+            ...
+
     @contextlib.asynccontextmanager
-    async def trigger(self, target: int, type: Type[T_Time] = datetime) -> Tuple[Optional[T_Time], bool]:
-        value, satisfied = await self.get(target, type)
+    async def trigger(
+        self, target: int, type: Type[T_Time] = datetime
+    ) -> AsyncGenerator[Tuple[Union[T_Time, datetime, None], bool], None]:
         try:
-            yield value, satisfied
+            yield await self.get(target, type)
         except:  # noqa
             raise
         else:

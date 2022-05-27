@@ -1,11 +1,14 @@
 """Twilight: 混合式消息链处理器"""
 import abc
+import contextlib
 import enum
+import inspect
 import re
-from argparse import Action
+from argparse import Action, HelpFormatter
 from typing import (
     TYPE_CHECKING,
     Any,
+    Awaitable,
     Callable,
     DefaultDict,
     Dict,
@@ -17,6 +20,7 @@ from typing import (
     TypedDict,
     TypeVar,
     Union,
+    cast,
     final,
     overload,
 )
@@ -37,6 +41,7 @@ from .util import (
     CommandToken,
     ElementType,
     MessageChainType,
+    TwilightHelpManager,
     TwilightParser,
     Unmatched,
     elem_mapping_ctx,
@@ -83,7 +88,7 @@ class Match(abc.ABC, Representation):
         self._help = value
         return self
 
-    def param(self, target: str) -> Self:
+    def param(self, target: Union[int, str]) -> Self:
         """设置匹配项的分派位置."""
         self.dest = target
         return self
@@ -305,7 +310,7 @@ class ArgumentMatch(Match, Generic[T]):
     if TYPE_CHECKING:
 
         @overload
-        def __init__(
+        def __init__(  # type: ignore
             self,
             *pattern: str,
             action: Union[str, Type[Action]] = ...,
@@ -408,23 +413,24 @@ class Sparkle(Representation):
         self.res = match_result
 
     @overload
-    def __getitem__(self, key: Union[int, str]) -> MatchResult:
+    def __getitem__(self, item: Union[int, str]) -> MatchResult:
         ...
 
     @overload
-    def __getitem__(self, key: Type[int]) -> List[MatchResult]:
+    def __getitem__(self, item: Type[int]) -> List[MatchResult]:
         ...
 
     @overload
-    def __getitem__(self, key: Type[str]) -> Dict[str, MatchResult]:
+    def __getitem__(self, item: Type[str]) -> Dict[str, MatchResult]:
         ...
 
     def __getitem__(self, item: Union[int, str, Type[int], Type[str]]):
+        if not isinstance(item, type):
+            return self.get(item)
         if item is int:
             return [v for k, v in self.res.items() if isinstance(k, int)]
         elif item is str:
             return {k: v for k, v in self.res.items() if isinstance(k, str)}
-        return self.get(item)
 
     def get(self, item: Union[int, str]) -> MatchResult:
         return self.res[item]
@@ -440,10 +446,11 @@ class TwilightMatcher:
     """Twilight 匹配器"""
 
     def __init__(self, *root: Union[Iterable[Match], Match]):
+        self.origin_match_list: List[Match] = []
         self._parser = TwilightParser(prog="", add_help=False)
         self._dest_map: Dict[str, ArgumentMatch] = {}
         self._group_map: Dict[int, RegexMatch] = {}
-        self.dispatch_ref: Dict[str, Match] = {}
+        self.dispatch_ref: Dict[Union[int, str], Match] = {}
         self.match_ref: DefaultDict[Type[Match], List[Match]] = DefaultDict(list)
 
         regex_str_list: List[str] = []
@@ -452,6 +459,7 @@ class TwilightMatcher:
         for i in root:
             if isinstance(i, Match):
                 i = [i]
+            self.origin_match_list.extend(i)
             for m in i:
                 if isinstance(m, RegexMatch):
                     self.match_ref[RegexMatch].append(m)
@@ -462,9 +470,12 @@ class TwilightMatcher:
 
                 elif isinstance(m, ArgumentMatch):
                     self.match_ref[ArgumentMatch].append(m)
-                    if "action" in m.arg_data and "type" in m.arg_data:
-                        if not self._parser.accept_type(m.arg_data["action"]):
-                            del m.arg_data["type"]
+                    if (
+                        "action" in m.arg_data
+                        and "type" in m.arg_data
+                        and not self._parser.accept_type(m.arg_data["action"])
+                    ):
+                        del m.arg_data["type"]
                     action = self._parser.add_argument(*m.pattern, **m.arg_data)
                     if m.dest:
                         self._dest_map[action.dest] = m
@@ -476,36 +487,42 @@ class TwilightMatcher:
 
         self._regex_pattern: re.Pattern = re.compile("".join(regex_str_list))
 
-    def match(self, arguments: List[str], elem_mapping: Dict[str, Element]) -> Dict[str, MatchResult]:
+    def match(
+        self, arguments: List[str], elem_mapping: Dict[str, Element]
+    ) -> Dict[Union[int, str], MatchResult]:
         """匹配参数
         Args:
             arguments (List[str]): 参数列表
             elem_mapping (Dict[str, Element]): 元素映射
 
         Returns:
-            Dict[str, MatchResult]: 匹配结果
+            Dict[Union[int, str], MatchResult]: 匹配结果
         """
-        result: Dict[str, MatchResult] = {}
+        result: Dict[Union[int, str], MatchResult] = {}
         if self._dest_map:
             namespace, arguments = self._parser.parse_known_args(arguments)
             nbsp_dict: Dict[str, Any] = namespace.__dict__
             for k, v in self._dest_map.items():
                 res = nbsp_dict.get(k, Unmatched)
                 result[v.dest] = MatchResult(res is not Unmatched, v, res)
-        if total_match := self._regex_pattern.fullmatch(" ".join(arguments)):
-            for index, match in self._group_map.items():
-                group: Optional[str] = total_match.group(index)
-                if group is not None:
-                    if isinstance(match, ElementMatch):
-                        res = elem_mapping[group[1:-1].split("_")[0]]
-                    else:
-                        res = MessageChain._from_mapping_string(group, elem_mapping)
-                else:
-                    res = None
-                if match.dest:
-                    result[match.dest] = MatchResult(group is not None, match, res)
-        else:
+        if not (total_match := self._regex_pattern.fullmatch(" ".join(arguments))):
             raise ValueError(f"{' '.join(arguments)} not matching {self._regex_pattern.pattern}")
+        for index, match in self._group_map.items():
+            group: Optional[str] = total_match.group(index)
+            if group is None:
+                res = None
+            else:
+                res = (
+                    elem_mapping[group[1:-1].split("_")[0]]
+                    if isinstance(match, ElementMatch)
+                    else MessageChain._from_mapping_string(group, elem_mapping)
+                )
+
+            if match.dest:
+                if isinstance(match, WildcardMatch):
+                    result[match.dest] = MatchResult(bool(res), match, res)
+                else:
+                    result[match.dest] = MatchResult(group is not None, match, res)
         return result
 
     def get_help(
@@ -515,6 +532,7 @@ class TwilightMatcher:
         epilog: str = "",
         dest: bool = True,
         sep: str = " -> ",
+        formatter_class: Type[HelpFormatter] = HelpFormatter,
     ) -> str:
         """利用 Match 中的信息生成帮助字符串.
 
@@ -524,12 +542,13 @@ class TwilightMatcher:
             epilog (str, optional): 后置总结. Defaults to "".
             dest (bool, optional): 是否显示分派位置. Defaults to True.
             sep (str, optional): 分派位置分隔符. Defaults to " -> ".
+            formatter_class (Type[HelpFormatter], optional): 帮助格式化器. Defaults to HelpFormatter.
 
         Returns:
             str: 生成的帮助字符串, 被格式化与缩进过了
         """
 
-        formatter = self._parser._get_formatter()
+        formatter = formatter_class(prog="")
 
         if usage:
             formatter.add_usage(None, self._parser._actions, [], prefix=usage + " ")
@@ -564,8 +583,13 @@ class TwilightMatcher:
         return repr(list(self._group_map.values()) + list(self._dest_map.values()))  # type: ignore
 
 
-class _TwilightLocalStorage(TypedDict):
-    result: Sparkle
+class _TwilightHelpArgs(TypedDict):
+    usage: str
+    description: str
+    epilog: str
+    dest: bool
+    sep: str
+    formatter_class: Type[HelpFormatter]
 
 
 class Twilight(Generic[T_Sparkle], BaseDispatcher):
@@ -583,6 +607,9 @@ class Twilight(Generic[T_Sparkle], BaseDispatcher):
             map_param (Dict[str, bool], optional): 向 MessageChain.asMappingString 传入的参数.
         """
         self.map_param = map_param or {}
+        self.help_data: Optional[_TwilightHelpArgs] = None
+        self.help_id: str = TwilightHelpManager.AUTO_ID
+        self.help_brief: str = TwilightHelpManager.AUTO_ID
         self.matcher: TwilightMatcher = TwilightMatcher(*root)
 
     def __repr__(self) -> str:
@@ -620,7 +647,7 @@ class Twilight(Generic[T_Sparkle], BaseDispatcher):
         Returns:
             Twilight: 生成的 Twilight.
         """
-        extra_args = extra_args or {}
+        extra_args = extra_args or []
         match: List[RegexMatch] = []
 
         for t_type, token_list in tokenize_command(command):
@@ -636,18 +663,21 @@ class Twilight(Generic[T_Sparkle], BaseDispatcher):
         if match:
             match[-1].space_policy = SpacePolicy.NOSPACE
 
-        if isinstance(extra_args, dict):
-            return cls(match, extra_args)
-        return cls(match + extra_args)
+        return cls(*match, *extra_args)
 
-    def get_help(
+    def help(
         self,
         usage: str = "",
         description: str = "",
         epilog: str = "",
         dest: bool = True,
         sep: str = " -> ",
-    ) -> str:
+        formatter_class: Type[HelpFormatter] = HelpFormatter,
+        *,
+        brief: Optional[str] = None,
+        help_id: str = TwilightHelpManager.AUTO_ID,
+        manager: Union[str, TwilightHelpManager] = "global",
+    ) -> Self:
         """利用 Match 中的信息生成帮助字符串.
 
         Args:
@@ -656,11 +686,53 @@ class Twilight(Generic[T_Sparkle], BaseDispatcher):
             epilog (str, optional): 后置总结. Defaults to "".
             dest (bool, optional): 是否显示分派位置. Defaults to True.
             sep (str, optional): 分派位置之间的分隔符. Defaults to " -> ".
+            formatter_class (Type[HelpFormatter], optional): 帮助格式化器. Defaults to HelpFormatter.
+            help_id (str, optional): 帮助 id. 默认为自动生成 (推荐自行指定).
+            brief (str, optional): 简要介绍, 默认与 description 相同.
+            manager (str, optional): 帮助信息管理器. 默认 "global" (全局管理器).
 
         Returns:
             str: 生成的帮助字符串, 被格式化与缩进过了
         """
-        return self.matcher.get_help(usage, description, epilog, dest, sep)
+        self.help_data = {
+            "usage": usage,
+            "description": description,
+            "epilog": epilog,
+            "dest": dest,
+            "sep": sep,
+            "formatter_class": formatter_class,
+        }
+        self.help_id = help_id
+        self.help_brief = brief or description
+        help_mgr = TwilightHelpManager.get_help_mgr(manager)
+        help_mgr.register(self)
+        return self
+
+    def get_help(
+        self,
+        usage: str = "",
+        description: str = "",
+        epilog: str = "",
+        dest: bool = True,
+        sep: str = " -> ",
+        formatter_class: Type[HelpFormatter] = HelpFormatter,
+    ) -> str:
+        """利用 Match 中的信息生成帮助字符串.
+
+        Args:
+            usage (str, optional): 使用方法 (命令格式).
+            description (str, optional): 前导描述. Defaults to "".
+            epilog (str, optional): 后置总结. Defaults to "".
+            dest (bool, optional): 是否显示分派位置. Defaults to True.
+            sep (str, optional): 分派位置分隔符. Defaults to " -> ".
+            formatter_class (Type[HelpFormatter], optional): 帮助格式化器. Defaults to HelpFormatter.
+
+        Returns:
+            str: 生成的帮助字符串, 被格式化与缩进过了
+        """
+        if self.help_data:
+            return self.matcher.get_help(**self.help_data)
+        return self.matcher.get_help(usage, description, epilog, dest, sep, formatter_class)
 
     async def beforeExecution(self, interface: DispatcherInterface):
         """检验 MessageChain 并将 Sparkle 存入本地存储
@@ -671,17 +743,17 @@ class Twilight(Generic[T_Sparkle], BaseDispatcher):
         Raises:
             ExecutionStop: 匹配以任意方式失败
         """
-        local_storage: _TwilightLocalStorage = interface.local_storage  # type: ignore
+        local_storage = interface.local_storage
         chain: MessageChain = await interface.lookup_param("message_chain", MessageChain, None)
-        try:
-            local_storage["result"] = self.generate(chain)
-            local_storage["twilight"] = self
-        except Exception as e:
-            raise ExecutionStop from e
+        with contextlib.suppress(Exception):
+            local_storage[f"{__name__}:result"] = self.generate(chain)
+            local_storage[f"{__name__}:twilight"] = self
+            return
+        raise ExecutionStop
 
     async def catch(self, interface: DispatcherInterface):
-        local_storage: _TwilightLocalStorage = interface.local_storage  # type: ignore
-        sparkle = local_storage["result"]
+        local_storage = interface.local_storage
+        sparkle: T_Sparkle = local_storage[f"{__name__}:result"]
         if generic_issubclass(Sparkle, interface.annotation):
             return sparkle
         if generic_issubclass(Twilight, interface.annotation):
@@ -703,37 +775,47 @@ class ResultValue(Decorator):
 
     pre = True
 
+    @staticmethod
     async def target(i: DecoratorInterface):
-        sparkle: Sparkle = i.local_storage["result"]
+        sparkle: Sparkle = i.local_storage[f"{__name__}:result"]
         res = sparkle.res.get(i.name, None)
         if generic_isinstance(res, i.annotation):
             return res
         raise ExecutionStop
 
 
-class Help(Decorator):
+class Help(Decorator, Generic[T]):
     """返回帮助信息的装饰器"""
 
     pre = True
 
-    if TYPE_CHECKING:
+    formatter: Optional[Callable[[str, DecoratorInterface], Union[Awaitable[T], T]]]
 
-        @overload
-        def __init__(
-            self,
-            usage: str = "",
-            description: str = "",
-            epilog: str = "",
-            dest: bool = True,
-            sep: str = " -> ",
-        ) -> str:
-            ...
+    @overload
+    def __init__(self) -> None:
+        ...
 
-    def __init__(self, *args, **kwargs) -> None:
-        self.args = args
-        self.kwargs = kwargs
+    @overload
+    def __init__(self, formatter: Callable[[str, DecoratorInterface], Union[Awaitable[T], T]]) -> None:
+        ...
 
-    async def target(self, i: DecoratorInterface):
-        twilight: Twilight = i.local_storage["twilight"]
-        # TODO: a better impl, support managing with other commands
-        return twilight.get_help(*self.args, **self.kwargs)
+    def __init__(
+        self, formatter: Optional[Callable[[str, DecoratorInterface], Union[Awaitable[T], T]]] = None
+    ) -> None:
+        """
+        Args:
+            formatter (Optional[Callable[[str, DecoratorInterface], Union[Awaitable[T], T]]], optional): \
+                帮助信息格式化函数.
+        """
+        self.formatter = formatter
+
+    async def target(self, i: DecoratorInterface) -> T:
+        twilight: Twilight = i.local_storage[f"{__name__}:twilight"]
+        help_string: str = twilight.matcher.get_help(**(twilight.help_data or {}))
+        if self.formatter:
+            coro_or_result = self.formatter(help_string, i)
+            if inspect.isawaitable(coro_or_result):
+                return await coro_or_result
+            else:
+                return cast(T, coro_or_result)
+        return cast(T, help_string)

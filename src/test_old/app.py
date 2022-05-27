@@ -26,8 +26,14 @@ from graia.ariadne.event.mirai import (
     NewFriendRequestEvent,
 )
 from graia.ariadne.message.chain import MessageChain
-from graia.ariadne.message.element import At, MultimediaElement, Plain, Source
-from graia.ariadne.message.parser.base import DetectPrefix, MatchContent, MentionMe
+from graia.ariadne.message.element import At, Forward, MultimediaElement, Plain, Source
+from graia.ariadne.message.parser.base import (
+    DetectPrefix,
+    FuzzyDispatcher,
+    FuzzyMatch,
+    MatchContent,
+    MentionMe,
+)
 from graia.ariadne.message.parser.twilight import (
     ArgResult,
     ArgumentMatch,
@@ -40,6 +46,7 @@ from graia.ariadne.message.parser.twilight import (
 )
 from graia.ariadne.model import Friend, Group, Member, MiraiSession, UploadMethod
 from graia.ariadne.util.cooldown import CoolDown
+from graia.ariadne.util.validator import CertainGroup, CertainMember
 
 if __name__ == "__main__":
     url, account, verify_key, target, t_group = (
@@ -52,10 +59,10 @@ if __name__ == "__main__":
     bcc = Broadcast(loop=loop)
 
     app = Ariadne(
-        ReverseWebsocketAdapter(bcc, MiraiSession(url, account, verify_key), route="/ws", port=23333),
+        ComposeForwardAdapter(bcc, MiraiSession(url, account, verify_key)),
         loop=loop,
         use_bypass_listener=True,
-        max_retry=5,
+        max_retry=1,
     )
 
     sched = app.create(GraiaScheduler)
@@ -107,6 +114,18 @@ if __name__ == "__main__":
     async def log(group: Group):
         logger.info(repr(group))
 
+    @bcc.receiver(
+        GroupMessage, decorators=[CertainGroup(int(t_group))], dispatchers=[FuzzyDispatcher("github")]
+    )
+    async def reply_to_me(app: Ariadne, ev: MessageEvent, rate: float):
+        await app.sendMessage(ev, MessageChain.create(f"Git host! rate: {rate}"))
+
+    @bcc.receiver(
+        GroupMessage, decorators=[CertainGroup(int(t_group))], dispatchers=[FuzzyDispatcher("gayhub")]
+    )
+    async def reply_to_me(app: Ariadne, ev: MessageEvent, rate: float):
+        await app.sendMessage(ev, MessageChain.create(f"Gay host! rate: {rate}"))
+
     @bcc.receiver(ExceptionThrowed)
     async def e(app: Ariadne, e: ExceptionThrowed):
         await app.sendMessage(e.event, MessageChain.create(f"{e.exception}"))
@@ -154,6 +173,18 @@ if __name__ == "__main__":
     async def reply2(app: Ariadne, event: MessageEvent):
         await app.sendMessage(event, MessageChain.create("Auto reply to /test!"))
 
+    def unwind(fwd: Forward):
+        for node in fwd.nodeList:
+            if node.messageChain.has(Forward):
+                unwind(node.messageChain.getFirst(Forward))
+            else:
+                logger.debug(node.messageChain.asDisplay())
+
+    @bcc.receiver(MessageEvent)
+    async def unwind_fwd(chain: MessageChain):
+        if chain.has(Forward):
+            unwind(chain.getFirst(Forward))
+
     @bcc.receiver(GroupMessage)
     async def reply3(app: Ariadne, chain: MessageChain, group: Group, member: Member):
         if "Hi!" in chain and chain.has(At):
@@ -195,7 +226,4 @@ if __name__ == "__main__":
             logger.debug(await app.getMemberProfile(member_list[0]))
         await app.lifecycle()
 
-    try:
-        loop.run_until_complete(main())
-    except KeyboardInterrupt:
-        loop.run_until_complete(app.join())
+    app.launch_blocking()

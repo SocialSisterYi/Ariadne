@@ -6,6 +6,7 @@ from asyncio import CancelledError, Task
 from typing import Any, Dict, FrozenSet, List, Optional, Tuple, Union
 
 from aiohttp import (
+    ClientConnectionError,
     ClientSession,
     ClientWebSocketResponse,
     FormData,
@@ -18,7 +19,7 @@ from yarl import URL
 
 from ..exception import InvalidSession
 from ..model import CallMethod, DatetimeEncoder, MiraiSession
-from ..util import await_predicate, yield_with_timeout
+from ..util import yield_with_timeout
 from . import Adapter
 from .util import validate_response
 
@@ -51,7 +52,7 @@ class HttpAdapter(Adapter):
 
     async def authenticate(self) -> None:
         """在 mira-api-http 进行认证并存入 MiraiSession"""
-        if not self.mirai_session.single_mode and not self.mirai_session.session_key:
+        if not self.mirai_session.session_key:
             async with self.session.post(
                 self.mirai_session.url_gen("verify"),
                 data=json.dumps({"verifyKey": self.mirai_session.verify_key}),
@@ -66,11 +67,12 @@ class HttpAdapter(Adapter):
                 validate_response(await response.json())
             self.mirai_session.session_key = session_key
             logger.success("Successfully got session key")
+            self.connected.set(True)
 
     async def fetch_cycle(self) -> None:
-        await self.authenticate()
         async with ClientSession() as session:
             self.session = session
+            await self.authenticate()
             while self.running:
                 await asyncio.sleep(self.fetch_interval)
                 async with self.session.get(
@@ -83,6 +85,7 @@ class HttpAdapter(Adapter):
                     resp: List[dict] = validate_response(resp_json)
                 for data in resp:
                     await self.event_queue.put(self.build_event(data))
+            self.connected.set(False)
             self.mirai_session.session_key = None
 
     async def call_api(
@@ -91,7 +94,7 @@ class HttpAdapter(Adapter):
         method: CallMethod,
         data: Optional[Union[Dict[str, Any], str, FormData]] = None,
     ) -> Union[dict, list]:
-        await await_predicate(lambda: self.mirai_session.session_key or self.mirai_session.single_mode)
+        await self.connected.wait(True)
         if method in (CallMethod.GET, CallMethod.RESTGET):
             if isinstance(data, str):
                 data = json.loads(data)
@@ -122,12 +125,12 @@ class HttpAdapter(Adapter):
                 resp_json: dict = await response.json()
 
         val = validate_response(resp_json)
-        if isinstance(val, Exception):
-            if isinstance(val, InvalidSession):
-                self.mirai_session.session_key = None
-            raise val
-        else:
+        if not isinstance(val, Exception):
             return val
+        if isinstance(val, InvalidSession):
+            self.connected.set(False)
+            self.mirai_session.session_key = None
+        raise val
 
 
 class WebsocketAdapter(Adapter):
@@ -184,7 +187,7 @@ class WebsocketAdapter(Adapter):
     async def call_api(
         self, action: str, method: CallMethod, data: Optional[Union[Dict[str, Any], str, FormData]] = None
     ) -> Union[dict, list]:
-        await await_predicate(lambda: self.websocket is not None and self.mirai_session.session_key)
+        await self.connected.wait(True)
         future = self.broadcast.loop.create_future()
         self.future_map[str(id(future))] = future
         content = {
@@ -229,6 +232,7 @@ class WebsocketAdapter(Adapter):
                             if "session" in data:
                                 self.mirai_session.session_key = data["session"]
                                 logger.success("Successfully got session key")
+                                self.connected.set(True)
                                 continue
                             if sync_id in self.future_map:
                                 fut = self.future_map.pop(str(sync_id))
@@ -249,6 +253,8 @@ class WebsocketAdapter(Adapter):
                             logger.warning(f"websocket: unknown message type - {ws_message.type}")
             except CancelledError:
                 pass
+            except ClientConnectionError as e:
+                logger.error(f"{e.__class__.__name__}: {e}")
             except Exception as e:
                 logger.exception(e)
             finally:
@@ -257,8 +263,11 @@ class WebsocketAdapter(Adapter):
                     self.ping_task = None
                     if self.log:
                         logger.debug("websocket: ping task complete")
-                logger.info("websocket: disconnected")
+                if self.websocket:
+                    logger.info("websocket: disconnected")
                 self.running = False
+                self.connected.set(False)
+                self.mirai_session.session_key = None
                 self.websocket = None
                 self.session = None
 
