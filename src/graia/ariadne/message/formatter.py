@@ -26,8 +26,8 @@ class Formatter:
         Returns:
             MessageChain: 格式化后的消息链
         """
-        args: List[MessageChain] = [MessageChain.create(e) for e in o_args]
-        kwargs: Dict[str, MessageChain] = {k: MessageChain.create(e) for k, e in o_kwargs.items()}
+        args: List[MessageChain] = [MessageChain(e) for e in o_args]
+        kwargs: Dict[str, MessageChain] = {k: MessageChain(e) for k, e in o_kwargs.items()}
 
         args_mapping: Dict[str, MessageChain] = {
             f"\x02{index}\x02": chain for index, chain in enumerate(args)
@@ -40,12 +40,12 @@ class Formatter:
 
         for i in re.split("([\x02\x03][\\d\\w]+[\x02\x03])", result):
             if match := re.fullmatch("(?P<header>[\x02\x03])(?P<content>\\w+)(?P=header)", i):
-                header = match.group("header")
-                full: str = match.group(0)
+                header = match["header"]
+                full: str = match[0]
                 if header == "\x02":  # from args
                     chain_list.append(args_mapping[full])
                 else:  # \x03, from kwargs
                     chain_list.append(kwargs_mapping[full])
             else:
                 chain_list.append(Plain(i))
-        return MessageChain.create(*chain_list).merge()
+        return MessageChain(chain_list).merge()

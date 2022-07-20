@@ -1,58 +1,66 @@
-"""本模块提供 Ariadne 内部使用的小工具, 以及方便的 `async_exec` 模块.
-"""
+"""本模块提供 Ariadne 内部使用的小工具, 以及方便的辅助模块."""
+
+import contextlib
 
 # Utility Layout
-import asyncio
-import collections
-import contextlib
 import functools
 import inspect
-import logging
 import sys
 import traceback
 import types
 import typing
 import warnings
-from asyncio.events import AbstractEventLoop
-from contextvars import ContextVar
 from types import TracebackType
 from typing import (
     TYPE_CHECKING,
     Any,
-    AsyncIterator,
     Callable,
-    Coroutine,
-    Deque,
+    ClassVar,
     Dict,
     Generator,
-    Generic,
     Iterable,
     List,
-    Literal,
+    MutableSet,
+    NamedTuple,
     Optional,
-    Set,
     Tuple,
     Type,
     TypeVar,
+    Union,
 )
 
 from graia.broadcast import Broadcast
 from graia.broadcast.entities.decorator import Decorator
-from graia.broadcast.entities.dispatcher import BaseDispatcher
 from graia.broadcast.entities.event import Dispatchable
 from graia.broadcast.entities.listener import Listener
 from graia.broadcast.entities.namespace import Namespace
-from graia.broadcast.exceptions import ExecutionStop, RequirementCrashed
-from graia.broadcast.interfaces.dispatcher import DispatcherInterface
+from graia.broadcast.exceptions import (
+    ExecutionStop,
+    PropagationCancelled,
+    RequirementCrashed,
+)
 from graia.broadcast.typing import T_Dispatcher
 from graia.broadcast.utilles import dispatcher_mixin_handler
 from loguru import logger
 
-from ..typing import DictStrAny, P, R, T
+from ..typing import ExceptionHook, P, R, T, Wrapper
+
+if TYPE_CHECKING:
+    from datetime import datetime
+
+    from rich.console import Console
+    from rich.text import Text
 
 
-def type_repr(obj: Any) -> str:
-    if isinstance(obj, types.GenericAlias):
+def type_repr(obj) -> str:
+    """Return the repr() of an object, special-casing types (internal helper).
+
+    If obj is a type, we return a shorter version than the default
+    type.__repr__, based on the module and qualified name, which is
+    typically enough to uniquely identify a type.  For everything
+    else, we fall back on repr(obj).
+    """
+    if isinstance(obj, getattr(types, "GenericAlias", type(None))):
         return repr(obj)
     if isinstance(obj, type):
         if obj.__module__ == "builtins":
@@ -65,7 +73,7 @@ def type_repr(obj: Any) -> str:
     return repr(obj)
 
 
-def loguru_excepthook(cls: Type[BaseException], val: BaseException, tb: TracebackType, *_, **__):
+def loguru_exc_callback(cls: Type[BaseException], val: BaseException, tb: Optional[TracebackType], *_, **__):
     """loguru 异常回调
 
     Args:
@@ -73,66 +81,86 @@ def loguru_excepthook(cls: Type[BaseException], val: BaseException, tb: Tracebac
         val (Exception): 异常的实际值
         tb (TracebackType): 回溯消息
     """
-    exec_module_name = tb.tb_frame.f_globals.get("__name__", "")
-    if issubclass(cls, ExecutionStop) and exec_module_name.startswith("graia"):
+    if issubclass(cls, (ExecutionStop, PropagationCancelled)):
         return
-    elif isinstance(val, RequirementCrashed) and exec_module_name.startswith("graia.broadcast"):
-        with contextlib.suppress(Exception):
-            local_dict = tb.tb_frame.f_locals
-            _, param_name, param_anno, param_default = val.args
-            if isinstance(param_anno, type):
-                param_anno = param_anno.__qualname__
-            param_repr = "".join(
-                [
-                    param_name,
-                    f": {type_repr(param_anno)}" if param_anno else "",
-                    f" = {param_default}" if param_default else "",
-                ]
-            )
-            val = RequirementCrashed(
-                "Unable to lookup parameter " f"({param_repr})",
-                local_dict["dispatchers"],
-            )
+    if tb:
+        exec_module_name = tb.tb_frame.f_globals.get("__name__", "")
+        if isinstance(val, RequirementCrashed) and exec_module_name.startswith("graia.broadcast"):
+            with contextlib.suppress(Exception):
+                local_dict = tb.tb_frame.f_locals
+                _, param_name, param_anno, param_default = val.args
+                if isinstance(param_anno, type):
+                    param_anno = param_anno.__qualname__
+                param_repr = "".join(
+                    [
+                        param_name,
+                        f": {type_repr(param_anno)}" if param_anno else "",
+                        f" = {param_default}" if param_default else "",
+                    ]
+                )
+                val = RequirementCrashed(
+                    f"Unable to lookup parameter ({param_repr})",
+                    local_dict["dispatchers"],
+                )
 
     logger.opt(exception=(cls, val, tb)).error("Exception:")
 
 
-def loguru_async_handler(_, ctx: dict):
+def loguru_exc_callback_async(loop, context: dict):
     """loguru 异步异常回调
 
     Args:
-        _ (AbstractEventLoop): 异常发生的事件循环
+        loop (AbstractEventLoop): 异常发生的事件循环
         ctx (dict): 异常上下文
     """
-    if "exception" in ctx:
-        logger.opt(exception=ctx["exception"]).error("Exception:")
+    message = context.get("message")
+    if not message:
+        message = "Unhandled exception in event loop"
+
+    exception = context.get("exception")
+    if exception is None:
+        exc_info = False
+    elif isinstance(exception, (ExecutionStop, PropagationCancelled, RequirementCrashed)):
+        return
     else:
-        logger.error(f"Exception: {ctx}")
+        exc_info = (type(exception), exception, exception.__traceback__)
+    if (
+        "source_traceback" not in context
+        and loop._current_handle is not None
+        and loop._current_handle._source_traceback
+    ):
+        context["handle_traceback"] = loop._current_handle._source_traceback
+
+    log_lines = [message]
+    for key in sorted(context):
+        if key in {"message", "exception"}:
+            continue
+        value = context[key]
+        if key == "handle_traceback":
+            tb = "".join(traceback.format_list(value))
+            value = "Handle created at (most recent call last):\n" + tb.rstrip()
+        elif key == "source_traceback":
+            tb = "".join(traceback.format_list(value))
+            value = "Object created at (most recent call last):\n" + tb.rstrip()
+        else:
+            value = repr(value)
+        log_lines.append(f"{key}: {value}")
+
+    logger.opt(exception=exc_info).error("\n".join(log_lines))
 
 
-class LoguruHandler(logging.Handler):
-    def emit(self, record):
-        # Get corresponding Loguru level if it exists
-        try:
-            level = logger.level(record.levelname).name
-        except ValueError:
-            level = record.levelno
+class RichLogInstallOptions(NamedTuple):
+    """安装 Rich log 的选项"""
 
-        # Find caller from where originated the logged message
-        frame, depth = logging.currentframe(), 2
-        while frame and frame.f_code.co_filename == logging.__file__:
-            frame = frame.f_back
-            depth += 1
-
-        logger.opt(depth=depth, exception=record.exc_info).log(level, record.getMessage())
-
-
-def inject_loguru_traceback(loop: Optional[AbstractEventLoop] = None):
-    """使用 loguru 模块替换默认的 traceback.print_exception 与 sys.excepthook"""
-    traceback.print_exception = loguru_excepthook
-    sys.excepthook = loguru_excepthook
-    if loop:
-        loop.set_exception_handler(loguru_async_handler)
+    rich_console: Optional["Console"] = None
+    exc_hook: Union[ExceptionHook, None] = loguru_exc_callback
+    rich_traceback: bool = False
+    tb_ctx_lines: int = 3
+    tb_theme: Optional[str] = None
+    tb_suppress: Iterable[Union[str, types.ModuleType]] = ()
+    time_format: Union[str, Callable[["datetime"], "Text"]] = "[%x %X]"
+    keywords: Optional[List[str]] = None
+    level: Union[int, str] = 20
 
 
 def inject_bypass_listener(broadcast: Broadcast):
@@ -179,43 +207,7 @@ def inject_bypass_listener(broadcast: Broadcast):
         pass
 
 
-class AsyncSignal(Generic[T]):
-    """模拟 asyncio.Event, 但是支持 sig.wait(Hashable)"""
-
-    def __init__(self, value: T = None) -> None:
-        self._waiters: Dict[T, Deque[asyncio.Future]] = {}
-        self._value: T = value
-        self._special: Dict[str, asyncio.Future] = {}
-
-    def __repr__(self) -> str:
-        waiter_str = f", waiters: {len(self._waiters)}" if self._waiters else ""
-        return f"<AsyncSignal [value: {self._value}{waiter_str}]>"
-
-    def value(self) -> T:
-        return self._value
-
-    def set(self, value: T) -> None:
-        self._value = value
-
-        waiter_deque = self._waiters.setdefault(value, collections.deque())
-
-        for fut in waiter_deque:
-            if not fut.done():
-                fut.set_result(True)
-        waiter_deque.clear()
-
-    async def wait(self, value: T, wait_id: Optional[str] = None) -> Literal[True]:
-        if self._value == value:
-            return True
-
-        fut = asyncio.get_running_loop().create_future()
-        if wait_id:
-            self._special[wait_id] = fut
-        self._waiters.setdefault(value, collections.deque()).append(fut)
-        return await fut
-
-
-def app_ctx_manager(func: Callable[P, R]) -> Callable[P, R]:
+def ariadne_api(func: Callable[P, R]) -> Callable[P, R]:
     """包装声明需要在 Ariadne Context 中执行的函数
 
     Args:
@@ -253,12 +245,17 @@ def gen_subclass(cls: Type[T]) -> Generator[Type[T], None, None]:
         yield from gen_subclass(sub_cls)
 
 
-def wrap_bracket(string: str) -> str:
-    """在字符串中转义中括号括号"""
+def escape_bracket(string: str) -> str:
+    """在字符串中转义中括号"""
     return string.replace("[", "\\u005b").replace("]", "\\u005d")
 
 
-def const_call(val: T) -> Callable[[], T]:
+def unescape_bracket(string: str) -> str:
+    """在字符串中反转义中括号"""
+    return string.replace("\\u005b", "[").replace("\\u005d", "]")
+
+
+def constant(val: T) -> Callable[[], T]:
     """生成一个返回常量的 Callable
 
     Args:
@@ -270,84 +267,31 @@ def const_call(val: T) -> Callable[[], T]:
     return lambda: val
 
 
-def eval_ctx(
-    layer: int = 0, globals_: Optional[DictStrAny] = None, locals_: Optional[DictStrAny] = None
-) -> Tuple[DictStrAny, DictStrAny]:
-    """获取一个上下文的全局和局部变量
-
-    Args:
-        layer (int, optional): 层数. Defaults to 0.
-        globals_ (Optional[DictStrAny], optional): 全局变量. Defaults to None.
-        locals_ (Optional[DictStrAny], optional): 局部变量. Defaults to None.
-
-    Returns:
-        Tuple[DictStrAny, DictStrAny]: 全局和局部变量字典.
-    """
-    frame = inspect.stack()[layer + 1].frame  # add the current frame
-    global_dict, local_dict = frame.f_globals, frame.f_locals
-    global_dict.update(globals_ or {})
-    local_dict.update(locals_ or {})
-    return global_dict, local_dict
-
-
-T_Callable = TypeVar("T_Callable", bound=Callable)
-
-
-async def await_predicate(predicate: Callable[[], bool], interval: float = 0.01) -> None:
-    """异步阻塞至满足 predicate 为 True
-
-    Args:
-        predicate (Callable[[], bool]): 判断条件
-        interval (float, optional): 每次检查间隔. Defaults to 0.01.
-    """
-    while not predicate():
-        await asyncio.sleep(interval)
-
-
-async def yield_with_timeout(
-    getter_coro: Callable[[], Coroutine[None, None, T]],
-    predicate: Callable[[], bool],
-    await_length: float = 0.2,
-) -> AsyncIterator[T]:
-    """在满足 predicate 时返回 getter_coro() 的值
-
-    Args:
-        getter_coro (Callable[[], Coroutine[None, None, T]]): 要循环返回的协程函数.
-        predicate (Callable[[], bool]): 条件回调函数.
-        await_length (float, optional): 等待目前协程的时长. 默认 0.2s.
-
-    Yields:
-        T: getter_coro 的返回值
-    """
-    last_tsk: Optional[Set["asyncio.Task[T]"]] = None
-    while predicate():
-        last_tsk = last_tsk or {asyncio.create_task(getter_coro())}
-        done, last_tsk = await asyncio.wait(last_tsk, timeout=await_length)
-        if not done:
-            continue
-        for t in done:
-            yield await t
-    if last_tsk:
-        for tsk in last_tsk:
-            tsk.cancel()
-
-
-def deprecated(remove_ver: str) -> Callable[[Callable[P, R]], Callable[P, R]]:
+def deprecated(remove_ver: str, suggestion: Optional[str] = None) -> Wrapper:
     """标注一个方法 / 函数已被弃用
 
     Args:
         remove_ver (str): 将被移除的版本.
+        suggestion (Optional[str], optional): 建议的替代方案. Defaults to None.
 
     Returns:
         Callable[[T_Callable], T_Callable]: 包装器.
     """
+    __warning_info: MutableSet[Tuple[str, int]] = set()
 
     def out_wrapper(func: Callable[P, R]) -> Callable[P, R]:
         @functools.wraps(func)
         def wrapper(*args: P.args, **kwargs: P.kwargs) -> R:
-            warnings.warn(DeprecationWarning(f"{func.__qualname__} will be removed in {remove_ver}!"))
-            logger.warning(f"Deprecated function: {func.__qualname__}")
-            logger.warning(f"{func.__qualname__} will be removed in {remove_ver}!")
+            frame = inspect.stack()[1].frame
+            caller_file = frame.f_code.co_filename
+            caller_line = frame.f_lineno
+            if (caller_file, caller_line) not in __warning_info:
+                __warning_info.add((caller_file, caller_line))
+                warnings.warn(DeprecationWarning(f"{func.__qualname__} will be removed in {remove_ver}!"))
+                logger.warning(f"Deprecated function: {func.__qualname__}")
+                logger.warning(f"{func.__qualname__} will be removed in {remove_ver}!")
+                if suggestion:
+                    logger.warning(f"{suggestion}", style="dark_orange bold")
             return func(*args, **kwargs)
 
         return wrapper
@@ -370,17 +314,6 @@ def resolve_dispatchers_mixin(dispatchers: Iterable[T_Dispatcher]) -> List[T_Dis
     return result
 
 
-class ConstantDispatcher(BaseDispatcher):
-    """分发常量给指定名称的参数"""
-
-    def __init__(self, context: ContextVar[Dict[str, Any]]) -> None:
-        self.ctx_var = context
-
-    async def catch(self, interface: DispatcherInterface):
-        if interface.name in self.ctx_var.get():
-            return self.ctx_var.get()[interface.name]
-
-
 class Dummy:
     """Dummy 类, 对所有调用返回 None. (可以预设某些值)"""
 
@@ -399,47 +332,87 @@ class Dummy:
         return self
 
 
-def signal_handler(callback: Callable[[], None], one_time: bool = True) -> None:
-    """注册信号处理器
-    Args:
-        callback (Callable[[], None]): 信号处理器
-        one_time (bool, optional): 是否只执行一次. 默认为 True.
-    Returns:
-        None
-    """
-    import signal
-    import threading
-
-    if not threading.main_thread().ident == threading.current_thread().ident:
-        return
-
-    HANDLED_SIGNAL = (signal.SIGINT, signal.SIGTERM)
-
-    for sig in HANDLED_SIGNAL:
-        handler = signal.getsignal(sig)
-
-        def handler_wrapper(sig_num, frame):
-            if callable(handler):
-                handler(sig_num, frame)
-            callback()
-            if one_time:
-                signal.signal(sig_num, handler)
-
-        signal.signal(sig, handler_wrapper)
-
-
 def get_cls(obj) -> Optional[type]:
+    """获取一个对象的类型，支持 GenericAlias"""
     if cls := typing.get_origin(obj):
         return cls
     if isinstance(obj, type):
         return obj
 
 
-# Import layout
-from . import async_exec  # noqa: F401, E402
-from .async_exec import (  # noqa: F401, E402
-    IS_MAIN_PROCESS,
-    ParallelExecutor,
-    cpu_bound,
-    io_bound,
-)
+_T_cls = TypeVar("_T_cls", bound=type)
+
+__SAFE_MODULES__: List[str] = ["graia", "launart", "statv", "pydantic", "aiohttp", "avilla"]
+
+
+def internal_cls(alt: Optional[Callable] = None) -> Callable[[_T_cls], _T_cls]:
+    """将一个类型包装为内部类, 可通过 __SAFE_MODULES__ 定制."""
+    if alt:
+        hint = f"Use {alt.__module__}.{alt.__qualname__}!"
+    else:
+        hint = "Only modules start with {module} can initialize it!"
+
+    SAFE_MODULES = tuple(__SAFE_MODULES__)
+
+    def deco(cls: _T_cls) -> _T_cls:
+        origin_init = cls.__init__
+
+        @functools.wraps(origin_init)
+        def _wrapped_init_(self: object, *args, **kwargs):
+            frame = inspect.stack()[1].frame  # outer frame
+            module_name: str = frame.f_globals["__name__"]
+            if not module_name.startswith(SAFE_MODULES):
+                raise NameError(
+                    f"{self.__class__.__module__}.{self.__class__.__qualname__} is an internal class!",
+                    hint.format(module=self.__class__.__module__),
+                )
+            return origin_init(self, *args, **kwargs)
+
+        cls.__init__ = _wrapped_init_
+        return cls
+
+    return deco
+
+
+def camel_to_snake(name: str) -> str:
+    """将 camelCase 字符串转换为 snake_case 字符串"""
+    if "_" in name:
+        return name
+    import re
+
+    name = re.sub(r"([A-Z]+)([A-Z][a-z])", r"\1_\2", name)
+    name = re.sub(r"([a-z\d])([A-Z])", r"\1_\2", name)
+    name = name.replace("-", "_").lower()
+    return name
+
+
+def snake_to_camel(name: str, capital: bool = False) -> str:
+    """将 snake_case 字符串转换为 camelCase 字符串"""
+    name = "".join(seg.capitalize() for seg in name.split("_"))
+    if not capital:
+        name = name[0].lower() + name[1:]
+    return name
+
+
+class AttrConvertMixin:
+    """用于支持不同属性拼写的 mixin"""
+
+    __warning_info: ClassVar[Dict[type, MutableSet[Tuple[str, int]]]] = {}
+
+    if not TYPE_CHECKING:  # Runtime Only
+
+        def __getattr__(self, origin: str) -> Any:
+            # camelCase to snake_case
+            name = camel_to_snake(origin)
+            if name not in self.__class__.__dict__ or name == origin:
+                raise AttributeError(f"'{self.__class__.__qualname__}' object has no attribute '{name}'")
+            # extract caller's file and line number
+            frame = inspect.stack()[1].frame
+            caller_file = frame.f_code.co_filename
+            caller_line = frame.f_lineno
+            AttrConvertMixin.__warning_info.setdefault(self.__class__, set())
+            if (caller_file, caller_line) not in AttrConvertMixin.__warning_info[self.__class__]:
+                AttrConvertMixin.__warning_info[self.__class__].add((caller_file, caller_line))
+                logger.warning(f"At {caller_file}:{caller_line}")
+                logger.warning(f"Found deprecated call: {self.__class__.__qualname__}.{name}!")
+            return getattr(self, name)

@@ -16,16 +16,17 @@ from typing import (
     Union,
 )
 
+from graia.broadcast.builtin.derive import Derive
 from graia.broadcast.entities.decorator import Decorator
 from graia.broadcast.entities.dispatcher import BaseDispatcher
 from graia.broadcast.exceptions import ExecutionStop
 from graia.broadcast.interfaces.decorator import DecoratorInterface
 from graia.broadcast.interfaces.dispatcher import DispatcherInterface
-from loguru import logger
 
-from ... import get_running
-from ...event.message import GroupMessage
+from ...app import Ariadne
+from ...event.message import GroupMessage, MessageEvent
 from ...typing import generic_issubclass
+from ...util import deprecated
 from ..chain import MessageChain
 from ..element import At, Element, Plain, Quote, Source
 
@@ -33,13 +34,14 @@ from ..element import At, Element, Plain, Quote, Source
 class Compose(Decorator):
     """将多个基础 Decorator 串联起来"""
 
+    @deprecated("0.8.0", "Use `Derive` feature instead")
     def __init__(self, *deco: "ChainDecorator") -> None:
         self.deco: List[ChainDecorator] = list(deco)
 
-    async def target(self, interface: DecoratorInterface):
-        chain = await interface.dispatcher_interface.lookup_param("message_chain", MessageChain, None)
+    async def target(self, interface: DispatcherInterface):
+        chain = await interface.lookup_param("message_chain", MessageChain, None)
         for deco in self.deco:
-            chain = await deco.decorate(chain, interface)
+            chain = await deco.__call__(chain, interface)
             if chain is None:
                 break
         if interface.annotation is MessageChain:
@@ -48,16 +50,17 @@ class Compose(Decorator):
             return chain
 
 
-class ChainDecorator(abc.ABC, Decorator):
+class ChainDecorator(abc.ABC, Decorator, Derive[MessageChain]):
     pre = True
 
     @abc.abstractmethod
-    async def decorate(self, chain: MessageChain, interface: DecoratorInterface) -> Optional[MessageChain]:
+    async def __call__(self, chain: MessageChain, interface: DispatcherInterface) -> Optional[MessageChain]:
         ...
 
     async def target(self, interface: DecoratorInterface):
-        return await self.decorate(
-            await interface.dispatcher_interface.lookup_param("message_chain", MessageChain, None), interface
+        return await self(
+            await interface.dispatcher_interface.lookup_param("message_chain", MessageChain, None),
+            interface.dispatcher_interface,
         )
 
 
@@ -72,7 +75,7 @@ class DetectPrefix(ChainDecorator):
         """
         self.prefix: List[str] = [prefix] if isinstance(prefix, str) else list(prefix)
 
-    async def decorate(self, chain: MessageChain, interface: DecoratorInterface) -> Optional[MessageChain]:
+    async def __call__(self, chain: MessageChain, _) -> Optional[MessageChain]:
         header = chain.include(Quote, Source)
         rest: MessageChain = chain.exclude(Quote, Source)
         for prefix in self.prefix:
@@ -81,8 +84,7 @@ class DetectPrefix(ChainDecorator):
                 break
         else:
             raise ExecutionStop
-        if interface.annotation is MessageChain:
-            return header + result
+        return header + result
 
 
 class DetectSuffix(ChainDecorator):
@@ -96,7 +98,7 @@ class DetectSuffix(ChainDecorator):
         """
         self.suffix: List[str] = [suffix] if isinstance(suffix, str) else list(suffix)
 
-    async def decorate(self, chain: MessageChain, interface: DecoratorInterface) -> Optional[MessageChain]:
+    async def __call__(self, chain: MessageChain, _) -> Optional[MessageChain]:
         header = chain.include(Quote, Source)
         rest: MessageChain = chain.exclude(Quote, Source)
         for suffix in self.suffix:
@@ -105,44 +107,54 @@ class DetectSuffix(ChainDecorator):
                 break
         else:
             raise ExecutionStop
-        if interface.annotation is MessageChain:
-            return header + result
+        return header + result
 
 
 class MentionMe(ChainDecorator):
     """At 账号或者提到账号群昵称"""
 
-    async def decorate(self, chain: MessageChain, interface: DecoratorInterface) -> Optional[MessageChain]:
-        ariadne = get_running()
-        if isinstance(interface.event, GroupMessage):
-            if not ariadne.account:
-                logger.warning("Unable to detect Ariadne's name because account is not set")
-                raise ExecutionStop
-            name = (await ariadne.getMember(interface.event.sender.group, ariadne.account)).name
-        else:
-            name = (await ariadne.getBotProfile()).nickname
+    def __init__(self, name: Union[bool, str] = True) -> None:
+        """
+        Args:
+            name (Union[bool, str]): 是否提取昵称, 如果为 True, 则自动提取昵称, \
+            如果为 False 则禁用昵称, 为 str 则将参数作为昵称
+        """
+        self.name = name
+
+    async def __call__(self, chain: MessageChain, interface: DispatcherInterface) -> Optional[MessageChain]:
+        ariadne = Ariadne.current()
+        name: Optional[str] = self.name if isinstance(self.name, str) else None
+        if self.name is True:
+            if isinstance(interface.event, GroupMessage):
+                name = (await ariadne.get_member(interface.event.sender.group, ariadne.account)).name
+            else:
+                name = (await ariadne.get_bot_profile()).nickname
         header = chain.include(Quote, Source)
         rest: MessageChain = chain.exclude(Quote, Source)
         first: Element = rest[0]
         result: Optional[MessageChain] = None
-        if rest and isinstance(first, Plain) and first.asDisplay().startswith(name):
+        if isinstance(name, str) and rest and isinstance(first, Plain) and str(first).startswith(name):
             result = header + rest.removeprefix(name).removeprefix(" ")
         if rest and isinstance(first, At) and first.target == ariadne.account:
             result = header + MessageChain(rest.__root__[1:], inline=True).removeprefix(" ")
 
         if result is None:
             raise ExecutionStop
-        if interface.annotation is MessageChain:
-            return result
+        return result
 
 
 class Mention(ChainDecorator):
-    """At 或提到指定人"""
+    """At 或提到指定账号/名称"""
 
     def __init__(self, target: Union[int, str]) -> None:
+        """
+        Args:
+            target (Union[int, str]): 要提到的账号或者名称, \
+            如果是 int 则是账号, 如果是 str 则是名称
+        """
         self.person: Union[int, str] = target
 
-    async def decorate(self, chain: MessageChain, interface: DecoratorInterface) -> Optional[MessageChain]:
+    async def __call__(self, chain: MessageChain, _) -> Optional[MessageChain]:
         header = chain.include(Quote, Source)
         rest: MessageChain = chain.exclude(Quote, Source)
         first: Element = rest[0]
@@ -151,7 +163,7 @@ class Mention(ChainDecorator):
             rest
             and isinstance(first, Plain)
             and isinstance(self.person, str)
-            and first.asDisplay().startswith(self.person)
+            and str(first).startswith(self.person)
         ):
             result = header + rest.removeprefix(self.person).removeprefix(" ")
         if rest and isinstance(first, At) and isinstance(self.person, int) and first.target == self.person:
@@ -159,40 +171,46 @@ class Mention(ChainDecorator):
 
         if result is None:
             raise ExecutionStop
-        if interface.annotation is MessageChain:
-            return result
+        return result
 
 
 class ContainKeyword(ChainDecorator):
     """消息中含有指定关键字"""
 
     def __init__(self, keyword: str) -> None:
+        """初始化
+
+        Args:
+            keyword (str): 关键字
+        """
         self.keyword: str = keyword
 
-    async def decorate(self, chain: MessageChain, interface: DecoratorInterface) -> Optional[MessageChain]:
+    async def __call__(self, chain: MessageChain, _) -> Optional[MessageChain]:
         if self.keyword not in chain:
             raise ExecutionStop
-        if interface.annotation is MessageChain:
-            return chain
+        return chain
 
 
 class MatchContent(ChainDecorator):
     """匹配字符串 / 消息链"""
 
     def __init__(self, content: Union[str, MessageChain]) -> None:
-        self.content: Union[str, MessageChain] = content
-        self.next: Optional[ChainDecorator] = None
+        """初始化
 
-    async def decorate(self, chain: MessageChain, interface: DecoratorInterface) -> Optional[MessageChain]:
-        if isinstance(self.content, str) and chain.asDisplay() != self.content:
+        Args:
+            content (Union[str, MessageChain]): 匹配内容
+        """
+        self.content: Union[str, MessageChain] = content
+
+    async def __call__(self, chain: MessageChain, _) -> Optional[MessageChain]:
+        if isinstance(self.content, str) and str(chain) != self.content:
             raise ExecutionStop
         if isinstance(self.content, MessageChain) and chain != self.content:
             raise ExecutionStop
-        if interface.annotation is MessageChain:
-            return chain
+        return chain
 
 
-class MatchRegex(ChainDecorator):
+class MatchRegex(ChainDecorator, BaseDispatcher):
     """匹配正则表达式"""
 
     def __init__(self, regex: str, flags: re.RegexFlag = re.RegexFlag(0)) -> None:
@@ -205,17 +223,61 @@ class MatchRegex(ChainDecorator):
         self.regex: str = regex
         self.flags: re.RegexFlag = flags
 
-    async def decorate(self, chain: MessageChain, interface: DecoratorInterface) -> Optional[MessageChain]:
-        if not re.match(self.regex, chain.asDisplay(), self.flags):
+    async def __call__(self, chain: MessageChain, _) -> Optional[MessageChain]:
+        if not re.match(self.regex, str(chain), self.flags):
             raise ExecutionStop
-        if interface.annotation is MessageChain:
-            return chain
+        return chain
+
+    async def beforeExecution(self, interface: DispatcherInterface[MessageEvent]):
+        _mapping_str, _map = interface.event.message_chain._to_mapping_str()
+        if res := re.fullmatch(self.regex, _mapping_str, self.flags):
+            interface.local_storage["__parser_regex_match_obj__"] = res
+            interface.local_storage["__parser_regex_match_map__"] = _map
+        else:
+            raise ExecutionStop
+
+    async def catch(self, interface: DispatcherInterface[MessageEvent]):
+        if interface.annotation is re.Match:
+            return interface.local_storage["__parser_regex_match_obj__"]
+
+
+class RegexGroup:
+    """正则表达式组的标志, 以 `Annotated[MessageChain, RegexGroup("xxx") 的形式使用"""
+
+    def __init__(self, target: Union[int, str]) -> None:
+        """初始化
+
+        Args:
+            target (Union[int, str]): 目标的组名或序号
+        """
+        self.target = target
+
+    async def __call__(self, _, interface: DispatcherInterface[MessageEvent]):
+        _res: re.Match = interface.local_storage["__parser_regex_match_obj__"]
+        match_group: Tuple[str] = _res.groups()
+        match_group_dict: Dict[str, str] = _res.groupdict()
+        origin: Optional[str] = None
+        if isinstance(self.target, str) and self.target in match_group_dict:
+            origin = match_group_dict[self.target]
+        elif isinstance(self.target, int) and self.target < len(match_group):
+            origin = match_group[self.target]
+
+        return (
+            MessageChain._from_mapping_string(origin, interface.local_storage["__parser_regex_match_map__"])
+            if origin is not None
+            else None
+        )
 
 
 class MatchTemplate(ChainDecorator):
     """模板匹配"""
 
     def __init__(self, template: List[Union[Type[Element], Element]]) -> None:
+        """初始化
+
+        Args:
+            template (List[Union[Type[Element], Element]]): 匹配模板
+        """
         self.template: List[Union[Type[Element], Element, str]] = []
         for element in template:
             if isinstance(element, type) and element is not Plain:
@@ -231,7 +293,7 @@ class MatchTemplate(ChainDecorator):
 
     def match(self, chain: MessageChain):
         """匹配消息链"""
-        chain = chain.asSendable()
+        chain = chain.as_sendable()
         if len(self.template) != len(chain):
             return False
         for element, template in zip(chain, self.template):
@@ -244,11 +306,10 @@ class MatchTemplate(ChainDecorator):
                     return False
         return True
 
-    async def decorate(self, chain: MessageChain, interface: DecoratorInterface) -> Optional[MessageChain]:
+    async def __call__(self, chain: MessageChain, _) -> Optional[MessageChain]:
         if not self.match(chain):
             raise ExecutionStop
-        if interface.annotation is MessageChain:
-            return chain
+        return chain
 
 
 class FuzzyMatch(ChainDecorator):
@@ -259,6 +320,12 @@ class FuzzyMatch(ChainDecorator):
     """
 
     def __init__(self, template: str, min_rate: float = 0.6) -> None:
+        """初始化
+
+        Args:
+            template (str): 模板字符串
+            min_rate (float): 最小匹配阈值
+        """
         self.template: str = template
         self.min_rate: float = min_rate
 
@@ -269,7 +336,7 @@ class FuzzyMatch(ChainDecorator):
             if isinstance(element, Plain):
                 text_frags.append(element.text)
             else:
-                text_frags.append(element.asDisplay())
+                text_frags.append(str(element))
         text = "".join(text_frags)
         matcher = difflib.SequenceMatcher(a=text, b=self.template)
         # return false when **any** ratio calc falls undef the rate
@@ -279,11 +346,10 @@ class FuzzyMatch(ChainDecorator):
             return False
         return matcher.ratio() >= self.min_rate
 
-    async def decorate(self, chain: MessageChain, interface: DecoratorInterface) -> Optional[MessageChain]:
+    async def __call__(self, chain: MessageChain, _) -> Optional[MessageChain]:
         if not self.match(chain):
             raise ExecutionStop
-        if interface.annotation is MessageChain:
-            return chain
+        return chain
 
 
 class FuzzyDispatcher(BaseDispatcher):
@@ -291,6 +357,13 @@ class FuzzyDispatcher(BaseDispatcher):
     event_ref: ClassVar["Dict[int, Dict[str, Tuple[str, float]]]"] = {}
 
     def __init__(self, template: str, min_rate: float = 0.6, scope: str = "") -> None:
+        """初始化
+
+        Args:
+            template (str): 模板字符串
+            min_rate (float): 最小匹配阈值
+            scope (str): 作用域
+        """
         self.template: str = template
         self.min_rate: float = min_rate
         self.scope: str = scope
@@ -305,7 +378,7 @@ class FuzzyDispatcher(BaseDispatcher):
                 if isinstance(element, Plain):
                     text_frags.append(element.text)
                 else:
-                    text_frags.append(element.asDisplay())
+                    text_frags.append(str(element))
             text = "".join(text_frags)
             matcher = difflib.SequenceMatcher()
             matcher.set_seq2(text)
@@ -332,3 +405,7 @@ class FuzzyDispatcher(BaseDispatcher):
         _, rate = self.event_ref[id(event)].get(self.scope, (self.template, 0.0))
         if generic_issubclass(float, i.annotation) and "rate" in i.name:
             return rate
+
+
+StartsWith = DetectPrefix
+EndsWith = DetectSuffix

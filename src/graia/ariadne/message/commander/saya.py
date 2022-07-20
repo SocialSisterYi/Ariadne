@@ -6,7 +6,6 @@ from graia.broadcast.entities.dispatcher import BaseDispatcher
 from graia.saya.behaviour import Behaviour
 from graia.saya.cube import Cube
 from graia.saya.schema import BaseSchema
-from typing_extensions import LiteralString
 
 from . import Arg, Commander, Slot
 
@@ -15,10 +14,11 @@ from . import Arg, Commander, Slot
 class CommandSchema(BaseSchema):
     """命令监听 Schema, 相当于 commander.command"""
 
-    command: LiteralString
+    command: str
     settings: Dict[str, Union[Slot, Arg]] = field(default_factory=dict)
     dispatchers: List[BaseDispatcher] = field(default_factory=list)
     decorators: List[Decorator] = field(default_factory=list)
+    priority: int = 16
 
     def register(self, func: Callable, commander: Commander):
         """注册 func 至 commander
@@ -27,7 +27,7 @@ class CommandSchema(BaseSchema):
             func (Callable): 命令函数
             commander (Commander): 命令对象
         """
-        commander.command(self.command, self.settings, self.dispatchers, self.decorators)(func)
+        commander.command(self.command, self.settings, self.dispatchers, self.decorators, self.priority)(func)
 
 
 class CommanderBehaviour(Behaviour):
@@ -42,10 +42,14 @@ class CommanderBehaviour(Behaviour):
         cube.metaclass.register(cube.content, self.commander)
         return True
 
-    def uninstall(self, cube: Cube[CommandSchema]):
+    def release(self, cube: Cube[CommandSchema]):
         if not isinstance(cube.metaclass, CommandSchema):
             return
-        for val in self.commander.command_handlers[:]:
-            if cube.content is val.callable:
-                self.commander.command_handlers.remove(val)
+        for entry in self.commander.entries:
+            if entry.callable is cube.content:
+                self.commander.entries.remove(entry)  # refs buried in MatchNode should be released
+                break
+
         return True
+
+    uninstall = release  # FIXME: backward compatibility

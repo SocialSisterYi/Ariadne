@@ -1,6 +1,5 @@
 import asyncio
-from typing import *
-from typing import List, Tuple
+from typing import List, Sequence, Tuple
 
 import pydantic
 from devtools import debug
@@ -10,9 +9,8 @@ from pydantic import BaseModel
 from pydantic.fields import ModelField
 
 from graia.ariadne.console import Console
-from graia.ariadne.entry import *
-from graia.ariadne.entry.message import *
-from graia.ariadne.message.commander import chain_validator
+from graia.ariadne.entry import At, MessageChain
+from graia.ariadne.message.commander import Arg, Commander, Slot, chain_validator
 
 
 async def main():
@@ -30,8 +28,10 @@ async def main():
             return self.__repr__()
 
     def cast_to_list(value: MessageChain, field: ModelField):
+        if not isinstance(value, MessageChain):
+            return value
         if field.outer_type_ is List[str]:
-            return value.asDisplay().split(".")
+            return value.display.split(".")
         if field.outer_type_ is List[MessageChain]:
             return value.split(".")
         return value
@@ -50,7 +50,7 @@ async def main():
             "perm": Slot(1, List[MessageChain]),
         },
     )
-    def set_perm(target: At, perm: List[MessageChain], fast: bool, scope: Scope, value: bool):
+    def set_perm_simple(target: At, perm: List[MessageChain], fast: bool, scope: Scope, value: bool):
         logger.info(
             f"Simplified: Setting {target!r}'s permission {perm} to {value} with scope {scope}, fast: {fast}"
         )
@@ -65,7 +65,11 @@ async def main():
             ),
         },
     )
-    def set_perm(target: At, perm: List[MessageChain], scope: Scope):
+    def set_perm(
+        target: At,
+        perm: List[MessageChain],
+        scope: Scope,
+    ):
         logger.info(f"Setting {target!r}'s permission {perm} with scope {scope}")
 
     @cmd.command("[download_image|img] {...images}", {"images": Slot("images", "raw")})
@@ -76,16 +80,25 @@ async def main():
     def get_img(images):
         logger.info(repr(images))
 
-    try:
-        await cmd.execute(MessageChain.create("lp group ", At(12345), "error perm set database.read false"))
-    except Exception as e:
-        debug(e)
-    await cmd.execute(MessageChain.create("lp group ", At(12345), " perm set database.read false"))
-    await cmd.execute(MessageChain.create("lp group ", At(23456), " perm set system.overload --fast -s crab"))
-    await cmd.execute(
-        MessageChain.create("lp group ", At(12345), " perm set database.read 0 --fast -s local")
-    )
-    await cmd.execute(MessageChain.create("img img.net/1 img.net/2 img.net/3"))
+    @cmd.command("record {title: str = ''} {...targets: At}", {"help": Arg("--help")})
+    def log_targets(title: str, targets: Sequence[At], help: bool):
+        logger.info(title)
+        logger.info(targets)
+        logger.info(help)
+
+    await cmd.execute(MessageChain("lp group ", At(12345), "error perm set database.read false"))
+    debug("Nothing")
+    await cmd.execute(MessageChain("lp group ", At(12345), " perm set database.read false"))
+    debug("db read 1")
+    await cmd.execute(MessageChain("lp group ", At(23456), " perm set system.overload --fast -s crab"))
+    debug("sys overload 1")
+    await cmd.execute(MessageChain("lp group ", At(12345), " perm set database.read 0 --fast -s local"))
+    debug("db read 2")
+    await cmd.execute(MessageChain("img img.net/1 img.net/2 img.net/3"))
+    debug("wildcard")
+    await cmd.execute(MessageChain("record --help"))
+    await cmd.execute(MessageChain("record example-talk ", At(1), " ", At(2), " ", At(3), " --help"))
+    debug("targets")
 
 
 if __name__ == "__main__":

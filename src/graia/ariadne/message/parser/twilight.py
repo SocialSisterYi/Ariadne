@@ -15,7 +15,9 @@ from typing import (
     Generic,
     Iterable,
     List,
+    Literal,
     Optional,
+    Tuple,
     Type,
     TypedDict,
     TypeVar,
@@ -25,6 +27,7 @@ from typing import (
     overload,
 )
 
+from graia.broadcast.builtin.derive import DeriveDispatcher
 from graia.broadcast.entities.decorator import Decorator
 from graia.broadcast.entities.dispatcher import BaseDispatcher
 from graia.broadcast.exceptions import ExecutionStop
@@ -33,12 +36,21 @@ from graia.broadcast.interfaces.dispatcher import DispatcherInterface
 from pydantic.utils import Representation
 from typing_extensions import Self
 
-from ...typing import T, generic_isinstance, generic_issubclass
-from ...util import gen_subclass
+from ...typing import (
+    AnnotatedType,
+    Sentinel,
+    T,
+    generic_isinstance,
+    generic_issubclass,
+    get_origin,
+)
 from ..chain import MessageChain
+from ..commander.util import Param as ParamToken
+from ..commander.util import Text as TextToken
+from ..commander.util import tokenize
 from ..element import Element
+from .base import ChainDecorator
 from .util import (
-    CommandToken,
     ElementType,
     MessageChainType,
     TwilightHelpManager,
@@ -46,7 +58,6 @@ from .util import (
     Unmatched,
     elem_mapping_ctx,
     split,
-    tokenize_command,
     transform_regex,
 )
 
@@ -313,12 +324,12 @@ class ArgumentMatch(Match, Generic[T]):
         def __init__(  # type: ignore
             self,
             *pattern: str,
-            action: Union[str, Type[Action]] = ...,
-            nargs: Union[int, str] = ...,
-            const: T = ...,
-            default: T = ...,
-            type: Callable[[str], T] = ...,
-            choices: Iterable[T] = ...,
+            action: Union[str, Type[Action], Literal[Sentinel]] = Sentinel,
+            nargs: Union[int, str, Literal[Sentinel]] = Sentinel,
+            const: Union[T, Literal[Sentinel]] = Sentinel,
+            default: Union[T, Literal[Sentinel]] = Sentinel,
+            type: Union[Callable[[str], T], Literal[Sentinel]] = Sentinel,
+            choices: Union[Iterable[T], Literal[Sentinel]] = Sentinel,
             optional: bool = True,
         ):
             """初始化 ArgumentMatch 对象.
@@ -375,12 +386,30 @@ class ArgumentMatch(Match, Generic[T]):
             self.arg_data["type"] = MessageChainType()
 
     def param(self, target: Union[int, str]) -> Self:
+        """标注分派位置
+
+        Args:
+            target (Union[int, str]): 分派位置
+
+        Returns:
+            Self: 返回自身
+        """
         self.arg_data["dest"] = target if isinstance(target, str) else f"_#!{target}!#_"
-        return super().param(target)
+        super().param(target)
+        return self
 
     def help(self, value: str) -> Self:
+        """设置帮助值
+
+        Args:
+            value (str): 帮助字符串
+
+        Returns:
+            Self: 返回自身
+        """
         self.arg_data["help"] = value
-        return super().help(value)
+        super().help(value)
+        return self
 
     def __repr_args__(self):
         return [(None, self.pattern)]
@@ -401,6 +430,14 @@ class RegexResult(MatchResult[MessageChain, RegexMatch]):
 class ElementResult(MatchResult[Element, ElementMatch]):
     """表示 ElementMatch 匹配结果"""
 
+    ...
+
+
+class ForceResult(MatchResult[T, Match]):
+    """声明匹配结果一定存在/可通过 matched 判别"""
+
+    result: T
+    matched: bool
     ...
 
 
@@ -489,7 +526,7 @@ class TwilightMatcher:
 
     def match(
         self, arguments: List[str], elem_mapping: Dict[str, Element]
-    ) -> Dict[Union[int, str], MatchResult]:
+    ) -> Tuple[Dict[Union[int, str], MatchResult], re.Match]:
         """匹配参数
         Args:
             arguments (List[str]): 参数列表
@@ -523,7 +560,7 @@ class TwilightMatcher:
                     result[match.dest] = MatchResult(bool(res), match, res)
                 else:
                     result[match.dest] = MatchResult(group is not None, match, res)
-        return result
+        return result, total_match
 
     def get_help(
         self,
@@ -547,11 +584,10 @@ class TwilightMatcher:
         Returns:
             str: 生成的帮助字符串, 被格式化与缩进过了
         """
-
         formatter = formatter_class(prog="")
 
         if usage:
-            formatter.add_usage(None, self._parser._actions, [], prefix=usage + " ")
+            formatter.add_usage(None, self._parser._actions, [], prefix=f"{usage} ")
 
         formatter.add_text(description)
 
@@ -595,18 +631,25 @@ class _TwilightHelpArgs(TypedDict):
 class Twilight(Generic[T_Sparkle], BaseDispatcher):
     """暮光"""
 
+    preprocessor: Union[ChainDecorator, AnnotatedType, None] = None
+
     def __init__(
         self,
         *root: Union[Iterable[Match], Match],
         map_param: Optional[Dict[str, bool]] = None,
+        preprocessor: Union[ChainDecorator, AnnotatedType, None, Literal[Sentinel]] = Sentinel,
     ) -> None:
         """本魔法方法用于初始化本实例.
 
         Args:
             *root (Iterable[Match] | Match): 匹配规则.
-            map_param (Dict[str, bool], optional): 向 MessageChain.asMappingString 传入的参数.
+            map_param (Dict[str, bool], optional): 控制 MessageChain 转化的参数.
+            preprocessor (ChainDecorator, optional): 消息链预处理器. \
+            应该来自 `graia.ariadne.message.parser.base` 模块. Defaults to None.
         """
         self.map_param = map_param or {}
+        if preprocessor is not Sentinel:
+            self.preprocessor = preprocessor
         self.help_data: Optional[_TwilightHelpArgs] = None
         self.help_id: str = TwilightHelpManager.AUTO_ID
         self.help_brief: str = TwilightHelpManager.AUTO_ID
@@ -615,7 +658,7 @@ class Twilight(Generic[T_Sparkle], BaseDispatcher):
     def __repr__(self) -> str:
         return f"<Twilight: {self.matcher}>"
 
-    def generate(self, chain: MessageChain) -> T_Sparkle:
+    def generate(self, chain: MessageChain, storage: Optional[Dict[str, Any]] = None) -> T_Sparkle:
         """从消息链生成 Sparkle 实例.
 
         Args:
@@ -627,9 +670,12 @@ class Twilight(Generic[T_Sparkle], BaseDispatcher):
         mapping_str, elem_mapping = chain._to_mapping_str(**self.map_param)
         token = elem_mapping_ctx.set(elem_mapping)
         arguments: List[str] = split(mapping_str, keep_quote=True)
-        res = self.matcher.match(arguments, elem_mapping)
+        res, match = self.matcher.match(arguments, elem_mapping)
+        if storage:
+            storage["__parser_regex_match_obj__"] = match
+            storage["__parser_regex_match_map__"] = elem_mapping
         elem_mapping_ctx.reset(token)
-        return Sparkle(res)  # type: ignore
+        return cast(T_Sparkle, Sparkle(res))
 
     @classmethod
     def from_command(  # ANCHOR: Sparkle: From command
@@ -650,15 +696,18 @@ class Twilight(Generic[T_Sparkle], BaseDispatcher):
         extra_args = extra_args or []
         match: List[RegexMatch] = []
 
-        for t_type, token_list in tokenize_command(command):
-            if t_type is CommandToken.TEXT:
-                match.append(FullMatch(*token_list).space(SpacePolicy.FORCE))
-            elif t_type is CommandToken.CHOICE:
-                match.append(UnionMatch(*token_list).space(SpacePolicy.FORCE))
-            elif t_type is CommandToken.PARAM:
-                match.append(ParamMatch().space(SpacePolicy.FORCE).param(token_list[0]))
+        for token in tokenize(command):
+            if isinstance(token, TextToken):
+                text_list = list(token.choice)
+                if len(text_list) == 1:
+                    match.append(FullMatch(text_list[0]).space(SpacePolicy.FORCE))
+                else:
+                    match.append(UnionMatch(text_list).space(SpacePolicy.FORCE))
+            elif isinstance(token, ParamToken):
+                assert len(token.names) == 1, "Param aliasing is not allowed!"
+                match.append(ParamMatch().space(SpacePolicy.FORCE).param(next(iter(token.names))))
             else:
-                raise ValueError(f"unexpected token type: {t_type}")
+                raise ValueError(f"unexpected token: {token}")
 
         if match:
             match[-1].space_policy = SpacePolicy.NOSPACE
@@ -744,12 +793,22 @@ class Twilight(Generic[T_Sparkle], BaseDispatcher):
             ExecutionStop: 匹配以任意方式失败
         """
         local_storage = interface.local_storage
-        chain: MessageChain = await interface.lookup_param("message_chain", MessageChain, None)
+        chain: MessageChain
+        if isinstance(self.preprocessor, ChainDecorator):
+            chain = await interface.lookup_by_directly(
+                DecoratorInterface(), "message_chain", MessageChain, self.preprocessor
+            )
+        elif isinstance(self.preprocessor, AnnotatedType):
+            chain = await interface.lookup_by_directly(
+                DeriveDispatcher(), "twilight_derive", self.preprocessor, None
+            )
+        else:
+            chain = await interface.lookup_param("message_chain", MessageChain, None)
         with contextlib.suppress(Exception):
-            local_storage[f"{__name__}:result"] = self.generate(chain)
+            local_storage[f"{__name__}:result"] = self.generate(chain, local_storage)
             local_storage[f"{__name__}:twilight"] = self
             return
-        raise ExecutionStop
+        interface.stop()
 
     async def catch(self, interface: DispatcherInterface):
         local_storage = interface.local_storage
@@ -761,12 +820,15 @@ class Twilight(Generic[T_Sparkle], BaseDispatcher):
         if interface.name in sparkle.res:
             result = sparkle.get(interface.name)
             if generic_isinstance(result.origin, interface.annotation):
-                return result.origin
-            if any(
-                generic_issubclass(res_cls, interface.annotation) for res_cls in gen_subclass(MatchResult)
-            ):
+                from loguru import logger
+
+                logger.warning(
+                    f"Please use {interface.name}: {result.__class__.__qualname__} to get origin attribute!"
+                )
+                interface.stop()
+            if generic_issubclass(get_origin(interface.annotation), MatchResult):
                 return result
-            if generic_isinstance(result.result, interface.annotation):
+            if generic_isinstance(result.result, get_origin(interface.annotation)):
                 return result.result
 
 
@@ -775,12 +837,19 @@ class ResultValue(Decorator):
 
     pre = True
 
+    def __call__(self, _: Any, i: DispatcherInterface) -> Any:
+        sparkle: Sparkle = i.local_storage[f"{__name__}:result"]
+        res = sparkle.res.get(i.name, None)
+        if generic_isinstance(res, i.annotation):
+            return res.result if res else None
+        i.stop()
+
     @staticmethod
     async def target(i: DecoratorInterface):
         sparkle: Sparkle = i.local_storage[f"{__name__}:result"]
         res = sparkle.res.get(i.name, None)
         if generic_isinstance(res, i.annotation):
-            return res
+            return res.result if res else None
         raise ExecutionStop
 
 
@@ -793,10 +862,20 @@ class Help(Decorator, Generic[T]):
 
     @overload
     def __init__(self) -> None:
+        """
+        Args:
+            formatter (Callable[[str, DecoratorInterface], Union[Awaitable[T], T]], optional): \
+                帮助信息格式化函数.
+        """
         ...
 
     @overload
     def __init__(self, formatter: Callable[[str, DecoratorInterface], Union[Awaitable[T], T]]) -> None:
+        """
+        Args:
+            formatter (Callable[[str, DecoratorInterface], Union[Awaitable[T], T]], optional): \
+                帮助信息格式化函数.
+        """
         ...
 
     def __init__(

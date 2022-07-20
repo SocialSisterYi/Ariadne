@@ -1,23 +1,39 @@
 """Ariadne 的类型标注"""
 
+
+import builtins
 import contextlib
-import typing
+import enum
+import sys
+import types
+from types import MethodType, TracebackType
 from typing import (
     TYPE_CHECKING,
     AbstractSet,
     Any,
+    Callable,
     Dict,
     Generic,
+    Literal,
     Mapping,
     Optional,
     Sequence,
     Tuple,
+    Type,
     TypedDict,
     TypeVar,
     Union,
 )
 
-from typing_extensions import ParamSpec, Protocol, runtime_checkable
+import typing_extensions
+from typing_extensions import (
+    Annotated,
+    ParamSpec,
+    Protocol,
+    TypeAlias,
+    get_args,
+    runtime_checkable,
+)
 
 if TYPE_CHECKING:
     from .message.chain import MessageChain
@@ -33,14 +49,6 @@ T_stop = TypeVar("T_stop")
 T_step = TypeVar("T_step")
 
 
-class Slice(Generic[T_start, T_stop, T_step]):  # type: ignore
-    """对 slice 对象的泛型化包装, 但无法直接继承于 slice"""
-
-    start: T_start
-    stop: T_stop
-    step: T_step
-
-
 MessageIndex = Union[Tuple[int, Optional[int]], int]
 
 IntStr = Union[int, str]
@@ -49,6 +57,7 @@ DictIntStrAny = Dict[IntStr, Any]
 DictStrAny = Dict[str, Any]
 MappingIntStrAny = Mapping[IntStr, Any]
 ReprArgs = Sequence[Tuple[Optional[str], Any]]
+Unions = (Union, types.UnionType) if sys.version_info >= (3, 10) else (Union,)
 
 
 class SendMessageDict(TypedDict):
@@ -122,7 +131,7 @@ class SendMessageActionProtocol(Protocol, Generic[T_co]):
         ...
 
 
-def generic_issubclass(cls: type, par: Union[type, Any, Tuple[type, ...]]) -> bool:
+def generic_issubclass(cls: Any, par: Union[type, Any, Tuple[type, ...]]) -> bool:
     """检查 cls 是否是 args 中的一个子类, 支持泛型, Any, Union
 
     Args:
@@ -137,14 +146,18 @@ def generic_issubclass(cls: type, par: Union[type, Any, Tuple[type, ...]]) -> bo
     with contextlib.suppress(TypeError):
         if isinstance(par, (type, tuple)):
             return issubclass(cls, par)
-        if typing.get_origin(par) is Union:
-            return any(generic_issubclass(cls, p) for p in typing.get_args(par))
+        if get_origin(par) in Unions:
+            return any(generic_issubclass(cls, p) for p in get_args(par))
         if isinstance(par, TypeVar):
             if par.__constraints__:
                 return any(generic_issubclass(cls, p) for p in par.__constraints__)
             if par.__bound__:
                 return generic_issubclass(cls, par.__bound__)
     return False
+
+
+def get_origin(obj: Any) -> Any:
+    return typing_extensions.get_origin(obj) or obj
 
 
 def generic_isinstance(obj: Any, par: Union[type, Any, Tuple[type, ...]]) -> bool:
@@ -162,11 +175,46 @@ def generic_isinstance(obj: Any, par: Union[type, Any, Tuple[type, ...]]) -> boo
     with contextlib.suppress(TypeError):
         if isinstance(par, (type, tuple)):
             return isinstance(obj, par)
-        if typing.get_origin(par) is Union:
-            return any(generic_isinstance(obj, p) for p in typing.get_args(par))
+        if get_origin(par) in Unions:
+            return any(generic_isinstance(obj, p) for p in get_args(par))
         if isinstance(par, TypeVar):
             if par.__constraints__:
                 return any(generic_isinstance(obj, p) for p in par.__constraints__)
             if par.__bound__:
                 return generic_isinstance(obj, par.__bound__)
     return False
+
+
+class _SentinelClass(enum.Enum):
+    _Sentinel = object()
+
+
+Sentinel = _SentinelClass._Sentinel
+
+FlagAlias: TypeAlias = Literal[Sentinel]
+MaybeFlag: TypeAlias = Union[Literal[Sentinel], T]
+
+T_Callable = TypeVar("T_Callable", bound=Callable)
+
+Wrapper: TypeAlias = Callable[[T_Callable], T_Callable]
+
+AnnotatedType = type(Annotated[int, lambda x: x > 0])
+
+ExceptionHook: TypeAlias = Callable[[Type[BaseException], BaseException, Optional[TracebackType]], Any]
+
+if sys.version_info >= (3, 9):
+    classmethod = builtins.classmethod
+else:
+
+    class classmethod:
+        "Emulate PyClassMethod_Type()"
+
+        def __init__(self, f):
+            self.f = f
+
+        def __get__(self, obj, cls=None):
+            if cls is None:
+                cls = type(obj)
+            if hasattr(type(self.f), "__get__"):
+                return self.f.__get__(cls, cls)
+            return MethodType(self.f, cls)

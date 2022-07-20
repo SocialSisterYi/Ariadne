@@ -1,37 +1,33 @@
 """Mirai 的各种事件"""
 from datetime import datetime
 from enum import Enum
-from typing import Any, Dict, List, Optional
+from typing import TYPE_CHECKING, Any, Dict, List, Optional
 
 from graia.broadcast.entities.dispatcher import BaseDispatcher
 from graia.broadcast.interfaces.dispatcher import DispatcherInterface
 from pydantic import Field
 from typing_extensions import Literal
 
-from ..exception import InvalidSession
+from graia.ariadne.util import deprecated
+
+from ..connection.util import CallMethod
 from ..message.chain import MessageChain
 from ..message.element import Element
-from ..model import CallMethod, Client, Friend, Group, Member, MemberPerm
+from ..model import Client, Friend, Group, Member, MemberPerm
 from ..typing import generic_issubclass
 from . import MiraiEvent
 
 
 class BotEvent(MiraiEvent):
-    """
-    指示有关 Bot 本身的事件.
-    """
+    """指示有关 Bot 本身的事件."""
 
 
 class FriendEvent(MiraiEvent):
-    """
-    指示有关好友的事件.
-    """
+    """指示有关好友的事件"""
 
 
 class GroupEvent(MiraiEvent):
-    """
-    指示有关群组的事件.
-    """
+    """指示有关群组的事件."""
 
 
 class BotOnlineEvent(BotEvent):
@@ -220,11 +216,18 @@ class BotMuteEvent(GroupEvent, BotEvent):
 
     type = "BotMuteEvent"
 
-    durationSeconds: int
+    duration: int = Field(..., alias="durationSeconds")
     """禁言时长, 单位为秒"""
 
     operator: Member
     """执行禁言操作的管理员/群主"""
+
+    if not TYPE_CHECKING:
+
+        @property
+        @deprecated("0.8.0", "Use `duration` instead")
+        def duration_seconds(self) -> int:
+            return self.duration
 
     class Dispatcher(BaseDispatcher):
         @staticmethod
@@ -296,9 +299,6 @@ class BotJoinGroupEvent(GroupEvent, BotEvent):
 class BotLeaveEventActive(GroupEvent, BotEvent):
     """Bot 账号主动退出了某群组.
 
-    Tip:
-        当监听该事件或该类事件时, 请优先考虑使用原始事件类作为类型注解, 以此获得事件类实例, 便于获取更多的信息!
-
     提供的额外注解支持:
         - Ariadne (annotation): 发布事件的应用实例
         - Group (annotation): 发生该事件的群组
@@ -321,12 +321,10 @@ class BotLeaveEventActive(GroupEvent, BotEvent):
 class BotLeaveEventKick(GroupEvent, BotEvent):
     """Bot 账号被某群组的管理员/群主从该群组中删除.
 
-    Tip:
-        当监听该事件或该类事件时, 请优先考虑使用原始事件类作为类型注解, 以此获得事件类实例, 便于获取更多的信息!
-
     提供的额外注解支持:
         - Ariadne (annotation): 发布事件的应用实例
         - Group (annotation): 发生该事件的群组
+        - Member (annotation): 操作者, 为群主或管理员.
     """
 
     type: str = "BotLeaveEventKick"
@@ -334,13 +332,44 @@ class BotLeaveEventKick(GroupEvent, BotEvent):
     group: Group
     """Bot 被踢出的群的信息"""
 
+    operator: Optional[Member]
+    """操作员, 为群主或管理员"""
+
     class Dispatcher(BaseDispatcher):
         @staticmethod
         async def catch(interface: DispatcherInterface):
-            if isinstance(interface.event, BotLeaveEventKick) and generic_issubclass(
-                Group, interface.annotation
-            ):
-                return interface.event.group
+            if isinstance(interface.event, BotLeaveEventKick):
+                if generic_issubclass(Group, interface.annotation):
+                    return interface.event.group
+                if generic_issubclass(Member, interface.annotation):
+                    return interface.event.operator
+
+
+class BotLeaveEventDisband(GroupEvent, BotEvent):
+    """Bot 账号因群主解散群而退出某个群组.
+
+    提供的额外注解支持:
+        - Ariadne (annotation): 发布事件的应用实例
+        - Group (annotation): 发生该事件的群组
+        - Member (annotation): 操作者, 一定是群主.
+    """
+
+    type: str = "BotLeaveEventKick"
+
+    group: Group
+    """Bot 退出的群的信息"""
+
+    operator: Optional[Member]
+    """操作员, 为群主"""
+
+    class Dispatcher(BaseDispatcher):
+        @staticmethod
+        async def catch(interface: DispatcherInterface):
+            if isinstance(interface.event, BotLeaveEventDisband):
+                if generic_issubclass(Group, interface.annotation):
+                    return interface.event.group
+                if generic_issubclass(Member, interface.annotation):
+                    return interface.event.operator
 
 
 class GroupRecallEvent(GroupEvent):
@@ -357,10 +386,10 @@ class GroupRecallEvent(GroupEvent):
 
     type = "GroupRecallEvent"
 
-    authorId: int
+    author_id: int = Field(..., alias="authorId")
     """原消息发送者的 QQ 号"""
 
-    messageId: int
+    message_id: int = Field(..., alias="messageId")
     """原消息的 ID"""
 
     time: datetime
@@ -394,11 +423,11 @@ class FriendRecallEvent(FriendEvent):
 
     type = "FriendRecallEvent"
 
-    authorId: int
-    """撤回消息的发送者的 QQ 号"""
+    author_id: int = Field(..., alias="authorId")
+    """原消息发送者的 QQ 号"""
 
-    messageId: int
-    """撤回消息的 ID"""
+    message_id: int = Field(..., alias="messageId")
+    """原消息的 ID"""
 
     time: datetime
     """原消息发送时间"""
@@ -454,14 +483,14 @@ class NudgeEvent(MiraiEvent):
     class Dispatcher(BaseDispatcher):
         @staticmethod
         async def catch(interface: DispatcherInterface):
-            from .. import get_running
+            from ..app import Ariadne
 
             ev = interface.event
             if isinstance(ev, NudgeEvent):
                 if generic_issubclass(Group, interface.annotation) and ev.group_id is not None:
-                    return await get_running().getGroup(ev.group_id)
+                    return await Ariadne.current().get_group(ev.group_id)
                 if generic_issubclass(Friend, interface.annotation) and ev.friend_id is not None:
-                    return await get_running().getFriend(ev.friend_id)
+                    return await Ariadne.current().get_friend(ev.friend_id)
 
 
 class GroupNameChangeEvent(GroupEvent):
@@ -896,8 +925,15 @@ class MemberMuteEvent(GroupEvent):
     """
 
     type = "MemberMuteEvent"
-    durationSeconds: int
+    duration: int = Field(..., alias="durationSeconds")
     """禁言时长, 单位为秒"""
+
+    if not TYPE_CHECKING:
+
+        @property
+        @deprecated("0.8.0", "Use `duration` instead")
+        def duration_seconds(self):
+            return self.duration
 
     member: Member
     """被禁言的成员"""
@@ -987,19 +1023,17 @@ class MemberHonorChangeEvent(GroupEvent):
 
 
 class RequestEvent(MiraiEvent):
-    """
-    各种申请事件的基类.
-    """
+    """各种申请事件的基类."""
 
     type: str
 
-    requestId: int = Field(..., alias="eventId")
+    request_id: int = Field(..., alias="eventId")
     """事件标识，响应该事件时的标识"""
 
     supplicant: int = Field(..., alias="fromId")
     """申请人QQ号"""
 
-    sourceGroup: int = Field(..., alias="groupId")
+    source_group: int = Field(..., alias="groupId")
 
     nickname: str = Field(..., alias="nick")
     """申请人的昵称或群名片"""
@@ -1008,24 +1042,17 @@ class RequestEvent(MiraiEvent):
     """申请消息"""
 
     async def _operate(self, operation: int, msg: str = "") -> None:
-        """
-        内部接口, 用于内部便捷发送相应操作.
-        """
-        from .. import get_running
-        from ..adapter import Adapter
+        """内部接口, 用于内部便捷发送相应操作."""
+        from ..app import Ariadne
 
-        adapter = get_running(Adapter)
-        if not adapter.mirai_session.session_key:
-            raise InvalidSession("you must authenticate before this.")
         api_route = self.type[0].lower() + self.type[1:]
-        await adapter.call_api(
-            f"resp/{api_route}",
+        await Ariadne.current().connection.call(
+            f"resp_{api_route}",
             CallMethod.POST,
             {
-                "sessionKey": adapter.mirai_session.session_key,
-                "eventId": self.requestId,
+                "eventId": self.request_id,
                 "fromId": self.supplicant,
-                "groupId": self.sourceGroup,
+                "groupId": self.source_group,
                 "operate": operation,
                 "message": msg,
             },
@@ -1063,7 +1090,7 @@ class NewFriendRequestEvent(RequestEvent, FriendEvent):
     message: str
     """申请消息"""
 
-    sourceGroup: int = Field(..., alias="groupId")
+    source_group: int = Field(..., alias="groupId")
     """申请人如果通过某个群添加好友, 该项为该群群号, 否则为0"""
 
     async def accept(self, message: str = "") -> None:
@@ -1096,7 +1123,7 @@ class NewFriendRequestEvent(RequestEvent, FriendEvent):
         """
         await self._operate(1, message)
 
-    async def rejectAndBlock(self, message: str = "") -> None:
+    async def reject_and_block(self, message: str = "") -> None:
         """拒绝对方的加好友请求, 并不再接受来自对方的加好友请求.
 
         Args:
@@ -1145,10 +1172,10 @@ class MemberJoinRequestEvent(RequestEvent, GroupEvent):
     message: str
     """申请消息"""
 
-    sourceGroup: int = Field(..., alias="groupId")
+    source_group: int = Field(..., alias="groupId")
     """申请人申请入群的群号"""
 
-    groupName: str
+    group_name: str = Field(..., alias="groupName")
     """申请人申请入群的群名称"""
 
     async def accept(self, message: str = "") -> None:
@@ -1196,7 +1223,7 @@ class MemberJoinRequestEvent(RequestEvent, GroupEvent):
         """
         await self._operate(2, message)
 
-    async def rejectAndBlock(self, message: str = "") -> None:
+    async def reject_and_block(self, message: str = "") -> None:
         """拒绝对方加入群组的请求, 并不再接受来自对方加入群组的请求.
 
         Args:
@@ -1211,7 +1238,7 @@ class MemberJoinRequestEvent(RequestEvent, GroupEvent):
         """
         await self._operate(3, message)
 
-    async def ignoreAndBlock(self, message: str = "") -> None:
+    async def ignore_and_block(self, message: str = "") -> None:
         """忽略对方加入群组的请求, 并不再接受来自对方加入群组的请求.
 
         Args:
@@ -1245,7 +1272,7 @@ class BotInvitedJoinGroupRequestEvent(RequestEvent, BotEvent, GroupEvent):
 
     type = "BotInvitedJoinGroupRequestEvent"
 
-    requestId: int = Field(..., alias="eventId")
+    request_id: int = Field(..., alias="eventId")
     """事件标识，响应该事件时的标识"""
 
     supplicant: int = Field(..., alias="fromId")
@@ -1257,10 +1284,10 @@ class BotInvitedJoinGroupRequestEvent(RequestEvent, BotEvent, GroupEvent):
     message: str
     """申请消息"""
 
-    sourceGroup: int = Field(..., alias="groupId")
+    source_group: int = Field(..., alias="groupId")
     """被邀请进入群的群号"""
 
-    groupName: str
+    group_name: str = Field(..., alias="groupName")
     """被邀请进入群的群名称"""
 
     async def accept(self, message: str = "") -> None:

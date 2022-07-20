@@ -2,50 +2,51 @@ import asyncio
 import time
 
 from devtools import debug
+from graia.broadcast import Broadcast
 
 from graia.ariadne.entry.message import *
 from graia.ariadne.message.commander import Arg, Commander, Slot
 from graia.ariadne.util import Dummy
 
-RUN = 20000
+RUN = 10000
 
 if __name__ == "__main__":
 
     async def m():
-        cmd = Commander(Dummy())
+        cmd = Commander(Broadcast(loop=asyncio.get_running_loop()))
 
-        msg = MessageChain.create(".test", " --foo ", At(123))
+        msg = MessageChain(".test foo bar fox mop ", At(123))
 
-        @cmd.command(".test --foo {v}")
-        def _(v: At = None):
-            print(v)
+        handles = 15
 
-        @cmd.command(".test --foo {v}")
-        def _(v: At = None):
-            print(v)
+        for _ in range(handles):
 
-        @cmd.command(".test --foo {v}")
-        def _(v: At = None):
-            print(v)
+            @cmd.command(".test foo bar fox mop {v}")
+            def _(v: At):
+                ...
 
-        async def disp(x):
-            debug(x.dispatchers[0].data)
+        async def disp(entry, dispatchers):
+            debug(dispatchers[0].data)
+
+        exec = cmd.broadcast.Executor
 
         cmd.broadcast.Executor = disp
 
         await cmd.execute(msg)
-        cmd.broadcast.Executor = Dummy()
 
-        li: list[int] = []
+        async def a(*args, **kwargs):
+            ...
+
+        cmd.broadcast.Executor = a
+
+        sec: float = 0.0
 
         for _ in range(RUN):
-            st = time.thread_time_ns()
+            st = time.time()
             await cmd.execute(msg)
-            ed = time.thread_time_ns()
-            li.append(ed - st)
+            ed = time.time()
+            sec += ed - st
 
-        print(
-            f"Commander: {sum(li) / RUN} ns per loop with {RUN} loops, {len(cmd.command_handlers)} handlers"
-        )
+        print(f"Commander: {RUN*handles/sec} loop/s per handler, {RUN} loops, {handles} handlers")
 
     asyncio.run(m())

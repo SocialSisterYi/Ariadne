@@ -5,28 +5,26 @@ from enum import Enum
 from io import BytesIO
 from json import dumps as j_dump
 from pathlib import Path
-from typing import TYPE_CHECKING, Iterable, List, NoReturn, Optional, Union
+from typing import TYPE_CHECKING, Any, Iterable, List, Optional, Union, overload
 
+from graia.amnesia.builtins.aiohttp import AiohttpClientInterface
+from graia.amnesia.message import Element as BaseElement
+from graia.amnesia.message import Text as BaseText
 from pydantic import validator
 from pydantic.fields import Field
+from typing_extensions import Self
 
-from ..context import upload_method_ctx
-from ..exception import InvalidArgument
-from ..model import AriadneBaseModel, Friend, Member, Stranger, UploadMethod
-from ..util import wrap_bracket
+from ..connection.util import UploadMethod
+from ..model import AriadneBaseModel, Friend, Member, Stranger
+from ..util import AttrConvertMixin, deprecated, escape_bracket, internal_cls
 
 if TYPE_CHECKING:
+    from ..event.message import MessageEvent
     from ..typing import ReprArgs
     from .chain import MessageChain
 
 
-class NotSendableElement(Exception):
-    """
-    指示一个元素是不可发送的.
-    """
-
-
-class Element(AriadneBaseModel):
+class Element(AriadneBaseModel, AttrConvertMixin, BaseElement):
     """
     指示一个消息中的元素.
     type (str): 元素类型
@@ -41,22 +39,33 @@ class Element(AriadneBaseModel):
     def __hash__(self):
         return hash((type(self),) + tuple(self.__dict__.values()))
 
-    @staticmethod
-    def asDisplay() -> str:
-        """返回该元素的 "显示" 形式字符串, 趋近于你见到的样子.
+    if not TYPE_CHECKING:
+
+        @deprecated("0.8.0", "Use `display` instead.")
+        def as_display(self) -> str:
+            """返回该元素的 "显示" 形式字符串, 趋近于你见到的样子.
+
+            Returns:
+                str: "显示" 字符串.
+            """
+            return str(self)
+
+    @property
+    def display(self) -> str:
+        """该元素的 "显示" 形式字符串, 趋近于你见到的样子.
 
         Returns:
             str: "显示" 字符串.
         """
-        return ""
+        return str(self)
 
-    def asPersistentString(self) -> str:
+    def as_persistent_string(self) -> str:
         """持久化字符串表示.
 
         Returns:
             str: 持久化字符串.
         """
-        data: str = wrap_bracket(
+        data: str = escape_bracket(
             j_dump(
                 self.dict(
                     exclude={"type"},
@@ -67,21 +76,11 @@ class Element(AriadneBaseModel):
         )
         return f"[mirai:{self.type}:{data}]"
 
-    def prepare(self) -> None:
-        """
-        为元素被发送进行准备,
-        若无异常被引发, 则完成本方法后元素应可被发送.
-
-        保留空实现以允许不需要 `prepare`的元素类型存在.
-
-        若本元素设计时便不可被发送, 请引发 `NotSendableElement` 异常.
-        """
-
     def __repr_args__(self) -> "ReprArgs":
         return list(self.dict(exclude={"type"}).items())
 
     def __str__(self) -> str:
-        return self.asDisplay()
+        return ""
 
     def __add__(self, content: Union["MessageChain", List["Element"], "Element", str]) -> "MessageChain":
         from .chain import MessageChain
@@ -106,7 +105,7 @@ class Element(AriadneBaseModel):
         return MessageChain([self] + content, inline=True)
 
 
-class Plain(Element):
+class Plain(Element, BaseText):
     """代表消息中的文本元素"""
 
     type: str = "Plain"
@@ -120,15 +119,19 @@ class Plain(Element):
         Args:
             text (str): 元素所包含的文字
         """
-        super().__init__(text=text, **kwargs)  # type: ignore
+        super().__init__(text=text)  # type: ignore
 
-    def asDisplay(self) -> str:
+    def __str__(self) -> str:
         return self.text
 
-    def asPersistentString(self) -> str:
+    def as_persistent_string(self) -> str:
         return self.text
 
+    def __eq__(self, other: object) -> bool:
+        return isinstance(other, (Plain, BaseText)) and self.text == other.text
 
+
+@internal_cls()
 class Source(Element):
     """表示消息在一个特定聊天区域内的唯一标识"""
 
@@ -140,26 +143,21 @@ class Source(Element):
     time: datetime
     """发送时间"""
 
-    def prepare(self) -> NoReturn:
-        raise NotSendableElement
-
-    def asPersistentString(self) -> str:
+    def as_persistent_string(self) -> str:
         return ""
 
-    async def fetchOriginal(self) -> "MessageChain":
+    async def fetch_original(self) -> "MessageChain":
         """尝试从本元素恢复原本的消息链, 有可能失败.
 
         Returns:
             MessageChain: 原来的消息链.
         """
-        from .. import get_running
         from ..app import Ariadne
 
-        ariadne = get_running(Ariadne)
-
-        return (await ariadne.getMessageFromId(self.id)).messageChain
+        return (await Ariadne.current().get_message_from_id(self.id)).message_chain
 
 
+@internal_cls()
 class Quote(Element):
     """表示消息中回复其他消息/用户的部分, 通常包含一个完整的消息链(`origin` 属性)"""
 
@@ -168,13 +166,13 @@ class Quote(Element):
     id: int
     """引用的消息 ID"""
 
-    groupId: int
+    group_id: int = Field(..., alias="groupId")
     """引用消息所在群号 (好友消息为 0)"""
 
-    senderId: int
+    sender_id: int = Field(..., alias="senderId")
     """发送者 QQ 号"""
 
-    targetId: int
+    target_id: int = Field(..., alias="targetId")
     """原消息的接收者QQ号 (或群号) """
 
     origin: "MessageChain"
@@ -186,10 +184,7 @@ class Quote(Element):
 
         return MessageChain(v)  # no need to parse objects, they are universal!
 
-    def prepare(self) -> NoReturn:
-        raise NotSendableElement
-
-    def asPersistentString(self) -> str:
+    def as_persistent_string(self) -> str:
         return ""
 
 
@@ -201,7 +196,7 @@ class At(Element):
     target: int
     """At 的目标 QQ 号"""
 
-    display: Optional[str] = None
+    representation: Optional[str] = Field(None, alias="display")
     """显示名称"""
 
     def __init__(self, target: Union[int, Member] = ..., **data) -> None:
@@ -220,14 +215,8 @@ class At(Element):
     def __eq__(self, other: "At"):
         return isinstance(other, At) and self.target == other.target
 
-    def prepare(self) -> None:
-        if upload_method_ctx.get(None) != UploadMethod.Group:
-            raise InvalidArgument(
-                f"you cannot use this element in this method: {upload_method_ctx.get().value}"
-            )
-
-    def asDisplay(self) -> str:
-        return f"@{self.display}" if self.display else f"@{self.target}"
+    def __str__(self) -> str:
+        return f"@{self.representation}" if self.representation else f"@{self.target}"
 
 
 class AtAll(Element):
@@ -238,14 +227,8 @@ class AtAll(Element):
     def __init__(self, *_, **__) -> None:
         super().__init__()
 
-    def asDisplay(self) -> str:
+    def __str__(self) -> str:
         return "@全体成员"
-
-    def prepare(self) -> None:
-        if upload_method_ctx.get(None) != UploadMethod.Group:
-            raise InvalidArgument(
-                f"you cannot use this element in this method: {upload_method_ctx.get().value}"
-            )
 
 
 class Face(Element):
@@ -253,45 +236,49 @@ class Face(Element):
 
     type: str = "Face"
 
-    faceId: Optional[int] = None
+    face_id: Optional[int] = Field(None, alias="faceId")
     """QQ 表情编号, 优先于 name"""
 
     name: Optional[str] = None
     """QQ 表情名称"""
 
     def __init__(self, id: int = ..., name: str = ..., **data) -> None:
+        """
+
+        Args:
+            face_id (int, optional): QQ 表情编号
+            name (str, optional): QQ 表情名称
+        """
         if id is not ...:
             data.update(faceId=id)
         if name is not ...:
             data.update(name=name)
         super().__init__(**data)
 
-    def asDisplay(self) -> str:
-        return f"[表情: {self.name or self.faceId}]"
+    def __str__(self) -> str:
+        return f"[表情: {self.name or self.face_id}]"
 
     def __eq__(self, other) -> bool:
-        return isinstance(other, Face) and (self.faceId == other.faceId or self.name == other.name)
+        return isinstance(other, Face) and (self.face_id == other.face_id or self.name == other.name)
 
 
+@internal_cls()
 class MarketFace(Element):
-    """表示消息中的商城表情.
-
-    注意: 本类型不支持用户发送
-    """
+    """表示消息中的商城表情."""
 
     type: str = "MarketFace"
 
-    faceId: Optional[int] = Field(None, alias="id")
+    face_id: Optional[int] = Field(None, alias="id")
     """QQ 表情编号"""
 
     name: Optional[str] = None
     """QQ 表情名称"""
 
-    def asDisplay(self) -> str:
-        return f"[商城表情: {self.name or self.faceId}]"
+    def __str__(self) -> str:
+        return f"[商城表情: {self.name or self.face_id}]"
 
     def __eq__(self, other) -> bool:
-        return isinstance(other, MarketFace) and (self.faceId == other.faceId or self.name == other.name)
+        return isinstance(other, MarketFace) and (self.face_id == other.face_id or self.name == other.name)
 
 
 class Xml(Element):
@@ -305,7 +292,7 @@ class Xml(Element):
     def __init__(self, xml: str, **_) -> None:
         super().__init__(xml=xml)
 
-    def asDisplay(self) -> str:
+    def __str__(self) -> str:
         return "[XML消息]"
 
 
@@ -314,18 +301,15 @@ class Json(Element):
 
     type = "Json"
 
-    Json: str = Field(..., alias="json")
-    """XML文本"""
+    Json: str = Field(None, alias="json")
+    """JSON 文本"""
 
-    def __init__(self, json: Union[dict, str], **kwargs) -> None:
-        if isinstance(json, dict):
+    def __init__(self, json: Union[dict, list, str], **kwargs) -> None:
+        if isinstance(json, (dict, list)):
             json = j_dump(json)
         super().__init__(json=json, **kwargs)
 
-    def dict(self, *args, **kwargs):
-        return super().dict(*args, **({**kwargs, "by_alias": True}))
-
-    def asDisplay(self) -> str:
+    def __str__(self) -> str:
         return "[JSON消息]"
 
 
@@ -340,7 +324,7 @@ class App(Element):
     def __init__(self, content: str, **_) -> None:
         super().__init__(content=content)
 
-    def asDisplay(self) -> str:
+    def __str__(self) -> str:
         return "[APP消息]"
 
 
@@ -407,7 +391,7 @@ class Poke(Element):
     def __init__(self, name: PokeMethods, *_, **__) -> None:
         super().__init__(name=name)
 
-    def asDisplay(self) -> str:
+    def __str__(self) -> str:
         return f"[戳一戳:{self.name}]"
 
 
@@ -422,7 +406,7 @@ class Dice(Element):
     def __init__(self, value: int, *_, **__) -> None:
         super().__init__(value=value)
 
-    def asDisplay(self) -> str:
+    def __str__(self) -> str:
         return f"[骰子:{self.value}]"
 
 
@@ -449,6 +433,7 @@ class MusicShare(Element):
     """表示消息中音乐分享消息元素"""
 
     type = "MusicShare"
+
     kind: MusicShareKind
     """音乐分享的来源"""
 
@@ -492,26 +477,26 @@ class MusicShare(Element):
             brief=brief,
         )
 
-    def asDisplay(self) -> str:
+    def __str__(self) -> str:
         return f"[音乐分享:{self.title}, {self.brief}]"
 
 
-class ForwardNode(AriadneBaseModel):
+class ForwardNode(AriadneBaseModel, AttrConvertMixin):
     """表示合并转发中的一个节点"""
 
-    senderId: int
+    sender_id: int = Field(None, alias="senderId")
     """发送者 QQ 号 (决定显示头像)"""
 
     time: datetime
     """发送时间"""
 
-    senderName: str
+    sender_name: str = Field(None, alias="senderName")
     """发送者显示名字"""
 
-    messageChain: Optional["MessageChain"]
+    message_chain: Optional["MessageChain"] = Field(None, alias="messageChain")
     """发送的消息链"""
 
-    messageId: Optional[int]
+    message_id: Optional[int] = Field(None, alias="messageId")
     """缓存的消息 ID"""
 
     def __init__(
@@ -522,6 +507,14 @@ class ForwardNode(AriadneBaseModel):
         name: str = ...,
         **data,
     ) -> None:
+        """构建合并转发的一个节点
+
+        Args:
+            target (Union[int, Friend, Member, Stranger]): 发送者 QQ
+            time (datetime): 发送时间
+            message (MessageChain): 发送的消息链
+            name (str): 显示的发送者名称
+        """
         if target is not ...:
             if isinstance(target, int):
                 data.update(senderId=target)
@@ -549,27 +542,62 @@ class Forward(Element):
 
     type = "Forward"
 
-    nodeList: List[ForwardNode]
+    node_list: List[ForwardNode] = Field(None, alias="nodeList")
     """转发节点列表"""
 
-    def __init__(self, *nodes: Union[Iterable[ForwardNode], ForwardNode], **data) -> None:
+    def __init__(self, *nodes: Union[Iterable[ForwardNode], ForwardNode, "MessageEvent"], **data) -> None:
+        """构建转发消息对象
+
+        Args:
+            *nodes (List[ForwardNode]): 转发节点的列表
+        """
+        from ..event.message import MessageEvent
+        from ..model.relationship import Client
+
         if nodes:
-            nodeList: List[ForwardNode] = []
+            node_list: List[ForwardNode] = []
             for i in nodes:
                 if isinstance(i, ForwardNode):
-                    nodeList.append(i)
+                    node_list.append(i)
+                elif isinstance(i, MessageEvent):
+                    if not isinstance(i.sender, Client):
+                        node_list.append(
+                            ForwardNode(
+                                i.sender, time=i.message_chain.get_first(Source).time, message=i.message_chain
+                            )
+                        )
                 else:
-                    nodeList.extend(i)
-            data.update(nodeList=nodeList)
+                    node_list.extend(i)
+            data.update(nodeList=node_list)
         super().__init__(**data)
 
-    def asDisplay(self) -> str:
-        return f"[合并转发:共{len(self.nodeList)}条]"
+    def __str__(self) -> str:
+        return f"[合并转发:共{len(self.node_list)}条]"
 
-    def asPersistentString(self) -> str:
-        return ""
+    def as_persistent_string(self) -> str:
+
+        data: str = escape_bracket(f"[{','.join(node.json() for node in self.node_list)}")
+        return f"[mirai:{self.type}:{data}]"
+
+    @classmethod
+    def parse_obj(cls, obj: Any) -> Self:
+        if isinstance(obj, list):
+            return cls([ForwardNode.parse_obj(o) for o in obj])
+        return cls(**obj)
+
+    @overload
+    def __getitem__(self, key: int) -> ForwardNode:
+        ...
+
+    @overload
+    def __getitem__(self, key: slice) -> List[ForwardNode]:
+        ...
+
+    def __getitem__(self, key: Union[int, slice]) -> Union[ForwardNode, List[ForwardNode]]:
+        return self.node_list[key]
 
 
+@internal_cls()
 class File(Element):
     """指示一个文件信息元素"""
 
@@ -584,14 +612,11 @@ class File(Element):
     size: int
     """文件大小"""
 
-    def asDisplay(self) -> str:
+    def __str__(self) -> str:
         return f"[文件:{self.name}]"
 
-    def asPersistentString(self) -> str:
+    def as_persistent_string(self) -> str:
         return ""
-
-    def prepare(self) -> None:
-        raise NotSendableElement
 
 
 class MiraiCode(Element):
@@ -648,6 +673,12 @@ class MultimediaElement(Element):
         data_bytes: Union[None, bytes, BytesIO] = None,
         **kwargs,
     ) -> None:
+        """
+        id (str, optional): 元素 ID
+        url (str, optional): 元素的下载 url
+        path (Union[Path, str], optional): 文件路径
+        data_bytes (Union[None, BytesIO, bytes], optional): 元素的字节数据
+        """
         data = {"id": value for key, value in kwargs.items() if key.lower().endswith("id")}
 
         if sum([bool(url), bool(path), bool(base64)]) > 1:
@@ -680,37 +711,32 @@ class MultimediaElement(Element):
         Returns:
             bytes: 元素原始数据
         """
-        from .. import get_running
-        from ..adapter import Adapter
+        from ..app import Ariadne
 
         if self.base64:
             return b64decode(self.base64)
         if not self.url:
             raise ValueError("you should offer a url.")
-        session = get_running(Adapter).session
-        if not session:
-            raise RuntimeError("Unable to get session!")
+        session = Ariadne.launch_manager.get_interface(AiohttpClientInterface).service.session
         async with session.get(self.url) as response:
             response.raise_for_status()
             data = await response.read()
             self.base64 = b64encode(data).decode("ascii")
             return data
 
-    def asNoBinaryPersistentString(self) -> str:
-        """生成不附带二进制数据的持久化字符串
-
-        Returns:
-            str: 持久化字符串
-        """
-        data: str = wrap_bracket(
-            j_dump(
-                self.dict(
-                    exclude={"type", "base64"},
-                ),
-                indent=None,
-                separators=(",", ":"),
+    def as_persistent_string(self, binary: bool = True) -> str:
+        if binary:
+            return super().as_persistent_string()
+        else:
+            data: str = escape_bracket(
+                j_dump(
+                    self.dict(
+                        exclude={"type", "base64"},
+                    ),
+                    indent=None,
+                    separators=(",", ":"),
+                )
             )
-        )
         return f"[mirai:{self.type}:{data}]"
 
     @property
@@ -749,7 +775,7 @@ class Image(MultimediaElement):
     ) -> None:
         super().__init__(id=id, url=url, path=path, base64=base64, data_bytes=data_bytes, **kwargs)
 
-    def toFlashImage(self) -> "FlashImage":
+    def to_flash_image(self) -> "FlashImage":
         """将 Image 转换为 FlashImage
 
         Returns:
@@ -758,7 +784,7 @@ class Image(MultimediaElement):
         return FlashImage.parse_obj({**self.dict(), "type": "FlashImage"})
 
     @classmethod
-    def fromFlashImage(cls, flash: "FlashImage") -> "Image":
+    def from_flash_image(cls, flash: "FlashImage") -> "Image":
         """从 FlashImage 构造 Image
 
         Returns:
@@ -766,7 +792,7 @@ class Image(MultimediaElement):
         """
         return cls.parse_obj({**flash.dict(), "type": "Image"})
 
-    def asDisplay(self) -> str:
+    def __str__(self) -> str:
         return "[图片]"
 
 
@@ -787,7 +813,7 @@ class FlashImage(Image):
     ) -> None:
         super().__init__(id=id, url=url, path=path, base64=base64, data_bytes=data_bytes, **kwargs)
 
-    def toImage(self) -> "Image":
+    def to_image(self) -> "Image":
         """将 FlashImage 转换为 Image
 
         Returns:
@@ -796,7 +822,7 @@ class FlashImage(Image):
         return Image.parse_obj({**self.dict(), "type": "Image"})
 
     @classmethod
-    def fromImage(cls, image: "Image") -> "FlashImage":
+    def from_image(cls, image: "Image") -> "FlashImage":
         """从 Image 构造 FlashImage
 
         Returns:
@@ -804,7 +830,7 @@ class FlashImage(Image):
         """
         return cls.parse_obj({**image.dict(), "type": "FlashImage"})
 
-    def asDisplay(self) -> str:
+    def __str__(self) -> str:
         return "[闪照]"
 
 
@@ -830,7 +856,7 @@ class Voice(MultimediaElement):
     length: Optional[int]
     """语音长度"""
 
-    def asDisplay(self) -> str:
+    def __str__(self) -> str:
         return "[语音]"
 
 

@@ -12,9 +12,7 @@ if typing.TYPE_CHECKING:
 
 
 class ApplicationLifecycleEvent(Dispatchable):
-    """
-    指示有关应用 (Ariadne) 的事件.
-    """
+    """指示有关应用 (Ariadne) 的事件."""
 
     app: "Ariadne"
 
@@ -26,30 +24,23 @@ class ApplicationLifecycleEvent(Dispatchable):
         async def catch(interface: "DispatcherInterface"):
             from ..app import Ariadne
 
-            if isinstance(interface.event, ApplicationLifecycleEvent):
-                if generic_issubclass(Ariadne, interface.annotation):
-                    return interface.event.app
+            if isinstance(interface.event, ApplicationLifecycleEvent) and generic_issubclass(
+                Ariadne, interface.annotation
+            ):
+                return interface.event.app
 
 
 class ApplicationLaunched(ApplicationLifecycleEvent):
-    """
-    指示 Ariadne 启动.
-    """
+    """指示 Ariadne 启动."""
 
 
 class ApplicationShutdowned(ApplicationLifecycleEvent):
-    """
-    指示 Ariadne 关闭.
-    """
+    """指示 Ariadne 关闭."""
 
 
-class AdapterLaunched(ApplicationLifecycleEvent):
-    """
-    指示远程适配器启动了.
-    """
+class AccountLaunch(ApplicationLifecycleEvent):
+    """指示账号的链接已启动."""
 
 
-class AdapterShutdowned(ApplicationLifecycleEvent):
-    """
-    指示远程适配器关闭了.
-    """
+class AccountShutdown(ApplicationLifecycleEvent):
+    """指示账号的链接关闭."""

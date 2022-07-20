@@ -1,12 +1,11 @@
 import devtools
+from graia.amnesia.log import install
 
 from graia.ariadne.message.chain import MessageChain
 from graia.ariadne.message.element import *
 from graia.ariadne.message.parser.twilight import *
-from graia.ariadne.util import inject_loguru_traceback
 
-inject_loguru_traceback()
-
+install()
 if __name__ == "__main__":
     twilight_args_kwargs = Twilight(
         [
@@ -16,7 +15,7 @@ if __name__ == "__main__":
         ]
     )
 
-    sparkle_kwargs = twilight_args_kwargs.generate(MessageChain.create(".command --option foo ", At(123)))
+    sparkle_kwargs = twilight_args_kwargs.generate(MessageChain(".command --option foo ", At(123)))
     devtools.debug(sparkle_kwargs)
 
     twilight_g = Twilight(
@@ -27,32 +26,32 @@ if __name__ == "__main__":
         ]
     )
 
-    sparkle_kwargs = twilight_g.generate(MessageChain.create(".command --option ", At(123)))
+    sparkle_kwargs = twilight_g.generate(MessageChain(".command --option ", At(123)))
     devtools.debug(sparkle_kwargs)
 
     try:
-        twilight_args_kwargs.generate(MessageChain.create(".coroutine hahaha"))
+        twilight_args_kwargs.generate(MessageChain(".coroutine hahaha"))
     except Exception as e:
         devtools.debug(e)
 
     sparkle_next = Twilight([FullMatch(".command"), "foo" @ ParamMatch()]).generate(
-        MessageChain.create(".command opq")
+        MessageChain(".command opq")
     )
     devtools.debug(sparkle_next)
 
     twilight_assert = Twilight([RegexMatch(r"(?=.*a)(?=.*b)(?=.*c)(?=.*d)(?=.*e)"), WildcardMatch()])
 
-    devtools.debug(twilight_assert.generate(MessageChain.create("abcde")))
+    devtools.debug(twilight_assert.generate(MessageChain("abcde")))
 
     devtools.debug(
         Twilight(
             [FullMatch("lp"), FullMatch("user"), FullMatch("perm"), ParamMatch(), ParamMatch()]
-        ).generate(MessageChain.create('lp user perm "set" "DENIED -> NOLOGIN"'))
+        ).generate(MessageChain('lp user perm "set" "DENIED -> NOLOGIN"'))
     )
 
     sp = Twilight(
         [FullMatch("lp"), FullMatch("user"), ParamMatch(), FullMatch("set"), ParamMatch()]
-    ).generate(MessageChain.create("lp user perm set 'DENIED -> NOLOGIN'"))
+    ).generate(MessageChain("lp user perm set 'DENIED -> NOLOGIN'"))
 
     devtools.debug(sp)
 
