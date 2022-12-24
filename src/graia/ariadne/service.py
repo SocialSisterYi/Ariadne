@@ -2,24 +2,20 @@
 import asyncio
 import importlib.metadata
 import json
+import re
 from typing import Coroutine, Dict, Iterable, List, Tuple, Type, overload
 
 from aiohttp import ClientSession
-from graia.amnesia.builtins.aiohttp import AiohttpClientInterface
-from graia.broadcast import Broadcast
 from launart import Launart, Service
 from loguru import logger
 
-from graia.ariadne.exception import AriadneConfigurationError
+from graia.amnesia.builtins.aiohttp import AiohttpClientInterface
+from graia.broadcast import Broadcast
 
-from .connection import (
-    CONFIG_MAP,
-    ConnectionInterface,
-    ConnectionMixin,
-    HttpClientConnection,
-)
+from .connection import CONFIG_MAP, ConnectionInterface, ConnectionMixin, HttpClientConnection
 from .connection._info import HttpClientInfo, U_Info
-from .dispatcher import ContextDispatcher, NoneDispatcher
+from .dispatcher import ContextDispatcher, LaunartInterfaceDispatcher, NoneDispatcher
+from .exception import AriadneConfigurationError
 
 ARIADNE_ASCII_LOGO = r"""
     _         _           _
@@ -30,17 +26,55 @@ ARIADNE_ASCII_LOGO = r"""
 
 monitored_prefix = ("kayaku", "statv", "launart", "luma", "graia", "avilla")
 
+VERSION_PATTERN = re.compile(
+    r"""
+    v?
+    (?:
+        (?:(?P<epoch>[0-9]+)!)?                           # epoch
+        (?P<release>[0-9]+(?:\.[0-9]+)*)                  # release segment
+        (?P<pre>                                          # pre-release
+            [-_\.]?
+            (?P<pre_l>(a|b|c|rc|alpha|beta|pre|preview))
+            [-_\.]?
+            (?P<pre_n>[0-9]+)?
+        )?
+        (?P<post>                                         # post release
+            (?:-(?P<post_n1>[0-9]+))
+            |
+            (?:
+                [-_\.]?
+                (?P<post_l>post|rev|r)
+                [-_\.]?
+                (?P<post_n2>[0-9]+)?
+            )
+        )?
+        (?P<dev>                                          # dev release
+            [-_\.]?
+            (?P<dev_l>dev)
+            [-_\.]?
+            (?P<dev_n>[0-9]+)?
+        )?
+    )
+    (?:\+(?P<local>[a-z0-9]+(?:[-_\.][a-z0-9]+)*))?       # local version
+""",
+    re.VERBOSE | re.IGNORECASE,
+)
+
 
 async def check_update(session: ClientSession, name: str, current: str, output: List[str]) -> None:
     """在线检查更新"""
     result: str = current
+    if match := VERSION_PATTERN.fullmatch(current):
+        current = match.group("release")
     try:
-        async with session.get(f"https://mirrors.aliyun.com/pypi/web/json/{name}") as resp:
+        async with session.get(f"http://mirrors.aliyun.com/pypi/web/json/{name}") as resp:
             data = await resp.text()
             result: str = json.loads(data)["info"]["version"]
+            if match := VERSION_PATTERN.fullmatch(result):
+                result = match.group("release")
     except Exception as e:
         logger.warning(f"Failed to retrieve latest version of {name}: {e}")
-    if result > current:
+    if tuple(map(int, str.split(result, "."))) > tuple(map(int, str.split(current, "."))):
         output.append(
             " ".join(
                 [
@@ -81,6 +115,8 @@ class ElizabethService(Service):
 
         if ContextDispatcher not in self.broadcast.prelude_dispatchers:
             self.broadcast.prelude_dispatchers.append(ContextDispatcher)
+        if LaunartInterfaceDispatcher not in self.broadcast.prelude_dispatchers:
+            self.broadcast.prelude_dispatchers.append(LaunartInterfaceDispatcher)
         if NoneDispatcher not in self.broadcast.finale_dispatchers:
             self.broadcast.finale_dispatchers.append(NoneDispatcher)
 
@@ -166,25 +202,15 @@ class ElizabethService(Service):
         """Launart 启动点"""
         from .app import Ariadne
         from .context import enter_context
-        from .event.lifecycle import (
-            AccountLaunch,
-            AccountShutdown,
-            ApplicationLaunched,
-            ApplicationShutdowned,
-        )
+        from .event.lifecycle import AccountLaunch, AccountShutdown, ApplicationLaunch, ApplicationShutdown
 
         self.base_telemetry()
         async with self.stage("preparing"):
             self.http_interface = mgr.get_interface(AiohttpClientInterface)
-            if self.broadcast:
-                if asyncio.get_running_loop() is not self.loop:
-                    raise AriadneConfigurationError("Broadcast is attached to a different loop")
-            else:
-                self.broadcast = Broadcast(loop=self.loop)
             if "default_account" in Ariadne.options:
                 app = Ariadne.current()
                 with enter_context(app=app):
-                    self.broadcast.postEvent(ApplicationLaunched(app))
+                    self.broadcast.postEvent(ApplicationLaunch(app))
             for conn in self.connections.values():
                 app = Ariadne.current(conn.info.account)
                 with enter_context(app=app):
@@ -194,8 +220,9 @@ class ElizabethService(Service):
             logger.info("Elizabeth Service cleaning up...", style="dark_orange")
             if "default_account" in Ariadne.options:
                 app = Ariadne.current()
-                with enter_context(app=app):
-                    await self.broadcast.postEvent(ApplicationShutdowned(app))
+                if app.connection.status.available:
+                    with enter_context(app=app):
+                        await self.broadcast.postEvent(ApplicationShutdown(app))
             for conn in self.connections.values():
                 if conn.status.available:
                     app = Ariadne.current(conn.info.account)
@@ -209,9 +236,6 @@ class ElizabethService(Service):
                 if coro.__qualname__ == "Broadcast.Executor":
                     task.cancel()
                     logger.debug(f"Cancelled {task.get_name()} (Broadcast.Executor)")
-                elif coro.cr_frame.f_globals["__name__"].startswith("graia.scheduler"):
-                    task.cancel()
-                    logger.debug(f"Cancelled {task.get_name()} (Scheduler Task)")
 
             logger.info("Checking for updates...", alt="[cyan]Checking for updates...[/]")
             await self.check_update()
@@ -227,7 +251,7 @@ class ElizabethService(Service):
 
     @property
     def required(self):
-        dependencies = {"http.universal_client"}
+        dependencies = {AiohttpClientInterface}
         for conn in self.connections.values():
             dependencies |= conn.dependencies
             dependencies.add(conn.id)

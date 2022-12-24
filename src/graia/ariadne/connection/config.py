@@ -1,24 +1,8 @@
-from typing import (
-    TYPE_CHECKING,
-    Dict,
-    List,
-    NamedTuple,
-    Sequence,
-    Type,
-    Union,
-    overload,
-)
-
+from typing import TYPE_CHECKING, Dict, List, NamedTuple, Sequence, Type, Union, overload
 from typing_extensions import NotRequired, Required, TypedDict
 
 from ..typing import DictStrAny
-from ._info import (
-    HttpClientInfo,
-    HttpServerInfo,
-    U_Info,
-    WebsocketClientInfo,
-    WebsocketServerInfo,
-)
+from ._info import HttpClientInfo, HttpServerInfo, U_Info, WebsocketClientInfo, WebsocketServerInfo
 
 if TYPE_CHECKING:
     from ..app import Ariadne
@@ -125,4 +109,7 @@ def from_obj(obj: Union[ConfigTypedDict, Sequence[ConfigTypedDict]]) -> Union[Li
             extras.append(HttpServerConfig(**obj["http_server"]))
         if "websocket_server" in obj:
             extras.append(WebsocketServerConfig(**obj["websocket_server"]))
+
+        from ..app import Ariadne
+
         return Ariadne(config(obj["account"], obj["verify_key"], *extras))

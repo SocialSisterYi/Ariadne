@@ -25,7 +25,7 @@ def test_create():
         MessageChain("Hello World", [At(12345)], MessageChain([Plain("1234567")])).__root__ == chain.__root__
     )
     assert MessageChain.parse_obj(
-        [{"type": "At", "target": 12345}, {"type": "Plain", "text": "hello"}, {"type": "Broken"}, 5]
+        [{"type": "At", "target": 12345}, {"type": "Plain", "text": "hello"}, {"type": "Broken"}]
     ) == MessageChain([At(12345), "hello"])
 
 
@@ -84,12 +84,12 @@ def test_has():
     assert msg_chain.has(msg_chain)
     assert msg_chain.has(Plain)
     assert not msg_chain.has(Quote)
-    assert msg_chain.find_sub_chain(MessageChain(["Hello"])) == [0]
-    assert msg_chain.find_sub_chain(MessageChain(["Hello system"])) == []
-    assert msg_chain.find_sub_chain(MessageChain(["HeHeHe"])) == []
-    assert MessageChain(["HeHe"]).find_sub_chain(MessageChain(["HeHeHe"])) == []
-    assert MessageChain(["HeHeHeHe"]).find_sub_chain(MessageChain(["HeHeHe"])) == [0, 2]
-    assert MessageChain(["HeHeHaHaHoHo"]).find_sub_chain(MessageChain(["HeHeHoHo"])) == []
+    assert msg_chain.index_sub(MessageChain(["Hello"])) == [0]
+    assert msg_chain.index_sub(MessageChain(["Hello system"])) == []
+    assert msg_chain.index_sub(MessageChain(["HeHeHe"])) == []
+    assert MessageChain(["HeHe"]).index_sub(MessageChain(["HeHeHe"])) == []
+    assert MessageChain(["HeHeHeHe"]).index_sub(MessageChain(["HeHeHe"])) == [0, 2]
+    assert MessageChain(["HeHeHaHaHoHo"]).index_sub(MessageChain(["HeHeHoHo"])) == []
 
 
 def test_contain():
@@ -107,7 +107,7 @@ def test_get():
     assert msg_chain[Plain, 1] == [Plain("Hello World!")]
     assert msg_chain[1] == At(target=12345)
     assert msg_chain[:2] == MessageChain(["Hello World!", At(target=12345)])
-    with pytest.raises(NotImplementedError):
+    with pytest.raises(TypeError):
         msg_chain["trial"]
     assert msg_chain.get(Plain) == msg_chain[Plain]
     assert msg_chain.get(Plain, 1) == msg_chain[Plain, 1]
@@ -143,6 +143,11 @@ def test_persistent():
     assert MessageChain.from_persistent_string('hello![_[mirai:At:{"target":12345}]') == MessageChain(
         ["hello![", At(12345)]
     )
+
+    assert MessageChain.from_persistent_string(
+        r'[mirai:Forward:\u005b{"sender_id": 1710564415, "time": 1662203083, "sender_name": "\u65b9\u7cd6\u8d77\u53f8", "message_chain": \u005b{"type": "Plain", "text": "123"}\u005d, "message_id": null},{"sender_id": 1710564415, "time": 1662694196, "sender_name": "\u65b9\u7cd6\u8d77\u53f8", "message_chain": \u005b{"type": "Plain", "text": "test"}\u005d, "message_id": null}\u005d]'
+    )
+
     assert msg_chain.as_persistent_string(include=[At]) == '[mirai:At:{"target":12345}]'
     assert msg_chain.as_persistent_string(exclude=[At]) == "hello!"
     with pytest.raises(ValueError):
@@ -167,13 +172,13 @@ async def test_download():
     chain = MessageChain(["text", Image(url=url)])
     from asyncio import Event, create_task
 
-    from graia.amnesia.builtins.aiohttp import AiohttpService
+    from graia.amnesia.builtins.aiohttp import AiohttpClientService
     from launart import Launchable
 
     from graia.ariadne.app import Ariadne
 
     Ariadne._ensure_config()
-    srv = AiohttpService()
+    srv = AiohttpClientService()
     Ariadne.launch_manager.add_service(srv)
 
     class L(Launchable):
@@ -185,7 +190,7 @@ async def test_download():
 
         @property
         def required(self):
-            return {"http.universal_client"}
+            return {"http.client/aiohttp"}
 
         async def launch(self, _):
             async with self.stage("blocking"):

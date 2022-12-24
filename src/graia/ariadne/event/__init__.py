@@ -1,14 +1,14 @@
 """Ariadne 的事件"""
-from graia.broadcast import Dispatchable
 from pydantic import validator
+
+from graia.broadcast import Dispatchable
 
 from ..dispatcher import BaseDispatcher
 from ..exception import InvalidEventTypeDefinition
 from ..model import AriadneBaseModel
-from ..util import AttrConvertMixin
 
 
-class MiraiEvent(Dispatchable, AriadneBaseModel, AttrConvertMixin):
+class MiraiEvent(Dispatchable, AriadneBaseModel):
     """Ariadne 的事件基类"""
 
     type: str

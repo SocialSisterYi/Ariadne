@@ -24,6 +24,11 @@ from typing import (
     TypeVar,
     Union,
 )
+from typing_extensions import Self
+
+from pydantic import BaseConfig, BaseModel
+from pydantic.class_validators import Validator
+from pydantic.fields import ModelField
 
 from graia.broadcast import Broadcast, Listener
 from graia.broadcast.entities.decorator import Decorator
@@ -31,16 +36,11 @@ from graia.broadcast.entities.exectarget import ExecTarget
 from graia.broadcast.exceptions import PropagationCancelled
 from graia.broadcast.typing import T_Dispatcher
 from graia.broadcast.utilles import dispatcher_mixin_handler
-from pydantic import BaseConfig, BaseModel
-from pydantic.class_validators import Validator
-from pydantic.fields import ModelField
-from typing_extensions import Self
-
-from graia.ariadne.model.util import AriadneBaseModel
 
 from ...context import event_ctx
 from ...dispatcher import ContextDispatcher
 from ...event.message import MessageEvent
+from ...model.util import AriadneBaseModel
 from ...typing import DictStrAny, MaybeFlag, Sentinel, Wrapper
 from ...util import constant, gen_subclass, resolve_dispatchers_mixin, type_repr
 from ..chain import MessageChain
@@ -442,7 +442,6 @@ class Commander:
                     continue
                 elif slot.default_factory is not Sentinel:  # Definitely an optional
                     have_optional = True
-                    entry.optional.append(slot)
                     continue
             elif isinstance(token, Param):
                 for name in token.names:
@@ -465,7 +464,7 @@ class Commander:
 
         Args:
             command (str): 要处理的命令
-            setting (Dict[str, Union[Slot, Arg]], optional): 参数设置.
+            settings (Dict[str, Union[Slot, Arg]], optional): 参数设置.
             dispatchers (Sequence[T_Dispatcher], optional): 可选的额外 Dispatcher 序列.
             decorators (Sequence[Decorator], optional): 可选的额外 Decorator 序列.
             nbsp (DictStrAny, optional): 可选的字符串评估命名空间.
@@ -502,6 +501,16 @@ class Commander:
                 list(decorators),
             )
             entry.update_from_func()
+
+            # compute optional slots dynamically
+            for token in entry.tokens:
+                if isinstance(token, Param):
+                    for token in token.names:
+                        if (slot := entry.slot_map.get(token)) and slot.default_factory is not Sentinel:
+                            entry.optional.append(slot)
+                            break
+
+            # populate fields
             for slot in entry.slot_map.values():
                 slot.populate_field(self._wildcard_validators if slot.is_wildcard else self._slot_validators)
             for arg in entry.arg_map.values():

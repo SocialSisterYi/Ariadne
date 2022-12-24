@@ -1,6 +1,5 @@
 """本模块提供 Ariadne 内部使用的小工具, 以及方便的辅助模块."""
 
-import contextlib
 
 # Utility Layout
 import functools
@@ -13,10 +12,7 @@ import warnings
 from types import TracebackType
 from typing import (
     TYPE_CHECKING,
-    Any,
     Callable,
-    ClassVar,
-    Dict,
     Generator,
     Iterable,
     List,
@@ -29,19 +25,16 @@ from typing import (
     Union,
 )
 
+from loguru import logger
+
 from graia.broadcast import Broadcast
 from graia.broadcast.entities.decorator import Decorator
 from graia.broadcast.entities.event import Dispatchable
 from graia.broadcast.entities.listener import Listener
 from graia.broadcast.entities.namespace import Namespace
-from graia.broadcast.exceptions import (
-    ExecutionStop,
-    PropagationCancelled,
-    RequirementCrashed,
-)
+from graia.broadcast.exceptions import ExecutionStop, PropagationCancelled, RequirementCrashed
 from graia.broadcast.typing import T_Dispatcher
 from graia.broadcast.utilles import dispatcher_mixin_handler
-from loguru import logger
 
 from ..typing import ExceptionHook, P, R, T, Wrapper
 
@@ -66,11 +59,9 @@ def type_repr(obj) -> str:
         if obj.__module__ == "builtins":
             return obj.__qualname__
         return f"{obj.__module__}.{obj.__qualname__}"
-    if obj is ...:
+    if obj is Ellipsis:
         return "..."
-    if isinstance(obj, types.FunctionType):
-        return obj.__name__
-    return repr(obj)
+    return obj.__name__ if isinstance(obj, types.FunctionType) else repr(obj)
 
 
 def loguru_exc_callback(cls: Type[BaseException], val: BaseException, tb: Optional[TracebackType], *_, **__):
@@ -81,29 +72,8 @@ def loguru_exc_callback(cls: Type[BaseException], val: BaseException, tb: Option
         val (Exception): 异常的实际值
         tb (TracebackType): 回溯消息
     """
-    if issubclass(cls, (ExecutionStop, PropagationCancelled)):
-        return
-    if tb:
-        exec_module_name = tb.tb_frame.f_globals.get("__name__", "")
-        if isinstance(val, RequirementCrashed) and exec_module_name.startswith("graia.broadcast"):
-            with contextlib.suppress(Exception):
-                local_dict = tb.tb_frame.f_locals
-                _, param_name, param_anno, param_default = val.args
-                if isinstance(param_anno, type):
-                    param_anno = param_anno.__qualname__
-                param_repr = "".join(
-                    [
-                        param_name,
-                        f": {type_repr(param_anno)}" if param_anno else "",
-                        f" = {param_default}" if param_default else "",
-                    ]
-                )
-                val = RequirementCrashed(
-                    f"Unable to lookup parameter ({param_repr})",
-                    local_dict["dispatchers"],
-                )
-
-    logger.opt(exception=(cls, val, tb)).error("Exception:")
+    if not issubclass(cls, (ExecutionStop, PropagationCancelled)):
+        logger.opt(exception=(cls, val, tb)).error("Exception:")
 
 
 def loguru_exc_callback_async(loop, context: dict):
@@ -111,12 +81,16 @@ def loguru_exc_callback_async(loop, context: dict):
 
     Args:
         loop (AbstractEventLoop): 异常发生的事件循环
-        ctx (dict): 异常上下文
+        context (dict): 异常上下文
     """
     message = context.get("message")
     if not message:
         message = "Unhandled exception in event loop"
-
+    if (
+        handle := context.get("handle")
+    ) and handle._callback.__qualname__ == "ClientConnectionRider.connection_manage.<locals>.<lambda>":
+        logger.warning("Uncompleted aiohttp transport", style="yellow bold")
+        return
     exception = context.get("exception")
     if exception is None:
         exc_info = False
@@ -195,16 +169,17 @@ def inject_bypass_listener(broadcast: Broadcast):
                 priority=priority,
             )
 
+    import creart
+
     import graia.broadcast.entities.listener
 
     graia.broadcast.entities.listener.Listener = BypassListener  # type: ignore
     graia.broadcast.Listener = BypassListener  # type: ignore
-    try:  # Override saya listener
+
+    if creart.exists_module("graia.saya"):
         import graia.saya.builtins.broadcast.schema
 
         graia.saya.builtins.broadcast.schema.Listener = BypassListener  # type: ignore
-    except ImportError:  # Saya not installed, pass.
-        pass
 
 
 def ariadne_api(func: Callable[P, R]) -> Callable[P, R]:
@@ -392,27 +367,3 @@ def snake_to_camel(name: str, capital: bool = False) -> str:
     if not capital:
         name = name[0].lower() + name[1:]
     return name
-
-
-class AttrConvertMixin:
-    """用于支持不同属性拼写的 mixin"""
-
-    __warning_info: ClassVar[Dict[type, MutableSet[Tuple[str, int]]]] = {}
-
-    if not TYPE_CHECKING:  # Runtime Only
-
-        def __getattr__(self, origin: str) -> Any:
-            # camelCase to snake_case
-            name = camel_to_snake(origin)
-            if name not in self.__class__.__dict__ or name == origin:
-                raise AttributeError(f"'{self.__class__.__qualname__}' object has no attribute '{name}'")
-            # extract caller's file and line number
-            frame = inspect.stack()[1].frame
-            caller_file = frame.f_code.co_filename
-            caller_line = frame.f_lineno
-            AttrConvertMixin.__warning_info.setdefault(self.__class__, set())
-            if (caller_file, caller_line) not in AttrConvertMixin.__warning_info[self.__class__]:
-                AttrConvertMixin.__warning_info[self.__class__].add((caller_file, caller_line))
-                logger.warning(f"At {caller_file}:{caller_line}")
-                logger.warning(f"Found deprecated call: {self.__class__.__qualname__}.{name}!")
-            return getattr(self, name)

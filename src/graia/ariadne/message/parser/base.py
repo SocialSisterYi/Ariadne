@@ -4,17 +4,9 @@ import difflib
 import fnmatch
 import re
 import weakref
-from typing import (
-    ClassVar,
-    DefaultDict,
-    Dict,
-    Iterable,
-    List,
-    Optional,
-    Tuple,
-    Type,
-    Union,
-)
+from collections import defaultdict
+from typing import ClassVar, DefaultDict, Dict, Iterable, List, Optional, Tuple, Type, Union
+from typing_extensions import get_args
 
 from graia.broadcast.builtin.derive import Derive
 from graia.broadcast.entities.decorator import Decorator
@@ -25,29 +17,9 @@ from graia.broadcast.interfaces.dispatcher import DispatcherInterface
 
 from ...app import Ariadne
 from ...event.message import GroupMessage, MessageEvent
-from ...typing import generic_issubclass
-from ...util import deprecated
+from ...typing import Unions, generic_issubclass, get_origin
 from ..chain import MessageChain
-from ..element import At, Element, Plain, Quote, Source
-
-
-class Compose(Decorator):
-    """将多个基础 Decorator 串联起来"""
-
-    @deprecated("0.8.0", "Use `Derive` feature instead")
-    def __init__(self, *deco: "ChainDecorator") -> None:
-        self.deco: List[ChainDecorator] = list(deco)
-
-    async def target(self, interface: DispatcherInterface):
-        chain = await interface.lookup_param("message_chain", MessageChain, None)
-        for deco in self.deco:
-            chain = await deco.__call__(chain, interface)
-            if chain is None:
-                break
-        if interface.annotation is MessageChain:
-            if chain is None:
-                raise ExecutionStop
-            return chain
+from ..element import At, Element, Plain
 
 
 class ChainDecorator(abc.ABC, Decorator, Derive[MessageChain]):
@@ -76,15 +48,11 @@ class DetectPrefix(ChainDecorator):
         self.prefix: List[str] = [prefix] if isinstance(prefix, str) else list(prefix)
 
     async def __call__(self, chain: MessageChain, _) -> Optional[MessageChain]:
-        header = chain.include(Quote, Source)
-        rest: MessageChain = chain.exclude(Quote, Source)
         for prefix in self.prefix:
-            if rest.startswith(prefix):
-                result = rest.removeprefix(prefix).removeprefix(" ")
-                break
-        else:
-            raise ExecutionStop
-        return header + result
+            if chain.startswith(prefix):
+                return chain.removeprefix(prefix).removeprefix(" ")
+
+        raise ExecutionStop
 
 
 class DetectSuffix(ChainDecorator):
@@ -99,15 +67,10 @@ class DetectSuffix(ChainDecorator):
         self.suffix: List[str] = [suffix] if isinstance(suffix, str) else list(suffix)
 
     async def __call__(self, chain: MessageChain, _) -> Optional[MessageChain]:
-        header = chain.include(Quote, Source)
-        rest: MessageChain = chain.exclude(Quote, Source)
         for suffix in self.suffix:
-            if rest.endswith(suffix):
-                result = rest.removesuffix(suffix).removesuffix(" ")
-                break
-        else:
-            raise ExecutionStop
-        return header + result
+            if chain.endswith(suffix):
+                return chain.removesuffix(suffix).removesuffix(" ")
+        raise ExecutionStop
 
 
 class MentionMe(ChainDecorator):
@@ -129,18 +92,12 @@ class MentionMe(ChainDecorator):
                 name = (await ariadne.get_member(interface.event.sender.group, ariadne.account)).name
             else:
                 name = (await ariadne.get_bot_profile()).nickname
-        header = chain.include(Quote, Source)
-        rest: MessageChain = chain.exclude(Quote, Source)
-        first: Element = rest[0]
-        result: Optional[MessageChain] = None
-        if isinstance(name, str) and rest and isinstance(first, Plain) and str(first).startswith(name):
-            result = header + rest.removeprefix(name).removeprefix(" ")
-        if rest and isinstance(first, At) and first.target == ariadne.account:
-            result = header + MessageChain(rest.__root__[1:], inline=True).removeprefix(" ")
-
-        if result is None:
-            raise ExecutionStop
-        return result
+        first: Element = chain[0]
+        if isinstance(name, str) and isinstance(first, Plain) and str(first).startswith(name):
+            return chain.removeprefix(name).removeprefix(" ")
+        if isinstance(first, At) and first.target == ariadne.account:
+            return MessageChain(chain.__root__[1:], inline=True).removeprefix(" ")
+        raise ExecutionStop
 
 
 class Mention(ChainDecorator):
@@ -155,23 +112,18 @@ class Mention(ChainDecorator):
         self.person: Union[int, str] = target
 
     async def __call__(self, chain: MessageChain, _) -> Optional[MessageChain]:
-        header = chain.include(Quote, Source)
-        rest: MessageChain = chain.exclude(Quote, Source)
-        first: Element = rest[0]
-        result: Optional[MessageChain] = None
+        first: Element = chain[0]
         if (
-            rest
+            chain
             and isinstance(first, Plain)
             and isinstance(self.person, str)
             and str(first).startswith(self.person)
         ):
-            result = header + rest.removeprefix(self.person).removeprefix(" ")
-        if rest and isinstance(first, At) and isinstance(self.person, int) and first.target == self.person:
-            result = header + MessageChain(rest.__root__[1:], inline=True).removeprefix(" ")
+            return chain.removeprefix(self.person).removeprefix(" ")
+        if isinstance(first, At) and isinstance(self.person, int) and first.target == self.person:
+            return MessageChain(chain.__root__[1:], inline=True).removeprefix(" ")
 
-        if result is None:
-            raise ExecutionStop
-        return result
+        raise ExecutionStop
 
 
 class ContainKeyword(ChainDecorator):
@@ -213,24 +165,27 @@ class MatchContent(ChainDecorator):
 class MatchRegex(ChainDecorator, BaseDispatcher):
     """匹配正则表达式"""
 
-    def __init__(self, regex: str, flags: re.RegexFlag = re.RegexFlag(0)) -> None:
+    def __init__(self, regex: str, flags: re.RegexFlag = re.RegexFlag(0), full: bool = True) -> None:
         """初始化匹配正则表达式.
 
         Args:
             regex (str): 正则表达式
             flags (re.RegexFlag): 正则表达式标志
+            full (bool): 是否要求完全匹配, 默认为 True.
         """
         self.regex: str = regex
         self.flags: re.RegexFlag = flags
+        self.pattern = re.compile(self.regex, self.flags)
+        self.match_func = self.pattern.fullmatch if full else self.pattern.match
 
     async def __call__(self, chain: MessageChain, _) -> Optional[MessageChain]:
-        if not re.match(self.regex, str(chain), self.flags):
+        if not self.match_func(str(chain)):
             raise ExecutionStop
         return chain
 
     async def beforeExecution(self, interface: DispatcherInterface[MessageEvent]):
         _mapping_str, _map = interface.event.message_chain._to_mapping_str()
-        if res := re.fullmatch(self.regex, _mapping_str, self.flags):
+        if res := self.match_func(_mapping_str):
             interface.local_storage["__parser_regex_match_obj__"] = res
             interface.local_storage["__parser_regex_match_map__"] = _map
         else:
@@ -241,8 +196,11 @@ class MatchRegex(ChainDecorator, BaseDispatcher):
             return interface.local_storage["__parser_regex_match_obj__"]
 
 
-class RegexGroup:
-    """正则表达式组的标志, 以 `Annotated[MessageChain, RegexGroup("xxx") 的形式使用"""
+class RegexGroup(Decorator):
+    """正则表达式组的标志
+    以 `Annotated[MessageChain, RegexGroup("xxx")]` 的形式使用,
+    或者作为 Decorator 使用.
+    """
 
     def __init__(self, target: Union[int, str]) -> None:
         """初始化
@@ -250,17 +208,17 @@ class RegexGroup:
         Args:
             target (Union[int, str]): 目标的组名或序号
         """
-        self.target = target
+        self.assign_target = target
 
     async def __call__(self, _, interface: DispatcherInterface[MessageEvent]):
         _res: re.Match = interface.local_storage["__parser_regex_match_obj__"]
         match_group: Tuple[str] = _res.groups()
         match_group_dict: Dict[str, str] = _res.groupdict()
         origin: Optional[str] = None
-        if isinstance(self.target, str) and self.target in match_group_dict:
-            origin = match_group_dict[self.target]
-        elif isinstance(self.target, int) and self.target < len(match_group):
-            origin = match_group[self.target]
+        if isinstance(self.assign_target, str) and self.assign_target in match_group_dict:
+            origin = match_group_dict[self.assign_target]
+        elif isinstance(self.assign_target, int) and self.assign_target < len(match_group):
+            origin = match_group[self.assign_target]
 
         return (
             MessageChain._from_mapping_string(origin, interface.local_storage["__parser_regex_match_map__"])
@@ -268,26 +226,38 @@ class RegexGroup:
             else None
         )
 
+    async def target(self, interface: DecoratorInterface):
+        return self("", interface.dispatcher_interface)
+
 
 class MatchTemplate(ChainDecorator):
     """模板匹配"""
 
-    def __init__(self, template: List[Union[Type[Element], Element]]) -> None:
+    def __init__(self, template: List[Union[Type[Element], Element, str]]) -> None:
         """初始化
 
         Args:
-            template (List[Union[Type[Element], Element]]): 匹配模板
+            template (List[Union[Type[Element], Element]]): 匹配模板， 可以为 `Element` 类或其 `Union`, `str`, `Plain` 实例
         """
-        self.template: List[Union[Type[Element], Element, str]] = []
+        self.template: List[Union[Tuple[Type[Element], ...], Element, str]] = []
         for element in template:
-            if isinstance(element, type) and element is not Plain:
-                self.template.append(element)
+            if element is Plain:
+                element = "*"
+            if isinstance(element, type):
+                self.template.append((element,))
+            elif get_origin(element) in Unions:  # Union
+                assert Plain not in get_args(element), "Leaving Plain here leads to ambiguity"  # TODO
+                self.template.append(get_args(element))
             elif isinstance(element, Element) and not isinstance(element, Plain):
                 self.template.append(element)
             else:
-                element = element.text if isinstance(element, Plain) else "*"
+                element = (
+                    re.escape(element.text)
+                    if isinstance(element, Plain)
+                    else fnmatch.translate(element)[:-2]  # truncating the ending \Z
+                )
                 if self.template and isinstance(self.template[-1], str):
-                    self.template[-1] = self.template[-1] + element
+                    self.template[-1] += element
                 else:
                     self.template.append(element)
 
@@ -297,12 +267,12 @@ class MatchTemplate(ChainDecorator):
         if len(self.template) != len(chain):
             return False
         for element, template in zip(chain, self.template):
-            if isinstance(template, type) and not isinstance(element, template):
+            if isinstance(template, tuple) and not isinstance(element, template):
                 return False
             elif isinstance(template, Element) and element != template:
                 return False
             elif isinstance(template, str):
-                if not isinstance(element, Plain) or not fnmatch.fnmatch(element.text, template):
+                if not isinstance(element, Plain) or not re.match(template, element.text):
                     return False
         return True
 
@@ -353,7 +323,7 @@ class FuzzyMatch(ChainDecorator):
 
 
 class FuzzyDispatcher(BaseDispatcher):
-    scope_map: ClassVar[DefaultDict[str, List[str]]] = DefaultDict(list)
+    scope_map: ClassVar[DefaultDict[str, List[str]]] = defaultdict(list)
     event_ref: ClassVar["Dict[int, Dict[str, Tuple[str, float]]]"] = {}
 
     def __init__(self, template: str, min_rate: float = 0.6, scope: str = "") -> None:

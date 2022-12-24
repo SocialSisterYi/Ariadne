@@ -11,15 +11,21 @@ from graia.amnesia.builtins.aiohttp import AiohttpServerService
 from graia.saya.context import channel_instance
 from loguru import logger
 
+from graia.ariadne.connection import ConnectionInterface
 from graia.ariadne.entry import *
-from graia.ariadne.message.parser.base import RegexGroup
+from graia.ariadne.message.exp import MessageChain as ExpMessageChain
+from graia.ariadne.message.parser.base import RegexGroup, StartsWith
+from graia.ariadne.util import RichLogInstallOptions
 
 if __name__ == "__main__":
     url, account, verify_key, target, t_group = (
         open(os.path.join(__file__, "..", "test.temp"), "r").read().split(" ")
     )
+    account = int(account)
+    target = int(target)
+    t_group = int(t_group)
     ALL_FLAG = True
-    Ariadne.config(inject_bypass_listener=True, install_log=True)
+    Ariadne.config(inject_bypass_listener=True)
 
     app = Ariadne(
         config(
@@ -194,11 +200,17 @@ if __name__ == "__main__":
     async def regex(app: Ariadne, chain: Annotated[MessageChain, RegexGroup("args")]):
         await app.send_friend_message(target, chain)
 
-    @bcc.receiver(ApplicationLaunched)
+    @bcc.receiver(GroupMessage, decorators=[StartsWith(".test exp")])
+    async def exp(app: Ariadne, ev: GroupMessage, exp_c: ExpMessageChain, interf: ConnectionInterface):
+        await app.send_message(ev, repr(exp_c.content))
+        res = await app.send_message(ev, repr(ev))
+        await app.send_message(ev, [repr(res), repr(interf)])
+
+    @bcc.receiver(ApplicationLaunch)
     async def m(app: Ariadne):
         await app.send_friend_message(target, MessageChain("Launched!"))
 
-    @bcc.receiver(ApplicationShutdowned)
+    @bcc.receiver(ApplicationShutdown)
     async def m(app: Ariadne):
         await app.send_friend_message(target, MessageChain("Shutdown!"))
 
@@ -206,7 +218,7 @@ if __name__ == "__main__":
     async def cmd_log(event: CommandExecutedEvent):
         devtools.debug(event)
 
-    @bcc.receiver(ApplicationLaunched)
+    @bcc.receiver(ApplicationLaunch)
     async def main():
         logger.debug(await app.get_version())
         logger.debug(await app.get_bot_profile())

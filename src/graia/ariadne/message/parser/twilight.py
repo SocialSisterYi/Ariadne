@@ -26,24 +26,17 @@ from typing import (
     final,
     overload,
 )
-
-from graia.broadcast.builtin.derive import DeriveDispatcher
-from graia.broadcast.entities.decorator import Decorator
-from graia.broadcast.entities.dispatcher import BaseDispatcher
-from graia.broadcast.exceptions import ExecutionStop
-from graia.broadcast.interfaces.decorator import DecoratorInterface
-from graia.broadcast.interfaces.dispatcher import DispatcherInterface
-from pydantic.utils import Representation
 from typing_extensions import Self
 
-from ...typing import (
-    AnnotatedType,
-    Sentinel,
-    T,
-    generic_isinstance,
-    generic_issubclass,
-    get_origin,
-)
+from pydantic.utils import Representation
+
+from graia.broadcast.builtin.derive import Derive, DeriveDispatcher
+from graia.broadcast.entities.decorator import Decorator
+from graia.broadcast.entities.dispatcher import BaseDispatcher
+from graia.broadcast.interfaces.decorator import DecoratorInterface
+from graia.broadcast.interfaces.dispatcher import DispatcherInterface
+
+from ...typing import AnnotatedType, Sentinel, T, generic_isinstance, generic_issubclass, get_origin
 from ..chain import MessageChain
 from ..commander.util import Param as ParamToken
 from ..commander.util import Text as TextToken
@@ -832,25 +825,29 @@ class Twilight(Generic[T_Sparkle], BaseDispatcher):
                 return result.result
 
 
-class ResultValue(Decorator):
+class ResultValue(Decorator, Derive[MessageChain]):
     """返回 Match 结果值的装饰器"""
 
     pre = True
 
-    def __call__(self, _: Any, i: DispatcherInterface) -> Any:
+    async def __call__(self, _: Any, i: DispatcherInterface) -> Any:
         sparkle: Sparkle = i.local_storage[f"{__name__}:result"]
         res = sparkle.res.get(i.name, None)
+        if res is not None:
+            res = res.result
         if generic_isinstance(res, i.annotation):
-            return res.result if res else None
+            return res
         i.stop()
 
     @staticmethod
     async def target(i: DecoratorInterface):
         sparkle: Sparkle = i.local_storage[f"{__name__}:result"]
         res = sparkle.res.get(i.name, None)
+        if res is not None:
+            res = res.result
         if generic_isinstance(res, i.annotation):
-            return res.result if res else None
-        raise ExecutionStop
+            return res
+        i.dispatcher_interface.stop()
 
 
 class Help(Decorator, Generic[T]):

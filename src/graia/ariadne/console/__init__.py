@@ -10,20 +10,21 @@ from asyncio.events import AbstractEventLoop
 from asyncio.tasks import Task
 from typing import Any, Callable, Dict, Iterable, List, Optional, Tuple, Union
 
-from graia.broadcast import Broadcast
-from graia.broadcast.entities.decorator import Decorator
-from graia.broadcast.entities.dispatcher import BaseDispatcher
-from graia.broadcast.entities.exectarget import ExecTarget
-from graia.broadcast.exceptions import DisabledNamespace, PropagationCancelled
-from graia.broadcast.interfaces.dispatcher import DispatcherInterface
 from loguru import logger
 from prompt_toolkit.formatted_text import AnyFormattedText
 from prompt_toolkit.patch_stdout import StdoutProxy
 from prompt_toolkit.shortcuts.prompt import PromptSession
 from prompt_toolkit.styles import Style
 
+from graia.broadcast import Broadcast
+from graia.broadcast.entities.decorator import Decorator
+from graia.broadcast.entities.dispatcher import BaseDispatcher
+from graia.broadcast.entities.exectarget import ExecTarget
+from graia.broadcast.exceptions import DisabledNamespace, PropagationCancelled
+from graia.broadcast.interfaces.dispatcher import DispatcherInterface
+
 from ..dispatcher import ContextDispatcher
-from ..event.lifecycle import ApplicationLaunched, ApplicationShutdowned
+from ..event.lifecycle import ApplicationLaunch, ApplicationShutdown
 from ..util import resolve_dispatchers_mixin
 
 
@@ -62,10 +63,10 @@ class Console:
 
         # Handle Ariadne Event
         if listen_launch:
-            broadcast.receiver(ApplicationLaunched)(self.start)
+            broadcast.receiver(ApplicationLaunch)(self.start)
 
         if listen_shutdown:
-            broadcast.receiver(ApplicationShutdowned)(self.stop)
+            broadcast.receiver(ApplicationShutdown)(self.stop)
 
         self.session: PromptSession[str] = PromptSession()
 
@@ -148,8 +149,10 @@ class Console:
 
     async def loop(self) -> None:
         """Console 的输入循环"""
-        from graia.ariadne.message.chain import MessageChain
-        from graia.ariadne.message.element import Plain
+        from graia.amnesia.message import MessageChain as BaseMessageChain
+
+        from ..message.chain import MessageChain
+        from ..message.element import Plain
 
         class _Dispatcher(BaseDispatcher):
             def __init__(self, command: str, console: Console) -> None:
@@ -159,7 +162,7 @@ class Console:
             async def catch(self, interface: DispatcherInterface):
                 if interface.annotation is str and interface.name == "command":
                     return self.command
-                if interface.annotation is MessageChain:
+                if interface.annotation in (MessageChain, BaseMessageChain):
                     return MessageChain([Plain(self.command)], inline=True)
                 if interface.annotation is Console:
                     return self.console

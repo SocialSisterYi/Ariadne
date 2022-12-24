@@ -1,12 +1,19 @@
 import asyncio
 import json as json_mod
 import secrets
-from typing import Any, Awaitable, Callable, Dict, List, MutableMapping, Optional
+from typing import Any, Dict, MutableMapping, Optional
 from weakref import WeakValueDictionary
 
+from launart import Launart
+from launart.utilles import wait_fut
+from loguru import logger
+from yarl import URL
+
 from graia.amnesia.builtins.aiohttp import AiohttpClientInterface
+from graia.amnesia.builtins.memcache import Memcache
 from graia.amnesia.transport import Transport
 from graia.amnesia.transport.common.http.extra import HttpRequest
+from graia.amnesia.transport.common.server import AbstractRouter
 from graia.amnesia.transport.common.websocket import (
     AbstractWebsocketIO,
     WebsocketCloseEvent,
@@ -19,34 +26,22 @@ from graia.amnesia.transport.common.websocket import (
 )
 from graia.amnesia.transport.common.websocket.shortcut import data_type, json_require
 from graia.amnesia.transport.utilles import TransportRegistrar
-from launart import Launart
-from launart.utilles import wait_fut
-from loguru import logger
-from yarl import URL
 
-from graia.ariadne.connection import ConnectionMixin, ConnectionStatus
-from graia.ariadne.connection.http import HttpClientConnection
-
-from ..event import MiraiEvent
-from ._info import WebsocketClientInfo, WebsocketServerInfo
-from .util import (
-    CallMethod,
-    DatetimeJsonEncoder,
-    build_event,
-    get_router,
-    validate_response,
-)
+from . import ConnectionMixin
+from ._info import T_Info, WebsocketClientInfo, WebsocketServerInfo
+from .util import CallMethod, DatetimeJsonEncoder, build_event, validate_response
 
 t = TransportRegistrar()
 
 
 @t.apply
-class WebsocketConnectionMixin(Transport):
+class WebsocketConnectionMixin(Transport, ConnectionMixin[T_Info]):
     ws_io: Optional[AbstractWebsocketIO]
     futures: MutableMapping[str, asyncio.Future]
-    status: ConnectionStatus
-    fallback: Optional["HttpClientConnection"]
-    event_callbacks: List[Callable[[MiraiEvent], Awaitable[Any]]]
+
+    def __init__(self, info: T_Info) -> None:
+        super().__init__(info=info)
+        self.futures = WeakValueDictionary()
 
     @t.on(WebsocketReceivedEvent)
     @data_type(str)
@@ -84,25 +79,37 @@ class WebsocketConnectionMixin(Transport):
 
     @t.on(WebsocketCloseEvent)
     async def _(self, _: AbstractWebsocketIO) -> None:
+        from ..app import Ariadne
+
+        app = Ariadne.current()
+        await app.launch_manager.get_interface(Memcache).delete(f"account.{app.account}.version")
+
         self.status.session_key = None
         self.status.alive = False
         logger.info("Websocket connection closed", style="dark_orange")
 
-    async def call(self, command: str, method: CallMethod, params: Optional[dict] = None) -> Any:
+    async def call(
+        self,
+        command: str,
+        method: CallMethod,
+        params: Optional[dict] = None,
+        *,
+        in_session: bool = True,
+    ) -> Any:
         params = params or {}
         sync_id: str = secrets.token_urlsafe(12)
         fut = asyncio.get_running_loop().create_future()
-        content: Dict[str, Any] = {"syncId": sync_id, "command": command, "content": params or {}}
+        content: Dict[str, Any] = {
+            "syncId": sync_id,
+            "command": command,
+            "content": params or {},
+        }
         if method == CallMethod.RESTGET:
             content["subCommand"] = "get"
         elif method == CallMethod.RESTPOST:
             content["subCommand"] = "update"
         elif method == CallMethod.MULTIPART:
-            if self.fallback:
-                return await self.fallback.call(command, method, params)
-            raise NotImplementedError(
-                f"Connection {self} can't perform {command!r}, consider configuring a HttpClientConnection?"
-            )
+            return await super().call(command, method, params, in_session=in_session)
         self.futures[sync_id] = fut
         await self.status.wait_for_available()
         assert self.ws_io
@@ -114,18 +121,17 @@ t = TransportRegistrar()
 
 
 @t.apply
-class WebsocketServerConnection(WebsocketConnectionMixin, ConnectionMixin[WebsocketServerInfo]):
+class WebsocketServerConnection(WebsocketConnectionMixin[WebsocketServerInfo]):
     """Websocket 服务器连接"""
 
-    dependencies = {"http.universal_server"}
+    dependencies = {AbstractRouter}
 
-    def __init__(self, config: WebsocketServerInfo) -> None:
-        ConnectionMixin.__init__(self, config)
+    def __init__(self, info: WebsocketServerInfo) -> None:
+        super().__init__(info)
         self.declares.append(WebsocketEndpoint(self.info.path))
-        self.futures = WeakValueDictionary()
 
     async def launch(self, mgr: Launart) -> None:
-        router = get_router(mgr)
+        router = mgr.get_interface(AbstractRouter)
         router.use(self)
 
     @t.on(WebsocketConnectEvent)
@@ -138,7 +144,6 @@ class WebsocketServerConnection(WebsocketConnectionMixin, ConnectionMixin[Websoc
             if req.query_params.get(k) != v:
                 return await io.extra(WSConnectionClose)
         await io.extra(WSConnectionAccept)
-        logger.info("WebsocketServer")
         await io.send(
             {
                 "syncId": "#",
@@ -157,19 +162,15 @@ t = TransportRegistrar()
 
 
 @t.apply
-class WebsocketClientConnection(WebsocketConnectionMixin, ConnectionMixin[WebsocketClientInfo]):
+class WebsocketClientConnection(WebsocketConnectionMixin[WebsocketClientInfo]):
     """Websocket 客户端连接"""
 
-    dependencies = {"http.universal_client"}
+    dependencies = {AiohttpClientInterface}
     http_interface: AiohttpClientInterface
 
     @property
     def stages(self):
         return {"blocking"}
-
-    def __init__(self, config: WebsocketClientInfo) -> None:
-        ConnectionMixin.__init__(self, config)
-        self.futures = WeakValueDictionary()
 
     async def launch(self, mgr: Launart) -> None:
         self.http_interface = mgr.get_interface(AiohttpClientInterface)
@@ -180,10 +181,11 @@ class WebsocketClientConnection(WebsocketConnectionMixin, ConnectionMixin[Websoc
                     (URL(config.host) / "all").with_query(
                         {"qq": config.account, "verifyKey": config.verify_key}
                     )
-                )
+                ),
+                heartbeat=30.0,
             )
             await wait_fut(
-                [rider.use(self), self.wait_for("finished", "elizabeth.service")],
+                [rider.use(self), mgr.status.wait_for_sigexit()],
                 return_when=asyncio.FIRST_COMPLETED,
             )
 

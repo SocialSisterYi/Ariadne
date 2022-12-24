@@ -4,10 +4,13 @@ import asyncio
 import base64
 import io
 import os
+import signal
 import sys
 import traceback
+from contextlib import ExitStack
 from datetime import datetime
 from typing import (
+    IO,
     TYPE_CHECKING,
     Any,
     AsyncGenerator,
@@ -23,26 +26,35 @@ from typing import (
     overload,
 )
 
-from graia.amnesia.builtins.memcache import MemcacheService
-from graia.amnesia.transport.common.storage import CacheStorage
-from graia.broadcast import Broadcast
 from launart import Launart
 from loguru import logger
 
-from graia.ariadne.exception import AriadneConfigurationError
+from graia.amnesia.builtins.memcache import Memcache, MemcacheService
+from graia.amnesia.transport.common.storage import CacheStorage
+from graia.broadcast import Broadcast
+from graia.broadcast.interfaces.dispatcher import DispatcherInterface
 
 from .connection import ConnectionInterface
 from .connection._info import U_Info
 from .connection.util import CallMethod, UploadMethod, build_event
 from .context import enter_context, enter_message_send_context
 from .event import MiraiEvent
-from .event.message import FriendMessage, GroupMessage, MessageEvent, TempMessage
+from .event.message import (
+    ActiveFriendMessage,
+    ActiveGroupMessage,
+    ActiveMessage,
+    ActiveTempMessage,
+    FriendMessage,
+    GroupMessage,
+    MessageEvent,
+    TempMessage,
+)
 from .event.mirai import FriendEvent, GroupEvent
+from .exception import AriadneConfigurationError, UnknownTarget
+from .message import Source
 from .message.chain import MessageChain, MessageContainer
-from .message.element import Source
 from .model import (
     Announcement,
-    BotMessage,
     FileInfo,
     Friend,
     Group,
@@ -53,6 +65,7 @@ from .model import (
     Profile,
     Stranger,
 )
+from .model.relationship import Client
 from .model.util import AriadneOptions
 from .service import ElizabethService
 from .typing import (
@@ -61,10 +74,9 @@ from .typing import (
     SendMessageException,
     Sentinel,
     T,
-    classmethod,
+    class_property,
 )
 from .util import (
-    AttrConvertMixin,
     RichLogInstallOptions,
     ariadne_api,
     camel_to_snake,
@@ -76,7 +88,7 @@ if TYPE_CHECKING:
     from .message.element import Image, Voice
 
 
-class Ariadne(AttrConvertMixin):
+class Ariadne:
     """Ariadne, 一个优雅且协议完备的 Python QQ Bot 框架."""
 
     options: ClassVar[AriadneOptions] = {}
@@ -89,8 +101,7 @@ class Ariadne(AttrConvertMixin):
     default_send_action: SendMessageActionProtocol
     log_config: LogConfig
 
-    @classmethod
-    @property
+    @class_property
     def broadcast(cls) -> Broadcast:
         """获取 Ariadne 的事件系统.
 
@@ -99,8 +110,7 @@ class Ariadne(AttrConvertMixin):
         """
         return cls.service.broadcast
 
-    @classmethod
-    @property
+    @class_property
     def default_account(cls) -> int:
         """获取默认账号.
 
@@ -127,8 +137,6 @@ class Ariadne(AttrConvertMixin):
     def config(
         cls,
         *,
-        loop: Optional[asyncio.AbstractEventLoop] = None,
-        broadcast: Optional[Broadcast] = None,
         launch_manager: Optional[Launart] = None,
         default_account: Optional[int] = None,
         install_log: Union[bool, RichLogInstallOptions] = False,
@@ -144,9 +152,6 @@ class Ariadne(AttrConvertMixin):
             install_log (Union[bool, RichLogInstallOptions], optional): 是否安装 rich 日志, 默认为 False
             inject_bypass_listener (bool, optional): 是否注入透传 Broadcast, 默认为 False
         """
-        if loop or broadcast:
-            logger.warning("Passing `loop` or `broadcast` is deprecated!")
-            logger.warning("Use `creart.create` instead.")
 
         if launch_manager:
             if getattr(cls, "launch_manager", launch_manager) is not launch_manager:
@@ -214,30 +219,55 @@ class Ariadne(AttrConvertMixin):
         self.connection.add_callback(self._event_hook)
 
     async def _event_hook(self, event: MiraiEvent):
-        with enter_context(self, event):
+        with ExitStack() as stack:
+            stack.enter_context(enter_context(self, event))
             sys.audit("AriadnePostRemoteEvent", event)
-            if isinstance(event, MessageEvent) and event.message_chain.only(Source):
-                event.message_chain.append("<! 不支持的消息类型 !>")
+            cache_set = self.launch_manager.get_interface(Memcache).set
+
+            if isinstance(event, (MessageEvent, ActiveMessage)):
+                await cache_set(f"account.{self.account}.message.{int(event)}", event)
+                if not event.message_chain:
+                    event.message_chain.append("<! 不支持的消息类型 !>")
+
             if isinstance(event, FriendEvent):
-                with enter_message_send_context(UploadMethod.Friend):
-                    self.service.broadcast.postEvent(event)
+                stack.enter_context(enter_message_send_context(UploadMethod.Friend))
+
+                friend: Optional[Friend] = getattr(event, "sender", None) or getattr(event, "friend", None)
+                if friend:
+                    await cache_set(f"account.{self.account}.friend.{int(friend)}", friend)
+
             elif isinstance(event, GroupEvent):
-                with enter_message_send_context(UploadMethod.Group):
-                    self.service.broadcast.postEvent(event)
-            else:
-                self.service.broadcast.postEvent(event)
+                stack.enter_context(enter_message_send_context(UploadMethod.Group))
+                group = cast(Optional[Group], getattr(event, "group", None))
+
+                member = cast(
+                    Optional[Member],
+                    getattr(event, "sender", None)
+                    or getattr(event, "member", None)
+                    or getattr(event, "operator", None)
+                    or getattr(event, "inviter", None),
+                )
+                if member:
+                    if not group:
+                        group = member.group
+                    await cache_set(f"account.{self.account}.group.{int(group)}.member.{int(member)}", member)
+
+                if group:
+                    await cache_set(f"account.{self.account}.group.{int(group)}", group)
+
+            self.service.broadcast.postEvent(event)
 
     @classmethod
     def _patch_launch_manager(cls) -> None:
-        if "http.universal_client" not in cls.launch_manager.launchables:
-            from graia.amnesia.builtins.aiohttp import AiohttpService
+        from graia.amnesia.builtins.aiohttp import AiohttpClientInterface
+        from graia.amnesia.transport.common.server import AbstractRouter
 
-            cls.launch_manager.add_service(AiohttpService())
+        if AiohttpClientInterface not in cls.launch_manager._service_bind:
+            from graia.amnesia.builtins.aiohttp import AiohttpClientService
 
-        if (
-            "http.universal_server" in cls.service.required
-            and "http.universal_server" not in cls.launch_manager.launchables
-        ):
+            cls.launch_manager.add_service(AiohttpClientService())
+
+        if AbstractRouter in cls.service.required and AbstractRouter not in cls.launch_manager._service_bind:
             from graia.amnesia.builtins.aiohttp import AiohttpServerService
 
             cls.launch_manager.add_service(AiohttpServerService())
@@ -252,19 +282,28 @@ class Ariadne(AttrConvertMixin):
             cls.launch_manager.add_service(MemcacheService())
 
     @classmethod
-    def launch_blocking(cls):
-        """以阻塞方式启动 Ariadne"""
+    def launch_blocking(cls, stop_signals: Iterable[signal.Signals] = (signal.SIGINT,)):
+        """以阻塞方式启动 Ariadne
+
+        Args:
+            stop_signals (Iterable[signal.Signals], optional): 要监听的停止信号，默认为 `(signal.SIGINT,)`
+        """
+        if not cls.instances:
+            raise ValueError("No account specified.")
         cls._patch_launch_manager()
-        cls.launch_manager.launch_blocking(loop=cls.service.loop)
+        try:
+            cls.launch_manager.launch_blocking(loop=cls.service.loop, stop_signal=stop_signals)
+        except asyncio.CancelledError:
+            logger.info("Launch manager exited.", style="red")
 
     @classmethod
     def stop(cls):
         """计划停止 Ariadne"""
         mgr = cls.launch_manager
         mgr.status.exiting = True
-        if mgr.taskgroup is not None:
-            mgr.taskgroup.stop = True
-            task = mgr.taskgroup.blocking_task
+        if mgr.task_group is not None:
+            mgr.task_group.stop = True
+            task = mgr.task_group.blocking_task
             if task and not task.done():
                 task.cancel()
 
@@ -302,14 +341,30 @@ class Ariadne(AttrConvertMixin):
         return Ariadne.instances[cls.options["default_account"]]
 
     @ariadne_api
-    async def get_version(self) -> str:
+    async def get_version(self, *, cache: bool = False) -> str:
         """获取后端 Mirai HTTP API 版本.
+
+        Args:
+            cache (bool, optional): 是否缓存结果, 默认为 False.
 
         Returns:
             str: 版本信息.
         """
-        result = await self.connection._call("about", CallMethod.GET, {})
-        return result["version"]
+        interface = self.launch_manager.get_interface(Memcache)
+        if cache and (version := await interface.get(f"account.{self.account}.version")):
+            return version
+        version = (await self.connection.call("about", CallMethod.GET, {}, in_session=False))["version"]
+        await interface.set(f"account.{self.account}.version", version)
+        return version
+
+    @ariadne_api
+    async def get_bot_list(self) -> List[int]:
+        """获取所有当前登录账号. 需要 Mirai API HTTP 2.6.0+.
+
+        Returns:
+            List[int]: 机器人列表.
+        """
+        return await self.connection.call("botList", CallMethod.GET, {}, in_session=False)
 
     async def get_file_iterator(
         self,
@@ -449,7 +504,7 @@ class Ariadne(AttrConvertMixin):
             CallMethod.POST,
             {
                 "id": id,
-                "name": name,
+                "directoryName": name,
                 "target": target,
             },
         )
@@ -514,7 +569,7 @@ class Ariadne(AttrConvertMixin):
         target = target.id if isinstance(target, Group) else target
 
         await self.connection.call(
-            "file/move",
+            "file_move",
             CallMethod.POST,
             {
                 "id": id,
@@ -561,7 +616,7 @@ class Ariadne(AttrConvertMixin):
     @ariadne_api
     async def upload_file(
         self,
-        data: Union[bytes, io.IOBase, os.PathLike],
+        data: Union[bytes, IO[bytes], os.PathLike],
         method: Union[str, UploadMethod, None] = None,
         target: Union[Friend, Group, int] = -1,
         path: str = "",
@@ -572,7 +627,7 @@ class Ariadne(AttrConvertMixin):
         上传目标, (可选)上传目录ID.
 
         Args:
-            data (Union[bytes, io.IOBase, os.PathLike]): 文件的原始数据
+            data (Union[bytes, IO[bytes], os.PathLike]): 文件的原始数据
             method (str | UploadMethod, optional): 文件的上传类型
             target (Union[Friend, Group, int]): 文件上传目标, 即群组
             path (str): 目标路径, 默认为根路径.
@@ -609,12 +664,12 @@ class Ariadne(AttrConvertMixin):
 
     @ariadne_api
     async def upload_image(
-        self, data: Union[bytes, io.IOBase, os.PathLike], method: Union[None, str, UploadMethod] = None
+        self, data: Union[bytes, IO[bytes], os.PathLike], method: Union[None, str, UploadMethod] = None
     ) -> "Image":
         """上传一张图片到远端服务器, 需要提供: 图片的原始数据(bytes), 图片的上传类型.
 
         Args:
-            data (Union[bytes, io.IOBase, os.PathLike]): 图片的原始数据
+            data (Union[bytes, IO[bytes], os.PathLike]): 图片的原始数据
             method (str | UploadMethod, optional): 图片的上传类型, 可从上下文推断
         Returns:
             Image: 生成的图片消息元素
@@ -640,12 +695,12 @@ class Ariadne(AttrConvertMixin):
 
     @ariadne_api
     async def upload_voice(
-        self, data: Union[bytes, io.IOBase, os.PathLike], method: Union[None, str, UploadMethod] = None
+        self, data: Union[bytes, IO[bytes], os.PathLike], method: Union[None, str, UploadMethod] = None
     ) -> "Voice":
         """上传语音到远端服务器, 需要提供: 语音的原始数据(bytes), 语音的上传类型.
 
         Args:
-            data (Union[bytes, io.IOBase, os.PathLike]): 语音的原始数据
+            data (Union[bytes, IO[bytes], os.PathLike]): 语音的原始数据
             method (str | UploadMethod, optional): 语音的上传类型, 可从上下文推断
         Returns:
             Voice: 生成的语音消息元素
@@ -964,29 +1019,56 @@ class Ariadne(AttrConvertMixin):
         )
 
     @ariadne_api
-    async def set_essence(self, target: Union[Source, BotMessage, int]) -> None:
+    async def set_essence(
+        self,
+        message: Union[GroupMessage, ActiveGroupMessage, Source, int],
+        target: Optional[Union[Group, int]] = None,
+    ) -> None:
         """
         添加指定消息为群精华消息; 需要具有相应权限(管理员/群主).
 
         请自行判断消息来源是否为群组.
 
+        Note:
+            后端 Mirai HTTP API 版本 >= 2.6.0, 仅指定 message 且类型为 Source 或 int 时, \
+                将尝试使用缓存获得消息事件或以当前事件来源作为 target.
+
         Args:
-            target (Union[Source, BotMessage, int]): 特定信息的 `messageId`, \
-            可以是 `Source` 实例, `BotMessage` 实例或者是单纯的 int 整数.
+            message (Union[GroupMessage, ActiveGroupMessage, Source, int]): 指定的消息.
+            target (Union[Group, int], optional): 指定的群组. message 类型为 Source 或 int 时必需.
 
         Returns:
             None: 没有返回.
         """
-        if isinstance(target, BotMessage):
-            target = target.messageId
-        elif isinstance(target, Source):
-            target = target.id
+        if isinstance(message, GroupMessage):
+            target = message.sender.group
+        elif isinstance(message, ActiveGroupMessage):
+            target = message.subject
 
-        await self.connection.call(
-            "setEssence",
-            CallMethod.POST,
-            {"target": target},
-        )
+        if tuple(map(int, (await self.get_version(cache=True)).split("."))) >= (2, 6, 0):
+            if target is not None:
+                pass
+            elif (
+                event := await self.launch_manager.get_interface(Memcache).get(
+                    f"account.{self.account}.message.{int(message)}"
+                )
+            ) and isinstance(event, (GroupMessage, ActiveGroupMessage)):
+                return await self.set_essence(event)
+            elif (
+                target := await DispatcherInterface.ctx.get().lookup_param("target", Optional[Group], None)
+            ) is None:
+                raise TypeError("set_essence() missing 1 required positional argument: 'target'")
+
+            params = {
+                "messageId": int(message),
+                "target": int(target),
+            }
+        else:
+            params = {
+                "target": int(message),
+            }
+
+        await self.connection.call("setEssence", CallMethod.POST, params)
 
     @ariadne_api
     async def get_group_config(self, group: Union[Group, int]) -> GroupConfig:
@@ -1155,20 +1237,29 @@ class Ariadne(AttrConvertMixin):
         Returns:
             List[Friend]: 添加的好友.
         """
-        result = await self.connection.call(
-            "friendList",
-            CallMethod.GET,
-            {},
-        )
-        return [Friend.parse_obj(i) for i in result]
+        result = [
+            Friend.parse_obj(i)
+            for i in await self.connection.call(
+                "friendList",
+                CallMethod.GET,
+                {},
+            )
+        ]
+
+        cache_set = self.launch_manager.get_interface(Memcache).set
+        await asyncio.gather(*(cache_set(f"account.{self.account}.friend.{int(i)}", i) for i in result))
+        return result
 
     @overload
-    async def get_friend(self, friend_id: int, assertion: Literal[False] = False) -> Optional[Friend]:
+    async def get_friend(
+        self, friend_id: int, *, assertion: Literal[False] = False, cache: bool = False
+    ) -> Optional[Friend]:
         """从已知的可能的好友 ID, 获取 Friend 实例.
 
         Args:
             friend_id (int): 已知的可能的好友 ID.
             assertion (bool, optional): 检查是否存在. Defaults to False.
+            cache (bool, optional): 是否使用缓存. Defaults to False.
 
         Returns:
             Friend: 操作成功, 你得到了你应得的.
@@ -1177,12 +1268,13 @@ class Ariadne(AttrConvertMixin):
         ...
 
     @overload
-    async def get_friend(self, friend_id: int, assertion: Literal[True]) -> Friend:
+    async def get_friend(self, friend_id: int, *, assertion: Literal[True], cache: bool = False) -> Friend:
         """从已知的可能的好友 ID, 获取 Friend 实例.
 
         Args:
             friend_id (int): 已知的可能的好友 ID.
             assertion (bool, optional): 检查是否存在. Defaults to False.
+            cache (bool, optional): 是否使用缓存. Defaults to False.
 
         Returns:
             Friend: 操作成功, 你得到了你应得的.
@@ -1191,21 +1283,31 @@ class Ariadne(AttrConvertMixin):
         ...
 
     @ariadne_api
-    async def get_friend(self, friend_id: int, assertion: bool = False) -> Optional[Friend]:
+    async def get_friend(
+        self, friend_id: int, *, assertion: bool = False, cache: bool = False
+    ) -> Optional[Friend]:
         """从已知的可能的好友 ID, 获取 Friend 实例.
 
         Args:
             friend_id (int): 已知的可能的好友 ID.
             assertion (bool, optional): 检查是否存在. Defaults to False.
+            cache (bool, optional): 是否使用缓存. Defaults to False.
 
         Returns:
             Friend: 操作成功, 你得到了你应得的.
             None: 未能获取到.
         """
-        data = await self.get_friend_list()
-        for i in data:
-            if i.id == friend_id:
-                return i
+        cache_get = self.launch_manager.get_interface(Memcache).get
+        key = f"account.{self.account}.friend.{friend_id}"
+
+        if cache and (friend := await cache_get(key)):
+            return friend
+
+        await self.get_friend_list()
+
+        if friend := await cache_get(key):
+            return friend
+
         if assertion:
             raise ValueError(f"Friend {friend_id} not found.")
 
@@ -1216,20 +1318,29 @@ class Ariadne(AttrConvertMixin):
         Returns:
             List[Group]: 加入的群组.
         """
-        result = await self.connection.call(
-            "groupList",
-            CallMethod.GET,
-            {},
-        )
-        return [Group.parse_obj(i) for i in result]
+        result = [
+            Group.parse_obj(i)
+            for i in await self.connection.call(
+                "groupList",
+                CallMethod.GET,
+                {},
+            )
+        ]
+
+        cache_set = self.launch_manager.get_interface(Memcache).set
+        await asyncio.gather(*(cache_set(f"account.{self.account}.group.{int(i)}", i) for i in result))
+        return result
 
     @overload
-    async def get_group(self, group_id: int, assertion: Literal[False] = False) -> Optional[Group]:
+    async def get_group(
+        self, group_id: int, *, assertion: Literal[False] = False, cache: bool = False
+    ) -> Optional[Group]:
         """尝试从已知的群组唯一ID, 获取对应群组的信息; 可能返回 None.
 
         Args:
             group_id (int): 尝试获取的群组的唯一 ID.
             assertion (bool, optional): 是否强制验证. Defaults to False.
+            cache (bool, optional): 是否使用缓存. Defaults to False.
 
         Returns:
             Group: 操作成功, 你得到了你应得的.
@@ -1238,12 +1349,13 @@ class Ariadne(AttrConvertMixin):
         ...
 
     @overload
-    async def get_group(self, group_id: int, assertion: Literal[True]) -> Group:
+    async def get_group(self, group_id: int, *, assertion: Literal[True], cache: bool = False) -> Group:
         """尝试从已知的群组唯一ID, 获取对应群组的信息; 可能返回 None.
 
         Args:
             group_id (int): 尝试获取的群组的唯一 ID.
             assertion (bool, optional): 是否强制验证. Defaults to False.
+            cache (bool, optional): 是否使用缓存. Defaults to False.
 
         Returns:
             Group: 操作成功, 你得到了你应得的.
@@ -1252,21 +1364,31 @@ class Ariadne(AttrConvertMixin):
         ...
 
     @ariadne_api
-    async def get_group(self, group_id: int, assertion: bool = False) -> Optional[Group]:
+    async def get_group(
+        self, group_id: int, *, assertion: bool = False, cache: bool = False
+    ) -> Optional[Group]:
         """尝试从已知的群组唯一ID, 获取对应群组的信息; 可能返回 None.
 
         Args:
             group_id (int): 尝试获取的群组的唯一 ID.
             assertion (bool, optional): 是否强制验证. Defaults to False.
+            cache (bool, optional): 是否使用缓存. Defaults to False.
 
         Returns:
             Group: 操作成功, 你得到了你应得的.
             None: 未能获取到.
         """
-        data = await self.get_group_list()
-        for i in data:
-            if i.id == group_id:
-                return i
+        cache_get = self.launch_manager.get_interface(Memcache).get
+        key = f"account.{self.account}.group.{group_id}"
+
+        if cache and (group := await cache_get(key)):
+            return group
+
+        await self.get_group_list()
+
+        if group := await cache_get(key):
+            return group
+
         if assertion:
             raise ValueError(f"Group {group_id} not found.")
 
@@ -1280,36 +1402,63 @@ class Ariadne(AttrConvertMixin):
         Returns:
             List[Member]: 群内成员的 Member 对象.
         """
-        result = await self.connection.call(
-            "memberList",
-            CallMethod.GET,
-            {
-                "target": group.id if isinstance(group, Group) else group,
-            },
+        group_id = int(group)
+
+        result = [
+            Member.parse_obj(i)
+            for i in await self.connection.call(
+                "memberList",
+                CallMethod.GET,
+                {
+                    "target": group_id,
+                },
+            )
+        ]
+
+        cache_set = self.launch_manager.get_interface(Memcache).set
+
+        await asyncio.gather(
+            cache_set(f"account.{self.account}.group.{group_id}", result[0].group),
+            *(cache_set(f"account.{self.account}.group.{group_id}.member.{int(i)}", i) for i in result),
         )
-        return [Member.parse_obj(i) for i in result]
+
+        return result
 
     @ariadne_api
-    async def get_member(self, group: Union[Group, int], member_id: int) -> Member:
+    async def get_member(self, group: Union[Group, int], member_id: int, *, cache: bool = False) -> Member:
         """尝试从已知的群组唯一 ID 和已知的群组成员的 ID, 获取对应成员的信息.
 
         Args:
             group (Union[Group, int]): 已知的群组唯一 ID
             member_id (int): 已知的群组成员的 ID
+            cache (bool, optional): 是否使用缓存. Defaults to False.
 
         Returns:
             Member: 对应群成员对象
         """
-        result = await self.connection.call(
-            "memberInfo",
-            CallMethod.RESTGET,
-            {
-                "target": group.id if isinstance(group, Group) else group,
-                "memberId": member_id,
-            },
+        interface = self.launch_manager.get_interface(Memcache)
+        group_id = int(group)
+        key = f"account.{self.account}.group.{group_id}.member.{member_id}"
+
+        if cache and (member := await interface.get(key)):
+            return member
+
+        result = Member.parse_obj(
+            await self.connection.call(
+                "memberInfo",
+                CallMethod.RESTGET,
+                {
+                    "target": group_id,
+                    "memberId": member_id,
+                },
+            )
         )
 
-        return Member.parse_obj(result)
+        await asyncio.gather(
+            interface.set(f"account.{self.account}.group.{group_id}", result), interface.set(key, result)
+        )
+
+        return result
 
     @ariadne_api
     async def get_bot_profile(self) -> Profile:
@@ -1395,23 +1544,52 @@ class Ariadne(AttrConvertMixin):
         return Profile.parse_obj(result)
 
     @ariadne_api
-    async def get_message_from_id(self, messageId: int) -> MessageEvent:
+    async def get_message_from_id(
+        self,
+        message: Union[Source, int],
+        target: Optional[Union[Friend, Group, Member, Stranger, Client, int]] = None,
+    ) -> Union[MessageEvent, ActiveMessage]:
         """从 消息 ID 提取 消息事件.
 
+        Note:
+            后端 Mirai HTTP API 版本 >= 2.6.0, 仅指定 message 时, 将尝试使用缓存获得消息事件或以当前事件来源作为 target.
+
         Args:
-            messageId (int): 消息 ID.
+            message (Union[Source, int]): 指定的消息.
+            target (Union[Friend, Group, Member, Stranger, Client, int], optional): 指定的好友或群组. \
+                message 类型为 Source 或 int 时必需.
 
         Returns:
             MessageEvent: 提取的事件.
         """
-        result = await self.connection.call(
-            "messageFromId",
-            CallMethod.GET,
-            {
-                "id": messageId,
-            },
+
+        if tuple(map(int, (await self.get_version(cache=True)).split("."))) >= (2, 6, 0):
+            if target is not None:
+                pass
+            elif event := await self.launch_manager.get_interface(Memcache).get(
+                f"account.{self.account}.message.{message}"
+            ):
+                return event
+            elif (
+                target := await DispatcherInterface.ctx.get().lookup_param(
+                    "target", Optional[Union[Friend, Group, Member, Stranger, Client]], None
+                )
+            ) is None:
+                raise TypeError("get_message_from_id() missing 1 required positional argument: 'target'")
+
+            params = {
+                "messageId": int(message),
+                "target": self.account if isinstance(target, Client) else int(target),
+            }
+        else:
+            params = {
+                "id": int(message),
+            }
+
+        return cast(
+            Union[MessageEvent, ActiveMessage],
+            build_event(await self.connection.call("messageFromId", CallMethod.GET, params)),
         )
-        return cast(MessageEvent, build_event(result))
 
     @ariadne_api
     async def send_friend_message(
@@ -1419,47 +1597,69 @@ class Ariadne(AttrConvertMixin):
         target: Union[Friend, int],
         message: MessageContainer,
         *,
-        quote: Optional[Union[Source, int, MessageChain]] = None,
-    ) -> BotMessage:
+        quote: Optional[Union[Source, int]] = None,
+        action: Union[SendMessageActionProtocol, Literal[Sentinel], None] = Sentinel,
+    ) -> ActiveFriendMessage:
         """发送消息给好友, 可以指定回复的消息.
 
         Args:
             target (Union[Friend, int]): 指定的好友
             message (MessageContainer): 有效的消息容器.
-            quote (Optional[Union[Source, int, MessageChain]], optional): 需要回复的消息, 不要忽视我啊喂?!!, 默认为 None.
+            quote (Optional[Union[Source, int]], optional): 需要回复的消息, 不要忽视我啊喂?!!, 默认为 None.
 
         Returns:
-            BotMessage: 即当前会话账号所发出消息的元数据, 内包含有一 `messageId` 属性, 可用于回复.
+            ActiveFriendMessage: 即当前会话账号所发出消息的事件, 可用于回复.
         """
         from .event.message import ActiveFriendMessage
 
         message = MessageChain(message)
         if isinstance(quote, MessageChain):
-            quote = quote.get_first(Source)
+            raise TypeError(
+                "Using MessageChain as quote target is removed! Get a `Source` from event instead!"
+            )
+
+        if action is not None:  # TODO: REFACTOR
+            return cast(
+                ActiveFriendMessage,
+                await self.send_message(
+                    await self.get_friend(target, assertion=True) if isinstance(target, int) else target,
+                    message,
+                    quote=quote or False,
+                    action=action,
+                ),
+            )
+
         if isinstance(quote, Source):
             quote = quote.id
 
         with enter_message_send_context(UploadMethod.Friend):
-            new_msg = message.copy().as_sendable()
-            result = await self.connection.call(
-                "sendFriendMessage",
-                CallMethod.POST,
-                {
-                    "target": int(target),
-                    "messageChain": new_msg.dict()["__root__"],
-                    **({"quote": quote} if quote else {}),
-                },
-            )
-            event: ActiveFriendMessage = ActiveFriendMessage(
-                messageChain=MessageChain([Source(id=result["messageId"], time=datetime.now())]) + message,
-                subject=(await self.get_friend(int(target), assertion=True)),
-            )
-            with enter_context(self, event):
-                await self.log_config.log(self, event)
-                self.service.broadcast.postEvent(event)
-            if result["messageId"] < 0:
-                logger.warning("Failed to send message, your account may be blocked.")
-            return BotMessage(messageId=result["messageId"], origin=message)
+            message = message.as_sendable()
+            try:
+                result = await self.connection.call(
+                    "sendFriendMessage",
+                    CallMethod.POST,
+                    {
+                        "target": int(target),
+                        "messageChain": message.dict()["__root__"],
+                        **({"quote": quote} if quote else {}),
+                    },
+                )
+                event = ActiveFriendMessage(
+                    messageChain=MessageChain(message),
+                    source=Source(id=result["messageId"], time=datetime.now()),
+                    subject=(await self.get_friend(int(target), assertion=True, cache=True)),
+                )
+                with enter_context(self, event):
+                    await self.log_config.log(self, event)
+                    self.service.broadcast.postEvent(event)
+                if result["messageId"] < 0:
+                    logger.warning("Failed to send message, your account may be blocked.")
+                return event
+            except UnknownTarget:
+                await self.launch_manager.get_interface(Memcache).delete(
+                    f"account.{self.account}.friend.{int(target)}"
+                )
+                raise
 
     @ariadne_api
     async def send_group_message(
@@ -1467,17 +1667,19 @@ class Ariadne(AttrConvertMixin):
         target: Union[Group, Member, int],
         message: MessageContainer,
         *,
-        quote: Optional[Union[Source, int, MessageChain]] = None,
-    ) -> BotMessage:
+        quote: Optional[Union[Source, int]] = None,
+        action: Union[SendMessageActionProtocol, Literal[Sentinel], None] = Sentinel,
+    ) -> ActiveGroupMessage:
         """发送消息到群组内, 可以指定回复的消息.
 
         Args:
             target (Union[Group, Member, int]): 指定的群组, 可以是群组的 ID 也可以是 Group 或 Member 实例.
             message (MessageContainer): 有效的消息容器.
-            quote (Optional[Union[Source, int, MessageChain]], optional): 需要回复的消息, 不要忽视我啊喂?!!, 默认为 None.
+            quote (Optional[Union[Source, int]], optional): 需要回复的消息, 不要忽视我啊喂?!!, 默认为 None.
+            action (SendMessageActionProtocol, optional): 消息发送的处理 action
 
         Returns:
-            BotMessage: 即当前会话账号所发出消息的元数据, 内包含有一 `messageId` 属性, 可用于回复.
+            ActiveGroupMessage: 即当前会话账号所发出消息的事件, 可用于回复.
         """
         from .event.message import ActiveGroupMessage
 
@@ -1485,32 +1687,53 @@ class Ariadne(AttrConvertMixin):
         if isinstance(target, Member):
             target = target.group
 
+        if action is not None:  # TODO: REFACTOR
+            return cast(
+                ActiveGroupMessage,
+                await self.send_message(
+                    await self.get_group(target, assertion=True) if isinstance(target, int) else target,
+                    message,
+                    quote=quote or False,
+                    action=action,
+                ),
+            )
+
         if isinstance(quote, MessageChain):
-            quote = quote.get_first(Source)
+            raise TypeError(
+                "Using MessageChain as quote target is removed! Get a `Source` from event instead!"
+            )
+
         if isinstance(quote, Source):
             quote = quote.id
 
         with enter_message_send_context(UploadMethod.Group):
-            new_msg = message.copy().as_sendable()
-            result = await self.connection.call(
-                "sendGroupMessage",
-                CallMethod.POST,
-                {
-                    "target": int(target),
-                    "messageChain": new_msg.dict()["__root__"],
-                    **({"quote": quote} if quote else {}),
-                },
-            )
-            event: ActiveGroupMessage = ActiveGroupMessage(
-                messageChain=MessageChain([Source(id=result["messageId"], time=datetime.now())]) + message,
-                subject=(await self.get_group(int(target), assertion=True)),
-            )
-            with enter_context(self, event):
-                await self.log_config.log(self, event)
-                self.service.broadcast.postEvent(event)
-            if result["messageId"] < 0:
-                logger.warning("Failed to send message, your account may be blocked.")
-            return BotMessage(messageId=result["messageId"], origin=message)
+            message = message.as_sendable().copy()
+            try:
+                result = await self.connection.call(
+                    "sendGroupMessage",
+                    CallMethod.POST,
+                    {
+                        "target": int(target),
+                        "messageChain": message.dict()["__root__"],
+                        **({"quote": quote} if quote else {}),
+                    },
+                )
+                event = ActiveGroupMessage(
+                    messageChain=MessageChain(message),
+                    source=Source(id=result["messageId"], time=datetime.now()),
+                    subject=(await self.get_group(int(target), assertion=True, cache=True)),
+                )
+                with enter_context(self, event):
+                    await self.log_config.log(self, event)
+                    self.service.broadcast.postEvent(event)
+                if result["messageId"] < 0:
+                    logger.warning("Failed to send message, your account may be blocked.")
+                return event
+            except UnknownTarget:
+                await self.launch_manager.get_interface(Memcache).delete(
+                    f"account.{self.account}.group.{int(target)}"
+                )
+                raise
 
     @ariadne_api
     async def send_temp_message(
@@ -1519,8 +1742,9 @@ class Ariadne(AttrConvertMixin):
         message: MessageContainer,
         group: Optional[Union[Group, int]] = None,
         *,
-        quote: Optional[Union[Source, int, MessageChain]] = None,
-    ) -> BotMessage:
+        quote: Optional[Union[Source, int]] = None,
+        action: Union[SendMessageActionProtocol, Literal[Sentinel], None] = Sentinel,
+    ) -> ActiveTempMessage:
         """发送临时会话给群组中的特定成员, 可指定回复的消息.
 
         Warning:
@@ -1531,43 +1755,67 @@ class Ariadne(AttrConvertMixin):
             target (Union[Member, int]): 指定的群组成员, 可以是成员的 ID 也可以是 Member 实例.
             message (MessageContainer): 有效的消息容器.
             quote (Optional[Union[Source, int]], optional): 需要回复的消息, 不要忽视我啊喂?!!, 默认为 None.
+            action (SendMessageActionProtocol, optional): 消息发送的处理 action
 
         Returns:
-            BotMessage: 即当前会话账号所发出消息的元数据, 内包含有一 `messageId` 属性, 可用于回复.
+            ActiveTempMessage: 即当前会话账号所发出消息的事件, 可用于回复.
         """
         from .event.message import ActiveTempMessage
 
         message = MessageChain(message)
+
         if isinstance(quote, MessageChain):
-            quote = quote.get_first(Source)
-        if isinstance(quote, Source):
-            quote = quote.id
+            raise TypeError(
+                "Using MessageChain as quote target is removed! Get a `Source` from event instead!"
+            )
 
         new_msg = message.copy().as_sendable()
         group = target.group if (isinstance(target, Member) and not group) else group
         if not group:
             raise ValueError("Missing necessary argument: group")
+
+        if action is not None:  # TODO: REFACTOR
+            return cast(
+                ActiveTempMessage,
+                await self.send_message(
+                    await self.get_member(group, target, cache=True) if isinstance(target, int) else target,
+                    message,
+                    quote=quote or False,
+                    action=action,
+                ),
+            )
+
+        if isinstance(quote, Source):
+            quote = quote.id
+
         with enter_message_send_context(UploadMethod.Temp):
-            result = await self.connection.call(
-                "sendTempMessage",
-                CallMethod.POST,
-                {
-                    "group": int(group),
-                    "qq": int(target),
-                    "messageChain": new_msg.dict()["__root__"],
-                    **({"quote": quote} if quote else {}),
-                },
-            )
-            event: ActiveTempMessage = ActiveTempMessage(
-                messageChain=MessageChain([Source(id=result["messageId"], time=datetime.now())]) + message,
-                subject=(await self.get_member(int(group), int(target))),
-            )
-            with enter_context(self, event):
-                await self.log_config.log(self, event)
-                self.service.broadcast.postEvent(event)
-            if result["messageId"] < 0:
-                logger.warning("Failed to send message, your account may be limited.")
-            return BotMessage(messageId=result["messageId"], origin=message)
+            try:
+                result = await self.connection.call(
+                    "sendTempMessage",
+                    CallMethod.POST,
+                    {
+                        "group": int(group),
+                        "qq": int(target),
+                        "messageChain": new_msg.dict()["__root__"],
+                        **({"quote": quote} if quote else {}),
+                    },
+                )
+                event: ActiveTempMessage = ActiveTempMessage(
+                    messageChain=MessageChain(message),
+                    source=Source(id=result["messageId"], time=datetime.now()),
+                    subject=(await self.get_member(int(group), int(target), cache=True)),
+                )
+                with enter_context(self, event):
+                    await self.log_config.log(self, event)
+                    self.service.broadcast.postEvent(event)
+                if result["messageId"] < 0:
+                    logger.warning("Failed to send message, your account may be limited.")
+                return event
+            except UnknownTarget:
+                await self.launch_manager.get_interface(Memcache).delete(
+                    f"account.{self.account}.group.{int(group)}.member.{int(target)}"
+                )
+                raise
 
     @overload
     async def send_message(
@@ -1593,7 +1841,7 @@ class Ariadne(AttrConvertMixin):
             未传入使用默认 action
 
         Returns:
-            Union[T, R]: 默认实现为 BotMessage
+            Union[T, R]: 默认实现为 ActiveMessage
         """
         ...
 
@@ -1605,7 +1853,7 @@ class Ariadne(AttrConvertMixin):
         *,
         quote: Union[bool, int, Source, MessageChain] = False,
         action: Literal[Sentinel] = Sentinel,
-    ) -> BotMessage:
+    ) -> ActiveMessage:
         """
         依据传入的 `target` 自动发送消息.
 
@@ -1621,7 +1869,7 @@ class Ariadne(AttrConvertMixin):
             未传入使用默认 action
 
         Returns:
-            Union[T, R]: 默认实现为 BotMessage
+            Union[T, R]: 默认实现为 ActiveMessage
         """
         ...
 
@@ -1631,7 +1879,7 @@ class Ariadne(AttrConvertMixin):
         target: Union[MessageEvent, Group, Friend, Member],
         message: MessageContainer,
         *,
-        quote: Union[bool, int, Source, MessageChain] = False,
+        quote: Union[bool, int, Source] = False,
         action: Union[SendMessageActionProtocol["T"], Literal[Sentinel]] = Sentinel,
     ) -> "T":
         """
@@ -1649,17 +1897,22 @@ class Ariadne(AttrConvertMixin):
             未传入使用默认 action
 
         Returns:
-            Union[T, R]: 默认实现为 BotMessage
+            Union[T, R]: 默认实现为 ActiveMessage
         """
         action = action if action is not Sentinel else self.default_send_action
         data: Dict[Any, Any] = {"message": MessageChain(message)}
         # quote
-        if isinstance(quote, bool) and quote and isinstance(target, MessageEvent):
-            data["quote"] = target.message_chain.get_first(Source)
+        if isinstance(quote, bool):
+            if quote:
+                if isinstance(target, MessageEvent):
+                    data["quote"] = target.source
+                raise TypeError("Passing `quote=True` is only valid when passing a MessageEvent.")
         elif isinstance(quote, (int, Source)):
             data["quote"] = quote
         elif isinstance(quote, MessageChain):
-            data["quote"] = quote.get_first(Source)
+            raise TypeError(
+                "Using MessageChain as quote target is removed! Get a `Source` from event instead!"
+            )
         # target: MessageEvent
         if isinstance(target, GroupMessage):
             data["target"] = target.sender.group
@@ -1673,19 +1926,26 @@ class Ariadne(AttrConvertMixin):
 
         try:
             if isinstance(data["target"], Friend):
-                val = await self.send_friend_message(**data)
+                val = await self.send_friend_message(**data, action=None)
             elif isinstance(data["target"], Group):
-                val = await self.send_group_message(**data)
+                val = await self.send_group_message(**data, action=None)
             elif isinstance(data["target"], Member):
-                val = await self.send_temp_message(**data)
+                val = await self.send_temp_message(**data, action=None)
             else:
                 logger.warning(
                     f"Unable to send {data['message']} to {data['target']} of type {type(data['target'])}"
                 )
-                return await action.result(BotMessage(messageId=-1, origin=data["message"]))
-        except Exception as e:
+                return await action.result(
+                    ActiveMessage(
+                        type="Unknown",
+                        messageChain=MessageChain(data["message"]),
+                        source=Source(id=-1, time=datetime.now()),
+                        subject=data["target"],
+                    )
+                )
+        except SendMessageException as e:
             e.send_data = send_data  # type: ignore
-            return await action.exception(cast(SendMessageException, e))
+            return await action.exception(e)
         else:
             return await action.result(val)
 
@@ -1720,26 +1980,82 @@ class Ariadne(AttrConvertMixin):
         )
 
     @ariadne_api
-    async def recall_message(self, target: Union[MessageChain, Source, BotMessage, int]) -> None:
-        """撤回特定的消息; 撤回自己的消息需要在发出后 2 分钟内才能成功撤回; 如果在群组内, 需要撤回他人的消息则需要管理员/群主权限.
+    async def recall_message(
+        self,
+        message: Union[MessageEvent, ActiveMessage, Source, int],
+        target: Optional[Union[Friend, Group, Member, Stranger, Client, int]] = None,
+    ) -> None:
+        """撤回指定的消息; 撤回自己的消息需要在发出后 2 分钟内才能成功撤回; 如果在群组内, 需要撤回他人的消息则需要管理员/群主权限.
+
+        Note:
+            后端 Mirai HTTP API 版本 >= 2.6.0, 仅指定 message 且类型为 Source 或 int 时, \
+                将尝试使用缓存获得消息事件或以当前事件来源作为 target.
 
         Args:
-            target (Union[Source, BotMessage, int]): 特定信息的 `messageId`, \
-            可以是 `Source` 实例, `BotMessage` 实例或者是单纯的 int 整数.
+            message (Union[MessageEvent, ActiveMessage, Source, int]): 指定的消息.
+            target (Union[Friend, Group, Member, Stranger, Client, int], optional): 指定的好友或群组. \
+                message 类型为 Source 或 int 时必需.
 
         Returns:
-            None: 没有返回.
+            None: 没有返回
         """
-        if isinstance(target, BotMessage):
-            target = target.messageId
-        elif isinstance(target, Source):
-            target = target.id
-        elif isinstance(target, MessageChain):
-            target = target.get_first(Source).id
-        await self.connection.call(
-            "recall",
+        if target is not None:
+            pass
+        elif isinstance(message, GroupMessage):
+            target = message.sender.group
+        elif isinstance(message, MessageEvent):
+            target = message.sender
+        elif isinstance(message, ActiveMessage):
+            target = message.subject
+
+        if tuple(map(int, (await self.get_version(cache=True)).split("."))) >= (2, 6, 0):
+            if target is not None:
+                pass
+            elif event := await self.launch_manager.get_interface(Memcache).get(
+                f"account.{self.account}.message.{int(message)}"
+            ):
+                return await self.recall_message(event)
+            elif (
+                target := await DispatcherInterface.ctx.get().lookup_param(
+                    "target", Union[Friend, Group, Member, Stranger, Client, None], None
+                )
+            ) is None:
+                raise TypeError("recall_message() missing 1 required positional argument: 'target'")
+
+            params = {
+                "messageId": int(message),
+                "target": self.account if isinstance(target, Client) else int(target),
+            }
+        else:
+            params = {
+                "target": int(message),
+            }
+
+        await self.connection.call("recall", CallMethod.POST, params)
+
+    @ariadne_api
+    async def get_roaming_message(
+        self, start: datetime, end: datetime, target: Union[Friend, int]
+    ) -> List[FriendMessage]:
+        """获取漫游消息. 需要 Mirai API HTTP 2.6.0+.
+
+        Args:
+            start (datetime): 起始时间.
+            end (datetime): 结束时间.
+            target (Union[Friend, int]): 漫游消息对象.
+
+        Returns:
+            List[FriendMessage]: 漫游消息列表.
+        """
+        target = target if isinstance(target, int) else target.id
+        result = await self.connection.call(
+            "roamingMessages",
             CallMethod.POST,
             {
                 "target": target,
+                "start": start.timestamp(),
+                "end": end.timestamp(),
             },
         )
+
+        return [FriendMessage.parse_obj(i) for i in result]

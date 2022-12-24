@@ -80,14 +80,14 @@
   "python.analysis.completeFunctionParens": true,
   "python.analysis.diagnosticMode": "workspace",
   "editor.fontLigatures": false,
-  "python.linting.flake8Enabled": true,
+  "python.linting.flake8Enabled": false,
   "python.analysis.typeCheckingMode": "basic",
   "jupyter.jupyterServerType": "local",
   "[python]": {
     "editor.defaultFormatter": "ms-python.black-formatter",
     "editor.formatOnSave": true,
     "editor.codeActionsOnSave": {
-      "source.organizeImports": true
+      "source.organizeImports": false
     },
   }
 }

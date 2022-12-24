@@ -34,11 +34,6 @@ jobs:
         with:
           python-version: 3.9
 
-      - name: Setup Poetry
-        uses: abatilo/actions-poetry@v2.1.5
-        with:
-          poetry-version: 1.1.11
-
       - name: Extract Release Notes
         run: |
           python ./extract-release-notes.py v${{ github.event.inputs.version }}
@@ -47,6 +42,7 @@ jobs:
         run: |
           git config user.name github-actions[bot]
           git config user.email github-actions[bot]@users.noreply.github.com
+
       - name: Update Changelog
         if: ${{ github.event.inputs.changelog == 'true' }}
         run: |
@@ -57,9 +53,10 @@ jobs:
       - name: Release to Public
         if: ${{ github.event.inputs.release == 'true' }}
         run: |
-          poetry config pypi-token.pypi ${{ secrets.PYPI_TOKEN }}
-          poetry version ${{ github.event.inputs.version }}
-          poetry publish --build
+          python ./bump-version.py ${{ github.event.inputs.version }}
+          pip install pdm twine
+          pdm build
+          twine upload --username __token__ --password ${{ secrets.PYPI_TOKEN }} dist/*
           git add .
           git diff-index --quiet HEAD || git commit -m ":sparkles: ${{ github.event.inputs.version }}"
           git push
@@ -71,10 +68,11 @@ jobs:
         if: ${{ github.event.inputs.release == 'true' }}
         uses: actions/upload-artifact@v3
         with:
-          name: artifacts
+          name: "dist-${{ github.event.inputs.version }}"
           path: dist/
 
       - name: Merge to Master
+        if: ${{ github.event.inputs.changelog == 'true' }}
         run: |
           git checkout origin/master -b master
           git merge dev --ff-only

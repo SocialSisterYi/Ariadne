@@ -1,11 +1,11 @@
 """用于 Ariadne 数据模型的工具类."""
 from datetime import datetime
 from typing import TYPE_CHECKING, Any, Literal, Union
-
-from pydantic import BaseConfig, BaseModel, Extra
 from typing_extensions import NotRequired, TypedDict
 
-from graia.ariadne.util import snake_to_camel
+from pydantic import BaseConfig, BaseModel, Extra
+
+from ..util import snake_to_camel
 
 if TYPE_CHECKING:
     from ..typing import AbstractSetIntStr, DictStrAny, MappingIntStrAny
@@ -49,7 +49,7 @@ class AriadneBaseModel(BaseModel):
 
         extra = Extra.allow
         arbitrary_types_allowed = True
-        copy_on_model_validation: bool = False
+        copy_on_model_validation = "none"
         json_encoders = {
             datetime: lambda dt: int(dt.timestamp()),
         }

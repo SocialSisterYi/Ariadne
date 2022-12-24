@@ -1,34 +1,16 @@
-from typing import (
-    TYPE_CHECKING,
-    Any,
-    Awaitable,
-    Callable,
-    ClassVar,
-    Dict,
-    Generic,
-    List,
-    Optional,
-    Set,
-    Type,
-)
+from __future__ import annotations
 
-from graia.amnesia.transport.common.status import (
-    ConnectionStatus as BaseConnectionStatus,
-)
+from typing import TYPE_CHECKING, Any, Awaitable, Callable, ClassVar, Generic, Optional
+from typing_extensions import Self
+
 from launart import ExportInterface, Launchable, LaunchableStatus
 from statv import Stats
-from typing_extensions import Self
+
+from graia.amnesia.transport.common.status import ConnectionStatus as BaseConnectionStatus
 
 from ..event import MiraiEvent
 from ..util import camel_to_snake
-from ._info import (
-    HttpClientInfo,
-    HttpServerInfo,
-    T_Info,
-    U_Info,
-    WebsocketClientInfo,
-    WebsocketServerInfo,
-)
+from ._info import HttpClientInfo, HttpServerInfo, T_Info, U_Info, WebsocketClientInfo, WebsocketServerInfo
 from .util import CallMethod
 
 if TYPE_CHECKING:
@@ -41,15 +23,15 @@ class ConnectionStatus(BaseConnectionStatus, LaunchableStatus):
     alive = Stats[bool]("alive", default=False)
 
     def __init__(self) -> None:
-        self._session_key: Optional[str] = None
+        self._session_key: str | None = None
         super().__init__()
 
     @property
-    def session_key(self) -> Optional[str]:
+    def session_key(self) -> str | None:
         return self._session_key
 
     @session_key.setter
-    def session_key(self, value: Optional[str]) -> None:
+    def session_key(self, value: str | None) -> None:
         self._session_key = value
         self.connected = value is not None
 
@@ -73,13 +55,13 @@ class ConnectionStatus(BaseConnectionStatus, LaunchableStatus):
 class ConnectionMixin(Launchable, Generic[T_Info]):
     status: ConnectionStatus
     info: T_Info
-    dependencies: ClassVar[Set[str]]
+    dependencies: ClassVar[set[str | type[ExportInterface]]]
 
     fallback: Optional["HttpClientConnection"]
-    event_callbacks: List[Callable[[MiraiEvent], Awaitable[Any]]]
+    event_callbacks: list[Callable[[MiraiEvent], Awaitable[Any]]]
 
     @property
-    def required(self) -> Set[str]:
+    def required(self) -> set[str | type[ExportInterface]]:
         return self.dependencies
 
     @property
@@ -100,7 +82,14 @@ class ConnectionMixin(Launchable, Generic[T_Info]):
         self.event_callbacks = []
         self.status = ConnectionStatus()
 
-    async def call(self, command: str, method: CallMethod, params: Optional[dict] = None) -> Any:
+    async def call(
+        self,
+        command: str,
+        method: CallMethod,
+        params: dict | None = None,
+        *,
+        in_session: bool = True,
+    ) -> Any:
         """调用下层 API
 
         Args:
@@ -109,7 +98,7 @@ class ConnectionMixin(Launchable, Generic[T_Info]):
             params (dict, optional): 调用参数
         """
         if self.fallback:
-            return await self.fallback.call(command, method, params)
+            return await self.fallback.call(command, method, params, in_session=in_session)
         raise NotImplementedError(
             f"Connection {self} can't perform {command!r}, consider configuring a HttpClientConnection?"
         )
@@ -118,10 +107,12 @@ class ConnectionMixin(Launchable, Generic[T_Info]):
         return f"<{self.__class__.__name__} {self.status} with {len(self.event_callbacks)} callbacks>"
 
 
-from .http import HttpClientConnection, HttpServerConnection  # noqa: E402
-from .ws import WebsocketClientConnection, WebsocketServerConnection  # noqa: E402
+from .http import HttpClientConnection as HttpClientConnection  # noqa: E402
+from .http import HttpServerConnection as HttpServerConnection  # noqa: E402
+from .ws import WebsocketClientConnection as WebsocketClientConnection  # noqa: E402
+from .ws import WebsocketServerConnection as WebsocketServerConnection  # noqa: E402
 
-CONFIG_MAP: Dict[Type[U_Info], Type[ConnectionMixin]] = {
+CONFIG_MAP: dict[type[U_Info], type[ConnectionMixin]] = {
     HttpClientInfo: HttpClientConnection,
     HttpServerInfo: HttpServerConnection,
     WebsocketClientInfo: WebsocketClientConnection,
@@ -133,9 +124,9 @@ class ConnectionInterface(ExportInterface["ElizabethService"]):
     """Elizabeth 连接接口"""
 
     service: "ElizabethService"
-    connection: Optional[ConnectionMixin]
+    connection: ConnectionMixin | None
 
-    def __init__(self, service: "ElizabethService", account: Optional[int] = None) -> None:
+    def __init__(self, service: "ElizabethService", account: int | None = None) -> None:
         """初始化连接接口
 
         Args:
@@ -160,23 +151,13 @@ class ConnectionInterface(ExportInterface["ElizabethService"]):
         """
         return ConnectionInterface(self.service, account)
 
-    async def _call(
-        self, command: str, method: CallMethod, params: dict, *, account: Optional[int] = None
-    ) -> Any:
-        connection = self.connection
-        if account is not None:
-            connection = self.service.connections.get(account)
-        if connection is None:
-            raise ValueError(f"Unable to find connection to execute {command}")
-        return await connection.call(command, method, params)
-
     async def call(
         self,
         command: str,
         method: CallMethod,
         params: dict,
         *,
-        account: Optional[int] = None,
+        account: int | None = None,
         in_session: bool = True,
     ) -> Any:
         """发起一个调用
@@ -191,11 +172,14 @@ class ConnectionInterface(ExportInterface["ElizabethService"]):
         Returns:
             Any: 调用结果
         """
-        if in_session:
-            await self.status.wait_for_available()  # wait until session_key is present
-            session_key = self.status.session_key
-            params["sessionKey"] = session_key
-        return await self._call(command, method, params, account=account)
+        if account is None:
+            connection = self.connection
+        else:
+            connection = self.service.connections.get(account)
+        if connection is None:
+            raise ValueError(f"Unable to find connection to execute {command}")
+
+        return await connection.call(command, method, params, in_session=in_session)
 
     def add_callback(self, callback: Callable[[MiraiEvent], Awaitable[Any]]) -> None:
         """添加事件回调

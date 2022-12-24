@@ -2,17 +2,16 @@
 import functools
 from datetime import datetime
 from typing import TYPE_CHECKING, Awaitable, Callable, Dict, Optional, Type, Union
+from typing_extensions import Literal
 
 from loguru import logger
 from pydantic import Field, validator
-from typing_extensions import Literal
 
 from ..util import gen_subclass, internal_cls
 
 if TYPE_CHECKING:
     from ..app import Ariadne
     from ..event import MiraiEvent
-    from ..message.chain import MessageChain
 
 from .relationship import Client as Client
 from .relationship import Friend as Friend
@@ -165,9 +164,7 @@ class FileInfo(AriadneBaseModel):
     def _(cls, val: Optional[dict]):
         if not val:
             return None
-        if "remark" in val:  # Friend
-            return Friend.parse_obj(val)
-        return Group.parse_obj(val)  # Group
+        return Friend.parse_obj(val) if "remark" in val else Group.parse_obj(val)
 
 
 FileInfo.update_forward_refs(FileInfo=FileInfo)
@@ -196,16 +193,6 @@ class Profile(AriadneBaseModel):
     """性别"""
 
 
-class BotMessage(AriadneBaseModel):
-    """指示 Bot 发出的消息."""
-
-    messageId: int
-    """消息 ID"""
-
-    origin: Optional["MessageChain"]
-    """原始消息链 (发送的消息链)"""
-
-
 __all__ = [
     "Client",
     "Friend",
@@ -221,5 +208,4 @@ __all__ = [
     "Announcement",
     "FileInfo",
     "Profile",
-    "BotMessage",
 ]

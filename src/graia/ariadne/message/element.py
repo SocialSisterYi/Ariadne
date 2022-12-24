@@ -6,17 +6,19 @@ from io import BytesIO
 from json import dumps as j_dump
 from pathlib import Path
 from typing import TYPE_CHECKING, Any, Iterable, List, Optional, Union, overload
+from typing_extensions import Self
+
+from pydantic.fields import Field
 
 from graia.amnesia.builtins.aiohttp import AiohttpClientInterface
 from graia.amnesia.message import Element as BaseElement
 from graia.amnesia.message import Text as BaseText
-from pydantic import validator
-from pydantic.fields import Field
-from typing_extensions import Self
 
 from ..connection.util import UploadMethod
 from ..model import AriadneBaseModel, Friend, Member, Stranger
-from ..util import AttrConvertMixin, deprecated, escape_bracket, internal_cls
+from ..util import escape_bracket, internal_cls
+from . import Quote as Quote  # noqa: F401
+from . import Source as Source  # noqa: F401
 
 if TYPE_CHECKING:
     from ..event.message import MessageEvent
@@ -24,7 +26,7 @@ if TYPE_CHECKING:
     from .chain import MessageChain
 
 
-class Element(AriadneBaseModel, AttrConvertMixin, BaseElement):
+class Element(AriadneBaseModel, BaseElement):
     """
     指示一个消息中的元素.
     type (str): 元素类型
@@ -38,17 +40,6 @@ class Element(AriadneBaseModel, AttrConvertMixin, BaseElement):
 
     def __hash__(self):
         return hash((type(self),) + tuple(self.__dict__.values()))
-
-    if not TYPE_CHECKING:
-
-        @deprecated("0.8.0", "Use `display` instead.")
-        def as_display(self) -> str:
-            """返回该元素的 "显示" 形式字符串, 趋近于你见到的样子.
-
-            Returns:
-                str: "显示" 字符串.
-            """
-            return str(self)
 
     @property
     def display(self) -> str:
@@ -131,63 +122,6 @@ class Plain(Element, BaseText):
         return isinstance(other, (Plain, BaseText)) and self.text == other.text
 
 
-@internal_cls()
-class Source(Element):
-    """表示消息在一个特定聊天区域内的唯一标识"""
-
-    type: str = "Source"
-
-    id: int
-    """消息 ID"""
-
-    time: datetime
-    """发送时间"""
-
-    def as_persistent_string(self) -> str:
-        return ""
-
-    async def fetch_original(self) -> "MessageChain":
-        """尝试从本元素恢复原本的消息链, 有可能失败.
-
-        Returns:
-            MessageChain: 原来的消息链.
-        """
-        from ..app import Ariadne
-
-        return (await Ariadne.current().get_message_from_id(self.id)).message_chain
-
-
-@internal_cls()
-class Quote(Element):
-    """表示消息中回复其他消息/用户的部分, 通常包含一个完整的消息链(`origin` 属性)"""
-
-    type: str = "Quote"
-
-    id: int
-    """引用的消息 ID"""
-
-    group_id: int = Field(..., alias="groupId")
-    """引用消息所在群号 (好友消息为 0)"""
-
-    sender_id: int = Field(..., alias="senderId")
-    """发送者 QQ 号"""
-
-    target_id: int = Field(..., alias="targetId")
-    """原消息的接收者QQ号 (或群号) """
-
-    origin: "MessageChain"
-    """原来的消息链"""
-
-    @validator("origin", pre=True, allow_reuse=True)
-    def _(cls, v):
-        from .chain import MessageChain
-
-        return MessageChain(v)  # no need to parse objects, they are universal!
-
-    def as_persistent_string(self) -> str:
-        return ""
-
-
 class At(Element):
     """该消息元素用于承载消息中用于提醒/呼唤特定用户的部分."""
 
@@ -244,9 +178,8 @@ class Face(Element):
 
     def __init__(self, id: int = ..., name: str = ..., **data) -> None:
         """
-
         Args:
-            face_id (int, optional): QQ 表情编号
+            id (int, optional): QQ 表情编号
             name (str, optional): QQ 表情名称
         """
         if id is not ...:
@@ -379,6 +312,13 @@ class PokeMethods(str, Enum):
     QiaoMen = "QiaoMen"
     """敲门"""
 
+    Unknown = "Unknown"
+    """未知戳一戳"""
+
+    @staticmethod
+    def _missing_(_) -> "PokeMethods":
+        return PokeMethods.Unknown
+
 
 class Poke(Element):
     """表示消息中戳一戳消息元素"""
@@ -481,7 +421,7 @@ class MusicShare(Element):
         return f"[音乐分享:{self.title}, {self.brief}]"
 
 
-class ForwardNode(AriadneBaseModel, AttrConvertMixin):
+class ForwardNode(AriadneBaseModel):
     """表示合并转发中的一个节点"""
 
     sender_id: int = Field(None, alias="senderId")
@@ -561,11 +501,7 @@ class Forward(Element):
                     node_list.append(i)
                 elif isinstance(i, MessageEvent):
                     if not isinstance(i.sender, Client):
-                        node_list.append(
-                            ForwardNode(
-                                i.sender, time=i.message_chain.get_first(Source).time, message=i.message_chain
-                            )
-                        )
+                        node_list.append(ForwardNode(i.sender, time=i.source.time, message=i.message_chain))
                 else:
                     node_list.extend(i)
             data.update(nodeList=node_list)
@@ -576,7 +512,7 @@ class Forward(Element):
 
     def as_persistent_string(self) -> str:
 
-        data: str = escape_bracket(f"[{','.join(node.json() for node in self.node_list)}")
+        data: str = escape_bracket(f"[{','.join(node.json() for node in self.node_list)}]")
         return f"[mirai:{self.type}:{data}]"
 
     @classmethod
@@ -751,9 +687,7 @@ class MultimediaElement(Element):
             return True
         if self.url and self.url == other.url:
             return True
-        if self.base64 and self.base64 == other.base64:
-            return True
-        return False
+        return self.base64 and self.base64 == other.base64
 
 
 class Image(MultimediaElement):
@@ -865,9 +799,11 @@ def _update_forward_refs():
     Internal function.
     Update the forward references.
     """
-    from ..model import BotMessage
+    import graia.amnesia.message
+
     from .chain import MessageChain
 
+    graia.amnesia.message.__message_chain_class__ = MessageChain
+    graia.amnesia.message.__text_element_class__ = Plain
     Quote.update_forward_refs(MessageChain=MessageChain)
     ForwardNode.update_forward_refs(MessageChain=MessageChain)
-    BotMessage.update_forward_refs(MessageChain=MessageChain)

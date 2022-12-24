@@ -1,12 +1,12 @@
 """Ariadne 的类型标注"""
 
 
-import builtins
 import contextlib
 import enum
 import sys
 import types
-from types import MethodType, TracebackType
+import typing_extensions
+from types import TracebackType
 from typing import (
     TYPE_CHECKING,
     AbstractSet,
@@ -24,20 +24,12 @@ from typing import (
     TypeVar,
     Union,
 )
-
-import typing_extensions
-from typing_extensions import (
-    Annotated,
-    ParamSpec,
-    Protocol,
-    TypeAlias,
-    get_args,
-    runtime_checkable,
-)
+from typing_extensions import Annotated, ParamSpec, Protocol, TypeAlias, get_args, runtime_checkable
 
 if TYPE_CHECKING:
+    from .event.message import ActiveMessage
     from .message.chain import MessageChain
-    from .model import BotMessage, Friend, Group, Member
+    from .model import Friend, Group, Member
 
 P = ParamSpec("P")
 R = TypeVar("R")
@@ -95,11 +87,11 @@ class SendMessageAction(Generic[T, R]):
         return item
 
     @staticmethod
-    async def result(item: "BotMessage") -> R:
+    async def result(item: "ActiveMessage") -> R:
         """处理返回结果
 
         Args:
-            item (BotMessage): SendMessage 成功时的结果
+            item (ActiveMessage): SendMessage 成功时的结果
 
         Returns:
             R: 要实际由 SendMessage 返回的数据
@@ -124,7 +116,7 @@ class SendMessageActionProtocol(Protocol, Generic[T_co]):
     async def param(self, item: SendMessageDict) -> SendMessageDict:
         ...
 
-    async def result(self, item: "BotMessage") -> T_co:
+    async def result(self, item: "ActiveMessage") -> T_co:
         ...
 
     async def exception(self, item: SendMessageException) -> Any:
@@ -144,6 +136,8 @@ def generic_issubclass(cls: Any, par: Union[type, Any, Tuple[type, ...]]) -> boo
     if par is Any:
         return True
     with contextlib.suppress(TypeError):
+        if isinstance(par, AnnotatedType):
+            return generic_issubclass(cls, get_args(par)[0])
         if isinstance(par, (type, tuple)):
             return issubclass(cls, par)
         if get_origin(par) in Unions:
@@ -173,6 +167,8 @@ def generic_isinstance(obj: Any, par: Union[type, Any, Tuple[type, ...]]) -> boo
     if par is Any:
         return True
     with contextlib.suppress(TypeError):
+        if isinstance(par, AnnotatedType):
+            return generic_isinstance(obj, get_args(par)[0])
         if isinstance(par, (type, tuple)):
             return isinstance(obj, par)
         if get_origin(par) in Unions:
@@ -202,19 +198,14 @@ AnnotatedType = type(Annotated[int, lambda x: x > 0])
 
 ExceptionHook: TypeAlias = Callable[[Type[BaseException], BaseException, Optional[TracebackType]], Any]
 
-if sys.version_info >= (3, 9):
-    classmethod = builtins.classmethod
-else:
 
-    class classmethod:
-        "Emulate PyClassMethod_Type()"
+class class_property(Generic[T]):
+    """Class-level property.
+    Link: https://stackoverflow.com/a/13624858/1280629
+    """
 
-        def __init__(self, f):
-            self.f = f
+    def __init__(self, fget: Callable[[Any], T]):
+        self.fget = fget
 
-        def __get__(self, obj, cls=None):
-            if cls is None:
-                cls = type(obj)
-            if hasattr(type(self.f), "__get__"):
-                return self.f.__get__(cls, cls)
-            return MethodType(self.f, cls)
+    def __get__(self, _, owner_cls) -> T:
+        return self.fget(owner_cls)

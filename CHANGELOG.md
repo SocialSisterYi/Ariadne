@@ -2,9 +2,245 @@
 
 ## 未发布的更新
 
+## 0.10.0
+
+### 修复
+
+自行实现 `class_property` 以适应 `Python 3.11` 的更改。
+
+修复了预览版 PyPI 包会导致更新检查失败的问题。
+
+修复了 `Ariadne.make_directory` 的错误参数。
+
+### 新增
+
+支持分派 `Quote` 和 `launart.ExportInterface`。
+
+现在 `Ariadne.default_action` 会作用于所有发送方法。
+
+所有发送方法都可以传入 `action` 参数。
+
+没有配置账号时会引发 `ValueError`。
+
+丰富了 `CoolDown` 的功能。
+
+向 `Ariadne.send_message` 的 `quote` 传入错误参数时会引发 `TypeError`。
+
+### 更改
+
+现在会使用 30s 一次的自动心跳包。这也许能解决长时间收不到消息导致的伪断连问题。
+
+将 `RequestEvent.requestId` 改为 `RequestEvent.request_id` （虽然没有人用这个）
+
+现在将全部改用 “实验性消息链” 的行为。（`Source` `Quote` 作为 `MessageEvent` 的属性）
+
+`Source` 与 `Quote` 不再是 `Element` 的子类。
+
+### 移除
+
+删除了自 `0.9` 以来弃用的属性。
+
+现在传入 `MessageChain` 作为 `quote` 对象会报错。
+
+## 0.9.8
+
+### 修复
+
+修复了 `BotLeaveEventKick`, `BotLeaveEventDisband`, `GroupRecallEvent` 和 `GroupNameChangeEvent` 的 `Dispatcher` 拼写错误.
+
+补充了 `ExceptionThrown` 和 `EventExceptionThrown` 的一站式导入.
+
+## 0.9.7
+
+### 修复
+
+修复了发送的 `MessageChain` 带有旧 `MessageChain` 的不可发送的 Element 的 bug. (@ProgramRipper)
+
+修复了 `recall_message` 的 `target` 相关问题。(@ProgramRipper)
+
+修复了 `ResultValue` 作为 `Derive` 使用时的实现问题。(@BlueGlassBlock)
+
+## 0.9.6
+
+### 修复
+
+修复了 `graia.ariadne.message.parser.twilight.ResultValue`.
+
+修复了使用 Derive 特性时可能的参数检查 bug.
+
+### 更新
+
+支持 `RegexGroup` 作为 Decorator 使用.
+
+`MatchRegex` 现在默认统一为 `fullmatch`.
+
+## 0.9.5
+
+### 修复
+
+修复了 `graia.ariadne.connection.config.from_obj` 的 bug.
+
+维持 console dispatcher 的向后兼容性.
+
+### 弃用
+
+`Quote` 与 `Source` 在 `0.10.0` 将成为 `MessageEvent.quote` 与 `MessageEvent.source` 而不是 `MessageChain[1]` 与 `MessageChain[0]`.
+
+当然，`MessageChain.get_first(Quote)` 与 `MessageChain.get_first(Source)` 到时候也会报错.
+
+同时，`MessageChain.startswith` 的行为将会变得 **符合直觉**.
+
+相应的弃用警告已经发出.
+
+如果你想维持稳定行为，请迁移使用 `from graia.ariadne.message.exp import MessageChain as ExpMessageChain` 作为 **分发类型标注**.
+
+构造时原有消息链不受影响.
+
+## 0.9.4
+
+### 修复
+
+删除了内部的过时用法.
+
+修复了 `Forward` 元素的 `as_persistent_string`. (#195)
+
+## 0.9.3
+
+### 修复
+
+修复了 Python 3.9 以下的类型标注问题.
+
+修复了内部 Dispatcher 的一个用法.
+
+## 0.9.2
+
+### 依赖
+
+现在 `Ariadne` 依赖于 `pydantic~=1.9`. (@BlueGlassBlock)
+
+### 新增
+
+`MessageEvent` 与 `ActiveMessage` 添加 `source` 与 `quote` 属性.
+
+实验性 API: `graia.ariadne.message.exp.MessageChain`
+
+使用此类型进行标注时会将前导 `Source` 与 `Quote` 去除.
+## 0.9.1
+
+### 修复
+
+修复了 `GroupMessage` dispatcher 错误 (@BlueGlassBlock)
+
+## 0.9.0
+
+适配 `mirai-api-http 2.6.0+` (@ProgramRipper)
+
+### 修复
+
+适配 `Amnesia 0.6.0+` (@BlueGlassBlock)
+
+修复了 `NoneDispatcher` (@ProgramRipper)
+
+
+### 增强
+
+`Formatter` 现在可以使用相对完整的格式化微型语言 (@BlueGlassBlock)
+
+对好友，群，群成员和版本等信息使用缓存 (@ProgramRipper)
+
+使用 `Amnesia` 内建的 `MessageChain` 方法 (@BlueGlassBlock)
+
+### 新增
+
+`{MessageEvent|ActiveMessage}` 的 `id` 字段. (@ProgramRipper)
+
+`get_roaming_message` 用于获取漫游消息. （@ProgramRipper)
+
+`get_bot_list` 用于获取所有登录的账号. (@ProgramRipper)
+
+`Image` 和 `FlashImage` 的新增元信息字段. (@ProgramRipper)
+
+### 弃用
+
+`BotMessage` 被标记为弃用. 它将在 `0.10.0` 中被移除. (@ProgramRipper)
+
+弃用了 `MessageChain.{zip|unzip|find_sub_chain}` (@BlueGlassBlock)
+
+`set_essence` `get_message_from_id` `recall_message` 不带上下文（直接使用 `int` / `Source`) 进行调用会触发警告.
+
+### 移除
+
+移除了 `as_display` 等弃用方法. (@BlueGlassBlock)
+
+## 0.8.3
+
+### 修复
+
+修复了 `Ariadne.get_version`, `Ariadne.file_remove` 调用时报错的问题
+
+修复了遥测 SSL 版本过低的问题
+
+修复了 `Poke` 无法解析未知 Poke 类型的问题
+
+## 0.8.2
+
+### 修复
+
+适配 `Amnesia 0.5.5+`.
+
+修复了同时使用 http 和 webhook 通讯时无法调用 api 的问题
+
+### 回退
+
+回退了 `0.8.0` 中的改进: [使用 `url` 作为基于 `Path` 的 `MultimediaElement` 的实现](#080).
+
+## 0.8.1
+
+### 修复
+
+修复了 `graia.ariadne.entry` 的部分错误与缺失.
+
+## 0.8.0
+
+### 改进
+
+`MatchTemplate` 现在支持 `Element` 类的 `Union`.
+
+`Ariadne.launch_blocking` 支持自定义停止信号.
+
+自动忽略结束时未完成的 Amnesia transport 导致的 `CancelledError`.
+
+使用 `url` 作为基于 `Path` 的 `MultimediaElement` 的实现.
+
+### 修复
+
+修复 `HttpServerInfo` 缺失 `verify_key` 导致 `TypeError` 的问题.
+
+修复 interrupt util 的内置 `wait` 问题.
+
+### 移除
+
+移除了弃用的方法名转换和部分事件属性名.
+
+## 0.7.18
+
+### 修复
+
+修复了 `Commander` 无法正确识别可选参数的问题.
+
+修复了项目 `Classifier` 不正常的问题.
+
+## 0.7.17
+
+### 其他
+
+改用 [`pdm`](https://github.com/pdm-project/pdm) 管理项目依赖.
+
 ### 修复
 
 修复 `ForwardNode` 的序列化问题.
+
+修复了 `creart` 导入顺序的问题.
 
 ## 0.7.16
 

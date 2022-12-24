@@ -3,32 +3,28 @@ import json as json_mod
 from typing import Any, Optional
 
 from aiohttp import FormData
-from graia.amnesia.builtins.aiohttp import AiohttpClientInterface
-from graia.amnesia.json import Json
-from graia.amnesia.transport import Transport
-from graia.amnesia.transport.common.http import AbstractServerRequestIO, HttpEndpoint
-from graia.amnesia.transport.common.http.extra import HttpRequest
 from launart import Launart
 from launart.utilles import wait_fut
 from loguru import logger
 
-from graia.ariadne.connection import ConnectionMixin
+from graia.amnesia.builtins.aiohttp import AiohttpClientInterface
+from graia.amnesia.builtins.memcache import Memcache
+from graia.amnesia.json import Json
+from graia.amnesia.transport import Transport
+from graia.amnesia.transport.common.http import AbstractServerRequestIO, HttpEndpoint
+from graia.amnesia.transport.common.http.extra import HttpRequest
+from graia.amnesia.transport.common.server import AbstractRouter
 
 from ..exception import InvalidSession
+from . import ConnectionMixin
 from ._info import HttpClientInfo, HttpServerInfo
-from .util import (
-    CallMethod,
-    DatetimeJsonEncoder,
-    build_event,
-    get_router,
-    validate_response,
-)
+from .util import CallMethod, DatetimeJsonEncoder, build_event, validate_response
 
 
 class HttpServerConnection(ConnectionMixin[HttpServerInfo], Transport):
     """HTTP 服务器连接"""
 
-    dependencies = {"http.universal_server"}
+    dependencies = {AbstractRouter}
 
     def __init__(self, config: HttpServerInfo) -> None:
         super().__init__(config)
@@ -50,14 +46,14 @@ class HttpServerConnection(ConnectionMixin[HttpServerInfo], Transport):
         return {"command": "", "data": {}}
 
     async def launch(self, mgr: Launart) -> None:
-        router = get_router(mgr)
+        router = mgr.get_interface(AbstractRouter)
         router.use(self)
 
 
 class HttpClientConnection(ConnectionMixin[HttpClientInfo]):
     """HTTP 客户端连接"""
 
-    dependencies = {"http.universal_client"}
+    dependencies = {AiohttpClientInterface}
     http_interface: AiohttpClientInterface
 
     def __init__(self, config: HttpClientInfo) -> None:
@@ -85,6 +81,11 @@ class HttpClientConnection(ConnectionMixin[HttpClientInfo]):
         return validate_response(result)
 
     async def http_auth(self) -> None:
+        from ..app import Ariadne
+
+        app = Ariadne.current()
+        await app.launch_manager.get_interface(Memcache).delete(f"account.{app.account}.version")
+
         data = await self.request(
             "POST",
             self.info.get_url("verify"),
@@ -98,13 +99,17 @@ class HttpClientConnection(ConnectionMixin[HttpClientInfo]):
         )
         self.status.session_key = session_key
 
-    async def call(self, command: str, method: CallMethod, params: Optional[dict] = None) -> Any:
+    async def call(
+        self, command: str, method: CallMethod, params: Optional[dict] = None, *, in_session: bool = True
+    ) -> Any:
         params = params or {}
         command = command.replace("_", "/")
         while not self.status.connected:
             await self.status.wait_for_update()
-        if not self.status.session_key:
-            await self.http_auth()
+        if in_session:
+            if not self.status.session_key:
+                await self.http_auth()
+            params["sessionKey"] = self.status.session_key
         try:
             if method in (CallMethod.GET, CallMethod.RESTGET):
                 return await self.request("GET", self.info.get_url(command), params=params)
@@ -125,7 +130,8 @@ class HttpClientConnection(ConnectionMixin[HttpClientInfo]):
         if self.is_hook:
             return
         async with self.stage("blocking"):
-            while not mgr.launchables["elizabeth.service"].status.finished:
+            exit_signal = asyncio.create_task(mgr.status.wait_for_sigexit())
+            while not exit_signal.done():
                 try:
                     if not self.status.session_key:
                         logger.info("HttpClient: authenticate", style="dark_orange")
@@ -146,6 +152,6 @@ class HttpClientConnection(ConnectionMixin[HttpClientInfo]):
                     event = build_event(event_data)
                     await asyncio.gather(*(callback(event) for callback in self.event_callbacks))
                 await wait_fut(
-                    [asyncio.sleep(0.5), self.wait_for("finished", "elizabeth.service")],
+                    [asyncio.sleep(0.5), exit_signal],
                     return_when=asyncio.FIRST_COMPLETED,
                 )
